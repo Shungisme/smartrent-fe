@@ -1,40 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# OH YEAH! I'M BUILDING A NEW STRUCTURE
 
-## Getting Started
+# !IMPORTANT
 
-First, run the development server:
+- This structure use 'npm'
+- Follow conventions
+- Check node version ( nvmsc ) but Don't worry everything is newest
+- Remember 'env'
+- Just use color in tailwind or theme system of shacdn
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# Next.js Naming Conventions
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Folder Structure: camelCase
+- Dynamic route param: snake_case ( [user_id].tsx )
+- Hooks: camelCase ( useAuth )
+- Component: PascalCase ( PostItem )
+- Function / Method: camelCase ( getUserInfo() )
+- Constant: SCREAMING_SNAKE_CASE
+- Interface / Type (TS): PascalCase
+- Enum (TS): PascalCase for Enum name and SCREAMING_SNAKE_CASE for member ( enum UserRole { ADMIN, EDITOR } )
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+# ICONS AND PUBLIC FOLDER
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- USING: [Iconify](https://icon-sets.iconify.design/) and [Lucide](https://lucide.dev/icons/)
+- If importing svg or images => Let put it into public folder. !IMPORTANT if it is image, [compress](https://www.iloveimg.com/compress-image) before put into public folder
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+# [ATOMIC DESIGN](https://viblo.asia/p/tim-hieu-ve-atomic-design-JlkRymxqRZW)
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- ATOMIC DESIGN was put in /src/components. In this project we will download from shacdn => it will put into Atoms folders
+- Create a folder before you code a new UI ex atom/button/index.tsx
+- If you style it by styled-component => atom/button/index.styled.ts
+- If you use scss => atom/button/index.scss
 
-## Learn More
+# HOOKS ( it like a tool for supporting )
 
-To learn more about Next.js, take a look at the following resources:
+- Create folder before coding ex hooks/useDebounce/index.tsx
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+# CONTEXTS ( state-management )
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Create folder before coding ex contexts/useAuth/index.tsx
 
-## Deploy on Vercel
+# API
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- paths.ts: define api url
+- types: name_rule => 'api_name'.type.ts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+# VERSION CONTROL
+
+## BRANCH NAMING CONVENTION
+
+- Feature Branches: feature/JIRA-123_implement-property-search
+- Bug Fixes: bugfix/JIRA-456_fix-payment-validation
+- Hotfixes: hotfix/JIRA-789_critical-security-patch
+- Release Branches: release/v1.2.0
+
+## COMMIT MESSAGE STANDARDS
+
+- JIRA-123: Add property search functionality
