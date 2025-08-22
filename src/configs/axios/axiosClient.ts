@@ -11,7 +11,6 @@ function createClientAxiosInstance(
     baseURL = ENV.URL_API_BASE,
     timeout = 30000,
     withCredentials = true,
-    maxRetries = 3,
     errorHandler,
   } = config
 
@@ -25,7 +24,7 @@ function createClientAxiosInstance(
     },
   })
 
-  setupInterceptors(instance, undefined, maxRetries)
+  setupInterceptors(instance, undefined)
 
   if (errorHandler) {
     instance.interceptors.response.use(
@@ -43,7 +42,6 @@ function createClientAxiosInstance(
 export const instanceClientAxios = createClientAxiosInstance({
   baseURL: ENV.URL_API_BASE,
   withCredentials: true,
-  maxRetries: 3,
 })
 
 export async function apiRequest<T = any>(

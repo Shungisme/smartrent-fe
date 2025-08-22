@@ -2,7 +2,6 @@ import { AxiosRequestConfig } from 'axios'
 
 export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   skipAuth?: boolean
-  retry?: number | false
   timeout?: number
 }
 
@@ -41,6 +40,4 @@ export interface AxiosInstanceConfig {
   timeout?: number
   withCredentials?: boolean
   errorHandler?: ErrorHandler
-  enableRetry?: boolean
-  maxRetries?: number
 }

@@ -8,7 +8,6 @@ function createServerAxiosInstance(cookies?: any): AxiosInstance {
     baseURL: ENV.URL_API_BASE,
     timeout: 30000,
     withCredentials: false,
-    maxRetries: 1,
   }
 
   const instance = axios.create({
@@ -21,7 +20,7 @@ function createServerAxiosInstance(cookies?: any): AxiosInstance {
     },
   })
 
-  setupInterceptors(instance, cookies, config.maxRetries)
+  setupInterceptors(instance, cookies)
 
   return instance
 }

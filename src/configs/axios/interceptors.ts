@@ -1,17 +1,10 @@
-import axios, {
-  AxiosError,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from 'axios'
+import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { ENV } from '@/constants'
 import { CustomAxiosRequestConfig, ApiResponse } from './types'
 import {
   getAccessToken,
   formatApiError,
   isUnauthorizedError,
-  isServerError,
-  delay,
-  calculateRetryDelay,
   logError,
 } from './utils'
 
@@ -75,11 +68,9 @@ export function responseSuccessInterceptor(response: AxiosResponse) {
   return response
 }
 
-export function createResponseErrorInterceptor(maxRetries = 3) {
+export function createResponseErrorInterceptor() {
   return async (error: AxiosError) => {
-    const originalRequest = error.config as CustomAxiosRequestConfig & {
-      _retry?: number
-    }
+    const originalRequest = error.config as CustomAxiosRequestConfig
 
     logError(error, 'Response Error')
 
@@ -97,36 +88,13 @@ export function createResponseErrorInterceptor(maxRetries = 3) {
       return Promise.reject(error)
     }
 
-    if (isServerError(error) && originalRequest?.retry !== false) {
-      const retryCount = originalRequest._retry || 0
-      const maxRetriesConfig = originalRequest.retry || maxRetries
-
-      if (retryCount < maxRetriesConfig) {
-        originalRequest._retry = retryCount + 1
-
-        const delayTime = calculateRetryDelay(retryCount + 1)
-        await delay(delayTime)
-
-        console.log(
-          `[AxiosServer] Retrying request (${retryCount + 1}/${maxRetriesConfig}):`,
-          originalRequest.url,
-        )
-
-        return axios(originalRequest)
-      }
-    }
-
     error.message = formatApiError(error)
 
     return Promise.reject(error)
   }
 }
 
-export function setupInterceptors(
-  axiosInstance: any,
-  cookies?: any,
-  maxRetries = 3,
-) {
+export function setupInterceptors(axiosInstance: any, cookies?: any) {
   axiosInstance.interceptors.request.use(
     createAuthRequestInterceptor(cookies),
     requestErrorInterceptor,
@@ -134,7 +102,7 @@ export function setupInterceptors(
 
   axiosInstance.interceptors.response.use(
     responseSuccessInterceptor,
-    createResponseErrorInterceptor(maxRetries),
+    createResponseErrorInterceptor(),
   )
 
   return axiosInstance
