@@ -54,8 +54,12 @@ const PhoneField = (props: PhoneFieldProps) => {
   const displayError = fieldError?.message || error
 
   return (
-    <div className='space-y-2'>
-      {label && <Label htmlFor={fieldId}>{label}</Label>}
+    <div>
+      {label && (
+        <Label className='mb-2' htmlFor={fieldId}>
+          {label}
+        </Label>
+      )}
 
       <div className='relative'>
         {showIcon && (
@@ -84,7 +88,7 @@ const PhoneField = (props: PhoneFieldProps) => {
                 : undefined
           }
           className={cn(
-            'h-12',
+            'h-10 md:h-12',
             showIcon && 'pl-10',
             displayError &&
               'border-destructive focus-visible:border-destructive',
