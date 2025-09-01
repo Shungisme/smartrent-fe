@@ -3,6 +3,7 @@ import { NextPage } from 'next'
 import Image from 'next/image'
 import { StyledImage } from './index.styled'
 import { useState } from 'react'
+import { DEFAULT_PLACEHOLDER } from '@/constants'
 
 type ImageAtomProps = {
   src: string
@@ -15,30 +16,32 @@ type ImageAtomProps = {
   priority?: boolean
 }
 
-const ImageAtom: NextPage<ImageAtomProps> = (props) => {
-  const {
-    alt,
-    src,
-    placeholderSrc,
-    defaultImage,
-    className,
-    width,
-    height,
-    priority = false,
-  } = props
+const ImageAtom: NextPage<ImageAtomProps> = ({
+  alt,
+  src,
+  placeholderSrc,
+  defaultImage,
+  className,
+  width,
+  height,
+  priority = false,
+}) => {
   const [hasError, setHasError] = useState(false)
+
+  const fallbackSrc = defaultImage ?? ''
+  const imageSrc = hasError ? fallbackSrc : (src ?? fallbackSrc)
 
   if (width && height) {
     return (
       <Image
-        src={hasError ? defaultImage || src : src || defaultImage || ''}
+        src={imageSrc}
         alt={alt}
         width={width}
         height={height}
         className={clsx(className, 'object-cover')}
         priority={priority}
         placeholder={placeholderSrc ? 'blur' : 'empty'}
-        blurDataURL={placeholderSrc}
+        blurDataURL={placeholderSrc ?? DEFAULT_PLACEHOLDER}
         onError={() => !hasError && setHasError(true)}
         loading={priority ? undefined : 'lazy'}
       />
@@ -49,7 +52,7 @@ const ImageAtom: NextPage<ImageAtomProps> = (props) => {
     <StyledImage
       className={clsx(className, 'object-cover')}
       alt={alt}
-      src={hasError ? defaultImage || src || '' : src || defaultImage || ''}
+      src={imageSrc}
       loading={priority ? 'eager' : 'lazy'}
       data-has-placeholder={!!placeholderSrc}
       onError={() => !hasError && setHasError(true)}
@@ -57,8 +60,15 @@ const ImageAtom: NextPage<ImageAtomProps> = (props) => {
         ...(placeholderSrc
           ? {
               backgroundImage: `url(${placeholderSrc})`,
+              filter: 'blur(5px)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
             }
-          : {}),
+          : {
+              backgroundImage: `url(${DEFAULT_PLACEHOLDER})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }),
       }}
     />
   )

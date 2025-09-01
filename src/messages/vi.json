@@ -1,4 +1,7 @@
 {
+  "common": {
+    "or": "Hoặc"
+  },
   "homePage": {
     "auth": {
       "login": {

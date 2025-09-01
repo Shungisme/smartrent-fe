@@ -2,11 +2,11 @@ import { NextPage } from 'next'
 import { AuthType } from '@/components/organisms/authDialog'
 import { PhoneField } from '../phoneField'
 import { Button } from '@/components/atoms/button'
-import { Separator } from '@/components/atoms/separator'
 import { Typography } from '@/components/atoms/typography'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import dynamic from 'next/dynamic'
+import SeparatorOr from '@/components/atoms/separatorOr'
 
 const ImageAtom = dynamic(() => import('@/components/atoms/imageAtom'), {
   ssr: false,
@@ -53,7 +53,7 @@ const RegisterForm: NextPage<RegisterFormProps> = (props) => {
   return (
     <div className='space-y-4 md:space-y-5'>
       <div className='space-y-2 text-center'>
-        <Typography variant='h3'>
+        <Typography variant='h3' className='!mb-2'>
           {t('homePage.auth.register.title')}
         </Typography>
         <Typography variant='muted'>
@@ -75,19 +75,7 @@ const RegisterForm: NextPage<RegisterFormProps> = (props) => {
         </Button>
       </form>
 
-      <div className='relative'>
-        <div className='absolute inset-0 flex items-center'>
-          <Separator className='w-full' />
-        </div>
-        <div className='relative flex justify-center'>
-          <Typography
-            variant='small'
-            className='px-3 bg-background text-muted-foreground uppercase tracking-wider'
-          >
-            hoặc
-          </Typography>
-        </div>
-      </div>
+      <SeparatorOr />
 
       <Button
         type='button'

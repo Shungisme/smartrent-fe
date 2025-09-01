@@ -3,11 +3,11 @@ import { AuthType } from '@/components/organisms/authDialog'
 import { PasswordField } from '../passwordField'
 import { EmailField } from '../emailField'
 import { Button } from '@/components/atoms/button'
-import { Separator } from '@/components/atoms/separator'
 import { Typography } from '@/components/atoms/typography'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
 import dynamic from 'next/dynamic'
+import SeparatorOr from '@/components/atoms/separatorOr'
 
 const ImageAtom = dynamic(() => import('@/components/atoms/imageAtom'), {
   ssr: false,
@@ -54,16 +54,18 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
   }
 
   return (
-    <div className='space-y-4 md:space-y-5'>
-      <div className='space-y-2 text-center'>
-        <Typography variant='h3'>{t('homePage.auth.login.title')}</Typography>
+    <div className='space-y-3 md:space-y-5'>
+      <div className='space-y-3 text-center'>
+        <Typography variant='h3' className='!mb-2'>
+          {t('homePage.auth.login.title')}
+        </Typography>
         <Typography variant='muted'>
           {t('homePage.auth.login.description')}
         </Typography>
       </div>
 
-      <form onSubmit={handleFormSubmit} className='space-y-4 md:space-y-4'>
-        <div className='space-y-3'>
+      <form onSubmit={handleFormSubmit}>
+        <div className='space-y-2'>
           <EmailField
             name='email'
             control={control}
@@ -77,14 +79,14 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
           />
         </div>
 
-        <div className='flex justify-end'>
-          <button
-            type='button'
+        <div className='flex justify-end my-2'>
+          <Typography
+            variant='p'
             className='underline cursor-pointer'
             onClick={() => props.switchTo('forgotPassword')}
           >
             {t('homePage.auth.login.forgotPassword')}
-          </button>
+          </Typography>
         </div>
 
         <Button type='submit' disabled={isSubmitting} className='w-full'>
@@ -94,19 +96,12 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
         </Button>
       </form>
 
-      <div className='relative my-4 md:my-5'>
-        <div className='absolute inset-0 flex items-center'>
-          <Separator className='w-full' />
-        </div>
-        <div className='relative flex justify-center text-xs uppercase font-medium tracking-wider'>
-          <span className='px-3 bg-background text-muted-foreground'>hoặc</span>
-        </div>
-      </div>
+      <SeparatorOr />
 
       <Button
         type='button'
         variant='outline'
-        className='w-full h-9 relative font-medium text-sm'
+        className='w-full'
         onClick={() => console.log('Google login clicked')}
       >
         <ImageAtom
@@ -118,14 +113,13 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
       </Button>
 
       <div className='text-center pt-2'>
-        <button
-          type='button'
-          className='text-xs md:text-sm font-medium transition-colors duration-200 cursor-pointer'
-          onClick={() => props.switchTo('register')}
-        >
-          {t.rich('homePage.auth.login.switchToRegister', {
-            u: (chunks) => <u className='underline'>{chunks}</u>,
-          })}
+        <button type='button' onClick={() => props.switchTo('register')}>
+          <Typography variant='p'>
+            {' '}
+            {t.rich('homePage.auth.login.switchToRegister', {
+              u: (chunks) => <u className='underline'>{chunks}</u>,
+            })}
+          </Typography>
         </button>
       </div>
     </div>

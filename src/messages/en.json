@@ -1,4 +1,7 @@
 {
+  "common": {
+    "or": "Or"
+  },
   "homePage": {
     "auth": {
       "login": {
