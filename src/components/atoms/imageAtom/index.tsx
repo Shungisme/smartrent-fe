@@ -3,7 +3,6 @@ import { NextPage } from 'next'
 import Image from 'next/image'
 import { StyledImage } from './index.styled'
 import { useState } from 'react'
-import { DEFAULT_PLACEHOLDER } from '@/constants'
 
 type ImageAtomProps = {
   src: string
@@ -41,7 +40,7 @@ const ImageAtom: NextPage<ImageAtomProps> = ({
         className={clsx(className, 'object-cover')}
         priority={priority}
         placeholder={placeholderSrc ? 'blur' : 'empty'}
-        blurDataURL={placeholderSrc ?? DEFAULT_PLACEHOLDER}
+        blurDataURL={placeholderSrc}
         onError={() => !hasError && setHasError(true)}
         loading={priority ? undefined : 'lazy'}
       />
@@ -65,7 +64,7 @@ const ImageAtom: NextPage<ImageAtomProps> = ({
               backgroundPosition: 'center',
             }
           : {
-              backgroundImage: `url(${DEFAULT_PLACEHOLDER})`,
+              backgroundImage: `url(${placeholderSrc})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
             }),

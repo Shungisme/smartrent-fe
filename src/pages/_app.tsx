@@ -1,5 +1,6 @@
 import '@/styles/globals.css'
 import '@/styles/reset.scss'
+import '@/components/molecules/desktop-navigation/navigation.css'
 import ThemeDataProvider from '@/contexts/useTheme'
 import type { AppProps } from 'next/app'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'

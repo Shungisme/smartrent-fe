@@ -65,22 +65,22 @@ const AuthDialog: NextPage<AuthDialogProps> = (props) => {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className='overflow-y-auto h-dvh w-screen rounded-none md:rounded-xl md:max-w-4xl md:max-h-[85vh]'>
-        <div className='flex flex-col md:flex-row h-full'>
-          <div className='md:flex-1 relative h-[7rem] md:h-auto'>
-            <div className='absolute md:top-1/2 left-1/2 -translate-x-1/2 md:-translate-y-1/2'>
+      <DialogContent className='overflow-y-auto max-md:min-h-dvh max-md:min-w-dvw rounded-none md:rounded-xl md:max-w-4xl md:max-h-[80vh]'>
+        <div className='max-md:absolute max-md:top-1/2 max-md:left-1/2 max-md:-translate-x-1/2 max-md:-translate-y-1/2'>
+          <div className='flex flex-col md:flex-row max-md:gap-5 h-full'>
+            <div className='flex justify-center items-center h-full'>
               <ImageAtom
                 src={`${basePath}/images/rental-auth-bg.jpg`}
                 defaultImage={DEFAULT_IMAGE}
                 alt='bg_in_auth'
-                className='aspect-square w-[8rem] h[8rem] md:h-auto md:min-w-[25rem]'
+                className='aspect-square w-[12rem] h[12rem] md:h-auto md:min-w-[25rem] rounded-lg'
                 priority={true}
               />
             </div>
-          </div>
-          <div className='flex-1 flex justify-center md:overflow-y-auto'>
-            <div className='w-full max-w-xs p-4 md:p-6 py-6 md:py-8'>
-              {getAuthComponent(authType)}
+            <div className='flex-1 flex justify-center md:overflow-y-auto'>
+              <div className='w-full max-w-xs p-4 md:p-6 py-6 md:py-8'>
+                {getAuthComponent(authType)}
+              </div>
             </div>
           </div>
         </div>
