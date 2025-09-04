@@ -29,26 +29,34 @@ const Navigation: React.FC<NavigationProps> = ({
 
   return (
     <header
-      className={cn('w-full border-b border-border bg-background', className)}
+      className={cn(
+        'w-full border-b border-border bg-background sticky top-0 z-50',
+        className,
+      )}
     >
-      <div className='container mx-auto px-4'>
-        <div className='flex h-16 items-center justify-between'>
-          {/* Logo */}
-          {logo && <div className='flex items-center'>{logo}</div>}
+      <div className='w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <div className='flex h-12 sm:h-16 items-center justify-between'>
+          {logo && (
+            <div className='flex items-center flex-shrink-0'>{logo}</div>
+          )}
 
-          {/* Desktop Navigation */}
-          <DesktopNavigation items={items} onItemClick={handleItemClick} />
+          <div className='hidden lg:block flex-1'>
+            <DesktopNavigation items={items} onItemClick={handleItemClick} />
+          </div>
 
-          {/* Right Content */}
-          <div className='flex items-center gap-4'>
-            {rightContent}
+          <div className='flex items-center gap-2 sm:gap-4'>
+            <div className='hidden sm:flex items-center gap-2 sm:gap-3'>
+              {rightContent}
+            </div>
 
-            {/* Mobile Navigation */}
-            <MobileNavigationDrawer
-              items={items}
-              onItemClick={handleItemClick}
-              defaultExpanded={defaultExpanded}
-            />
+            <div className='lg:hidden'>
+              <MobileNavigationDrawer
+                items={items}
+                onItemClick={handleItemClick}
+                defaultExpanded={defaultExpanded}
+                rightContent={rightContent}
+              />
+            </div>
           </div>
         </div>
       </div>

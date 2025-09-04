@@ -44,10 +44,10 @@ const PhoneField = (props: PhoneFieldProps) => {
     name,
     control,
     rules: {
-      required: t('homePage.auth.validation.phoneNumberRequired'),
+      required: t('homePage.auth.validation.phoneRequired'),
       pattern: {
         value: VIETNAM_PHONE_REGEX,
-        message: t('homePage.auth.validation.phoneNumberInvalid'),
+        message: t('homePage.auth.validation.phoneInvalid'),
       },
     },
   })
@@ -98,7 +98,11 @@ const PhoneField = (props: PhoneFieldProps) => {
       </div>
 
       {description && !displayError && (
-        <Typography variant='muted' id={`${fieldId}-description`}>
+        <Typography
+          variant='muted'
+          id={`${fieldId}-description`}
+          className='mt-2'
+        >
           {description}
         </Typography>
       )}
@@ -107,7 +111,7 @@ const PhoneField = (props: PhoneFieldProps) => {
         <Typography
           variant='small'
           id={`${fieldId}-error`}
-          className='text-destructive'
+          className='text-destructive mt-2'
         >
           {displayError}
         </Typography>
