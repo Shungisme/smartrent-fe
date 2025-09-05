@@ -135,7 +135,11 @@ const EmailOrPhoneField = (props: EmailOrPhoneFieldProps) => {
       </div>
 
       {description && !displayError && (
-        <Typography variant='muted' id={`${fieldId}-description`}>
+        <Typography
+          variant='muted'
+          id={`${fieldId}-description`}
+          className='mt-2'
+        >
           {description}
         </Typography>
       )}
@@ -144,7 +148,7 @@ const EmailOrPhoneField = (props: EmailOrPhoneFieldProps) => {
         <Typography
           variant='small'
           id={`${fieldId}-error`}
-          className='text-destructive'
+          className='text-destructive mt-2'
         >
           {displayError}
         </Typography>

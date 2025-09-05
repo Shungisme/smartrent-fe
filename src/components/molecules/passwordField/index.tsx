@@ -131,7 +131,11 @@ const PasswordField = (props: PasswordFieldProps) => {
       </div>
 
       {description && !displayError && (
-        <Typography variant='muted' id={`${fieldId}-description`}>
+        <Typography
+          variant='muted'
+          id={`${fieldId}-description`}
+          className='mt-2'
+        >
           {description}
         </Typography>
       )}
@@ -140,7 +144,7 @@ const PasswordField = (props: PasswordFieldProps) => {
         <Typography
           variant='small'
           id={`${fieldId}-error`}
-          className='text-destructive'
+          className='text-destructive mt-2'
         >
           {displayError}
         </Typography>

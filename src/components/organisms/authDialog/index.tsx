@@ -1,4 +1,11 @@
-import React, { ReactNode, useCallback, useState, lazy, Suspense } from 'react'
+import React, {
+  ReactNode,
+  useCallback,
+  useState,
+  lazy,
+  Suspense,
+  useEffect,
+} from 'react'
 import { NextPage } from 'next'
 import { Dialog, DialogContent } from '@/components/atoms/dialog'
 import { Skeleton } from '@/components/atoms/skeleton'
@@ -18,11 +25,18 @@ type AuthDialogProps = {
   open?: boolean
   handleOpen?: () => void
   handleClose?: () => void
+  onSuccess?: () => void
 }
 
 const AuthDialog: NextPage<AuthDialogProps> = (props) => {
-  const { open = false, type = 'login', handleClose } = props
+  const { open = false, type = 'login', handleClose, onSuccess } = props
   const [authType, setAuthType] = useState<AuthType>(type)
+
+  useEffect(() => {
+    if (open) {
+      setAuthType(type)
+    }
+  }, [open, type])
 
   const switchTo = useCallback((type: AuthType) => {
     setAuthType(type)
@@ -32,11 +46,13 @@ const AuthDialog: NextPage<AuthDialogProps> = (props) => {
     const FormComponent = () => {
       switch (type) {
         case 'login':
-          return <LoginForm switchTo={switchTo} />
+          return <LoginForm switchTo={switchTo} onSuccess={onSuccess} />
         case 'register':
-          return <RegisterForm switchTo={switchTo} />
+          return <RegisterForm switchTo={switchTo} onSuccess={onSuccess} />
         case 'forgotPassword':
-          return <ForgotPasswordForm switchTo={switchTo} />
+          return (
+            <ForgotPasswordForm switchTo={switchTo} onSuccess={onSuccess} />
+          )
         default:
           return null
       }
@@ -65,20 +81,20 @@ const AuthDialog: NextPage<AuthDialogProps> = (props) => {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className='overflow-y-auto max-md:min-h-dvh max-md:min-w-dvw rounded-none md:rounded-xl md:max-w-4xl md:max-h-[80vh]'>
-        <div className='max-md:absolute max-md:top-1/2 max-md:left-1/2 max-md:-translate-x-1/2 max-md:-translate-y-1/2'>
-          <div className='flex flex-col md:flex-row max-md:gap-5 h-full'>
-            <div className='flex justify-center items-center h-full'>
+      <DialogContent className='overflow-y-auto h-dvh rounded-none md:rounded-xl md:h-[70vh] md:w-[55rem]'>
+        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
+          <div className='flex flex-col gap-8 md:flex-row md:gap-10 w-[100%]'>
+            <div className='flex justify-center items-center'>
               <ImageAtom
                 src={`${basePath}/images/rental-auth-bg.jpg`}
                 defaultImage={DEFAULT_IMAGE}
                 alt='bg_in_auth'
-                className='aspect-square w-[12rem] h[12rem] md:h-auto md:min-w-[25rem] rounded-lg'
+                className='shrink-0 w-[6rem] h-[6rem] md:w-56 md:h-56 rounded-lg'
                 priority={true}
               />
             </div>
-            <div className='flex-1 flex justify-center md:overflow-y-auto'>
-              <div className='w-full max-w-xs p-4 md:p-6 py-6 md:py-8'>
+            <div className='flex justify-center md:overflow-y-auto'>
+              <div className='w-[20rem] p-4 md:p-6 py-6 md:py-8'>
                 {getAuthComponent(authType)}
               </div>
             </div>

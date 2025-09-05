@@ -3,6 +3,47 @@
     "or": "Or"
   },
   "homePage": {
+    "title": "Find Your Dream Home",
+    "subtitle": "Discover premium properties with modern amenities, verified listings, and transparent pricing.",
+    "description": "Discover your perfect home",
+    "propertiesAvailable": "properties available",
+    "instruction": "Click on any property to view details or add to favorites.",
+    "settings": {
+      "title": "Settings",
+      "language": {
+        "title": "Language",
+        "english": "English",
+        "vietnamese": "Tiếng Việt"
+      },
+      "theme": {
+        "title": "Theme",
+        "light": "Light",
+        "dark": "Dark"
+      }
+    },
+    "buttons": {
+      "openAuth": "Open Authentication",
+      "filter": "Filter",
+      "viewDetails": "View Details",
+      "addToFavorites": "Add to Favorites",
+      "removeFromFavorites": "Remove from Favorites"
+    },
+    "property": {
+      "verified": "Verified",
+      "featured": "Featured",
+      "video": "Video",
+      "bedrooms": "bedrooms",
+      "bathrooms": "bathrooms",
+      "more": "more",
+      "noProperties": "No properties found",
+      "noPropertiesDescription": "Try adjusting your search criteria or check back later for new listings.",
+      "listings": "Property Listings",
+      "favorites": "favorites",
+      "additionalAmenities": "Additional amenities",
+      "views": "views",
+      "distance": "km away",
+      "area": "m²"
+    },
     "auth": {
       "login": {
         "title": "Sign In",
@@ -15,7 +56,7 @@
       },
       "register": {
         "title": "Sign Up",
-        "description": "Create a new account to get started with our services.",
+        "description": "Create a new account to start using our services.",
         "submitButton": "Sign Up",
         "submittingButton": "Signing up...",
         "googleButton": "Sign up with Google",
@@ -23,15 +64,15 @@
       },
       "forgotPassword": {
         "title": "Reset Password",
-        "description": "Enter your email or phone number to receive a verification code for password recovery.",
+        "description": "Enter your email or phone number to receive a verification code to reset your password.",
         "submitButton": "Send Code",
         "submittingButton": "Sending...",
         "switchToLogin": "Remember your password? <u>Sign in</u>"
       },
       "common": {
         "password": "Password",
-        "hidePassword": "Hide Password",
-        "showPassword": "Show Password",
+        "hidePassword": "Hide password",
+        "showPassword": "Show password",
         "email": "Email",
         "emailPlaceholder": "Enter email address",
         "passwordPlaceholder": "Enter password",
@@ -42,33 +83,60 @@
       },
       "validation": {
         "passwordRequired": "Password is required",
-        "passwordMinLength": "Password must be at least 8 characters long",
+        "passwordMinLength": "Password must be at least 8 characters",
         "passwordPattern": "Password must contain at least one uppercase letter, one lowercase letter, and one number",
         "emailRequired": "Email is required",
-        "emailInvalid": "Invalid email address",
-        "phoneNumberRequired": "Phone number is required",
-        "phoneNumberInvalid": "Invalid phone number",
+        "emailInvalid": "Please enter a valid email address",
+        "phoneRequired": "Phone number is required",
+        "phoneInvalid": "Please enter a valid phone number",
         "emailOrPhoneRequired": "Email or phone number is required",
-        "emailOrPhoneInvalid": "Invalid email or phone number"
+        "emailOrPhoneInvalid": "Please enter a valid email address or phone number"
       }
-    },
-    "buttons": {
-      "openAuth": "Open Auth"
-    },
-    "settings": {
-      "language": {
-        "switch": "Switch Language",
-        "vietnamese": "Tiếng Việt",
-        "english": "English"
-      },
-      "theme": {
-        "switch": "Switch Theme",
-        "light": "Light",
-        "dark": "Dark"
-      }
-    },
-    "language": {
-      "switch": "Switch Language"
     }
+  },
+  "footer": {
+    "description": "Your trusted partner in finding the perfect home. We connect you with premium properties and excellent service.",
+    "quickLinks": "Quick Links",
+    "aboutUs": "About Us",
+    "properties": "Properties",
+    "services": "Services",
+    "contact": "Contact",
+    "support": "Support",
+    "helpCenter": "Help Center",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "faq": "FAQ",
+    "contactInfo": "Contact Information",
+    "address": "123 Main Street, Ho Chi Minh City, Vietnam",
+    "phone": "+84 123 456 789",
+    "email": "info@smartrent.com",
+    "copyright": "© 2024 SmartRent. All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "navigation": {
+    "home": "Home",
+    "properties": "Properties",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Sign In",
+    "register": "Sign Up",
+    "account": "Account",
+    "residential": "Residential",
+    "commercial": "Commercial",
+    "vacation": "Vacation Rental",
+    "tenants": "Tenants",
+    "applications": "Applications",
+    "leases": "Leases",
+    "maintenance": "Maintenance Requests",
+    "documents": "Documents",
+    "contracts": "Contracts",
+    "invoices": "Invoices",
+    "reports": "Reports",
+    "calendar": "Calendar",
+    "analytics": "Analytics",
+    "financial": "Financial Reports",
+    "occupancy": "Occupancy Rate",
+    "performance": "Property Performance"
   }
 }

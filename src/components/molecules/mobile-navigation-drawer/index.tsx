@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { X, Menu } from 'lucide-react'
+import { X, Menu, LogIn, UserPlus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/atoms/button'
+import { Typography } from '@/components/atoms/typography'
 import NavigationMenu from '@/components/molecules/navigation-menu'
 import { NavigationItemData } from '@/components/atoms/navigation-item'
+import LanguageSwitch from '@/components/molecules/languageSwitch'
+import ThemeSwitch from '@/components/molecules/themeSwitch'
+import AuthDialog, { AuthType } from '@/components/organisms/authDialog'
+import { useTranslations } from 'next-intl'
 
 interface MobileNavigationDrawerProps {
   items: NavigationItemData[]
   className?: string
   onItemClick?: (item: NavigationItemData) => void
   defaultExpanded?: string[]
+  rightContent?: React.ReactNode
 }
 
 const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
@@ -19,11 +25,10 @@ const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
   defaultExpanded = [],
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [expandedItems, setExpandedItems] = useState<Set<string>>(
-    new Set(defaultExpanded),
-  )
+  const [authDialogOpen, setAuthDialogOpen] = useState(false)
+  const [authType, setAuthType] = useState<AuthType>('login')
+  const t = useTranslations()
 
-  // Close drawer on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -47,77 +52,146 @@ const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
       onItemClick(item)
     }
 
-    // Auto-expand parent items when clicked
-    if (item.children && item.children.length > 0) {
-      setExpandedItems((prev) => {
-        const newSet = new Set(prev)
-        if (newSet.has(item.id)) {
-          newSet.delete(item.id)
-        } else {
-          newSet.add(item.id)
-        }
-        return newSet
-      })
-    } else if (item.href) {
-      // Close drawer when navigating to a page
+    if (!item.children || item.children.length === 0) {
       setIsOpen(false)
     }
   }
 
-  const toggleDrawer = () => setIsOpen(!isOpen)
+  const handleAuthClick = (type: AuthType) => {
+    setAuthType(type)
+    setAuthDialogOpen(true)
+    setIsOpen(false)
+  }
+
+  const handleAuthSuccess = () => {
+    setAuthDialogOpen(false)
+  }
 
   return (
-    <div className={cn('md:hidden', className)}>
-      {/* Toggle Button */}
+    <>
       <Button
         variant='ghost'
-        size='icon'
-        onClick={toggleDrawer}
-        className='relative z-50'
-        aria-label='Toggle navigation menu'
+        size='sm'
+        className={cn(
+          'p-2 hover:bg-accent hover:text-accent-foreground',
+          'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+          className,
+        )}
+        onClick={() => setIsOpen(true)}
+        aria-label='Open navigation menu'
       >
-        <Menu className='h-5 w-5' />
+        <Menu className='h-4 w-4 sm:h-5 sm:w-5' />
       </Button>
 
-      {/* Backdrop */}
       {isOpen && (
         <div
-          className='fixed inset-0 bg-background/80 backdrop-blur-sm z-40'
+          className='fixed inset-0 z-50 bg-black/50 backdrop-blur-sm'
           onClick={() => setIsOpen(false)}
         />
       )}
 
-      {/* Drawer - Now slides from right to left */}
       <div
         className={cn(
-          'fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-background border-l border-border z-50 transform transition-transform duration-300 ease-in-out',
+          'fixed inset-y-0 right-0 z-50 w-full bg-background border-l border-border overflow-y-auto',
+          'transform transition-transform duration-300 ease-in-out',
           isOpen ? 'translate-x-0' : 'translate-x-full',
         )}
       >
-        {/* Header */}
         <div className='flex items-center justify-between p-4 border-b border-border'>
-          <h2 className='text-lg font-semibold'>Navigation</h2>
+          <Typography variant='h6' className='text-lg font-semibold'>
+            SmartRent
+          </Typography>
           <Button
             variant='ghost'
-            size='icon'
+            size='sm'
+            className='p-2 hover:bg-accent hover:text-accent-foreground'
             onClick={() => setIsOpen(false)}
-            aria-label='Close navigation'
+            aria-label='Close navigation menu'
           >
-            <X className='h-5 w-5' />
+            <X className='h-4 w-4 sm:h-5 sm:w-5' />
           </Button>
         </div>
 
-        {/* Navigation Content */}
-        <div className='flex-1 overflow-y-auto p-4'>
-          <NavigationMenu
-            items={items}
-            onItemClick={handleItemClick}
-            defaultExpanded={Array.from(expandedItems)}
-            isMobile={true}
-          />
+        <div className='p-4 border-t border-border bg-background'>
+          <Typography
+            variant='small'
+            className='text-sm font-medium text-muted-foreground mb-3'
+          >
+            {t('navigation.account')}
+          </Typography>
+          <div className='flex flex-col gap-2'>
+            <Button
+              variant='default'
+              size='sm'
+              className='w-full justify-start gap-2'
+              onClick={() => handleAuthClick('login')}
+            >
+              <LogIn className='h-4 w-4' />
+              {t('navigation.login')}
+            </Button>
+            <Button
+              variant='outline'
+              size='sm'
+              className='w-full justify-start gap-2'
+              onClick={() => handleAuthClick('register')}
+            >
+              <UserPlus className='h-4 w-4' />
+              {t('navigation.register')}
+            </Button>
+          </div>
+        </div>
+
+        <div className='flex flex-col h-full'>
+          <div className='flex-1'>
+            <div className='p-4 border-b border-border'>
+              <Typography
+                variant='small'
+                className='text-sm font-medium text-muted-foreground mb-3'
+              >
+                {t('homePage.settings.title')}
+              </Typography>
+              <div className='flex flex-col gap-3'>
+                <div className='flex items-center justify-between'>
+                  <Typography
+                    variant='small'
+                    className='text-sm text-foreground'
+                  >
+                    {t('homePage.settings.language.title')}
+                  </Typography>
+                  <LanguageSwitch />
+                </div>
+                <div className='flex items-center justify-between'>
+                  <Typography
+                    variant='small'
+                    className='text-sm text-foreground'
+                  >
+                    {t('homePage.settings.theme.title')}
+                  </Typography>
+                  <ThemeSwitch />
+                </div>
+              </div>
+            </div>
+
+            <div className='p-4'>
+              <NavigationMenu
+                items={items}
+                onItemClick={handleItemClick}
+                defaultExpanded={defaultExpanded}
+                isMobile={true}
+                className='space-y-1'
+              />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      <AuthDialog
+        open={authDialogOpen}
+        type={authType}
+        handleClose={() => setAuthDialogOpen(false)}
+        onSuccess={handleAuthSuccess}
+      />
+    </>
   )
 }
 

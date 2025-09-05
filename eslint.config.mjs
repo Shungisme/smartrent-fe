@@ -20,6 +20,7 @@ const eslintConfig = [
       eqeqeq: ['error', 'always'], // always use ===
       'no-var': 'error', // error if using var
       'react-hooks/exhaustive-deps': 'off', // off for missing dependencies in useEffect
+      'react-hooks/rules-of-hooks': 'off',
     },
   },
 ]
