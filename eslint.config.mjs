@@ -21,6 +21,8 @@ const eslintConfig = [
       'no-var': 'error', // error if using var
       'react-hooks/exhaustive-deps': 'off', // off for missing dependencies in useEffect
       'react-hooks/rules-of-hooks': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
     },
   },
 ]

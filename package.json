@@ -10,7 +10,10 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "echo \"No tests specified\" && exit 0",
+    "mock-server": "cd mock-server && npm start",
+    "mock-server:dev": "cd mock-server && npm run dev",
+    "mock-server:install": "cd mock-server && npm install"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",
@@ -52,6 +55,7 @@
     "@next/bundle-analyzer": "^15.5.0",
     "@tailwindcss/postcss": "^4",
     "@types/cookies": "^0.9.1",
+    "@types/lodash": "^4.17.20",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

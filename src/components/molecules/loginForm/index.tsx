@@ -6,8 +6,13 @@ import { Button } from '@/components/atoms/button'
 import { Typography } from '@/components/atoms/typography'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 import dynamic from 'next/dynamic'
 import SeparatorOr from '@/components/atoms/separatorOr'
+import { useLogin } from '@/hooks/useAuth'
+import { toast } from 'sonner'
+import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
 
 const ImageAtom = dynamic(() => import('@/components/atoms/imageAtom'), {
   ssr: false,
@@ -27,12 +32,32 @@ type LoginFormData = {
 const LoginForm: NextPage<LoginFormProps> = (props) => {
   const { onSuccess } = props
   const t = useTranslations()
+  const { loginUser } = useLogin()
+
+  // Validation schema with Vietnamese messages
+  const loginSchema = yup.object({
+    email: yup
+      .string()
+      .required(t('homePage.auth.validation.emailRequired'))
+      .matches(
+        VALIDATION_PATTERNS.EMAIL,
+        t('homePage.auth.validation.emailInvalid'),
+      ),
+    password: yup
+      .string()
+      .required(t('homePage.auth.validation.passwordRequired'))
+      .matches(
+        VALIDATION_PATTERNS.PASSWORD,
+        t('homePage.auth.validation.passwordPattern'),
+      ),
+  })
 
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<LoginFormData>({
+    resolver: yupResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -41,10 +66,17 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      console.log('Form data:', data)
-      onSuccess?.()
+      const result = await loginUser(data)
+
+      if (result.success) {
+        toast.success(t('homePage.auth.login.successMessage'))
+        onSuccess?.()
+      } else {
+        toast.error(result.error || t('homePage.auth.login.errorMessage'))
+      }
     } catch (error) {
       console.error('Login error:', error)
+      toast.error(t('homePage.auth.login.errorMessage'))
     }
   }
 
@@ -70,12 +102,14 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
             name='email'
             control={control}
             label={t('homePage.auth.common.email')}
+            error={errors.email?.message}
           />
 
           <PasswordField
             name='password'
             control={control}
             label={t('homePage.auth.common.password')}
+            error={errors.password?.message}
           />
         </div>
 
@@ -102,25 +136,32 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
         type='button'
         variant='outline'
         className='w-full'
-        onClick={() => console.log('Google login clicked')}
+        onClick={() => {
+          // TODO: Implement Google OAuth
+          console.log('Google login clicked')
+        }}
       >
         <ImageAtom
           src='/svg/google.svg'
           alt='Google'
-          className='mr-2 w-4 h-4'
+          width={16}
+          height={16}
+          className='mr-2'
         />
         {t('homePage.auth.login.googleButton')}
       </Button>
 
-      <div className='text-center pt-2'>
-        <button type='button' onClick={() => props.switchTo('register')}>
-          <Typography variant='p'>
-            {' '}
-            {t.rich('homePage.auth.login.switchToRegister', {
-              u: (chunks) => <u className='underline'>{chunks}</u>,
-            })}
+      <div className='text-center'>
+        <Typography variant='p' className='text-sm text-muted-foreground'>
+          {t('homePage.auth.login.noAccount')}{' '}
+          <Typography
+            as='span'
+            className='text-sm underline cursor-pointer text-primary'
+            onClick={() => props.switchTo('register')}
+          >
+            {t('homePage.auth.login.registerLink')}
           </Typography>
-        </button>
+        </Typography>
       </div>
     </div>
   )

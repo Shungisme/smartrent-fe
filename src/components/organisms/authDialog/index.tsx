@@ -7,7 +7,7 @@ import React, {
   useEffect,
 } from 'react'
 import { NextPage } from 'next'
-import { Dialog, DialogContent } from '@/components/atoms/dialog'
+import { Dialog, DialogContent, DialogTitle } from '@/components/atoms/dialog'
 import { Skeleton } from '@/components/atoms/skeleton'
 import ImageAtom from '@/components/atoms/imageAtom'
 import { basePath, DEFAULT_IMAGE } from '@/constants'
@@ -81,20 +81,23 @@ const AuthDialog: NextPage<AuthDialogProps> = (props) => {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className='overflow-y-auto h-dvh rounded-none md:rounded-xl md:h-[70vh] md:w-[55rem]'>
+      <DialogTitle className='hidden'>Auth Dialog</DialogTitle>
+      <DialogContent className='overflow-y-auto h-dvh rounded-none md:rounded-xl md:h-[80vh] md:max-w-[60rem]'>
         <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
-          <div className='flex flex-col gap-8 md:flex-row md:gap-10 w-[100%]'>
+          <div className='flex flex-col gap-8 md:flex-row md:gap-10'>
             <div className='flex justify-center items-center'>
-              <ImageAtom
-                src={`${basePath}/images/rental-auth-bg.jpg`}
-                defaultImage={DEFAULT_IMAGE}
-                alt='bg_in_auth'
-                className='shrink-0 w-[6rem] h-[6rem] md:w-56 md:h-56 rounded-lg'
-                priority={true}
-              />
+              <div className='w-[8rem] h-[8rem] md:h-[20rem] md:w-[20rem]'>
+                <ImageAtom
+                  src={`${basePath}/images/rental-auth-bg.jpg`}
+                  defaultImage={DEFAULT_IMAGE}
+                  alt='bg_in_auth'
+                  className='shrink-0 aspect-square w-full h-full rounded-lg'
+                  priority={true}
+                />
+              </div>
             </div>
             <div className='flex justify-center md:overflow-y-auto'>
-              <div className='w-[20rem] p-4 md:p-6 py-6 md:py-8'>
+              <div className='w-[20rem] md:w-[24rem] max-h-[70vh] p-4 md:p-6 py-6 md:py-8'>
                 {getAuthComponent(authType)}
               </div>
             </div>

@@ -1,5 +1,4 @@
 import React from 'react'
-import { useSwitchLanguage } from '@/contexts/useSwitchLanguage'
 import { useTranslations } from 'next-intl'
 import {
   Select,
@@ -7,6 +6,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/atoms/select'
+import { useSwitchLanguage } from '@/contexts/switchLanguage/index.context'
 
 const LanguageSwitch = () => {
   const { language, updateLanguage } = useSwitchLanguage()

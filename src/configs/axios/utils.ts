@@ -3,6 +3,7 @@ import {
   BEARER_REFRESH_TOKEN_COOKIE,
 } from '@/constants'
 import { AuthTokens, ApiErrorResponse } from './types'
+import { cookieManager } from '@/utils/cookies'
 
 export const isServer = typeof window === 'undefined'
 
@@ -39,7 +40,7 @@ export function getAccessToken(cookies?: any): string | null {
   }
 
   if (!isServer) {
-    return getCookieFromDocument(BEARER_ACCESS_TOKEN_COOKIE)
+    return cookieManager.getAccessToken()
   }
 
   return null
@@ -51,22 +52,36 @@ export function getRefreshToken(cookies?: any): string | null {
   }
 
   if (!isServer) {
-    return getCookieFromDocument(BEARER_REFRESH_TOKEN_COOKIE)
+    return cookieManager.getRefreshToken()
   }
 
   return null
 }
 
 export function getAuthTokens(cookies?: any): AuthTokens | null {
-  const accessToken = getAccessToken(cookies)
-  const refreshToken = getRefreshToken(cookies)
+  if (isServer && cookies) {
+    const accessToken = getCookieFromCookiesObject(
+      cookies,
+      BEARER_ACCESS_TOKEN_COOKIE,
+    )
+    const refreshToken = getCookieFromCookiesObject(
+      cookies,
+      BEARER_REFRESH_TOKEN_COOKIE,
+    )
 
-  if (!accessToken) return null
+    if (!accessToken) return null
 
-  return {
-    accessToken,
-    refreshToken: refreshToken || undefined,
+    return {
+      accessToken,
+      refreshToken: refreshToken || undefined,
+    }
   }
+
+  if (!isServer) {
+    return cookieManager.getAuthTokens()
+  }
+
+  return null
 }
 
 export function formatApiError(error: any): string {
@@ -96,16 +111,8 @@ export function isServerError(error: any): boolean {
   return status >= 500 && status < 600
 }
 
-export function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-export function calculateRetryDelay(attempt: number, baseDelay = 1000): number {
-  return baseDelay * Math.pow(2, attempt - 1)
-}
-
 export function logError(error: any, context?: string): void {
   if (process.env.NODE_ENV === 'development') {
-    console.error(`[AxiosServer${context ? ` - ${context}` : ''}]:`, error)
+    console.log(`[AxiosServer${context ? ` - ${context}` : ''}]:`, error)
   }
 }
