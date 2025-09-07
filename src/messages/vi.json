@@ -52,7 +52,10 @@
         "submittingButton": "Đang đăng nhập...",
         "googleButton": "Đăng nhập với Google",
         "forgotPassword": "Quên mật khẩu?",
-        "switchToRegister": "Chưa có tài khoản? <u>Đăng ký</u>"
+        "noAccount": "Chưa có tài khoản?",
+        "registerLink": "Đăng ký",
+        "successMessage": "Đăng nhập thành công!",
+        "errorMessage": "Đăng nhập thất bại. Vui lòng thử lại."
       },
       "register": {
         "title": "Đăng Ký",
@@ -60,7 +63,27 @@
         "submitButton": "Đăng Ký",
         "submittingButton": "Đang đăng ký...",
         "googleButton": "Đăng ký với Google",
-        "switchToLogin": "Đã có tài khoản? <u>Đăng nhập</u>"
+        "haveAccount": "Đã có tài khoản?",
+        "loginLink": "Đăng nhập",
+        "firstName": "Tên",
+        "firstNamePlaceholder": "Nhập tên",
+        "lastName": "Họ",
+        "lastNamePlaceholder": "Nhập họ",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
+        "idDocument": "Số CMND/CCCD",
+        "idDocumentPlaceholder": "Nhập số CMND/CCCD",
+        "taxNumber": "Mã số thuế",
+        "taxNumberPlaceholder": "Nhập mã số thuế",
+        "successMessage": "Đăng ký thành công!",
+        "errorMessage": "Đăng ký thất bại. Vui lòng thử lại.",
+        "switchToLogin": "Đã có tài khoản? <u>Đăng nhập</u>",
+        "sections": {
+          "personalInfo": "Thông tin cá nhân",
+          "contactInfo": "Thông tin liên hệ",
+          "security": "Bảo mật",
+          "legalInfo": "Thông tin pháp lý"
+        }
       },
       "forgotPassword": {
         "title": "Đặt Lại Mật Khẩu",
@@ -82,15 +105,37 @@
         "emailOrPhonePlaceholder": "Nhập email hoặc số điện thoại"
       },
       "validation": {
+        "phoneCodeRequired": "Mã vùng là bắt buộc",
+        "phoneCodeInvalid": "Mã vùng phải có 1-5 ký tự",
+        "phoneNumberRequired": "Số điện thoại là bắt buộc",
+        "phoneNumberInvalid": "Số điện thoại phải có 5-20 ký tự",
+        "firstNameRequired": "Tên là bắt buộc",
+        "lastNameRequired": "Họ là bắt buộc",
         "passwordRequired": "Mật khẩu là bắt buộc",
         "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
-        "passwordPattern": "Mật khẩu phải chứa ít nhất một chữ hoa, một chữ thường và một số",
+        "passwordPattern": "Mật khẩu phải chứa ít nhất 8 ký tự, một chữ hoa, một chữ thường, một số và một ký tự đặc biệt",
         "emailRequired": "Email là bắt buộc",
         "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+        "confirmPasswordRequired": "Xác nhận mật khẩu là bắt buộc",
+        "confirmPasswordMatch": "Mật khẩu xác nhận không khớp",
+        "idDocumentRequired": "Số CMND/CCCD là bắt buộc",
+        "taxNumberRequired": "Mã số thuế là bắt buộc",
         "phoneRequired": "Số điện thoại là bắt buộc",
         "phoneInvalid": "Vui lòng nhập số điện thoại hợp lệ",
         "emailOrPhoneRequired": "Email hoặc số điện thoại là bắt buộc",
         "emailOrPhoneInvalid": "Vui lòng nhập địa chỉ email hoặc số điện thoại hợp lệ"
+      },
+      "logout": "Đăng xuất",
+      "profile": "Hồ sơ",
+      "settings": "Cài đặt",
+      "user": {
+        "welcome": "Xin chào",
+        "role": {
+          "user": "Người dùng",
+          "admin": "Quản trị viên",
+          "landlord": "Chủ nhà",
+          "tenant": "Người thuê"
+        }
       }
     }
   },

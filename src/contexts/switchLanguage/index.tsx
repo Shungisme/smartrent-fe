@@ -1,6 +1,6 @@
 import { useLanguage } from '@/hooks/useLanguage'
 import { Locale } from '@/types'
-import React, { createContext, ReactNode, useContext } from 'react'
+import React, { createContext, ReactNode } from 'react'
 
 type SwitchLanguageProps = {
   children: ReactNode
@@ -12,9 +12,10 @@ type SwitchLanguageType = {
   switchTranslation: () => void
 }
 
-const SwitchLanguageContext = createContext<SwitchLanguageType | undefined>(
-  undefined,
-)
+export const SwitchLanguageContext = createContext<
+  SwitchLanguageType | undefined
+>(undefined)
+
 const SwitchLanguageProvider = ({ children }: SwitchLanguageProps) => {
   const { language, updateLanguage, switchLanguage } = useLanguage()
 
@@ -36,14 +37,3 @@ const SwitchLanguageProvider = ({ children }: SwitchLanguageProps) => {
 }
 
 export default SwitchLanguageProvider
-
-export const useSwitchLanguage = () => {
-  const context = useContext(SwitchLanguageContext)
-  if (!context) {
-    throw new Error(
-      'useSwitchLanguage must be used within a SwitchLanguageProvider',
-    )
-  }
-
-  return context
-}

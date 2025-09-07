@@ -1,21 +1,84 @@
-import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import { InternalAxiosRequestConfig } from 'axios'
 import { ENV } from '@/constants'
-import { CustomAxiosRequestConfig, ApiResponse } from './types'
-import {
-  getAccessToken,
-  formatApiError,
-  isUnauthorizedError,
-  logError,
-} from './utils'
+import { CustomAxiosRequestConfig } from './types'
+import { getAccessToken, getRefreshToken } from './utils'
+import { AuthService } from '@/api/services/auth.service'
+import { cookieManager } from '@/utils/cookies'
+
+const refreshToken = async (): Promise<string | null> => {
+  try {
+    const refreshTokenValue = getRefreshToken()
+    if (!refreshTokenValue) return null
+
+    const tokens = await AuthService.refreshToken(refreshTokenValue)
+
+    if (!tokens) return null
+
+    if (typeof document !== 'undefined') {
+      cookieManager.setAuthTokens(tokens)
+    }
+
+    return tokens.accessToken
+  } catch (error) {
+    console.error('Token refresh failed:', error)
+    return null
+  }
+}
+
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]))
+    const currentTime = Math.floor(Date.now() / 1000)
+    return payload.exp < currentTime
+  } catch {
+    return true
+  }
+}
+
+const clearAuthTokens = () => {
+  if (typeof document !== 'undefined') {
+    cookieManager.clearAuthTokens()
+  }
+}
 
 export function createAuthRequestInterceptor(cookies?: any) {
-  return (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+  return async (
+    config: InternalAxiosRequestConfig,
+  ): Promise<InternalAxiosRequestConfig> => {
     const customConfig = config as CustomAxiosRequestConfig
     if (customConfig.skipAuth) {
       return config
     }
 
-    const accessToken = getAccessToken(cookies)
+    let accessToken = getAccessToken(cookies)
+
+    if (accessToken && isTokenExpired(accessToken)) {
+      console.log('Access token expired, refreshing...')
+
+      const refreshTokenValue = getRefreshToken()
+      if (!refreshTokenValue || isTokenExpired(refreshTokenValue)) {
+        console.log('Refresh token expired or not found, logging out...')
+        clearAuthTokens()
+
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('auth:unauthorized'))
+        }
+        return config
+      }
+
+      const newToken = await refreshToken()
+
+      if (newToken) {
+        accessToken = newToken
+      } else {
+        clearAuthTokens()
+
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('auth:unauthorized'))
+        }
+        return config
+      }
+    }
 
     if (accessToken) {
       config.headers = config.headers || {}
@@ -30,80 +93,12 @@ export function createAuthRequestInterceptor(cookies?: any) {
       config.timeout = 30000
     }
 
-    if (process.env.NODE_ENV === 'development') {
-      console.log(
-        `[AxiosServer] ${config.method?.toUpperCase()} ${config.url}`,
-        {
-          headers: config.headers,
-          data: config.data,
-        },
-      )
-    }
-
     return config
   }
 }
 
-export function requestErrorInterceptor(error: AxiosError) {
-  logError(error, 'Request Error')
-  return Promise.reject(error)
-}
-
-export function responseSuccessInterceptor(response: AxiosResponse) {
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[AxiosServer] Response:`, {
-      status: response.status,
-      url: response.config.url,
-      data: response.data,
-    })
-  }
-
-  const data = response.data as ApiResponse
-
-  if (data && typeof data === 'object' && 'success' in data && !data.success) {
-    const error = new Error(data.message || 'API returned success = false')
-    return Promise.reject(error)
-  }
-
-  return response
-}
-
-export function createResponseErrorInterceptor() {
-  return async (error: AxiosError) => {
-    const originalRequest = error.config as CustomAxiosRequestConfig
-
-    logError(error, 'Response Error')
-
-    if (!originalRequest) {
-      return Promise.reject(error)
-    }
-
-    if (isUnauthorizedError(error)) {
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(
-          new CustomEvent('auth:unauthorized', { detail: error }),
-        )
-      }
-
-      return Promise.reject(error)
-    }
-
-    error.message = formatApiError(error)
-
-    return Promise.reject(error)
-  }
-}
-
 export function setupInterceptors(axiosInstance: any, cookies?: any) {
-  axiosInstance.interceptors.request.use(
-    createAuthRequestInterceptor(cookies),
-    requestErrorInterceptor,
-  )
-
-  axiosInstance.interceptors.response.use(
-    responseSuccessInterceptor,
-    createResponseErrorInterceptor(),
-  )
+  axiosInstance.interceptors.request.use(createAuthRequestInterceptor(cookies))
 
   return axiosInstance
 }
