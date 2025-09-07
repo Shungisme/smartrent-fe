@@ -3,11 +3,16 @@ import { AuthType } from '@/components/organisms/authDialog'
 import { PasswordField } from '../passwordField'
 import { EmailField } from '../emailField'
 import { Button } from '@/components/atoms/button'
-import { Separator } from '@/components/atoms/separator'
 import { Typography } from '@/components/atoms/typography'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 import dynamic from 'next/dynamic'
+import SeparatorOr from '@/components/atoms/separatorOr'
+import { useLogin } from '@/hooks/useAuth'
+import { toast } from 'sonner'
+import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
 
 const ImageAtom = dynamic(() => import('@/components/atoms/imageAtom'), {
   ssr: false,
@@ -27,12 +32,32 @@ type LoginFormData = {
 const LoginForm: NextPage<LoginFormProps> = (props) => {
   const { onSuccess } = props
   const t = useTranslations()
+  const { loginUser } = useLogin()
+
+  // Validation schema with Vietnamese messages
+  const loginSchema = yup.object({
+    email: yup
+      .string()
+      .required(t('homePage.auth.validation.emailRequired'))
+      .matches(
+        VALIDATION_PATTERNS.EMAIL,
+        t('homePage.auth.validation.emailInvalid'),
+      ),
+    password: yup
+      .string()
+      .required(t('homePage.auth.validation.passwordRequired'))
+      .matches(
+        VALIDATION_PATTERNS.PASSWORD,
+        t('homePage.auth.validation.passwordPattern'),
+      ),
+  })
 
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<LoginFormData>({
+    resolver: yupResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -41,10 +66,17 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      console.log('Form data:', data)
-      onSuccess?.()
+      const result = await loginUser(data)
+
+      if (result.success) {
+        toast.success(t('homePage.auth.login.successMessage'))
+        onSuccess?.()
+      } else {
+        toast.error(result.error || t('homePage.auth.login.errorMessage'))
+      }
     } catch (error) {
       console.error('Login error:', error)
+      toast.error(t('homePage.auth.login.errorMessage'))
     }
   }
 
@@ -54,37 +86,41 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
   }
 
   return (
-    <div className='space-y-4 md:space-y-5'>
-      <div className='space-y-2 text-center'>
-        <Typography variant='h3'>{t('homePage.auth.login.title')}</Typography>
+    <div className='space-y-3 md:space-y-5'>
+      <div className='space-y-3 text-center'>
+        <Typography variant='h3' className='!mb-2'>
+          {t('homePage.auth.login.title')}
+        </Typography>
         <Typography variant='muted'>
           {t('homePage.auth.login.description')}
         </Typography>
       </div>
 
-      <form onSubmit={handleFormSubmit} className='space-y-4 md:space-y-4'>
-        <div className='space-y-3'>
+      <form onSubmit={handleFormSubmit}>
+        <div className='space-y-2'>
           <EmailField
             name='email'
             control={control}
             label={t('homePage.auth.common.email')}
+            error={errors.email?.message}
           />
 
           <PasswordField
             name='password'
             control={control}
             label={t('homePage.auth.common.password')}
+            error={errors.password?.message}
           />
         </div>
 
-        <div className='flex justify-end'>
-          <button
-            type='button'
+        <div className='flex justify-end my-2'>
+          <Typography
+            variant='p'
             className='underline cursor-pointer'
             onClick={() => props.switchTo('forgotPassword')}
           >
             {t('homePage.auth.login.forgotPassword')}
-          </button>
+          </Typography>
         </div>
 
         <Button type='submit' disabled={isSubmitting} className='w-full'>
@@ -94,39 +130,38 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
         </Button>
       </form>
 
-      <div className='relative my-4 md:my-5'>
-        <div className='absolute inset-0 flex items-center'>
-          <Separator className='w-full' />
-        </div>
-        <div className='relative flex justify-center text-xs uppercase font-medium tracking-wider'>
-          <span className='px-3 bg-background text-muted-foreground'>hoặc</span>
-        </div>
-      </div>
+      <SeparatorOr />
 
       <Button
         type='button'
         variant='outline'
-        className='w-full h-9 relative font-medium text-sm'
-        onClick={() => console.log('Google login clicked')}
+        className='w-full'
+        onClick={() => {
+          // TODO: Implement Google OAuth
+          console.log('Google login clicked')
+        }}
       >
         <ImageAtom
           src='/svg/google.svg'
           alt='Google'
-          className='mr-2 w-4 h-4'
+          width={16}
+          height={16}
+          className='mr-2'
         />
         {t('homePage.auth.login.googleButton')}
       </Button>
 
-      <div className='text-center pt-2'>
-        <button
-          type='button'
-          className='text-xs md:text-sm font-medium transition-colors duration-200 cursor-pointer'
-          onClick={() => props.switchTo('register')}
-        >
-          {t.rich('homePage.auth.login.switchToRegister', {
-            u: (chunks) => <u className='underline'>{chunks}</u>,
-          })}
-        </button>
+      <div className='text-center'>
+        <Typography variant='p' className='text-sm text-muted-foreground'>
+          {t('homePage.auth.login.noAccount')}{' '}
+          <Typography
+            as='span'
+            className='text-sm underline cursor-pointer text-primary'
+            onClick={() => props.switchTo('register')}
+          >
+            {t('homePage.auth.login.registerLink')}
+          </Typography>
+        </Typography>
       </div>
     </div>
   )

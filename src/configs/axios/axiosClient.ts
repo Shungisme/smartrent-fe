@@ -31,7 +31,7 @@ function createClientAxiosInstance(
       (response) => response,
       (error) => {
         errorHandler(error)
-        return Promise.reject(error)
+        return
       },
     )
   }
@@ -46,13 +46,13 @@ export const instanceClientAxios = createClientAxiosInstance({
 
 export async function apiRequest<T = any>(
   config: CustomAxiosRequestConfig,
-): Promise<T> {
+): Promise<T | null> {
   try {
     const response = await instanceClientAxios(config)
     return response.data
   } catch (error) {
     logError(error, 'API Request')
-    throw error
+    return null
   }
 }
 

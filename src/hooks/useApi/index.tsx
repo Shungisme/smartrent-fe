@@ -1,7 +1,7 @@
 import { HttpMethod } from '@/api/types/pagination.type'
 import { instanceClientAxios } from '@/configs/axios/axiosClient'
 import { CustomAxiosRequestConfig } from '@/configs/axios/types'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
 export type FetchOptions = CustomAxiosRequestConfig & {
   url: string
@@ -22,7 +22,15 @@ function useApi<T>(fetchOptions: FetchOptions) {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
-  const fetchData = async (): Promise<T> => {
+  // Memoize the serialized values to prevent infinite re-renders
+  const serializedHeaders = useMemo(() => JSON.stringify(headers), [headers])
+  const serializedBody = useMemo(() => JSON.stringify(body), [body])
+  const serializedRestConfig = useMemo(
+    () => JSON.stringify(restConfig),
+    [restConfig],
+  )
+
+  const fetchData = async (): Promise<T | null> => {
     setLoading(true)
     setError(null)
 
@@ -42,7 +50,8 @@ function useApi<T>(fetchOptions: FetchOptions) {
       return response.data as T
     } catch (err: any) {
       setLoading(false)
-      throw err
+      setError(err.message)
+      return null
     }
   }
 
@@ -56,13 +65,7 @@ function useApi<T>(fetchOptions: FetchOptions) {
         setError(err.message)
         setData(null)
       })
-  }, [
-    url,
-    method,
-    JSON.stringify(headers),
-    JSON.stringify(body),
-    JSON.stringify(restConfig),
-  ])
+  }, [url, method, serializedHeaders, serializedBody, serializedRestConfig])
 
   return {
     data,

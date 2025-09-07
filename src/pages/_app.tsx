@@ -1,15 +1,17 @@
 import '@/styles/globals.css'
 import '@/styles/reset.scss'
-import ThemeDataProvider from '@/contexts/useTheme'
+import '@/components/molecules/desktop-navigation/navigation.css'
+import ThemeDataProvider from '@/contexts/theme'
+import AuthProvider from '@/contexts/auth'
 import type { AppProps } from 'next/app'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { NextIntlClientProvider } from 'next-intl'
-import SwitchLanguageProvider, {
-  useSwitchLanguage,
-} from '@/contexts/useSwitchLanguage'
+import SwitchLanguageProvider from '@/contexts/switchLanguage'
 import { Locale } from '@/types'
 import vi from '@/messages/vi.json'
 import en from '@/messages/en.json'
+import { Toaster } from '@/components/atoms/sonner'
+import { useSwitchLanguage } from '@/contexts/switchLanguage/index.context'
 
 const messages = {
   vi,
@@ -31,7 +33,10 @@ function AppContent({ Component, pageProps }: AppProps) {
         disableTransitionOnChange
       >
         <ThemeDataProvider>
-          <Component {...pageProps} />
+          <AuthProvider>
+            <Component {...pageProps} />
+            <Toaster />
+          </AuthProvider>
         </ThemeDataProvider>
       </NextThemesProvider>
     </NextIntlClientProvider>

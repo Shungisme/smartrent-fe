@@ -1,34 +1,101 @@
 {
+  "common": {
+    "or": "Hoặc"
+  },
   "homePage": {
+    "title": "Tìm Ngôi Nhà Mơ Ước",
+    "subtitle": "Khám phá những bất động sản cao cấp với tiện nghi hiện đại, danh sách đã xác thực và giá cả minh bạch.",
+    "description": "Khám phá ngôi nhà hoàn hảo của bạn",
+    "propertiesAvailable": "bất động sản có sẵn",
+    "instruction": "Nhấp vào bất kỳ bất động sản nào để xem chi tiết hoặc thêm vào yêu thích.",
+    "settings": {
+      "title": "Cài đặt",
+      "language": {
+        "title": "Ngôn ngữ",
+        "english": "English",
+        "vietnamese": "Tiếng Việt"
+      },
+      "theme": {
+        "title": "Giao diện",
+        "light": "Sáng",
+        "dark": "Tối"
+      }
+    },
+    "buttons": {
+      "openAuth": "Mở Xác Thực",
+      "filter": "Lọc",
+      "viewDetails": "Xem Chi Tiết",
+      "addToFavorites": "Thêm Vào Yêu Thích",
+      "removeFromFavorites": "Xóa Khỏi Yêu Thích"
+    },
+    "property": {
+      "verified": "Đã xác thực",
+      "featured": "Nổi bật",
+      "video": "Video",
+      "bedrooms": "phòng ngủ",
+      "bathrooms": "phòng tắm",
+      "more": "khác",
+      "noProperties": "Không tìm thấy bất động sản",
+      "noPropertiesDescription": "Hãy thử điều chỉnh tiêu chí tìm kiếm hoặc quay lại sau để xem tin đăng mới.",
+      "listings": "Danh sách bất động sản",
+      "favorites": "yêu thích",
+      "additionalAmenities": "Tiện nghi bổ sung",
+      "views": "lượt xem",
+      "distance": "km",
+      "area": "m²"
+    },
     "auth": {
       "login": {
-        "title": "Đăng nhập",
+        "title": "Đăng Nhập",
         "description": "Chào mừng trở lại! Vui lòng đăng nhập vào tài khoản của bạn.",
-        "submitButton": "Đăng nhập",
+        "submitButton": "Đăng Nhập",
         "submittingButton": "Đang đăng nhập...",
         "googleButton": "Đăng nhập với Google",
         "forgotPassword": "Quên mật khẩu?",
-        "switchToRegister": "Chưa có tài khoản? <u>Đăng ký ngay</u>"
+        "noAccount": "Chưa có tài khoản?",
+        "registerLink": "Đăng ký",
+        "successMessage": "Đăng nhập thành công!",
+        "errorMessage": "Đăng nhập thất bại. Vui lòng thử lại."
       },
       "register": {
-        "title": "Đăng ký",
+        "title": "Đăng Ký",
         "description": "Tạo tài khoản mới để bắt đầu sử dụng dịch vụ của chúng tôi.",
-        "submitButton": "Đăng ký",
+        "submitButton": "Đăng Ký",
         "submittingButton": "Đang đăng ký...",
         "googleButton": "Đăng ký với Google",
-        "switchToLogin": "Đã có tài khoản? <u>Đăng nhập</u>"
+        "haveAccount": "Đã có tài khoản?",
+        "loginLink": "Đăng nhập",
+        "firstName": "Tên",
+        "firstNamePlaceholder": "Nhập tên",
+        "lastName": "Họ",
+        "lastNamePlaceholder": "Nhập họ",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
+        "idDocument": "Số CMND/CCCD",
+        "idDocumentPlaceholder": "Nhập số CMND/CCCD",
+        "taxNumber": "Mã số thuế",
+        "taxNumberPlaceholder": "Nhập mã số thuế",
+        "successMessage": "Đăng ký thành công!",
+        "errorMessage": "Đăng ký thất bại. Vui lòng thử lại.",
+        "switchToLogin": "Đã có tài khoản? <u>Đăng nhập</u>",
+        "sections": {
+          "personalInfo": "Thông tin cá nhân",
+          "contactInfo": "Thông tin liên hệ",
+          "security": "Bảo mật",
+          "legalInfo": "Thông tin pháp lý"
+        }
       },
       "forgotPassword": {
-        "title": "Khôi phục mật khẩu",
-        "description": "Nhập email hoặc số điện thoại để nhận mã xác thực khôi phục mật khẩu.",
-        "submitButton": "Gửi mã",
+        "title": "Đặt Lại Mật Khẩu",
+        "description": "Nhập email hoặc số điện thoại để nhận mã xác minh để khôi phục mật khẩu.",
+        "submitButton": "Gửi Mã",
         "submittingButton": "Đang gửi...",
-        "switchToLogin": "Nhớ lại mật khẩu? <u>Đăng nhập</u>"
+        "switchToLogin": "Nhớ mật khẩu? <u>Đăng nhập</u>"
       },
       "common": {
         "password": "Mật khẩu",
         "hidePassword": "Ẩn mật khẩu",
-        "showPassword": "Hiển thị mật khẩu",
+        "showPassword": "Hiện mật khẩu",
         "email": "Email",
         "emailPlaceholder": "Nhập địa chỉ email",
         "passwordPlaceholder": "Nhập mật khẩu",
@@ -38,34 +105,83 @@
         "emailOrPhonePlaceholder": "Nhập email hoặc số điện thoại"
       },
       "validation": {
+        "phoneCodeRequired": "Mã vùng là bắt buộc",
+        "phoneCodeInvalid": "Mã vùng phải có 1-5 ký tự",
+        "phoneNumberRequired": "Số điện thoại là bắt buộc",
+        "phoneNumberInvalid": "Số điện thoại phải có 5-20 ký tự",
+        "firstNameRequired": "Tên là bắt buộc",
+        "lastNameRequired": "Họ là bắt buộc",
         "passwordRequired": "Mật khẩu là bắt buộc",
         "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
-        "passwordPattern": "Mật khẩu phải chứa ít nhất một chữ hoa, một chữ thường và một số",
+        "passwordPattern": "Mật khẩu phải chứa ít nhất 8 ký tự, một chữ hoa, một chữ thường, một số và một ký tự đặc biệt",
         "emailRequired": "Email là bắt buộc",
-        "emailInvalid": "Địa chỉ email không hợp lệ",
-        "phoneNumberRequired": "Số điện thoại là bắt buộc",
-        "phoneNumberInvalid": "Số điện thoại không hợp lệ",
+        "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+        "confirmPasswordRequired": "Xác nhận mật khẩu là bắt buộc",
+        "confirmPasswordMatch": "Mật khẩu xác nhận không khớp",
+        "idDocumentRequired": "Số CMND/CCCD là bắt buộc",
+        "taxNumberRequired": "Mã số thuế là bắt buộc",
+        "phoneRequired": "Số điện thoại là bắt buộc",
+        "phoneInvalid": "Vui lòng nhập số điện thoại hợp lệ",
         "emailOrPhoneRequired": "Email hoặc số điện thoại là bắt buộc",
-        "emailOrPhoneInvalid": "Email hoặc số điện thoại không hợp lệ"
-      }
-    },
-    "buttons": {
-      "openAuth": "Mở xác thực"
-    },
-    "settings": {
-      "language": {
-        "switch": "Chuyển ngôn ngữ",
-        "vietnamese": "Tiếng Việt",
-        "english": "English"
+        "emailOrPhoneInvalid": "Vui lòng nhập địa chỉ email hoặc số điện thoại hợp lệ"
       },
-      "theme": {
-        "switch": "Chuyển giao diện",
-        "light": "Sáng",
-        "dark": "Tối"
+      "logout": "Đăng xuất",
+      "profile": "Hồ sơ",
+      "settings": "Cài đặt",
+      "user": {
+        "welcome": "Xin chào",
+        "role": {
+          "user": "Người dùng",
+          "admin": "Quản trị viên",
+          "landlord": "Chủ nhà",
+          "tenant": "Người thuê"
+        }
       }
-    },
-    "language": {
-      "switch": "Chuyển ngôn ngữ"
     }
+  },
+  "footer": {
+    "description": "Đối tác đáng tin cậy của bạn trong việc tìm kiếm ngôi nhà hoàn hảo. Chúng tôi kết nối bạn với những bất động sản cao cấp và dịch vụ xuất sắc.",
+    "quickLinks": "Liên Kết Nhanh",
+    "aboutUs": "Về Chúng Tôi",
+    "properties": "Bất Động Sản",
+    "services": "Dịch Vụ",
+    "contact": "Liên Hệ",
+    "support": "Hỗ Trợ",
+    "helpCenter": "Trung Tâm Trợ Giúp",
+    "privacyPolicy": "Chính Sách Bảo Mật",
+    "termsOfService": "Điều Khoản Dịch Vụ",
+    "faq": "Câu Hỏi Thường Gặp",
+    "contactInfo": "Thông Tin Liên Hệ",
+    "address": "123 Đường Chính, Thành phố Hồ Chí Minh, Việt Nam",
+    "phone": "+84 123 456 789",
+    "email": "info@smartrent.com",
+    "copyright": "© 2024 SmartRent. Tất cả quyền được bảo lưu.",
+    "privacy": "Bảo Mật",
+    "terms": "Điều Khoản"
+  },
+  "navigation": {
+    "home": "Trang chủ",
+    "properties": "Bất động sản",
+    "about": "Giới thiệu",
+    "contact": "Liên hệ",
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "account": "Tài khoản",
+    "residential": "Nhà ở",
+    "commercial": "Thương mại",
+    "vacation": "Cho thuê nghỉ dưỡng",
+    "tenants": "Người thuê",
+    "applications": "Đơn đăng ký",
+    "leases": "Hợp đồng thuê",
+    "maintenance": "Yêu cầu bảo trì",
+    "documents": "Tài liệu",
+    "contracts": "Hợp đồng",
+    "invoices": "Hóa đơn",
+    "reports": "Báo cáo",
+    "calendar": "Lịch",
+    "analytics": "Phân tích",
+    "financial": "Báo cáo tài chính",
+    "occupancy": "Tỷ lệ lấp đầy",
+    "performance": "Hiệu suất bất động sản"
   }
 }

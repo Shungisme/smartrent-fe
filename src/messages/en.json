@@ -1,34 +1,101 @@
 {
+  "common": {
+    "or": "Or"
+  },
   "homePage": {
+    "title": "Find Your Dream Home",
+    "subtitle": "Explore premium real estate with modern amenities, verified listings, and transparent pricing.",
+    "description": "Discover your perfect home",
+    "propertiesAvailable": "properties available",
+    "instruction": "Click on any property to view details or add to favorites.",
+    "settings": {
+      "title": "Settings",
+      "language": {
+        "title": "Language",
+        "english": "English",
+        "vietnamese": "Vietnamese"
+      },
+      "theme": {
+        "title": "Theme",
+        "light": "Light",
+        "dark": "Dark"
+      }
+    },
+    "buttons": {
+      "openAuth": "Open Authentication",
+      "filter": "Filter",
+      "viewDetails": "View Details",
+      "addToFavorites": "Add to Favorites",
+      "removeFromFavorites": "Remove from Favorites"
+    },
+    "property": {
+      "verified": "Verified",
+      "featured": "Featured",
+      "video": "Video",
+      "bedrooms": "bedrooms",
+      "bathrooms": "bathrooms",
+      "more": "more",
+      "noProperties": "No properties found",
+      "noPropertiesDescription": "Try adjusting your search criteria or check back later for new listings.",
+      "listings": "Property Listings",
+      "favorites": "Favorites",
+      "additionalAmenities": "Additional Amenities",
+      "views": "views",
+      "distance": "km",
+      "area": "m²"
+    },
     "auth": {
       "login": {
-        "title": "Sign In",
-        "description": "Welcome back! Please sign in to your account.",
-        "submitButton": "Sign In",
-        "submittingButton": "Signing in...",
-        "googleButton": "Sign in with Google",
+        "title": "Log In",
+        "description": "Welcome back! Please log in to your account.",
+        "submitButton": "Log In",
+        "submittingButton": "Logging In…",
+        "googleButton": "Log in with Google",
         "forgotPassword": "Forgot password?",
-        "switchToRegister": "Don't have an account? <u>Sign up</u>"
+        "noAccount": "Don't have an account?",
+        "registerLink": "Register",
+        "successMessage": "Login successful!",
+        "errorMessage": "Login failed. Please try again."
       },
       "register": {
-        "title": "Sign Up",
+        "title": "Register",
         "description": "Create a new account to get started with our services.",
-        "submitButton": "Sign Up",
-        "submittingButton": "Signing up...",
-        "googleButton": "Sign up with Google",
-        "switchToLogin": "Already have an account? <u>Sign in</u>"
+        "submitButton": "Register",
+        "submittingButton": "Registering…",
+        "googleButton": "Register with Google",
+        "haveAccount": "Already have an account?",
+        "loginLink": "Log In",
+        "firstName": "First Name",
+        "firstNamePlaceholder": "Enter first name",
+        "lastName": "Last Name",
+        "lastNamePlaceholder": "Enter last name",
+        "confirmPassword": "Confirm Password",
+        "confirmPasswordPlaceholder": "Re-enter password",
+        "idDocument": "ID Number",
+        "idDocumentPlaceholder": "Enter ID number",
+        "taxNumber": "Tax Number",
+        "taxNumberPlaceholder": "Enter tax number",
+        "successMessage": "Registration successful!",
+        "errorMessage": "Registration failed. Please try again.",
+        "switchToLogin": "Already have an account? <u>Log In</u>",
+        "sections": {
+          "personalInfo": "Personal Information",
+          "contactInfo": "Contact Information",
+          "security": "Security",
+          "legalInfo": "Legal Information"
+        }
       },
       "forgotPassword": {
         "title": "Reset Password",
-        "description": "Enter your email or phone number to receive a verification code for password recovery.",
+        "description": "Enter your email or phone number to receive a verification code to reset your password.",
         "submitButton": "Send Code",
-        "submittingButton": "Sending...",
-        "switchToLogin": "Remember your password? <u>Sign in</u>"
+        "submittingButton": "Sending…",
+        "switchToLogin": "Remembered your password? <u>Log In</u>"
       },
       "common": {
         "password": "Password",
-        "hidePassword": "Hide Password",
-        "showPassword": "Show Password",
+        "hidePassword": "Hide password",
+        "showPassword": "Show password",
         "email": "Email",
         "emailPlaceholder": "Enter email address",
         "passwordPlaceholder": "Enter password",
@@ -38,34 +105,83 @@
         "emailOrPhonePlaceholder": "Enter email or phone number"
       },
       "validation": {
-        "passwordRequired": "Password is required",
-        "passwordMinLength": "Password must be at least 8 characters long",
-        "passwordPattern": "Password must contain at least one uppercase letter, one lowercase letter, and one number",
-        "emailRequired": "Email is required",
-        "emailInvalid": "Invalid email address",
+        "phoneCodeRequired": "Phone code is required",
+        "phoneCodeInvalid": "Phone code must be 1–5 characters",
         "phoneNumberRequired": "Phone number is required",
-        "phoneNumberInvalid": "Invalid phone number",
+        "phoneNumberInvalid": "Phone number must be 5–20 characters",
+        "firstNameRequired": "First name is required",
+        "lastNameRequired": "Last name is required",
+        "passwordRequired": "Password is required",
+        "passwordMinLength": "Password must be at least 8 characters",
+        "passwordPattern": "Password must be at least 8 characters, include an uppercase letter, a lowercase letter, a number, and a special character",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email address",
+        "confirmPasswordRequired": "Confirm password is required",
+        "confirmPasswordMatch": "Passwords do not match",
+        "idDocumentRequired": "ID number is required",
+        "taxNumberRequired": "Tax number is required",
+        "phoneRequired": "Phone number is required",
+        "phoneInvalid": "Please enter a valid phone number",
         "emailOrPhoneRequired": "Email or phone number is required",
-        "emailOrPhoneInvalid": "Invalid email or phone number"
-      }
-    },
-    "buttons": {
-      "openAuth": "Open Auth"
-    },
-    "settings": {
-      "language": {
-        "switch": "Switch Language",
-        "vietnamese": "Tiếng Việt",
-        "english": "English"
+        "emailOrPhoneInvalid": "Please enter a valid email or phone number"
       },
-      "theme": {
-        "switch": "Switch Theme",
-        "light": "Light",
-        "dark": "Dark"
+      "logout": "Log Out",
+      "profile": "Profile",
+      "settings": "Settings",
+      "user": {
+        "welcome": "Welcome",
+        "role": {
+          "user": "User",
+          "admin": "Administrator",
+          "landlord": "Landlord",
+          "tenant": "Tenant"
+        }
       }
-    },
-    "language": {
-      "switch": "Switch Language"
     }
+  },
+  "footer": {
+    "description": "Your trusted partner in finding the perfect home. We connect you with premium real estate and exceptional services.",
+    "quickLinks": "Quick Links",
+    "aboutUs": "About Us",
+    "properties": "Properties",
+    "services": "Services",
+    "contact": "Contact",
+    "support": "Support",
+    "helpCenter": "Help Center",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "faq": "FAQ",
+    "contactInfo": "Contact Info",
+    "address": "123 Main Street, Ho Chi Minh City, Vietnam",
+    "phone": "+84 123 456 789",
+    "email": "info@smartrent.com",
+    "copyright": "© 2024 SmartRent. All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "navigation": {
+    "home": "Home",
+    "properties": "Properties",
+    "about": "About",
+    "contact": "Contact",
+    "login": "Log In",
+    "register": "Register",
+    "account": "Account",
+    "residential": "Residential",
+    "commercial": "Commercial",
+    "vacation": "Vacation Rentals",
+    "tenants": "Tenants",
+    "applications": "Applications",
+    "leases": "Leases",
+    "maintenance": "Maintenance Requests",
+    "documents": "Documents",
+    "contracts": "Contracts",
+    "invoices": "Invoices",
+    "reports": "Reports",
+    "calendar": "Calendar",
+    "analytics": "Analytics",
+    "financial": "Financial Reports",
+    "occupancy": "Occupancy Rate",
+    "performance": "Property Performance"
   }
 }

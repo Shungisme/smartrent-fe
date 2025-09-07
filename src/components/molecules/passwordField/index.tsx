@@ -64,8 +64,12 @@ const PasswordField = (props: PasswordFieldProps) => {
   const displayError = fieldError?.message || error
 
   return (
-    <div className='space-y-2'>
-      {label && <Label htmlFor={fieldId}>{label}</Label>}
+    <div>
+      {label && (
+        <Label className='mb-2' htmlFor={fieldId}>
+          {label}
+        </Label>
+      )}
 
       <div className='relative'>
         <Input
@@ -84,7 +88,7 @@ const PasswordField = (props: PasswordFieldProps) => {
                 : undefined
           }
           className={cn(
-            'h-12',
+            'h-10 md:h-12',
             showIcon && 'pl-10',
             showToggle && 'pr-10',
             displayError &&
@@ -109,7 +113,7 @@ const PasswordField = (props: PasswordFieldProps) => {
             type='button'
             variant='ghost'
             size='icon'
-            className='absolute right-0 top-0 h-12 w-12 hover:bg-transparent'
+            className='absolute right-0 top-0 h-10 w-10 md:h-12 md:w-12 hover:bg-transparent'
             onClick={togglePassword}
             aria-label={
               showPassword
@@ -127,7 +131,11 @@ const PasswordField = (props: PasswordFieldProps) => {
       </div>
 
       {description && !displayError && (
-        <Typography variant='muted' id={`${fieldId}-description`}>
+        <Typography
+          variant='muted'
+          id={`${fieldId}-description`}
+          className='mt-2'
+        >
           {description}
         </Typography>
       )}
@@ -136,7 +144,7 @@ const PasswordField = (props: PasswordFieldProps) => {
         <Typography
           variant='small'
           id={`${fieldId}-error`}
-          className='text-destructive'
+          className='text-destructive mt-2'
         >
           {displayError}
         </Typography>

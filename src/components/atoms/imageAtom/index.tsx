@@ -15,23 +15,25 @@ type ImageAtomProps = {
   priority?: boolean
 }
 
-const ImageAtom: NextPage<ImageAtomProps> = (props) => {
-  const {
-    alt,
-    src,
-    placeholderSrc,
-    defaultImage,
-    className,
-    width,
-    height,
-    priority = false,
-  } = props
+const ImageAtom: NextPage<ImageAtomProps> = ({
+  alt,
+  src,
+  placeholderSrc,
+  defaultImage,
+  className,
+  width,
+  height,
+  priority = false,
+}) => {
   const [hasError, setHasError] = useState(false)
+
+  const fallbackSrc = defaultImage ?? ''
+  const imageSrc = hasError ? fallbackSrc : (src ?? fallbackSrc)
 
   if (width && height) {
     return (
       <Image
-        src={hasError ? defaultImage || src : src || defaultImage || ''}
+        src={imageSrc}
         alt={alt}
         width={width}
         height={height}
@@ -49,7 +51,7 @@ const ImageAtom: NextPage<ImageAtomProps> = (props) => {
     <StyledImage
       className={clsx(className, 'object-cover')}
       alt={alt}
-      src={hasError ? defaultImage || src || '' : src || defaultImage || ''}
+      src={imageSrc}
       loading={priority ? 'eager' : 'lazy'}
       data-has-placeholder={!!placeholderSrc}
       onError={() => !hasError && setHasError(true)}
@@ -57,8 +59,15 @@ const ImageAtom: NextPage<ImageAtomProps> = (props) => {
         ...(placeholderSrc
           ? {
               backgroundImage: `url(${placeholderSrc})`,
+              filter: 'blur(5px)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
             }
-          : {}),
+          : {
+              backgroundImage: `url(${placeholderSrc})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }),
       }}
     />
   )

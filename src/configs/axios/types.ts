@@ -3,6 +3,7 @@ import { AxiosRequestConfig } from 'axios'
 export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   skipAuth?: boolean
   timeout?: number
+  _retry?: boolean
 }
 
 export interface ApiResponse<T = any> {
