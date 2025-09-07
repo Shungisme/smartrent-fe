@@ -37,6 +37,7 @@ type RegisterFormData = {
 }
 
 const RegisterForm: NextPage<RegisterFormProps> = (props) => {
+  const { switchTo } = props
   const t = useTranslations()
   const { registerUser } = useRegister()
 
@@ -125,6 +126,7 @@ const RegisterForm: NextPage<RegisterFormProps> = (props) => {
 
       if (result.success) {
         toast.success(t('homePage.auth.register.successMessage'))
+        switchTo('login')
       } else {
         toast.error(result.error || t('homePage.auth.register.errorMessage'))
       }
@@ -305,7 +307,7 @@ const RegisterForm: NextPage<RegisterFormProps> = (props) => {
           <Typography
             as='span'
             className='text-sm underline cursor-pointer text-primary'
-            onClick={() => props.switchTo('login')}
+            onClick={() => switchTo('login')}
           >
             {t('homePage.auth.register.loginLink')}
           </Typography>
