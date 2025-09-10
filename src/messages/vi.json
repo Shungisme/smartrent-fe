@@ -24,9 +24,15 @@
     "buttons": {
       "openAuth": "Mở Xác Thực",
       "filter": "Lọc",
+      "search": "Tìm Kiếm",
+      "searchPlaceholder": "Tìm kiếm bất động sản...",
       "viewDetails": "Xem Chi Tiết",
       "addToFavorites": "Thêm Vào Yêu Thích",
-      "removeFromFavorites": "Xóa Khỏi Yêu Thích"
+      "removeFromFavorites": "Xóa Khỏi Yêu Thích",
+      "clearFilters": "Xóa Bộ Lọc",
+      "applyFilters": "Áp Dụng Bộ Lọc",
+      "closeFilters": "Đóng Bộ Lọc",
+      "clearAll": "Xóa Tất Cả"
     },
     "property": {
       "verified": "Đã xác thực",
@@ -136,6 +142,76 @@
           "landlord": "Chủ nhà",
           "tenant": "Người thuê"
         }
+      }
+    },
+    "filters": {
+      "title": "Lọc Bất Động Sản",
+      "anyAmenities": "Mọi Tiện Nghi",
+      "oneAmenity": "1 Tiện Nghi",
+      "amenitiesCount": "Tiện Nghi",
+      "propertyType": {
+        "title": "Loại Bất Động Sản",
+        "all": "Tất Cả Loại",
+        "apartment": "Căn hộ",
+        "studio": "Studio",
+        "villa": "Biệt thự",
+        "house": "Nhà riêng",
+        "condo": "Condo",
+        "townhouse": "Nhà phố",
+        "penthouse": "Penthouse"
+      },
+      "priceRange": {
+        "title": "Khoảng Giá",
+        "minPrice": "Giá Tối Thiểu",
+        "maxPrice": "Giá Tối Đa",
+        "currency": "VND",
+        "any": "Mọi Giá"
+      },
+      "bedrooms": {
+        "title": "Phòng Ngủ",
+        "any": "Bất Kỳ",
+        "studio": "Studio",
+        "one": "1+",
+        "two": "2+",
+        "three": "3+",
+        "four": "4+",
+        "five": "5+"
+      },
+      "bathrooms": {
+        "title": "Phòng Tắm",
+        "any": "Bất Kỳ",
+        "one": "1+",
+        "two": "2+",
+        "three": "3+",
+        "four": "4+",
+        "five": "5+"
+      },
+      "amenities": {
+        "title": "Tiện Nghi",
+        "airConditioning": "Điều Hòa",
+        "wifi": "WiFi",
+        "parking": "Bãi Đỗ Xe",
+        "gym": "Phòng Gym",
+        "swimmingPool": "Hồ Bơi",
+        "security": "An Ninh",
+        "garden": "Vườn",
+        "balcony": "Ban Công",
+        "elevator": "Thang Máy",
+        "furnished": "Nội Thất",
+        "petFriendly": "Thú Cưng"
+      },
+      "location": {
+        "title": "Vị Trí",
+        "city": "Thành Phố",
+        "district": "Quận/Huyện",
+        "any": "Mọi Vị Trí"
+      },
+      "furnishing": {
+        "title": "Nội Thất",
+        "any": "Bất Kỳ",
+        "furnished": "Có Nội Thất",
+        "semiFurnished": "Nội Thất Một Phần",
+        "unfurnished": "Không Nội Thất"
       }
     }
   },
