@@ -24,9 +24,15 @@
     "buttons": {
       "openAuth": "Open Authentication",
       "filter": "Filter",
+      "search": "Search",
+      "searchPlaceholder": "Search properties...",
       "viewDetails": "View Details",
       "addToFavorites": "Add to Favorites",
-      "removeFromFavorites": "Remove from Favorites"
+      "removeFromFavorites": "Remove from Favorites",
+      "clearFilters": "Clear Filters",
+      "applyFilters": "Apply Filters",
+      "closeFilters": "Close Filters",
+      "clearAll": "Clear All"
     },
     "property": {
       "verified": "Verified",
@@ -136,6 +142,76 @@
           "landlord": "Landlord",
           "tenant": "Tenant"
         }
+      }
+    },
+    "filters": {
+      "title": "Filter Properties",
+      "anyAmenities": "Any Amenities",
+      "oneAmenity": "1 Amenity",
+      "amenitiesCount": "Amenities",
+      "propertyType": {
+        "title": "Property Type",
+        "all": "All Types",
+        "apartment": "Apartment",
+        "studio": "Studio",
+        "villa": "Villa",
+        "house": "House",
+        "condo": "Condo",
+        "townhouse": "Townhouse",
+        "penthouse": "Penthouse"
+      },
+      "priceRange": {
+        "title": "Price Range",
+        "minPrice": "Min Price",
+        "maxPrice": "Max Price",
+        "currency": "VND",
+        "any": "Any Price"
+      },
+      "bedrooms": {
+        "title": "Bedrooms",
+        "any": "Any",
+        "studio": "Studio",
+        "one": "1+",
+        "two": "2+",
+        "three": "3+",
+        "four": "4+",
+        "five": "5+"
+      },
+      "bathrooms": {
+        "title": "Bathrooms",
+        "any": "Any",
+        "one": "1+",
+        "two": "2+",
+        "three": "3+",
+        "four": "4+",
+        "five": "5+"
+      },
+      "amenities": {
+        "title": "Amenities",
+        "airConditioning": "Air Conditioning",
+        "wifi": "WiFi",
+        "parking": "Parking",
+        "gym": "Gym",
+        "swimmingPool": "Swimming Pool",
+        "security": "Security",
+        "garden": "Garden",
+        "balcony": "Balcony",
+        "elevator": "Elevator",
+        "furnished": "Furnished",
+        "petFriendly": "Pet Friendly"
+      },
+      "location": {
+        "title": "Location",
+        "city": "City",
+        "district": "District",
+        "any": "Any Location"
+      },
+      "furnishing": {
+        "title": "Furnishing",
+        "any": "Any",
+        "furnished": "Furnished",
+        "semiFurnished": "Semi-Furnished",
+        "unfurnished": "Unfurnished"
       }
     }
   },
