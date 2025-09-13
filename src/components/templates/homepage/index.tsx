@@ -9,7 +9,6 @@ import Footer from '@/components/organisms/footer'
 import { NavigationItemData } from '@/components/atoms/navigation-item'
 import { PropertyCard } from '@/api/types/property.type'
 import { getNavigationItems } from '@/components/organisms/navigation/navigationItems.helper'
-import { mockProperties } from '@/components/organisms/propertyList/index.helper'
 import { Building2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useDialog } from '@/hooks/useDialog'
@@ -24,15 +23,15 @@ const AuthDialog = dynamic(() => import('@/components/organisms/authDialog'), {
 
 interface HomepageTemplateProps {
   onPropertyClick?: (property: PropertyCard) => void
+  initialProperties?: PropertyCard[]
 }
 
 const HomepageTemplate: React.FC<HomepageTemplateProps> = ({
   onPropertyClick,
+  initialProperties = [],
 }) => {
   const [mounted, setMounted] = useState(false)
   const [activeItem, setActiveItem] = useState<string>('home')
-  const [properties, setProperties] = useState<PropertyCard[]>([])
-  const [loading, setLoading] = useState(true)
   const { open, handleOpen, handleClose } = useDialog()
   const { isAuthenticated } = useAuth()
   const t = useTranslations()
@@ -85,15 +84,6 @@ const HomepageTemplate: React.FC<HomepageTemplateProps> = ({
 
   useEffect(() => {
     setMounted(true)
-
-    const loadProperties = async () => {
-      setLoading(true)
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      setProperties(mockProperties)
-      setLoading(false)
-    }
-
-    loadProperties()
   }, [])
 
   if (!mounted) {
@@ -154,16 +144,15 @@ const HomepageTemplate: React.FC<HomepageTemplateProps> = ({
                         variant='small'
                         className='text-xs sm:text-sm text-muted-foreground'
                       >
-                        {t('homePage.description')} • {properties.length}{' '}
+                        {t('homePage.description')} •{' '}
                         {t('homePage.propertiesAvailable')}
                       </Typography>
                     </div>
                   </div>
 
                   <PropertyList
-                    properties={properties}
-                    loading={loading}
                     onPropertyClick={handlePropertyClick}
+                    initialData={initialProperties}
                   />
                 </div>
               </div>

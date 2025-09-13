@@ -2,9 +2,20 @@
   "common": {
     "or": "Hoặc"
   },
+  "pagination": {
+    "showing": "Hiển thị",
+    "of": "trong tổng số",
+    "results": "kết quả",
+    "show": "Hiển thị",
+    "perPage": "mỗi trang",
+    "first": "Đầu",
+    "last": "Cuối",
+    "previous": "Trước",
+    "next": "Tiếp"
+  },
   "homePage": {
     "title": "Tìm Ngôi Nhà Mơ Ước",
-    "subtitle": "Khám phá những bất động sản cao cấp với tiện nghi hiện đại, danh sách đã xác thực và giá cả minh bạch.",
+    "subtitle": "Khám phá bất động sản cao cấp với tiện nghi hiện đại, danh sách đã xác minh và giá cả minh bạch.",
     "description": "Khám phá ngôi nhà hoàn hảo của bạn",
     "propertiesAvailable": "bất động sản có sẵn",
     "instruction": "Nhấp vào bất kỳ bất động sản nào để xem chi tiết hoặc thêm vào yêu thích.",
@@ -12,50 +23,50 @@
       "title": "Cài đặt",
       "language": {
         "title": "Ngôn ngữ",
-        "english": "English",
+        "english": "Tiếng Anh",
         "vietnamese": "Tiếng Việt"
       },
       "theme": {
-        "title": "Giao diện",
+        "title": "Chủ đề",
         "light": "Sáng",
         "dark": "Tối"
       }
     },
     "buttons": {
-      "openAuth": "Mở Xác Thực",
+      "openAuth": "Mở Xác thực",
       "filter": "Lọc",
-      "search": "Tìm Kiếm",
+      "search": "Tìm kiếm",
       "searchPlaceholder": "Tìm kiếm bất động sản...",
-      "viewDetails": "Xem Chi Tiết",
-      "addToFavorites": "Thêm Vào Yêu Thích",
-      "removeFromFavorites": "Xóa Khỏi Yêu Thích",
-      "clearFilters": "Xóa Bộ Lọc",
-      "applyFilters": "Áp Dụng Bộ Lọc",
-      "closeFilters": "Đóng Bộ Lọc",
-      "clearAll": "Xóa Tất Cả"
+      "viewDetails": "Xem Chi tiết",
+      "addToFavorites": "Thêm vào Yêu thích",
+      "removeFromFavorites": "Xóa khỏi Yêu thích",
+      "clearFilters": "Xóa Bộ lọc",
+      "applyFilters": "Áp dụng Bộ lọc",
+      "closeFilters": "Đóng Bộ lọc",
+      "clearAll": "Xóa Tất cả"
     },
     "property": {
-      "verified": "Đã xác thực",
+      "verified": "Đã xác minh",
       "featured": "Nổi bật",
       "video": "Video",
       "bedrooms": "phòng ngủ",
       "bathrooms": "phòng tắm",
-      "more": "khác",
+      "more": "thêm",
       "noProperties": "Không tìm thấy bất động sản",
-      "noPropertiesDescription": "Hãy thử điều chỉnh tiêu chí tìm kiếm hoặc quay lại sau để xem tin đăng mới.",
-      "listings": "Danh sách bất động sản",
-      "favorites": "yêu thích",
-      "additionalAmenities": "Tiện nghi bổ sung",
+      "noPropertiesDescription": "Hãy thử điều chỉnh tiêu chí tìm kiếm của bạn hoặc kiểm tra lại sau để có danh sách mới.",
+      "listings": "Danh sách Bất động sản",
+      "favorites": "Yêu thích",
+      "additionalAmenities": "Tiện nghi Bổ sung",
       "views": "lượt xem",
       "distance": "km",
       "area": "m²"
     },
     "auth": {
       "login": {
-        "title": "Đăng Nhập",
+        "title": "Đăng nhập",
         "description": "Chào mừng trở lại! Vui lòng đăng nhập vào tài khoản của bạn.",
-        "submitButton": "Đăng Nhập",
-        "submittingButton": "Đang đăng nhập...",
+        "submitButton": "Đăng nhập",
+        "submittingButton": "Đang đăng nhập…",
         "googleButton": "Đăng nhập với Google",
         "forgotPassword": "Quên mật khẩu?",
         "noAccount": "Chưa có tài khoản?",
@@ -64,10 +75,10 @@
         "errorMessage": "Đăng nhập thất bại. Vui lòng thử lại."
       },
       "register": {
-        "title": "Đăng Ký",
+        "title": "Đăng ký",
         "description": "Tạo tài khoản mới để bắt đầu sử dụng dịch vụ của chúng tôi.",
-        "submitButton": "Đăng Ký",
-        "submittingButton": "Đang đăng ký...",
+        "submitButton": "Đăng ký",
+        "submittingButton": "Đang đăng ký…",
         "googleButton": "Đăng ký với Google",
         "haveAccount": "Đã có tài khoản?",
         "loginLink": "Đăng nhập",
@@ -75,7 +86,7 @@
         "firstNamePlaceholder": "Nhập tên",
         "lastName": "Họ",
         "lastNamePlaceholder": "Nhập họ",
-        "confirmPassword": "Xác nhận mật khẩu",
+        "confirmPassword": "Xác nhận Mật khẩu",
         "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
         "idDocument": "Số CMND/CCCD",
         "idDocumentPlaceholder": "Nhập số CMND/CCCD",
@@ -85,17 +96,17 @@
         "errorMessage": "Đăng ký thất bại. Vui lòng thử lại.",
         "switchToLogin": "Đã có tài khoản? <u>Đăng nhập</u>",
         "sections": {
-          "personalInfo": "Thông tin cá nhân",
-          "contactInfo": "Thông tin liên hệ",
+          "personalInfo": "Thông tin Cá nhân",
+          "contactInfo": "Thông tin Liên hệ",
           "security": "Bảo mật",
-          "legalInfo": "Thông tin pháp lý"
+          "legalInfo": "Thông tin Pháp lý"
         }
       },
       "forgotPassword": {
-        "title": "Đặt Lại Mật Khẩu",
-        "description": "Nhập email hoặc số điện thoại để nhận mã xác minh để khôi phục mật khẩu.",
+        "title": "Đặt lại Mật khẩu",
+        "description": "Nhập email hoặc số điện thoại của bạn để nhận mã xác minh để đặt lại mật khẩu.",
         "submitButton": "Gửi Mã",
-        "submittingButton": "Đang gửi...",
+        "submittingButton": "Đang gửi…",
         "switchToLogin": "Nhớ mật khẩu? <u>Đăng nhập</u>"
       },
       "common": {
@@ -111,31 +122,31 @@
         "emailOrPhonePlaceholder": "Nhập email hoặc số điện thoại"
       },
       "validation": {
-        "phoneCodeRequired": "Mã vùng là bắt buộc",
-        "phoneCodeInvalid": "Mã vùng phải có 1-5 ký tự",
+        "phoneCodeRequired": "Mã điện thoại là bắt buộc",
+        "phoneCodeInvalid": "Mã điện thoại phải có 1–5 ký tự",
         "phoneNumberRequired": "Số điện thoại là bắt buộc",
-        "phoneNumberInvalid": "Số điện thoại phải có 5-20 ký tự",
+        "phoneNumberInvalid": "Số điện thoại phải có 5–20 ký tự",
         "firstNameRequired": "Tên là bắt buộc",
         "lastNameRequired": "Họ là bắt buộc",
         "passwordRequired": "Mật khẩu là bắt buộc",
         "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
-        "passwordPattern": "Mật khẩu phải chứa ít nhất 8 ký tự, một chữ hoa, một chữ thường, một số và một ký tự đặc biệt",
+        "passwordPattern": "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt",
         "emailRequired": "Email là bắt buộc",
         "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
         "confirmPasswordRequired": "Xác nhận mật khẩu là bắt buộc",
-        "confirmPasswordMatch": "Mật khẩu xác nhận không khớp",
+        "confirmPasswordMatch": "Mật khẩu không khớp",
         "idDocumentRequired": "Số CMND/CCCD là bắt buộc",
         "taxNumberRequired": "Mã số thuế là bắt buộc",
         "phoneRequired": "Số điện thoại là bắt buộc",
         "phoneInvalid": "Vui lòng nhập số điện thoại hợp lệ",
         "emailOrPhoneRequired": "Email hoặc số điện thoại là bắt buộc",
-        "emailOrPhoneInvalid": "Vui lòng nhập địa chỉ email hoặc số điện thoại hợp lệ"
+        "emailOrPhoneInvalid": "Vui lòng nhập email hoặc số điện thoại hợp lệ"
       },
       "logout": "Đăng xuất",
       "profile": "Hồ sơ",
       "settings": "Cài đặt",
       "user": {
-        "welcome": "Xin chào",
+        "welcome": "Chào mừng",
         "role": {
           "user": "Người dùng",
           "admin": "Quản trị viên",
@@ -145,31 +156,31 @@
       }
     },
     "filters": {
-      "title": "Lọc Bất Động Sản",
-      "anyAmenities": "Mọi Tiện Nghi",
-      "oneAmenity": "1 Tiện Nghi",
-      "amenitiesCount": "Tiện Nghi",
+      "title": "Lọc Bất động sản",
+      "anyAmenities": "Bất kỳ Tiện nghi nào",
+      "oneAmenity": "1 Tiện nghi",
+      "amenitiesCount": "Tiện nghi",
       "propertyType": {
-        "title": "Loại Bất Động Sản",
-        "all": "Tất Cả Loại",
+        "title": "Loại Bất động sản",
+        "all": "Tất cả Loại",
         "apartment": "Căn hộ",
         "studio": "Studio",
         "villa": "Biệt thự",
-        "house": "Nhà riêng",
+        "house": "Nhà",
         "condo": "Condo",
         "townhouse": "Nhà phố",
         "penthouse": "Penthouse"
       },
       "priceRange": {
         "title": "Khoảng Giá",
-        "minPrice": "Giá Tối Thiểu",
-        "maxPrice": "Giá Tối Đa",
+        "minPrice": "Giá Tối thiểu",
+        "maxPrice": "Giá Tối đa",
         "currency": "VND",
-        "any": "Mọi Giá"
+        "any": "Bất kỳ Giá nào"
       },
       "bedrooms": {
-        "title": "Phòng Ngủ",
-        "any": "Bất Kỳ",
+        "title": "Phòng ngủ",
+        "any": "Bất kỳ",
         "studio": "Studio",
         "one": "1+",
         "two": "2+",
@@ -178,8 +189,8 @@
         "five": "5+"
       },
       "bathrooms": {
-        "title": "Phòng Tắm",
-        "any": "Bất Kỳ",
+        "title": "Phòng tắm",
+        "any": "Bất kỳ",
         "one": "1+",
         "two": "2+",
         "three": "3+",
@@ -187,53 +198,53 @@
         "five": "5+"
       },
       "amenities": {
-        "title": "Tiện Nghi",
-        "airConditioning": "Điều Hòa",
+        "title": "Tiện nghi",
+        "airConditioning": "Điều hòa",
         "wifi": "WiFi",
-        "parking": "Bãi Đỗ Xe",
-        "gym": "Phòng Gym",
-        "swimmingPool": "Hồ Bơi",
-        "security": "An Ninh",
+        "parking": "Bãi đỗ xe",
+        "gym": "Phòng gym",
+        "swimmingPool": "Hồ bơi",
+        "security": "Bảo vệ",
         "garden": "Vườn",
-        "balcony": "Ban Công",
-        "elevator": "Thang Máy",
-        "furnished": "Nội Thất",
-        "petFriendly": "Thú Cưng"
+        "balcony": "Ban công",
+        "elevator": "Thang máy",
+        "furnished": "Có nội thất",
+        "petFriendly": "Thú cưng"
       },
       "location": {
-        "title": "Vị Trí",
-        "city": "Thành Phố",
+        "title": "Vị trí",
+        "city": "Thành phố",
         "district": "Quận/Huyện",
-        "any": "Mọi Vị Trí"
+        "any": "Bất kỳ Vị trí nào"
       },
       "furnishing": {
-        "title": "Nội Thất",
-        "any": "Bất Kỳ",
-        "furnished": "Có Nội Thất",
-        "semiFurnished": "Nội Thất Một Phần",
-        "unfurnished": "Không Nội Thất"
+        "title": "Nội thất",
+        "any": "Bất kỳ",
+        "furnished": "Có nội thất",
+        "semiFurnished": "Bán nội thất",
+        "unfurnished": "Không nội thất"
       }
     }
   },
   "footer": {
-    "description": "Đối tác đáng tin cậy của bạn trong việc tìm kiếm ngôi nhà hoàn hảo. Chúng tôi kết nối bạn với những bất động sản cao cấp và dịch vụ xuất sắc.",
-    "quickLinks": "Liên Kết Nhanh",
-    "aboutUs": "Về Chúng Tôi",
-    "properties": "Bất Động Sản",
-    "services": "Dịch Vụ",
-    "contact": "Liên Hệ",
-    "support": "Hỗ Trợ",
-    "helpCenter": "Trung Tâm Trợ Giúp",
-    "privacyPolicy": "Chính Sách Bảo Mật",
-    "termsOfService": "Điều Khoản Dịch Vụ",
-    "faq": "Câu Hỏi Thường Gặp",
-    "contactInfo": "Thông Tin Liên Hệ",
+    "description": "Đối tác đáng tin cậy của bạn trong việc tìm kiếm ngôi nhà hoàn hảo. Chúng tôi kết nối bạn với bất động sản cao cấp và dịch vụ xuất sắc.",
+    "quickLinks": "Liên kết Nhanh",
+    "aboutUs": "Về Chúng tôi",
+    "properties": "Bất động sản",
+    "services": "Dịch vụ",
+    "contact": "Liên hệ",
+    "support": "Hỗ trợ",
+    "helpCenter": "Trung tâm Trợ giúp",
+    "privacyPolicy": "Chính sách Bảo mật",
+    "termsOfService": "Điều khoản Dịch vụ",
+    "faq": "Câu hỏi Thường gặp",
+    "contactInfo": "Thông tin Liên hệ",
     "address": "123 Đường Chính, Thành phố Hồ Chí Minh, Việt Nam",
     "phone": "+84 123 456 789",
     "email": "info@smartrent.com",
     "copyright": "© 2024 SmartRent. Tất cả quyền được bảo lưu.",
-    "privacy": "Bảo Mật",
-    "terms": "Điều Khoản"
+    "privacy": "Bảo mật",
+    "terms": "Điều khoản"
   },
   "navigation": {
     "home": "Trang chủ",
@@ -245,19 +256,19 @@
     "account": "Tài khoản",
     "residential": "Nhà ở",
     "commercial": "Thương mại",
-    "vacation": "Cho thuê nghỉ dưỡng",
+    "vacation": "Cho thuê Nghỉ dưỡng",
     "tenants": "Người thuê",
     "applications": "Đơn đăng ký",
     "leases": "Hợp đồng thuê",
-    "maintenance": "Yêu cầu bảo trì",
+    "maintenance": "Yêu cầu Bảo trì",
     "documents": "Tài liệu",
     "contracts": "Hợp đồng",
     "invoices": "Hóa đơn",
     "reports": "Báo cáo",
     "calendar": "Lịch",
     "analytics": "Phân tích",
-    "financial": "Báo cáo tài chính",
-    "occupancy": "Tỷ lệ lấp đầy",
-    "performance": "Hiệu suất bất động sản"
+    "financial": "Báo cáo Tài chính",
+    "occupancy": "Tỷ lệ Lấp đầy",
+    "performance": "Hiệu suất Bất động sản"
   }
 }
