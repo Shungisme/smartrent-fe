@@ -2,6 +2,17 @@
   "common": {
     "or": "Or"
   },
+  "pagination": {
+    "showing": "Showing",
+    "of": "of",
+    "results": "results",
+    "show": "Show",
+    "perPage": "per page",
+    "first": "First",
+    "last": "Last",
+    "previous": "Previous",
+    "next": "Next"
+  },
   "homePage": {
     "title": "Find Your Dream Home",
     "subtitle": "Explore premium real estate with modern amenities, verified listings, and transparent pricing.",
