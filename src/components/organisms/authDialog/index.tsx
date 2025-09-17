@@ -1,10 +1,10 @@
 import React, {
-  ReactNode,
   useCallback,
   useState,
   lazy,
   Suspense,
   useEffect,
+  useMemo,
 } from 'react'
 import { NextPage } from 'next'
 import { Dialog, DialogContent, DialogTitle } from '@/components/atoms/dialog'
@@ -13,23 +13,27 @@ import ImageAtom from '@/components/atoms/imageAtom'
 import { basePath, DEFAULT_IMAGE } from '@/constants'
 
 const LoginForm = lazy(() => import('@/components/molecules/loginForm'))
-const RegisterForm = lazy(() => import('@/components/molecules/registerForm'))
-const ForgotPasswordForm = lazy(
-  () => import('@/components/molecules/forgotPasswordForm'),
+const RegisterFlow = lazy(() => import('@/components/molecules/registerFlow'))
+const ForgotPasswordFlow = lazy(
+  () => import('@/components/molecules/forgotPasswordFlow'),
 )
 
-export type AuthType = 'login' | 'register' | 'forgotPassword'
+export type AuthType =
+  | 'login'
+  | 'register'
+  | 'forgotPassword'
+  | 'otp'
+  | 'success'
 
 type AuthDialogProps = {
   type?: AuthType
   open?: boolean
   handleOpen?: () => void
   handleClose?: () => void
-  onSuccess?: () => void
 }
 
 const AuthDialog: NextPage<AuthDialogProps> = (props) => {
-  const { open = false, type = 'login', handleClose, onSuccess } = props
+  const { open = false, type = 'login', handleClose } = props
   const [authType, setAuthType] = useState<AuthType>(type)
 
   useEffect(() => {
@@ -42,42 +46,18 @@ const AuthDialog: NextPage<AuthDialogProps> = (props) => {
     setAuthType(type)
   }, [])
 
-  const getAuthComponent = (type: AuthType): ReactNode | null => {
-    const FormComponent = () => {
-      switch (type) {
-        case 'login':
-          return <LoginForm switchTo={switchTo} onSuccess={onSuccess} />
-        case 'register':
-          return <RegisterForm switchTo={switchTo} onSuccess={onSuccess} />
-        case 'forgotPassword':
-          return (
-            <ForgotPasswordForm switchTo={switchTo} onSuccess={onSuccess} />
-          )
-        default:
-          return null
-      }
+  const authComponent = useMemo(() => {
+    switch (authType) {
+      case 'login':
+        return <LoginForm switchTo={switchTo} onSuccess={handleClose} />
+      case 'register':
+        return <RegisterFlow switchTo={switchTo} />
+      case 'forgotPassword':
+        return <ForgotPasswordFlow switchTo={switchTo} />
+      default:
+        return null
     }
-
-    return (
-      <Suspense
-        fallback={
-          <div className='space-y-4'>
-            <div className='space-y-2 text-center'>
-              <Skeleton className='h-8 w-48 mx-auto' />
-              <Skeleton className='h-4 w-64 mx-auto' />
-            </div>
-            <div className='space-y-4'>
-              <Skeleton className='h-10 w-full' />
-              <Skeleton className='h-10 w-full' />
-              <Skeleton className='h-10 w-full' />
-            </div>
-          </div>
-        }
-      >
-        <FormComponent />
-      </Suspense>
-    )
-  }
+  }, [authType, switchTo, handleClose])
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -98,7 +78,23 @@ const AuthDialog: NextPage<AuthDialogProps> = (props) => {
             </div>
             <div className='flex justify-center md:overflow-y-auto'>
               <div className='w-[20rem] md:w-[24rem] max-h-[70vh] p-4 md:p-6 py-6 md:py-8'>
-                {getAuthComponent(authType)}
+                <Suspense
+                  fallback={
+                    <div className='space-y-4'>
+                      <div className='space-y-2 text-center'>
+                        <Skeleton className='h-8 w-48 mx-auto' />
+                        <Skeleton className='h-4 w-64 mx-auto' />
+                      </div>
+                      <div className='space-y-4'>
+                        <Skeleton className='h-10 w-full' />
+                        <Skeleton className='h-10 w-full' />
+                        <Skeleton className='h-10 w-full' />
+                      </div>
+                    </div>
+                  }
+                >
+                  {authComponent}
+                </Suspense>
               </div>
             </div>
           </div>

@@ -44,11 +44,8 @@ const UserMenu: NextPage = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56' align='end' forceMount>
         <DropdownMenuLabel className='font-normal'>
-          <div className='flex flex-col space-y-1'>
-            <Typography
-              variant='p'
-              className='text-sm font-medium leading-none'
-            >
+          <div className='flex flex-col gap-1'>
+            <Typography variant='p' className='text-sm font-medium'>
               {user.firstName} {user.lastName}
             </Typography>
             <Typography

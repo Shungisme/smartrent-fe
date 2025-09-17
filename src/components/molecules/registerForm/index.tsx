@@ -1,18 +1,18 @@
 import { NextPage } from 'next'
 import { AuthType } from '@/components/organisms/authDialog'
-import { PhoneField } from '../phoneField'
-import { FormField } from '../formField'
 import { Button } from '@/components/atoms/button'
 import { Typography } from '@/components/atoms/typography'
+import { FormField } from '../formField'
+import { PasswordField } from '../passwordField'
 import { useTranslations } from 'next-intl'
-import { useForm } from 'react-hook-form'
+import { useForm, useController } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import dynamic from 'next/dynamic'
 import SeparatorOr from '@/components/atoms/separatorOr'
 import { useRegister } from '@/hooks/useAuth'
 import { toast } from 'sonner'
-import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
+import { EMAIL_REGEX, PASSWORD_STRENGTH_REGEX } from '@/constants/regex'
 
 const ImageAtom = dynamic(() => import('@/components/atoms/imageAtom'), {
   ssr: false,
@@ -21,60 +21,41 @@ const ImageAtom = dynamic(() => import('@/components/atoms/imageAtom'), {
 
 type RegisterFormProps = {
   switchTo: (type: AuthType) => void
-  onSuccess?: () => void
+  onSuccess?: (email: string) => void
 }
 
 type RegisterFormData = {
-  phoneNumber: string
-  phoneCode: string
   firstName: string
   lastName: string
   email: string
   password: string
   confirmPassword: string
-  idDocument: string
-  taxNumber: string
 }
 
 const RegisterForm: NextPage<RegisterFormProps> = (props) => {
-  const { switchTo } = props
+  const { switchTo, onSuccess } = props
   const t = useTranslations()
   const { registerUser } = useRegister()
 
-  // Validation schema with Vietnamese messages
   const registerSchema = yup.object({
-    phoneCode: yup
-      .string()
-      .required(t('homePage.auth.validation.phoneCodeRequired'))
-      .matches(
-        VALIDATION_PATTERNS.PHONE_CODE,
-        t('homePage.auth.validation.phoneCodeInvalid'),
-      ),
-    phoneNumber: yup
-      .string()
-      .required(t('homePage.auth.validation.phoneNumberRequired'))
-      .matches(
-        VALIDATION_PATTERNS.PHONE_NUMBER,
-        t('homePage.auth.validation.phoneNumberInvalid'),
-      ),
     firstName: yup
       .string()
-      .required(t('homePage.auth.validation.firstNameRequired')),
+      .required(t('homePage.auth.validation.firstNameRequired'))
+      .min(2, t('homePage.auth.validation.firstNameMinLength')),
     lastName: yup
       .string()
-      .required(t('homePage.auth.validation.lastNameRequired')),
+      .required(t('homePage.auth.validation.lastNameRequired'))
+      .min(2, t('homePage.auth.validation.lastNameMinLength')),
     email: yup
       .string()
       .required(t('homePage.auth.validation.emailRequired'))
-      .matches(
-        VALIDATION_PATTERNS.EMAIL,
-        t('homePage.auth.validation.emailInvalid'),
-      ),
+      .matches(EMAIL_REGEX, t('homePage.auth.validation.emailInvalid')),
     password: yup
       .string()
       .required(t('homePage.auth.validation.passwordRequired'))
+      .min(8, t('homePage.auth.validation.passwordMinLength'))
       .matches(
-        VALIDATION_PATTERNS.PASSWORD,
+        PASSWORD_STRENGTH_REGEX,
         t('homePage.auth.validation.passwordPattern'),
       ),
     confirmPassword: yup
@@ -84,12 +65,6 @@ const RegisterForm: NextPage<RegisterFormProps> = (props) => {
         [yup.ref('password')],
         t('homePage.auth.validation.confirmPasswordMatch'),
       ),
-    idDocument: yup
-      .string()
-      .required(t('homePage.auth.validation.idDocumentRequired')),
-    taxNumber: yup
-      .string()
-      .required(t('homePage.auth.validation.taxNumberRequired')),
   })
 
   const {
@@ -99,40 +74,49 @@ const RegisterForm: NextPage<RegisterFormProps> = (props) => {
   } = useForm<RegisterFormData>({
     resolver: yupResolver(registerSchema),
     defaultValues: {
-      phoneNumber: '',
-      phoneCode: '+84',
       firstName: '',
       lastName: '',
       email: '',
       password: '',
       confirmPassword: '',
-      idDocument: '',
-      taxNumber: '',
     },
   })
 
-  const onSubmit = async (data: RegisterFormData) => {
-    try {
-      const result = await registerUser({
-        phoneCode: data.phoneCode,
-        phoneNumber: data.phoneNumber,
-        email: data.email,
-        password: data.password,
-        firstName: data.firstName,
-        lastName: data.lastName,
-        idDocument: data.idDocument,
-        taxNumber: data.taxNumber,
-      })
+  const firstNameController = useController({
+    name: 'firstName',
+    control,
+  })
 
-      if (result.success) {
-        toast.success(t('homePage.auth.register.successMessage'))
-        switchTo('login')
-      } else {
-        toast.error(result.error || t('homePage.auth.register.errorMessage'))
-      }
-    } catch (error) {
-      console.error('Register error:', error)
-      toast.error(t('homePage.auth.register.errorMessage'))
+  const lastNameController = useController({
+    name: 'lastName',
+    control,
+  })
+
+  const emailController = useController({
+    name: 'email',
+    control,
+  })
+
+  const confirmPasswordController = useController({
+    name: 'confirmPassword',
+    control,
+  })
+
+  const onSubmit = async (data: RegisterFormData) => {
+    const body = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      password: data.password,
+    }
+
+    const result = await registerUser(body)
+
+    if (result.success) {
+      onSuccess?.(data.email)
+      toast.success(t('homePage.auth.register.successMessage'))
+    } else {
+      toast.error(result.message || t('homePage.auth.register.errorMessage'))
     }
   }
 
@@ -154,126 +138,60 @@ const RegisterForm: NextPage<RegisterFormProps> = (props) => {
 
       <form onSubmit={handleFormSubmit}>
         <div className='space-y-6'>
-          {/* Personal Information Section */}
           <div className='space-y-4'>
-            <div className='mb-2'>
-              <Typography
-                variant='small'
-                className='text-sm font-medium text-muted-foreground'
-              >
-                {t('homePage.auth.register.sections.personalInfo')}
-              </Typography>
-            </div>
-
-            <div className='grid grid-cols-2 gap-4'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <FormField
-                {...control.register('firstName')}
                 label={t('homePage.auth.register.firstName')}
-                required
                 placeholder={t('homePage.auth.register.firstNamePlaceholder')}
-                error={errors.firstName?.message}
-              />
-              <FormField
-                {...control.register('lastName')}
-                label={t('homePage.auth.register.lastName')}
                 required
+                error={errors.firstName?.message}
+                {...firstNameController.field}
+              />
+
+              <FormField
+                label={t('homePage.auth.register.lastName')}
                 placeholder={t('homePage.auth.register.lastNamePlaceholder')}
+                required
                 error={errors.lastName?.message}
+                {...lastNameController.field}
               />
             </div>
-          </div>
-
-          {/* Contact Information Section */}
-          <div className='space-y-4'>
-            <div className='mb-2'>
-              <Typography
-                variant='small'
-                className='text-sm font-medium text-muted-foreground'
-              >
-                {t('homePage.auth.register.sections.contactInfo')}
-              </Typography>
-            </div>
-
-            <PhoneField
-              name='phoneNumber'
-              control={control}
-              label={t('homePage.auth.common.phoneNumber')}
-              error={errors.phoneNumber?.message}
-            />
 
             <FormField
-              type='email'
-              {...control.register('email')}
               label={t('homePage.auth.common.email')}
-              required
               placeholder={t('homePage.auth.common.emailPlaceholder')}
+              type='email'
+              required
               error={errors.email?.message}
+              {...emailController.field}
             />
-          </div>
 
-          {/* Security Section */}
-          <div className='space-y-4'>
-            <div className='mb-2'>
-              <Typography
-                variant='small'
-                className='text-sm font-medium text-muted-foreground'
-              >
-                {t('homePage.auth.register.sections.security')}
-              </Typography>
-            </div>
-
-            <FormField
-              type='password'
-              {...control.register('password')}
+            <PasswordField
+              name='password'
+              control={control}
               label={t('homePage.auth.common.password')}
-              required
               placeholder={t('homePage.auth.common.passwordPlaceholder')}
-              error={errors.password?.message}
+              required
             />
 
             <FormField
-              type='password'
-              {...control.register('confirmPassword')}
               label={t('homePage.auth.register.confirmPassword')}
-              required
               placeholder={t(
                 'homePage.auth.register.confirmPasswordPlaceholder',
               )}
+              type='password'
+              required
               error={errors.confirmPassword?.message}
+              {...confirmPasswordController.field}
             />
-          </div>
-
-          {/* Legal Information Section */}
-          <div className='space-y-4'>
-            <div className='mb-2'>
-              <Typography
-                variant='small'
-                className='text-sm font-medium text-muted-foreground'
-              >
-                {t('homePage.auth.register.sections.legalInfo')}
-              </Typography>
-            </div>
-
-            <div className='grid grid-cols-2 gap-4'>
-              <FormField
-                {...control.register('idDocument')}
-                label={t('homePage.auth.register.idDocument')}
-                required
-                placeholder={t('homePage.auth.register.idDocumentPlaceholder')}
-                error={errors.idDocument?.message}
-              />
-              <FormField
-                {...control.register('taxNumber')}
-                label={t('homePage.auth.register.taxNumber')}
-                required
-                placeholder={t('homePage.auth.register.taxNumberPlaceholder')}
-                error={errors.taxNumber?.message}
-              />
-            </div>
           </div>
         </div>
 
-        <Button type='submit' disabled={isSubmitting} className='w-full mt-6'>
+        <Button
+          type='submit'
+          disabled={isSubmitting}
+          className='w-full mt-6 cursor-pointer'
+        >
           {isSubmitting
             ? t('homePage.auth.register.submittingButton')
             : t('homePage.auth.register.submitButton')}
@@ -287,7 +205,6 @@ const RegisterForm: NextPage<RegisterFormProps> = (props) => {
         variant='outline'
         className='w-full'
         onClick={() => {
-          // TODO: Implement Google OAuth
           console.log('Google register clicked')
         }}
       >

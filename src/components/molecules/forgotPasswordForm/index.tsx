@@ -1,18 +1,20 @@
 import { NextPage } from 'next'
 import { AuthType } from '@/components/organisms/authDialog'
-import { EmailOrPhoneField } from '../emailOrPhoneField'
+import { EmailField } from '../emailField'
 import { Button } from '@/components/atoms/button'
 import { Typography } from '@/components/atoms/typography'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
+import { AuthService } from '@/api/services/auth.service'
+import { toast } from 'sonner'
 
 type ForgotPasswordFormProps = {
   switchTo: (type: AuthType) => void
-  onSuccess?: () => void
+  onSuccess?: (email: string) => void
 }
 
 type ForgotPasswordFormData = {
-  emailOrPhone: string
+  email: string
 }
 
 const ForgotPasswordForm: NextPage<ForgotPasswordFormProps> = (props) => {
@@ -25,14 +27,19 @@ const ForgotPasswordForm: NextPage<ForgotPasswordFormProps> = (props) => {
     formState: { isSubmitting },
   } = useForm<ForgotPasswordFormData>({
     defaultValues: {
-      emailOrPhone: '',
+      email: '',
     },
   })
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     try {
-      console.log('Form data:', data)
-      onSuccess?.()
+      const response = await AuthService.resendOtp(data.email)
+
+      if (response.success) {
+        onSuccess?.(data.email)
+      } else {
+        toast.error(response.message)
+      }
     } catch (error) {
       console.error('Forgot password error:', error)
     }
@@ -55,10 +62,10 @@ const ForgotPasswordForm: NextPage<ForgotPasswordFormProps> = (props) => {
       </div>
 
       <form onSubmit={handleFormSubmit} className='space-y-4'>
-        <EmailOrPhoneField
-          name='emailOrPhone'
+        <EmailField
+          name='email'
           control={control}
-          label={t('homePage.auth.common.emailOrPhone')}
+          label={t('homePage.auth.common.email')}
         />
 
         <Button type='submit' disabled={isSubmitting} className='w-full'>
@@ -71,11 +78,11 @@ const ForgotPasswordForm: NextPage<ForgotPasswordFormProps> = (props) => {
       <div className='text-center'>
         <button
           type='button'
-          className='transition-colors'
+          className='transition-colors cursor-pointer'
           onClick={() => props.switchTo('login')}
         >
           {t.rich('homePage.auth.forgotPassword.switchToLogin', {
-            u: (chunks) => <u className='underline'>{chunks}</u>,
+            u: (chunks) => <u className='underline text-primary'>{chunks}</u>,
           })}
         </button>
       </div>

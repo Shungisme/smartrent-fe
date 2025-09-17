@@ -21,6 +21,7 @@ type PasswordFieldProps = {
   className?: string
   placeholder?: string
   id?: string
+  required?: boolean
 }
 
 const PasswordField = (props: PasswordFieldProps) => {
@@ -35,6 +36,7 @@ const PasswordField = (props: PasswordFieldProps) => {
     className,
     placeholder,
     id,
+    required = false,
   } = props
   const [showPassword, setShowPassword] = React.useState(false)
   const t = useTranslations()
@@ -66,7 +68,13 @@ const PasswordField = (props: PasswordFieldProps) => {
   return (
     <div>
       {label && (
-        <Label className='mb-2' htmlFor={fieldId}>
+        <Label
+          className={cn(
+            'mb-2',
+            required && 'after:content-["*"] after:ml-1 after:text-destructive',
+          )}
+          htmlFor={fieldId}
+        >
           {label}
         </Label>
       )}

@@ -19,6 +19,7 @@ interface PhoneFieldProps {
   placeholder?: string
   className?: string
   id?: string
+  required?: boolean
 }
 
 const PhoneField = (props: PhoneFieldProps) => {
@@ -32,6 +33,7 @@ const PhoneField = (props: PhoneFieldProps) => {
     name,
     control,
     placeholder,
+    required = false,
   } = props
 
   const t = useTranslations()
@@ -44,7 +46,7 @@ const PhoneField = (props: PhoneFieldProps) => {
     name,
     control,
     rules: {
-      required: t('homePage.auth.validation.phoneRequired'),
+      required: required ? t('homePage.auth.validation.phoneRequired') : false,
       pattern: {
         value: VIETNAM_PHONE_REGEX,
         message: t('homePage.auth.validation.phoneInvalid'),
@@ -58,6 +60,7 @@ const PhoneField = (props: PhoneFieldProps) => {
       {label && (
         <Label className='mb-2' htmlFor={fieldId}>
           {label}
+          {required && <span className='text-destructive ml-1'>*</span>}
         </Label>
       )}
 

@@ -69,7 +69,7 @@ const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
 
   const handleAuthSuccess = () => {
     setAuthDialogOpen(false)
-    setIsOpen(false) // Close mobile navigation when auth is successful
+    setIsOpen(false)
   }
 
   const handleLogout = async () => {
@@ -271,8 +271,7 @@ const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
       <AuthDialog
         open={authDialogOpen}
         type={authType}
-        handleClose={() => setAuthDialogOpen(false)}
-        onSuccess={handleAuthSuccess}
+        handleClose={handleAuthSuccess}
       />
     </>
   )
