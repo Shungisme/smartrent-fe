@@ -1,4 +1,5 @@
 import { NextPage } from 'next'
+import Link from 'next/link'
 import { Button } from '@/components/atoms/button'
 import { Typography } from '@/components/atoms/typography'
 import { Avatar } from '@/components/atoms/avatar'
@@ -57,9 +58,11 @@ const UserMenu: NextPage = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <User className='mr-2 h-4 w-4' />
-          <span>{t('homePage.auth.profile')}</span>
+        <DropdownMenuItem asChild>
+          <Link href='/account/manage'>
+            <User className='mr-2 h-4 w-4' />
+            <span>{t('navigation.accountManagement')}</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Settings className='mr-2 h-4 w-4' />

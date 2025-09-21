@@ -7,6 +7,8 @@ import {
   AuthTokens,
   ResetPasswordResponse,
   ResetPasswordRequest,
+  ChangePasswordRequest,
+  API_ERROR_CODES,
 } from '@/api/types/auth.type'
 import { UserApi } from '../types/user.type'
 import { ApiResponse } from '@/configs/axios/types'
@@ -135,6 +137,18 @@ export class AuthService {
 
     return response
   }
+
+  static async changePassword(
+    passwordData: ChangePasswordRequest,
+  ): Promise<boolean> {
+    const response = await apiRequest<{ code: string }>({
+      method: 'POST',
+      url: ENV.API.USER.CHANGE_PASSWORD,
+      data: passwordData,
+    })
+
+    return response?.code === API_ERROR_CODES.SUCCESS
+  }
 }
 
 export const {
@@ -145,4 +159,5 @@ export const {
   register,
   verifyOtpResetPassword,
   resetPassword,
+  changePassword,
 } = AuthService

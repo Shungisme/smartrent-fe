@@ -198,14 +198,21 @@
         "confirmPasswordRequired": "Xác nhận mật khẩu là bắt buộc",
         "confirmPasswordMatch": "Mật khẩu không khớp",
         "idDocumentRequired": "Số CMND/CCCD là bắt buộc",
+        "idDocumentMinLength": "Số CMND/CCCD phải có ít nhất 9 ký tự",
         "taxNumberRequired": "Mã số thuế là bắt buộc",
+        "taxNumberInvalid": "Mã số thuế không hợp lệ",
         "phoneRequired": "Số điện thoại là bắt buộc",
         "phoneInvalid": "Vui lòng nhập số điện thoại hợp lệ",
         "emailOrPhoneRequired": "Email hoặc số điện thoại là bắt buộc",
         "emailOrPhoneInvalid": "Vui lòng nhập email hoặc số điện thoại hợp lệ",
         "otpRequired": "Mã xác minh là bắt buộc",
         "otpLength": "Mã xác minh phải có 6 số",
-        "passwordsDoNotMatch": "Mật khẩu không khớp"
+        "passwordsDoNotMatch": "Mật khẩu không khớp",
+        "currentPasswordRequired": "Mật khẩu hiện tại là bắt buộc",
+        "newPasswordRequired": "Mật khẩu mới là bắt buộc",
+        "newPasswordMinLength": "Mật khẩu mới phải có ít nhất 8 ký tự",
+        "newPasswordLowercase": "Mật khẩu cần có ít nhất 1 ký tự viết thường",
+        "newPasswordNumber": "Mật khẩu cần có ít nhất 1 ký tự số"
       },
       "logout": "Đăng xuất",
       "profile": "Hồ sơ",
@@ -235,6 +242,63 @@
         "resendError": "Không thể gửi lại mã. Vui lòng thử lại.",
         "resendingButton": "Đang gửi lại...",
         "back": "Quay Lại"
+      },
+      "accountManagement": {
+        "title": "Quản lý tài khoản",
+        "personalInfoTab": "Chỉnh sửa thông tin",
+        "accountSettingsTab": "Cài đặt tài khoản",
+        "personalInfo": {
+          "title": "Thông tin cá nhân",
+          "contactInfo": "Thông tin liên hệ",
+          "businessInfo": "Thông tin xuất hóa đơn",
+          "firstName": "Họ và tên người mua hàng",
+          "lastName": "Tên",
+          "phoneNumber": "Số điện thoại chính",
+          "email": "Email",
+          "idDocument": "Mã số thuế",
+          "taxNumber": "Mã số ĐVQHNS",
+          "address": "Địa chỉ",
+          "avatarUpload": "Tải ảnh",
+          "saveChanges": "Lưu thay đổi",
+          "saving": "Đang lưu...",
+          "updateSuccess": "Cập nhật thông tin cá nhân thành công!",
+          "updateError": "Cập nhật thông tin thất bại. Vui lòng thử lại.",
+          "updateErrorGeneral": "Có lỗi xảy ra khi cập nhật thông tin",
+          "updateNotImplemented": "Chức năng cập nhật thông tin chưa được cài đặt"
+        },
+        "passwordChange": {
+          "title": "Đổi mật khẩu",
+          "currentPassword": "Mật khẩu hiện tại",
+          "newPassword": "Mật khẩu mới",
+          "confirmPassword": "Nhập lại mật khẩu mới",
+          "passwordRequirements": "Yêu cầu khóa tài khoản",
+          "accountActions": "Yêu cầu xóa tài khoản",
+          "saveChanges": "Lưu thay đổi",
+          "saving": "Đang lưu...",
+          "changeSuccess": "Đổi mật khẩu thành công!",
+          "changeError": "Đổi mật khẩu thất bại. Vui lòng kiểm tra lại mật khẩu hiện tại.",
+          "changeErrorGeneral": "Có lỗi xảy ra khi đổi mật khẩu",
+          "changeNotImplemented": "Chức năng đổi mật khẩu chưa được cài đặt",
+          "lockAccount": "Khóa tài khoản tạm thời",
+          "deleteAccount": "Xóa tài khoản vĩnh viễn",
+          "requirements": {
+            "minLength": "Mật khẩu tối thiểu 8 ký tự",
+            "lowercase": "Chưa có ít nhất 1 ký tự viết thường",
+            "number": "Chưa có ít nhất 1 ký tự số"
+          },
+          "warningTitle": "Lưu ý quan trọng:",
+          "warnings": {
+            "invoice": "Batdongsan.com.vn sẽ xuất Hóa đơn điện tử tự động theo thông tin khách hàng cung cấp và gửi về Email nhận hóa đơn.",
+            "accuracy": "Quý khách vui lòng nhập đầy đủ, chính xác và chịu trách nhiệm về những thông tin đã cung cấp.",
+            "timing": "Hóa đơn GTGT sẽ được xuất trong ngày và cho tất cả các giao dịch nộp tiền.",
+            "service": "Nội dung dịch vụ được thể hiện trên hóa đơn là Phí dịch vụ quảng cáo trên website batdongsan.com.vn.",
+            "support": "Mọi vấn đề cần hỗ trợ về hóa đơn của giao dịch nộp tiền trong ngày, vui lòng liên hệ hotline 1900 1881 trước 18h."
+          }
+        },
+        "loginRequired": {
+          "title": "Vui lòng đăng nhập",
+          "description": "Bạn cần đăng nhập để truy cập trang quản lý tài khoản."
+        }
       }
     },
     "filters": {
@@ -713,6 +777,7 @@
     "login": "Đăng nhập",
     "register": "Đăng ký",
     "account": "Tài khoản",
+    "accountManagement": "Quản lý tài khoản",
     "residential": "Nhà ở",
     "commercial": "Thương mại",
     "vacation": "Cho thuê Nghỉ dưỡng",
