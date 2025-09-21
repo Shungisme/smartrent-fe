@@ -48,11 +48,6 @@ const HomepageTemplate: React.FC<HomepageTemplateProps> = ({
     onPropertyClick?.(property)
   }
 
-  const handleAuthSuccess = () => {
-    handleClose()
-    // No need to force re-render, the auth state change will trigger re-render automatically
-  }
-
   const logo = (
     <div className='flex items-center gap-2'>
       <div className='w-6 h-6 sm:w-8 sm:h-8 bg-primary rounded-lg flex items-center justify-center'>
@@ -98,7 +93,6 @@ const HomepageTemplate: React.FC<HomepageTemplateProps> = ({
         open={open}
         handleClose={handleClose}
         handleOpen={handleOpen}
-        onSuccess={handleAuthSuccess}
       />
 
       <Navigation

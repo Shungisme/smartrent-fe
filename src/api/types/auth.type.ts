@@ -18,44 +18,30 @@ export interface RefreshTokenRequest {
 }
 
 export interface RegisterRequest {
-  phoneCode: string
-  phoneNumber: string
   email: string
   password: string
   firstName: string
   lastName: string
-  idDocument: string
-  taxNumber: string
 }
 
-// Auth API Response Types
 export interface AuthTokens {
   accessToken: string
   refreshToken: string
 }
 
-export interface AuthResponse {
-  code: string
-  data: AuthTokens
+export interface ResetPasswordRequest {
+  resetPasswordToken: string
+  newPassword: string
 }
 
-export interface LogoutResponse {
-  code: string
+export interface ResetPasswordResponse {
+  resetPasswordToken: string
 }
 
-export interface UserResponse {
-  code: string
-  data: {
-    userId: string
-    phoneCode: string
-    phoneNumber: string
-    email: string
-    password: string
-    firstName: string
-    lastName: string
-    idDocument: string
-    taxNumber: string
-  }
+export interface ChangePasswordRequest {
+  oldPassword: string
+  newPassword: string
+  verificationCode: string
 }
 
 // Error Response Types
@@ -64,7 +50,6 @@ export interface ApiErrorResponse {
   message: string
 }
 
-// Validation Patterns - Updated according to API spec
 export const VALIDATION_PATTERNS = {
   EMAIL:
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,

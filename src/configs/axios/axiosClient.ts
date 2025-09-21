@@ -1,6 +1,10 @@
 import axios, { AxiosInstance } from 'axios'
 import { ENV } from '@/constants'
-import { AxiosInstanceConfig, CustomAxiosRequestConfig } from './types'
+import {
+  AxiosInstanceConfig,
+  CustomAxiosRequestConfig,
+  ApiResponse,
+} from './types'
 import { setupInterceptors } from './interceptors'
 import { logError } from './utils'
 
@@ -46,13 +50,19 @@ export const instanceClientAxios = createClientAxiosInstance({
 
 export async function apiRequest<T = any>(
   config: CustomAxiosRequestConfig,
-): Promise<T | null> {
+): Promise<ApiResponse<T>> {
   try {
     const response = await instanceClientAxios(config)
-    return response.data
-  } catch (error) {
+    return {
+      ...response.data,
+      success: true,
+    }
+  } catch (error: any) {
     logError(error, 'API Request')
-    return null
+    return {
+      ...error?.response?.data,
+      success: false,
+    }
   }
 }
 

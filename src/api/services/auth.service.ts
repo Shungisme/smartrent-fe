@@ -4,108 +4,145 @@ import {
   LoginRequest,
   AdminLoginRequest,
   RegisterRequest,
-  AuthResponse,
-  LogoutResponse,
-  UserResponse,
   AuthTokens,
-  API_ERROR_CODES,
+  ResetPasswordResponse,
+  ResetPasswordRequest,
 } from '@/api/types/auth.type'
+import { UserApi } from '../types/user.type'
+import { ApiResponse } from '@/configs/axios/types'
+import { VerificationAPI } from '../types/verification.type'
 
 export class AuthService {
   static async login(
     credentials: LoginRequest,
-  ): Promise<AuthTokens | undefined> {
-    const response = await apiRequest<AuthResponse>({
+  ): Promise<ApiResponse<AuthTokens>> {
+    const response = await apiRequest<AuthTokens>({
       method: 'POST',
       url: ENV.API.AUTH.LOGIN,
       data: credentials,
       skipAuth: true,
     })
 
-    if (response?.code !== API_ERROR_CODES.SUCCESS) {
-      console.log('Login failed')
-      return
-    }
-
-    return response?.data
+    return response
   }
 
   static async adminLogin(
     credentials: AdminLoginRequest,
-  ): Promise<AuthTokens | undefined> {
-    const response = await apiRequest<AuthResponse>({
+  ): Promise<ApiResponse<AuthTokens>> {
+    const response = await apiRequest<AuthTokens>({
       method: 'POST',
       url: ENV.API.AUTH.ADMIN_LOGIN,
       data: credentials,
       skipAuth: true,
     })
 
-    if (response?.code !== API_ERROR_CODES.SUCCESS) {
-      console.log('Admin login failed')
-      return
-    }
-
-    return response?.data
+    return response
   }
 
-  static async logout(token: string): Promise<void> {
-    const response = await apiRequest<LogoutResponse>({
+  static async logout(token: string): Promise<ApiResponse<null>> {
+    const response = await apiRequest<null>({
       method: 'POST',
       url: ENV.API.AUTH.LOGOUT,
       data: { token },
     })
 
-    if (response?.code !== API_ERROR_CODES.SUCCESS) {
-      console.log('Logout failed')
-    }
+    return response
   }
 
   static async refreshToken(
     refreshToken: string,
-  ): Promise<AuthTokens | undefined> {
-    const response = await apiRequest<AuthResponse>({
+  ): Promise<ApiResponse<AuthTokens>> {
+    const response = await apiRequest<AuthTokens>({
       method: 'POST',
       url: ENV.API.AUTH.REFRESH,
       data: { refreshToken },
       skipAuth: true,
     })
 
-    if (response?.code !== API_ERROR_CODES.SUCCESS) {
-      console.log('Token refresh failed')
-      return
-    }
-
-    return response?.data
+    return response
   }
 
-  static async register(userData: RegisterRequest): Promise<
-    | {
-        userId: string
-        phoneCode: string
-        phoneNumber: string
-        email: string
-        password: string
-        firstName: string
-        lastName: string
-        idDocument: string
-        taxNumber: string
-      }
-    | undefined
-  > {
-    const response = await apiRequest<UserResponse>({
+  static async register(
+    userData: RegisterRequest,
+  ): Promise<ApiResponse<UserApi>> {
+    const response = await apiRequest<UserApi>({
       method: 'POST',
       url: ENV.API.USER.CREATE,
       data: userData,
       skipAuth: true,
     })
 
-    if (response?.code !== API_ERROR_CODES.SUCCESS) {
-      console.log('Registration failed')
-      return
-    }
+    return response
+  }
 
-    return response?.data
+  static async verifyOtp(request: VerificationAPI): Promise<ApiResponse<null>> {
+    const response = await apiRequest<null>({
+      method: 'POST',
+      url: ENV.API.AUTH.VERIFICATION,
+      data: request,
+      skipAuth: true,
+    })
+
+    return response
+  }
+
+  static async resendOtp(email: string): Promise<ApiResponse<null>> {
+    const response = await apiRequest<null>({
+      method: 'POST',
+      url: `${ENV.API.AUTH.RE_SEND_VERIFICATION}?email=${encodeURIComponent(email)}`,
+      skipAuth: true,
+    })
+
+    return response
+  }
+
+  static async validToken(
+    token: string,
+  ): Promise<ApiResponse<{ valid: boolean }>> {
+    const response = await apiRequest<{
+      valid: boolean
+    }>({
+      method: 'POST',
+      url: ENV.API.AUTH.INTROSPECT,
+      data: { token },
+      skipAuth: true,
+    })
+
+    return response
+  }
+
+  static async verifyOtpResetPassword(verificationCode: {
+    verificationCode: string
+  }): Promise<ApiResponse<ResetPasswordResponse>> {
+    const response = await apiRequest<ResetPasswordResponse>({
+      method: 'POST',
+      url: ENV.API.AUTH.FORGOT_PASSWORD,
+      data: verificationCode,
+      skipAuth: true,
+    })
+
+    return response
+  }
+
+  static async resetPassword(
+    request: ResetPasswordRequest,
+  ): Promise<ApiResponse<null>> {
+    const response = await apiRequest<null>({
+      method: 'POST',
+      url: ENV.API.AUTH.RESET_PASSWORD,
+      data: request,
+    })
+
+    return response
   }
 }
 
-export const { login, adminLogin, logout, refreshToken, register } = AuthService
+export const {
+  login,
+  adminLogin,
+  logout,
+  refreshToken,
+  register,
+  verifyOtpResetPassword,
+  resetPassword,
+} = AuthService

@@ -75,6 +75,9 @@
         "errorMessage": "Login failed. Please try again."
       },
       "register": {
+        "backToLogin": "Back to Login",
+        "successTitle": "Registration Successful!",
+        "successDescription": "Your account has been created successfully. You can now log in to your account.",
         "title": "Register",
         "description": "Create a new account to get started with our services.",
         "submitButton": "Register",
@@ -92,22 +95,45 @@
         "idDocumentPlaceholder": "Enter ID number",
         "taxNumber": "Tax Number",
         "taxNumberPlaceholder": "Enter tax number",
-        "successMessage": "Registration successful!",
-        "errorMessage": "Registration failed. Please try again.",
+        "successMessage": "Verification code sent successfully!",
+        "errorMessage": "Verification code sending failed. Please try again.",
         "switchToLogin": "Already have an account? <u>Log In</u>",
         "sections": {
           "personalInfo": "Personal Information",
           "contactInfo": "Contact Information",
           "security": "Security",
           "legalInfo": "Legal Information"
-        }
+        },
+        "otpSentMessage": "Verification code sent successfully!"
+      },
+      "success": {
+        "title": "Registration Successful!",
+        "description": "Your account has been created successfully. You can now log in to your account.",
+        "emailSent": "A verification email has been sent to",
+        "backToLogin": "Back to Login"
       },
       "forgotPassword": {
         "title": "Reset Password",
-        "description": "Enter your email or phone number to receive a verification code to reset your password.",
+        "description": "Enter your email to receive a verification code to reset your password.",
         "submitButton": "Send Code",
         "submittingButton": "Sending…",
-        "switchToLogin": "Remembered your password? <u>Log In</u>"
+        "switchToLogin": "Remembered your password? <u>Log In</u>",
+        "successTitle": "Password Reset Successful!",
+        "successDescription": "Your password has been reset successfully. You can now log in with your new password.",
+        "backToLogin": "Back to Login"
+      },
+      "newPassword": {
+        "title": "Create New Password",
+        "description": "Please enter your new password below.",
+        "newPasswordLabel": "New Password",
+        "newPasswordPlaceholder": "Enter new password",
+        "confirmPasswordLabel": "Confirm New Password",
+        "confirmPasswordPlaceholder": "Re-enter new password",
+        "submitButton": "Reset Password",
+        "submittingButton": "Resetting...",
+        "backToOtp": "Back to Verification",
+        "success": "Password reset successfully!",
+        "error": "Failed to reset password. Please try again."
       },
       "common": {
         "password": "Password",
@@ -122,6 +148,8 @@
         "emailOrPhonePlaceholder": "Enter email or phone number"
       },
       "validation": {
+        "firstNameMinLength": "First name must be at least 2 characters",
+        "lastNameMinLength": "Last name must be at least 2 characters",
         "phoneCodeRequired": "Phone code is required",
         "phoneCodeInvalid": "Phone code must be 1–5 characters",
         "phoneNumberRequired": "Phone number is required",
@@ -140,7 +168,10 @@
         "phoneRequired": "Phone number is required",
         "phoneInvalid": "Please enter a valid phone number",
         "emailOrPhoneRequired": "Email or phone number is required",
-        "emailOrPhoneInvalid": "Please enter a valid email or phone number"
+        "emailOrPhoneInvalid": "Please enter a valid email or phone number",
+        "otpRequired": "Verification code is required",
+        "otpLength": "Verification code must be 6 digits",
+        "passwordsDoNotMatch": "Passwords do not match"
       },
       "logout": "Log Out",
       "profile": "Profile",
@@ -153,6 +184,23 @@
           "landlord": "Landlord",
           "tenant": "Tenant"
         }
+      },
+      "otp": {
+        "title": "Enter Verification Code",
+        "description": "We've sent a 6-digit verification code to {contact}",
+        "digitLabel": "Digit {position}",
+        "verifyButton": "Verify Code",
+        "verifyingButton": "Verifying...",
+        "didntReceive": "Didn't receive the code?",
+        "resendButton": "Resend Code",
+        "resendCountdown": "Resend in {seconds}s",
+        "backToRegister": "Back to Register",
+        "verificationSuccess": "Verification successful!",
+        "verificationError": "Verification failed. Please try again.",
+        "resendSuccess": "Code resent successfully!",
+        "resendError": "Failed to resend code. Please try again.",
+        "resendingButton": "Resending...",
+        "back": "Back"
       }
     },
     "filters": {

@@ -75,6 +75,9 @@
         "errorMessage": "Đăng nhập thất bại. Vui lòng thử lại."
       },
       "register": {
+        "successTitle": "Đăng ký thành công!",
+        "successDescription": "Tài khoản của bạn đã được tạo thành công. Bây giờ bạn có thể đăng nhập vào tài khoản của mình.",
+        "backToLogin": "Quay về đăng nhập",
         "title": "Đăng ký",
         "description": "Tạo tài khoản mới để bắt đầu sử dụng dịch vụ của chúng tôi.",
         "submitButton": "Đăng ký",
@@ -92,23 +95,47 @@
         "idDocumentPlaceholder": "Nhập số CMND/CCCD",
         "taxNumber": "Mã số thuế",
         "taxNumberPlaceholder": "Nhập mã số thuế",
-        "successMessage": "Đăng ký thành công!",
-        "errorMessage": "Đăng ký thất bại. Vui lòng thử lại.",
+        "successMessage": "Mã xác minh đã được gửi thành công!",
+        "errorMessage": "Mã xác minh không được gửi. Vui lòng thử lại.",
         "switchToLogin": "Đã có tài khoản? <u>Đăng nhập</u>",
         "sections": {
           "personalInfo": "Thông tin Cá nhân",
           "contactInfo": "Thông tin Liên hệ",
           "security": "Bảo mật",
           "legalInfo": "Thông tin Pháp lý"
-        }
+        },
+        "otpSentMessage": "Mã xác minh đã được gửi thành công!"
+      },
+      "success": {
+        "title": "Đăng ký thành công!",
+        "description": "Tài khoản của bạn đã được tạo thành công. Bây giờ bạn có thể đăng nhập vào tài khoản của mình.",
+        "emailSent": "Email xác thực đã được gửi đến",
+        "backToLogin": "Quay về đăng nhập"
       },
       "forgotPassword": {
         "title": "Đặt lại Mật khẩu",
-        "description": "Nhập email hoặc số điện thoại của bạn để nhận mã xác minh để đặt lại mật khẩu.",
+        "description": "Nhập email của bạn để nhận mã xác minh để đặt lại mật khẩu.",
         "submitButton": "Gửi Mã",
         "submittingButton": "Đang gửi…",
-        "switchToLogin": "Nhớ mật khẩu? <u>Đăng nhập</u>"
+        "switchToLogin": "Nhớ mật khẩu? <u>Đăng nhập</u>",
+        "successTitle": "Đặt lại Mật khẩu thành công!",
+        "successDescription": "Mật khẩu của bạn đã được đặt lại thành công. Bạn có thể đăng nhập bằng mật khẩu mới của mình.",
+        "backToLogin": "Quay về đăng nhập"
       },
+      "newPassword": {
+        "title": "Tạo Mật khẩu Mới",
+        "description": "Vui lòng nhập mật khẩu mới của bạn bên dưới.",
+        "newPasswordLabel": "Mật khẩu Mới",
+        "newPasswordPlaceholder": "Nhập mật khẩu mới",
+        "confirmPasswordLabel": "Xác nhận Mật khẩu Mới",
+        "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
+        "submitButton": "Đặt lại Mật khẩu",
+        "submittingButton": "Đang đặt lại...",
+        "backToOtp": "Quay về Xác minh",
+        "success": "Đặt lại mật khẩu thành công!",
+        "error": "Đặt lại mật khẩu thất bại. Vui lòng thử lại."
+      },
+
       "common": {
         "password": "Mật khẩu",
         "hidePassword": "Ẩn mật khẩu",
@@ -122,6 +149,8 @@
         "emailOrPhonePlaceholder": "Nhập email hoặc số điện thoại"
       },
       "validation": {
+        "firstNameMinLength": "Tên phải có ít nhất 2 ký tự",
+        "lastNameMinLength": "Họ phải có ít nhất 2 ký tự",
         "phoneCodeRequired": "Mã điện thoại là bắt buộc",
         "phoneCodeInvalid": "Mã điện thoại phải có 1–5 ký tự",
         "phoneNumberRequired": "Số điện thoại là bắt buộc",
@@ -140,7 +169,10 @@
         "phoneRequired": "Số điện thoại là bắt buộc",
         "phoneInvalid": "Vui lòng nhập số điện thoại hợp lệ",
         "emailOrPhoneRequired": "Email hoặc số điện thoại là bắt buộc",
-        "emailOrPhoneInvalid": "Vui lòng nhập email hoặc số điện thoại hợp lệ"
+        "emailOrPhoneInvalid": "Vui lòng nhập email hoặc số điện thoại hợp lệ",
+        "otpRequired": "Mã xác minh là bắt buộc",
+        "otpLength": "Mã xác minh phải có 6 số",
+        "passwordsDoNotMatch": "Mật khẩu không khớp"
       },
       "logout": "Đăng xuất",
       "profile": "Hồ sơ",
@@ -153,6 +185,23 @@
           "landlord": "Chủ nhà",
           "tenant": "Người thuê"
         }
+      },
+      "otp": {
+        "title": "Nhập Mã Xác Minh",
+        "description": "Chúng tôi đã gửi mã xác minh 6 số tới {contact}",
+        "digitLabel": "Số {position}",
+        "verifyButton": "Xác Minh Mã",
+        "verifyingButton": "Đang xác minh...",
+        "didntReceive": "Không nhận được mã?",
+        "resendButton": "Gửi Lại Mã",
+        "resendCountdown": "Gửi lại sau {seconds} giây",
+        "backToRegister": "Quay Lại Đăng Ký",
+        "verificationSuccess": "Xác minh thành công!",
+        "verificationError": "Xác minh thất bại. Vui lòng thử lại.",
+        "resendSuccess": "Đã gửi lại mã thành công!",
+        "resendError": "Không thể gửi lại mã. Vui lòng thử lại.",
+        "resendingButton": "Đang gửi lại...",
+        "back": "Quay Lại"
       }
     },
     "filters": {

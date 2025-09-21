@@ -30,11 +30,11 @@ type LoginFormData = {
 }
 
 const LoginForm: NextPage<LoginFormProps> = (props) => {
-  const { onSuccess } = props
   const t = useTranslations()
   const { loginUser } = useLogin()
 
-  // Validation schema with Vietnamese messages
+  const { onSuccess } = props
+
   const loginSchema = yup.object({
     email: yup
       .string()
@@ -69,10 +69,10 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
       const result = await loginUser(data)
 
       if (result.success) {
-        toast.success(t('homePage.auth.login.successMessage'))
         onSuccess?.()
+        toast.success(t('homePage.auth.login.successMessage'))
       } else {
-        toast.error(result.error || t('homePage.auth.login.errorMessage'))
+        toast.error(result.message || t('homePage.auth.login.errorMessage'))
       }
     } catch (error) {
       console.error('Login error:', error)
@@ -116,7 +116,7 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
         <div className='flex justify-end my-2'>
           <Typography
             variant='p'
-            className='underline cursor-pointer'
+            className='underline cursor-pointer text-primary'
             onClick={() => props.switchTo('forgotPassword')}
           >
             {t('homePage.auth.login.forgotPassword')}
@@ -137,7 +137,6 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
         variant='outline'
         className='w-full'
         onClick={() => {
-          // TODO: Implement Google OAuth
           console.log('Google login clicked')
         }}
       >

@@ -91,7 +91,7 @@ function getVariantClasses(variant: TypographyProps['variant']) {
     case 'large':
       return 'text-lg font-semibold'
     case 'p':
-      return 'leading-7 [&:not(:first-child)]:mt-6'
+      return 'leading-7'
     case 'small':
       return 'text-sm font-medium leading-none'
     case 'muted':
