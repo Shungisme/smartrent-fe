@@ -4,6 +4,7 @@ import { Button } from '@/components/atoms/button'
 import { Typography } from '@/components/atoms/typography'
 import { FormField } from '../formField'
 import { PasswordField } from '../passwordField'
+import { EmailField } from '../emailField'
 import { useTranslations } from 'next-intl'
 import { useForm, useController } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -92,10 +93,7 @@ const RegisterForm: NextPage<RegisterFormProps> = (props) => {
     control,
   })
 
-  const emailController = useController({
-    name: 'email',
-    control,
-  })
+  // Email handled by EmailField component via control/name
 
   const confirmPasswordController = useController({
     name: 'confirmPassword',
@@ -157,13 +155,11 @@ const RegisterForm: NextPage<RegisterFormProps> = (props) => {
               />
             </div>
 
-            <FormField
+            <EmailField
+              name='email'
+              control={control}
               label={t('homePage.auth.common.email')}
               placeholder={t('homePage.auth.common.emailPlaceholder')}
-              type='email'
-              required
-              error={errors.email?.message}
-              {...emailController.field}
             />
 
             <PasswordField

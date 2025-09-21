@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useController, type Resolver } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { useTranslations } from 'next-intl'
@@ -22,6 +22,7 @@ type PersonalInfoFormData = {
   idDocument: string
   taxNumber?: string
   avatar?: File
+  address?: string
 }
 
 type PersonalInfoFormProps = {
@@ -77,7 +78,9 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
     watch,
     formState: { errors, isValid },
   } = useForm<PersonalInfoFormData>({
-    resolver: yupResolver(validationSchema) as any,
+    resolver: yupResolver(
+      validationSchema,
+    ) as unknown as Resolver<PersonalInfoFormData>,
     defaultValues: {
       firstName: initialData?.firstName || '',
       lastName: initialData?.lastName || '',
@@ -85,9 +88,17 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
       phoneNumber: initialData?.phoneNumber || '',
       idDocument: initialData?.idDocument || '',
       taxNumber: initialData?.taxNumber || '',
+      address: initialData?.address || '',
     },
     mode: 'onChange',
   })
+
+  // Controllers for simple FormField inputs
+  const firstNameController = useController({ name: 'firstName', control })
+  const lastNameController = useController({ name: 'lastName', control })
+  const idDocumentController = useController({ name: 'idDocument', control })
+  const taxNumberController = useController({ name: 'taxNumber', control })
+  const addressController = useController({ name: 'address', control })
 
   const watchedValues = watch()
   const fullName = `${watchedValues.firstName} ${watchedValues.lastName}`.trim()
@@ -111,10 +122,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
           </Typography>
         </div>
 
-        <form
-          onSubmit={handleSubmit(handleFormSubmit as any)}
-          className='space-y-6'
-        >
+        <form onSubmit={handleSubmit(handleFormSubmit)} className='space-y-6'>
           {/* Avatar Upload */}
           <div className='flex justify-center'>
             <AvatarUpload
@@ -127,21 +135,18 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
           {/* Name Fields */}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <FormField
-              name='firstName'
-              control={control}
               label={t(
                 'homePage.auth.accountManagement.personalInfo.firstName',
               )}
               placeholder={t('homePage.auth.register.firstNamePlaceholder')}
               error={errors.firstName?.message}
+              {...firstNameController.field}
             />
             <FormField
-              name='lastName'
-              control={control}
               label={t('homePage.auth.accountManagement.personalInfo.lastName')}
               placeholder={t('homePage.auth.register.lastNamePlaceholder')}
               error={errors.lastName?.message}
-              className='md:mt-6'
+              {...lastNameController.field}
             />
           </div>
 
@@ -179,31 +184,28 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
 
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <FormField
-                name='idDocument'
-                control={control}
                 label={t(
                   'homePage.auth.accountManagement.personalInfo.idDocument',
                 )}
                 placeholder={t('homePage.auth.register.idDocumentPlaceholder')}
                 error={errors.idDocument?.message}
+                {...idDocumentController.field}
               />
               <FormField
-                name='taxNumber'
-                control={control}
                 label={t(
                   'homePage.auth.accountManagement.personalInfo.taxNumber',
                 )}
                 placeholder={t('homePage.auth.register.taxNumberPlaceholder')}
                 error={errors.taxNumber?.message}
+                {...taxNumberController.field}
               />
             </div>
 
             <FormField
-              name='address'
-              control={control}
               label={t('homePage.auth.accountManagement.personalInfo.address')}
               placeholder='Việt Nam'
               className='md:col-span-2'
+              {...addressController.field}
             />
           </div>
 
