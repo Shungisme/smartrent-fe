@@ -8,5 +8,3 @@ export interface PaginatedResponse<T> {
     hasPrevious: boolean
   }
 }
-
-export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'

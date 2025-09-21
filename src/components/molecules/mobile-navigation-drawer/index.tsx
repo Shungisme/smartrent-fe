@@ -8,9 +8,10 @@ import NavigationMenu from '@/components/molecules/navigation-menu'
 import { NavigationItemData } from '@/components/atoms/navigation-item'
 import LanguageSwitch from '@/components/molecules/languageSwitch'
 import ThemeSwitch from '@/components/molecules/themeSwitch'
-import AuthDialog, { AuthType } from '@/components/organisms/authDialog'
+import type { AuthType } from '@/components/organisms/authDialog'
 import { useTranslations } from 'next-intl'
 import { useAuth, useLogout } from '@/hooks/useAuth'
+import { useAuthDialog } from '@/contexts/authDialog'
 
 interface MobileNavigationDrawerProps {
   items: NavigationItemData[]
@@ -27,8 +28,7 @@ const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
   defaultExpanded = [],
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [authDialogOpen, setAuthDialogOpen] = useState(false)
-  const [authType, setAuthType] = useState<AuthType>('login')
+  const { openAuth } = useAuthDialog()
   const t = useTranslations()
   const { user, isAuthenticated } = useAuth()
   const { logoutUser } = useLogout()
@@ -62,14 +62,8 @@ const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
   }
 
   const handleAuthClick = (type: AuthType) => {
-    setAuthType(type)
-    setAuthDialogOpen(true)
+    openAuth(type)
     setIsOpen(false)
-  }
-
-  const handleAuthSuccess = () => {
-    setAuthDialogOpen(false)
-    setIsOpen(false) // Close mobile navigation when auth is successful
   }
 
   const handleLogout = async () => {
@@ -268,12 +262,7 @@ const MobileNavigationDrawer: React.FC<MobileNavigationDrawerProps> = ({
         </div>
       </div>
 
-      <AuthDialog
-        open={authDialogOpen}
-        type={authType}
-        handleClose={() => setAuthDialogOpen(false)}
-        onSuccess={handleAuthSuccess}
-      />
+      {/* Auth dialog handled globally by AuthDialogProvider */}
     </>
   )
 }

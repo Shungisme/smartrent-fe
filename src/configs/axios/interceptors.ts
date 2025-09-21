@@ -10,15 +10,17 @@ const refreshToken = async (): Promise<string | null> => {
     const refreshTokenValue = getRefreshToken()
     if (!refreshTokenValue) return null
 
-    const tokens = await AuthService.refreshToken(refreshTokenValue)
+    const result = await AuthService.refreshToken(refreshTokenValue)
 
-    if (!tokens) return null
+    const { data, success } = result
+
+    if (!success) return null
 
     if (typeof document !== 'undefined') {
-      cookieManager.setAuthTokens(tokens)
+      cookieManager.setAuthTokens(data)
     }
 
-    return tokens.accessToken
+    return data.accessToken
   } catch (error) {
     console.error('Token refresh failed:', error)
     return null

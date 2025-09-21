@@ -2,6 +2,8 @@ import { UserApi } from '@/api/types/user.type'
 import { createContext, PropsWithChildren, useContext, useEffect } from 'react'
 import { useAuthStore } from '@/store/auth/index.store'
 import { AuthTokens } from '@/configs/axios/types'
+import { useValidToken } from '@/hooks/useAuth'
+import { decodeToken } from '@/utils/decode-jwt'
 
 interface User extends UserApi {}
 
@@ -19,7 +21,6 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 const AuthProvider = ({ children }: PropsWithChildren) => {
-  // Get state from Zustand store
   const {
     user,
     isAuthenticated,
@@ -32,15 +33,20 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     getStoredTokens,
   } = useAuthStore()
 
-  // Initialize auth state on mount
+  const { validToken } = useValidToken()
+
   useEffect(() => {
     const initializeAuth = async () => {
       try {
         const tokens = getStoredTokens()
         if (tokens?.accessToken) {
-          // TODO: Verify token with API and get user data
-          // For now, we'll just check if token exists
-          // In real implementation, you'd call API to verify token and get user
+          const result = await validToken(tokens.accessToken)
+          if (result.data?.valid) {
+            const { user } = decodeToken(tokens.accessToken)
+            login(user, tokens)
+          } else {
+            logout()
+          }
         }
       } catch (error) {
         console.error('Failed to initialize auth:', error)

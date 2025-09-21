@@ -1,4 +1,5 @@
 import { NextPage } from 'next'
+import Link from 'next/link'
 import { Button } from '@/components/atoms/button'
 import { Typography } from '@/components/atoms/typography'
 import { Avatar } from '@/components/atoms/avatar'
@@ -44,11 +45,8 @@ const UserMenu: NextPage = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className='w-56' align='end' forceMount>
         <DropdownMenuLabel className='font-normal'>
-          <div className='flex flex-col space-y-1'>
-            <Typography
-              variant='p'
-              className='text-sm font-medium leading-none'
-            >
+          <div className='flex flex-col gap-1'>
+            <Typography variant='p' className='text-sm font-medium'>
               {user.firstName} {user.lastName}
             </Typography>
             <Typography
@@ -60,9 +58,11 @@ const UserMenu: NextPage = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <User className='mr-2 h-4 w-4' />
-          <span>{t('homePage.auth.profile')}</span>
+        <DropdownMenuItem asChild>
+          <Link href='/sellernet/account'>
+            <User className='mr-2 h-4 w-4' />
+            <span>{t('navigation.accountManagement')}</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Settings className='mr-2 h-4 w-4' />

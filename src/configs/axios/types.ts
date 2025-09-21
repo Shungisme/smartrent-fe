@@ -8,18 +8,9 @@ export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
 
 export interface ApiResponse<T = any> {
   data: T
+  message: string | null
+  code: string
   success: boolean
-  message?: string
-  errors?: string[]
-  statusCode: number
-}
-
-export interface ApiErrorResponse {
-  success: false
-  message: string
-  errors?: string[]
-  statusCode: number
-  timestamp: string
 }
 
 export interface AuthTokens {

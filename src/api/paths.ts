@@ -5,6 +5,12 @@ export const PATHS = {
     LOGOUT: '/v1/auth/logout',
     REFRESH: '/v1/auth/refresh',
     ADMIN_LOGIN: '/v1/auth/admin',
+    VERIFICATION: '/v1/verification',
+    RE_SEND_VERIFICATION: '/v1/verification/code',
+    INTROSPECT: '/v1/auth/introspect',
+    FORGOT_PASSWORD: '/v1/auth/forgot-password',
+    CHANGE_PASSWORD: '/v1/auth/change-password',
+    RESET_PASSWORD: '/v1/auth/reset-password',
   },
 
   // User endpoints
@@ -12,6 +18,7 @@ export const PATHS = {
     CREATE: '/v1/users',
     PROFILE: '/v1/users/profile',
     UPDATE: '/v1/users/update',
+    CHANGE_PASSWORD: '/v1/users/change-password',
   },
 
   // Property endpoints

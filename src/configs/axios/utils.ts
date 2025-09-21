@@ -2,7 +2,7 @@ import {
   BEARER_ACCESS_TOKEN_COOKIE,
   BEARER_REFRESH_TOKEN_COOKIE,
 } from '@/constants'
-import { AuthTokens, ApiErrorResponse } from './types'
+import { AuthTokens } from './types'
 import { cookieManager } from '@/utils/cookies'
 
 export const isServer = typeof window === 'undefined'
@@ -89,7 +89,7 @@ export function formatApiError(error: any): string {
     return error.message || 'Đã xảy ra lỗi không xác định'
   }
 
-  const data = error.response.data as ApiErrorResponse
+  const data = error.response.data
 
   if (data?.message) {
     return data.message
