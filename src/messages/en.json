@@ -204,7 +204,12 @@
         "emailOrPhoneInvalid": "Please enter a valid email or phone number",
         "otpRequired": "Verification code is required",
         "otpLength": "Verification code must be 6 digits",
-        "passwordsDoNotMatch": "Passwords do not match"
+        "passwordsDoNotMatch": "Passwords do not match",
+        "currentPasswordRequired": "Current password is required",
+        "newPasswordRequired": "New password is required",
+        "newPasswordMinLength": "New password must be at least 8 characters",
+        "newPasswordLowercase": "Password must have at least 1 lowercase letter",
+        "newPasswordNumber": "Password must have at least 1 number"
       },
       "logout": "Log Out",
       "profile": "Profile",
@@ -234,6 +239,63 @@
         "resendError": "Failed to resend code. Please try again.",
         "resendingButton": "Resending...",
         "back": "Back"
+      },
+      "accountManagement": {
+        "title": "Account Management",
+        "personalInfoTab": "Edit Information",
+        "accountSettingsTab": "Account Settings",
+        "personalInfo": {
+          "title": "Personal Information",
+          "contactInfo": "Contact Information",
+          "businessInfo": "Business Information",
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "phoneNumber": "Phone Number",
+          "email": "Email",
+          "idDocument": "ID Number",
+          "taxNumber": "Tax Number",
+          "address": "Address",
+          "avatarUpload": "Upload Photo",
+          "saveChanges": "Save Changes",
+          "saving": "Saving...",
+          "updateSuccess": "Personal information updated successfully!",
+          "updateError": "Failed to update information. Please try again.",
+          "updateErrorGeneral": "An error occurred while updating information",
+          "updateNotImplemented": "Update information feature is not implemented yet"
+        },
+        "passwordChange": {
+          "title": "Change Password",
+          "currentPassword": "Current Password",
+          "newPassword": "New Password",
+          "confirmPassword": "Confirm New Password",
+          "passwordRequirements": "Account Requirements",
+          "accountActions": "Account Deletion Request",
+          "saveChanges": "Save Changes",
+          "saving": "Saving...",
+          "changeSuccess": "Password changed successfully!",
+          "changeError": "Failed to change password. Please check your current password.",
+          "changeErrorGeneral": "An error occurred while changing password",
+          "changeNotImplemented": "Change password feature is not implemented yet",
+          "lockAccount": "Lock Account Temporarily",
+          "deleteAccount": "Delete Account Permanently",
+          "requirements": {
+            "minLength": "Password minimum 8 characters",
+            "lowercase": "Must have at least 1 lowercase letter",
+            "number": "Must have at least 1 number"
+          },
+          "warningTitle": "Important Notice:",
+          "warnings": {
+            "invoice": "Batdongsan.com.vn will automatically issue electronic invoices based on customer information and send them to the invoice email.",
+            "accuracy": "Please enter complete, accurate information and take responsibility for the information provided.",
+            "timing": "VAT invoices will be issued on the same day for all payment transactions.",
+            "service": "The service content displayed on the invoice is advertising service fees on the website batdongsan.com.vn.",
+            "support": "For any issues requiring support regarding invoices for payment transactions during the day, please contact hotline 1900 1881 before 6 PM."
+          }
+        },
+        "loginRequired": {
+          "title": "Please log in",
+          "description": "You need to log in to access the account management page."
+        }
       }
     },
     "filters": {
@@ -750,6 +812,7 @@
     "login": "Log In",
     "register": "Register",
     "account": "Account",
+    "accountManagement": "Account Management",
     "residential": "Residential",
     "commercial": "Commercial",
     "vacation": "Vacation Rentals",

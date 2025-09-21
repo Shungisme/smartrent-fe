@@ -2,12 +2,19 @@ import * as React from 'react'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { cn } from '@/lib/utils'
+import { useController, Control } from 'react-hook-form'
 
-interface FormFieldProps extends React.ComponentProps<'input'> {
+interface FormFieldProps {
   label?: string
   error?: string
   required?: boolean
   description?: string
+  name: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  control: Control<any>
+  placeholder?: string
+  className?: string
+  id?: string
 }
 
 function FormField({
@@ -15,11 +22,23 @@ function FormField({
   error,
   required,
   description,
+  name,
+  control,
+  placeholder,
   className,
   id,
-  ...props
 }: FormFieldProps) {
-  const fieldId = id || label?.toLowerCase().replace(/\s+/g, '-')
+  const fieldId = id || `form-field-${name}`
+
+  const {
+    field,
+    fieldState: { error: fieldError },
+  } = useController({
+    name,
+    control,
+  })
+
+  const displayError = fieldError?.message || error
 
   return (
     <div className='space-y-2'>
@@ -37,10 +56,12 @@ function FormField({
       )}
 
       <Input
+        {...field}
         id={fieldId}
-        aria-invalid={error ? 'true' : 'false'}
+        placeholder={placeholder}
+        aria-invalid={displayError ? 'true' : 'false'}
         aria-describedby={
-          error
+          displayError
             ? `${fieldId}-error`
             : description
               ? `${fieldId}-description`
@@ -48,13 +69,12 @@ function FormField({
         }
         className={cn(
           'h-12',
-          error && 'border-destructive focus-visible:border-destructive',
+          displayError && 'border-destructive focus-visible:border-destructive',
           className,
         )}
-        {...props}
       />
 
-      {description && !error && (
+      {description && !displayError && (
         <p
           id={`${fieldId}-description`}
           className='text-sm text-muted-foreground'
@@ -63,13 +83,13 @@ function FormField({
         </p>
       )}
 
-      {error && (
+      {displayError && (
         <p
           id={`${fieldId}-error`}
           className='text-sm text-destructive'
           role='alert'
         >
-          {error}
+          {displayError}
         </p>
       )}
     </div>
