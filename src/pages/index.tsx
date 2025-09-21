@@ -3,12 +3,13 @@ import { getInitialProperties } from '@/api/services/property.service'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { PropertyCard } from '@/api/types/property.type'
+import MainLayout from '@/components/layouts/MainLayout'
+import React from 'react'
+import type { NextPageWithLayout } from '@/types/next-page'
 
-export default function Home({
-  initialProperties,
-}: {
-  initialProperties: any[]
-}) {
+const Home: NextPageWithLayout<{
+  initialProperties: PropertyCard[]
+}> = ({ initialProperties }) => {
   const router = useRouter()
 
   const handlePropertyClick = (property: PropertyCard) => {
@@ -24,6 +25,12 @@ export default function Home({
     />
   )
 }
+
+Home.getLayout = function getLayout(page: React.ReactNode) {
+  return <MainLayout activeItem='home'>{page}</MainLayout>
+}
+
+export default Home
 
 export const getServerSideProps: GetServerSideProps = async () => {
   try {

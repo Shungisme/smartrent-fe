@@ -1,13 +1,7 @@
 import React from 'react'
 import { useTranslations } from 'next-intl'
 import { Typography } from '@/components/atoms/typography'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/atoms/select'
+import SelectDropdown from '@/components/atoms/select-dropdown'
 
 interface PropertyTypeFilterProps {
   value?: string
@@ -38,18 +32,14 @@ const PropertyTypeFilter: React.FC<PropertyTypeFilterProps> = ({
       <Typography variant='h6' className='text-sm font-medium'>
         {t('title')}
       </Typography>
-      <Select value={value} onValueChange={onChange}>
-        <SelectTrigger className='w-full'>
-          <SelectValue placeholder={t('all')} />
-        </SelectTrigger>
-        <SelectContent>
-          {propertyTypes.map((type) => (
-            <SelectItem key={type.value} value={type.value}>
-              {type.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <SelectDropdown
+        value={value}
+        onValueChange={onChange}
+        placeholder={t('all')}
+        options={propertyTypes}
+        size='sm'
+        variant='default'
+      />
     </div>
   )
 }

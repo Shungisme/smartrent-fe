@@ -59,38 +59,57 @@
       "additionalAmenities": "Additional Amenities",
       "views": "views",
       "distance": "km",
-      "area": "m²"
+      "area": "m²",
+      "price": "Price",
+      "location": "Location",
+      "amenities": "Amenities",
+      "description": "Description",
+      "contact": "Contact",
+      "viewDetails": "View Details",
+      "addToFavorites": "Add to Favorites",
+      "removeFromFavorites": "Remove from Favorites"
     },
     "auth": {
       "login": {
         "title": "Log In",
         "description": "Welcome back! Please log in to your account.",
+        "subtitle": "Welcome back!",
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot password?",
+        "loginButton": "Login",
         "submitButton": "Log In",
         "submittingButton": "Logging In…",
         "googleButton": "Log in with Google",
-        "forgotPassword": "Forgot password?",
         "noAccount": "Don't have an account?",
+        "signUp": "Sign up now",
         "registerLink": "Register",
         "successMessage": "Login successful!",
         "errorMessage": "Login failed. Please try again."
       },
       "register": {
-        "backToLogin": "Back to Login",
-        "successTitle": "Registration Successful!",
-        "successDescription": "Your account has been created successfully. You can now log in to your account.",
         "title": "Register",
         "description": "Create a new account to get started with our services.",
-        "submitButton": "Register",
-        "submittingButton": "Registering…",
-        "googleButton": "Register with Google",
-        "haveAccount": "Already have an account?",
-        "loginLink": "Log In",
+        "subtitle": "Create a new account",
+        "fullName": "Full Name",
         "firstName": "First Name",
         "firstNamePlaceholder": "Enter first name",
         "lastName": "Last Name",
         "lastNamePlaceholder": "Enter last name",
+        "email": "Email",
+        "phone": "Phone Number",
+        "password": "Password",
         "confirmPassword": "Confirm Password",
         "confirmPasswordPlaceholder": "Re-enter password",
+        "agreeTerms": "I agree to the",
+        "termsAndConditions": "Terms and Conditions",
+        "registerButton": "Register",
+        "submitButton": "Register",
+        "submittingButton": "Registering…",
+        "googleButton": "Register with Google",
+        "haveAccount": "Already have an account?",
+        "signIn": "Sign in now",
+        "loginLink": "Log In",
         "idDocument": "ID Number",
         "idDocumentPlaceholder": "Enter ID number",
         "taxNumber": "Tax Number",
@@ -104,7 +123,8 @@
           "security": "Security",
           "legalInfo": "Legal Information"
         },
-        "otpSentMessage": "Verification code sent successfully!"
+        "otpSentMessage": "Verification code sent successfully!",
+        "backToLogin": "Back to Login"
       },
       "success": {
         "title": "Registration Successful!",
@@ -115,11 +135,24 @@
       "forgotPassword": {
         "title": "Reset Password",
         "description": "Enter your email to receive a verification code to reset your password.",
+        "subtitle": "Enter your email to reset password",
+        "email": "Email",
+        "sendResetLink": "Send Reset Link",
         "submitButton": "Send Code",
         "submittingButton": "Sending…",
+        "backToLogin": "Back to Login",
+        "checkEmail": "Check your email",
+        "resetLinkSent": "We've sent a password reset link to your email",
         "switchToLogin": "Remembered your password? <u>Log In</u>",
         "successTitle": "Password Reset Successful!",
-        "successDescription": "Your password has been reset successfully. You can now log in with your new password.",
+        "successDescription": "Your password has been reset successfully. You can now log in with your new password."
+      },
+      "resetPassword": {
+        "title": "Reset Password",
+        "subtitle": "Enter your new password",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "resetButton": "Reset Password",
         "backToLogin": "Back to Login"
       },
       "newPassword": {
@@ -271,6 +304,416 @@
         "furnished": "Furnished",
         "semiFurnished": "Semi-Furnished",
         "unfurnished": "Unfurnished"
+      },
+      "clearAll": "Clear All",
+      "applyFilters": "Apply Filters"
+    }
+  },
+  "createPost": {
+    "title": "Create Real Estate Listing",
+    "description": "Follow the steps below to create your real estate listing",
+    "back": "Back",
+    "next": "Next",
+    "steps": {
+      "propertyInfo": {
+        "generateAutomatically": "Generate Automatically",
+        "listingInfo": "Listing Info",
+        "mapPreview": "Map Preview",
+        "district": "District",
+        "hcmc": "HCMC",
+        "title": "Property Info",
+        "description": "Enter property information"
+      },
+      "aiValuation": {
+        "title": "AI Valuation",
+        "description": "Smart AI price evaluation"
+      },
+      "imagesAndVideo": {
+        "title": "Images & Video",
+        "description": "Upload photos and videos"
+      },
+      "packageAndConfig": {
+        "title": "Package & Config",
+        "description": "Select package and schedule"
+      },
+      "orderSummary": {
+        "title": "Order Summary",
+        "description": "Review your order"
+      },
+      "reviewAndPayment": {
+        "title": "Review & Payment",
+        "description": "Final review and payment"
+      }
+    },
+    "sections": {
+      "media": {
+        "title": "Images & Video",
+        "description": "Upload high-quality images and optional video to present your property",
+        "downloadSample": "Download Sample",
+        "titleWithCount": "{count} / 24 images",
+        "dropzone": {
+          "hint": "Drag up to 24 images or...",
+          "uploadFromDevice": "Upload From Device",
+          "chooseFromLibrary": "Choose From Library",
+          "note": "Min 3 images · Up to 24 · Minimum size 100x100px · Max 15MB per image"
+        },
+        "uploaded": {
+          "title": "Uploaded Images",
+          "cover": "Cover",
+          "setCover": "Set Cover",
+          "remove": "Remove"
+        },
+        "video": {
+          "title": "Video (Optional)",
+          "placeholder": "YouTube or TikTok URL...",
+          "help": "Support YouTube and TikTok to showcase your property more vividly"
+        },
+        "guidelines": {
+          "title": "Photo Guidelines",
+          "collapse": "Collapse",
+          "expand": "Expand",
+          "normalTitle": "Normal Photos (Recommended)",
+          "normalCount": "12-24 photos",
+          "do": {
+            "naturalLight": "Shoot in natural light",
+            "tidyRoom": "Tidy the room before shooting",
+            "variousAngles": "Capture multiple angles",
+            "includeAmenities": "Include both interior and exterior",
+            "nightShots": "Include night shots if possible"
+          },
+          "dont": {
+            "lowLight": "Avoid low-light conditions",
+            "showPersonal": "Avoid showing personal data",
+            "repetitiveAngles": "Avoid repetitive angles",
+            "overEdit": "Avoid over-editing",
+            "tooDarkOrBright": "Avoid too dark or too bright"
+          },
+          "panoramaTitle": "360° Photos (Optional)",
+          "panoramaCount": "1-4 photos",
+          "panoramaDesc": "System auto-detects 360° images by aspect ratio and filename. Use 360 cameras or phone panorama; prefer 2:1 aspect ratio.",
+          "autoDetectTitle": "360° Auto-detection",
+          "autoDetectDesc": "The system automatically detects 360° images based on aspect ratio and filename.",
+          "howTo360Title": "How to create 360° photos",
+          "howTo": {
+            "use360Camera": "Use a dedicated 360° camera (Insta360, Ricoh Theta)",
+            "usePhonePanorama": "Or shoot a panorama on your phone",
+            "filenameHints": "Include \"360\", \"panorama\", or \"pano\" in filenames",
+            "aspectRatio": "Prefer 2:1 aspect ratio or wider"
+          }
+        }
+      },
+      "propertyInfo": {
+        "generateAutomatically": "Generate Automatically",
+        "listingInfo": "Listing Info",
+        "mapPreview": "Map Preview",
+        "district": "District",
+        "hcmc": "HCMC",
+        "title": "Property Information",
+        "description": "Enter details about your real estate listing",
+        "listingType": "Listing Type",
+        "listingTypes": {
+          "rent": "For Rent",
+          "sale": "For Sale"
+        },
+        "propertyType": "Property Type",
+        "propertyTypes": {
+          "apartment": "Apartment",
+          "house": "House",
+          "villa": "Villa",
+          "office": "Office",
+          "shop": "Shop",
+          "land": "Land"
+        },
+        "propertyAddress": "Property Address",
+        "addressPlaceholder": "Enter property address...",
+        "addressHint": "Please enter accurate address for customers to easily find",
+        "searchAddress": "Search Address",
+        "useMyLocation": "Use My Location",
+        "reset": "Reset",
+        "dragMarker": "Drag marker to select exact location",
+        "searchAddresses": "Search Addresses",
+        "interactiveMap": "Interactive Map",
+        "selectedLocation": "Selected Location",
+        "zoom": "Zoom",
+        "coordinates": "Coordinates",
+        "area": "Area",
+        "areaPlaceholder": "Enter area (m²)",
+        "price": "Price",
+        "pricePlaceholder": "Enter price (VND)",
+        "interiorCondition": "Interior Condition",
+        "interiorConditions": {
+          "furnished": "Fully Furnished",
+          "semiFurnished": "Semi Furnished",
+          "unfurnished": "Unfurnished"
+        },
+        "houseDirection": "House Direction",
+        "houseDirections": {
+          "north": "North",
+          "south": "South",
+          "east": "East",
+          "west": "West",
+          "northeast": "Northeast",
+          "northwest": "Northwest",
+          "southeast": "Southeast",
+          "southwest": "Southwest"
+        },
+        "balconyDirection": "Balcony Direction",
+        "balconyDirections": {
+          "north": "North",
+          "south": "South",
+          "east": "East",
+          "west": "West",
+          "northeast": "Northeast",
+          "northwest": "Northwest",
+          "southeast": "Southeast",
+          "southwest": "Southwest"
+        }
+      },
+      "propertyDetails": {
+        "propertyTypes": {
+          "apartment": "Apartment",
+          "house": "House",
+          "villa": "Villa",
+          "studio": "Studio"
+        },
+        "interiorConditions": {
+          "furnished": "Fully Furnished",
+          "semiFurnished": "Semi Furnished",
+          "unfurnished": "Unfurnished"
+        },
+        "propertyType": "Property Type",
+        "area": "Area",
+        "price": "Price",
+        "interiorCondition": "Interior Condition",
+        "rooms": "Rooms",
+        "moveInDate": "Move-in Date",
+        "dateFormat": "Format: dd/mm/yyyy",
+        "title": "Property Details",
+        "description": "Add detailed information about the property",
+        "bedrooms": "Bedrooms",
+        "bathrooms": "Bathrooms",
+        "floors": "Floors",
+        "yearBuilt": "Year Built",
+        "legalStatus": "Legal Status",
+        "legalStatuses": {
+          "redBook": "Red Book",
+          "pinkBook": "Pink Book",
+          "waitingForRedBook": "Waiting for Red Book",
+          "noRedBook": "No Red Book"
+        }
+      },
+      "utilitiesStructure": {
+        "monthlyUtilities": "Monthly Utilities",
+        "waterPrice": "Water Price",
+        "electricityPrice": "Electricity Price",
+        "internetPrice": "Internet Price",
+        "utilityOptions": {
+          "provider": "Provider",
+          "fixed": "Fixed",
+          "negotiable": "Negotiable",
+          "tenant": "Tenant",
+          "included": "Included",
+          "petFriendly": "Pet Friendly",
+          "landlord": "Landlord"
+        },
+        "structureDirection": "Structure Direction",
+        "houseDirection": "House Direction",
+        "balconyDirection": "Balcony Direction",
+        "propertyDimensions": "Property Dimensions",
+        "alleyWidth": "Alley Width",
+        "frontageWidth": "Frontage Width",
+        "directions": {
+          "north": "North",
+          "south": "South",
+          "east": "East",
+          "west": "West",
+          "northeast": "Northeast",
+          "northwest": "Northwest",
+          "southeast": "Southeast",
+          "southwest": "Southwest"
+        },
+        "generateAutomatically": "Generate Automatically",
+        "title": "Utilities & Structure",
+        "description": "Describe property utilities and structure",
+        "moveInDate": "Move-in Date",
+        "dateFormat": "Format: dd/mm/yyyy",
+        "placeholders": {
+          "selectListingType": "Select listing type",
+          "selectPropertyType": "Select property type",
+          "enterArea": "Enter area",
+          "enterPrice": "Enter price",
+          "selectInteriorCondition": "Select interior condition",
+          "selectHouseDirection": "Select house direction",
+          "selectBalconyDirection": "Select balcony direction",
+          "enterFullName": "Enter full name",
+          "enterEmail": "Enter email",
+          "enterPhoneNumber": "Enter phone number",
+          "enterListingTitle": "Enter listing title",
+          "enterPropertyDescription": "Enter property description",
+          "dateFormat": "dd/mm/yyyy"
+        }
+      },
+      "contactInfo": {
+        "title": "Contact Information",
+        "description": "Your contact information",
+        "fullName": "Full Name",
+        "email": "Email",
+        "phoneNumber": "Phone Number",
+        "listingTitle": "Listing Title",
+        "propertyDescription": "Property Description"
+      },
+      "aiContent": {
+        "title": "AI Generated Content",
+        "description": "Use AI to create engaging content",
+        "listingTitle": "Listing Title",
+        "propertyDescription": "Property Description",
+        "titleLength": "Optimal length: 30-99 characters. Current: 60 characters",
+        "descriptionHint": "AI description includes location benefits, surrounding amenities, and target audience"
+      },
+      "aiValuation": {
+        "title": "AI Valuation",
+        "description": "Smart AI price evaluation",
+        "propertyInfo": {
+          "generateAutomatically": "Generate Automatically",
+          "listingInfo": "Listing Info",
+          "mapPreview": "Map Preview",
+          "district": "District",
+          "hcmc": "HCMC",
+          "title": "Property Information",
+          "address": "Address",
+          "addressPlaceholder": "Enter property address...",
+          "area": "Area (m²)",
+          "type": "Type",
+          "districtLabel": "District/County",
+          "ward": "Ward/Commune",
+          "bedrooms": "Number of bedrooms",
+          "bathrooms": "Number of bathrooms",
+          "amenities": "Amenities",
+          "reevaluate": "Re-evaluate",
+          "types": {
+            "apartment": "Apartment",
+            "house": "House",
+            "villa": "Villa"
+          },
+          "districts": {
+            "quan1": "District 1",
+            "media": {
+              "title": "Images & Video",
+              "description": "Upload high-quality images and optional video to present your property",
+              "downloadSample": "Download Sample",
+              "titleWithCount": "{count} / 24 images",
+              "dropzone": {
+                "hint": "Drag up to 24 images or...",
+                "uploadFromDevice": "Upload From Device",
+                "chooseFromLibrary": "Choose From Library",
+                "note": "Min 3 images · Up to 24 · Minimum size 100x100px · Max 15MB per image"
+              },
+              "uploaded": {
+                "title": "Uploaded Images",
+                "cover": "Cover",
+                "setCover": "Set Cover",
+                "remove": "Remove"
+              },
+              "video": {
+                "title": "Video (Optional)",
+                "placeholder": "YouTube or TikTok URL...",
+                "help": "Support YouTube and TikTok to showcase your property more vividly"
+              },
+              "guidelines": {
+                "title": "Photo Guidelines",
+                "collapse": "Collapse",
+                "expand": "Expand",
+                "normalTitle": "Normal Photos (Recommended)",
+                "normalCount": "12-24 photos",
+                "do": {
+                  "naturalLight": "Shoot in natural light",
+                  "tidyRoom": "Tidy the room before shooting",
+                  "variousAngles": "Capture multiple angles",
+                  "includeAmenities": "Include both interior and exterior",
+                  "nightShots": "Include night shots if possible"
+                },
+                "dont": {
+                  "lowLight": "Avoid low-light conditions",
+                  "showPersonal": "Avoid showing personal data",
+                  "repetitiveAngles": "Avoid repetitive angles",
+                  "overEdit": "Avoid over-editing",
+                  "tooDarkOrBright": "Avoid too dark or too bright"
+                },
+                "panoramaTitle": "360° Photos (Optional)",
+                "panoramaCount": "1-4 photos",
+                "panoramaDesc": "System auto-detects 360° images by aspect ratio and filename. Use 360 cameras or phone panorama; prefer 2:1 aspect ratio."
+              }
+            },
+            "quan2": "District 2",
+            "quan3": "District 3",
+            "quan4": "District 4",
+            "quan5": "District 5",
+            "quan6": "District 6",
+            "quan7": "District 7",
+            "quan8": "District 8",
+            "quan9": "District 9",
+            "quan10": "District 10",
+            "quan11": "District 11",
+            "quan12": "District 12",
+            "thuduc": "Thu Duc"
+          },
+          "wards": {
+            "bennghe": "Ben Nghe Ward",
+            "dongkhoi": "Dong Khoi Ward",
+            "tanbinh": "Tan Binh Ward",
+            "phamngulao": "Pham Ngu Lao Ward",
+            "cogiang": "Co Giang Ward",
+            "nguyenthaihoc": "Nguyen Thai Hoc Ward"
+          },
+          "amenitiesList": {
+            "furnished": "Fully furnished",
+            "aircon": "Air conditioning",
+            "toilet": "Private toilet",
+            "wifi": "WiFi",
+            "parking": "Parking space",
+            "elevator": "Elevator",
+            "balcony": "Balcony",
+            "kitchen": "Private kitchen"
+          }
+        },
+        "results": {
+          "title": "AI Evaluation Results",
+          "suggestedPrice": "Suggested Price Range",
+          "priceRange": "2.8M - 3.2M/month",
+          "reliability": "Reliability",
+          "comparisonChart": "Area Price Comparison Chart",
+          "marketInfo": "Market Information",
+          "averagePrice": "Average price",
+          "averagePriceValue": "3.1M/month",
+          "similarProperties": "Similar properties",
+          "similarPropertiesValue": "24 units",
+          "trend": "Trend",
+          "trendValue": "Up 3% from last month",
+          "optimizationTip": {
+            "title": "Optimization Tip",
+            "description": "To increase views, set the price in the range of 2.9-3.1M"
+          },
+          "actions": {
+            "save": "Save evaluation",
+            "share": "Share"
+          },
+          "feedback": "Feedback on AI evaluation",
+          "districts": {
+            "quan2": "District 2",
+            "quan3": "District 3",
+            "quan4": "District 4",
+            "quan5": "District 5",
+            "quan6": "District 6",
+            "quan7": "District 7",
+            "quan8": "District 8",
+            "quan9": "District 9",
+            "quan10": "District 10",
+            "quan11": "District 11",
+            "quan12": "District 12",
+            "thuduc": "Thu Duc",
+            "quan1": "District 1"
+          }
+        }
       }
     }
   },
@@ -292,7 +735,12 @@
     "email": "info@smartrent.com",
     "copyright": "© 2024 SmartRent. All rights reserved.",
     "privacy": "Privacy",
-    "terms": "Terms"
+    "terms": "Terms",
+    "followUs": "Follow Us",
+    "newsletter": "Newsletter",
+    "newsletterDescription": "Subscribe to receive the latest real estate news",
+    "subscribe": "Subscribe",
+    "emailPlaceholder": "Enter your email"
   },
   "navigation": {
     "home": "Home",
