@@ -14,7 +14,7 @@ export default function Home({
   const handlePropertyClick = (property: PropertyCard) => {
     console.log('Property clicked:', property)
     // Navigate to apartment detail page with property ID
-    router.push(`/apartment-detail?id=${property.id}`)
+    router.push(`/apartment-detail/123`)
   }
 
   return (
