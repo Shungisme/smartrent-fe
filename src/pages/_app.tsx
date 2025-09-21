@@ -3,7 +3,8 @@ import '@/styles/reset.scss'
 import '@/components/molecules/desktop-navigation/navigation.css'
 import ThemeDataProvider from '@/contexts/theme'
 import AuthProvider from '@/contexts/auth'
-import type { AppProps } from 'next/app'
+import React from 'react'
+import type { AppPropsWithLayout } from '@/types/next-page'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { NextIntlClientProvider } from 'next-intl'
 import SwitchLanguageProvider from '@/contexts/switchLanguage'
@@ -12,14 +13,16 @@ import vi from '@/messages/vi.json'
 import en from '@/messages/en.json'
 import { Toaster } from '@/components/atoms/sonner'
 import { useSwitchLanguage } from '@/contexts/switchLanguage/index.context'
+import { AuthDialogProvider } from '@/contexts/authDialog'
 
 const messages = {
   vi,
   en,
 }
 
-function AppContent({ Component, pageProps }: AppProps) {
+function AppContent({ Component, pageProps }: AppPropsWithLayout) {
   const { language } = useSwitchLanguage()
+  const getLayout = Component.getLayout ?? ((page: React.ReactNode) => page)
 
   return (
     <NextIntlClientProvider
@@ -34,8 +37,10 @@ function AppContent({ Component, pageProps }: AppProps) {
       >
         <ThemeDataProvider>
           <AuthProvider>
-            <Component {...pageProps} />
-            <Toaster />
+            <AuthDialogProvider>
+              {getLayout(<Component {...pageProps} />)}
+              <Toaster />
+            </AuthDialogProvider>
           </AuthProvider>
         </ThemeDataProvider>
       </NextThemesProvider>
@@ -43,7 +48,7 @@ function AppContent({ Component, pageProps }: AppProps) {
   )
 }
 
-export default function App(props: AppProps) {
+export default function App(props: AppPropsWithLayout) {
   return (
     <SwitchLanguageProvider>
       <AppContent {...props} />
