@@ -59,7 +59,7 @@ const UserMenu: NextPage = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href='/account/manage'>
+          <Link href='/sellernet/account'>
             <User className='mr-2 h-4 w-4' />
             <span>{t('navigation.accountManagement')}</span>
           </Link>
