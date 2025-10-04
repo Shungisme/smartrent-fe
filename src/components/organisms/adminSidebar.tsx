@@ -72,6 +72,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
     users: '/admin/users',
     dashboard: '/admin',
     admin: '/admin/admins',
+    finance: '/admin/finance',
     // Add more routes as we implement them
   }
 
