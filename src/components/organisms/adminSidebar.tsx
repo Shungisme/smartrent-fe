@@ -71,6 +71,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
   const routeMap: Record<string, string> = {
     users: '/admin/users',
     dashboard: '/admin',
+    admin: '/admin/admins',
     // Add more routes as we implement them
   }
 
