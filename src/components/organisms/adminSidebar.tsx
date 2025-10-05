@@ -77,6 +77,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
     reports: '/admin/reports',
     properties: '/admin/listings',
     premium: '/admin/premium',
+    analytics: '/admin/analytics',
     // Add more routes as we implement them
   }
 
