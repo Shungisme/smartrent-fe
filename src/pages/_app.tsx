@@ -1,6 +1,5 @@
 import '@/styles/globals.css'
 import '@/styles/reset.scss'
-import '@/components/molecules/desktop-navigation/navigation.css'
 import ThemeDataProvider from '@/contexts/theme'
 import AuthProvider from '@/contexts/auth'
 import React from 'react'
