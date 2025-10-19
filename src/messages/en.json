@@ -829,5 +829,384 @@
     "financial": "Financial Reports",
     "occupancy": "Occupancy Rate",
     "performance": "Property Performance"
+  },
+  "admin": {
+    "header": {
+      "title": "User Management",
+      "searchPlaceholder": "Quick search..."
+    },
+    "sidebar": {
+      "title": "SmartRent Admin",
+      "sections": {
+        "management": "Management",
+        "comingSoon": "Coming Soon"
+      },
+      "menuItems": {
+        "users": "User Management",
+        "admins": "Admin Management",
+        "finance": "Financial Management",
+        "premium": "Premium Features & Promotions",
+        "posts": "Post Moderation",
+        "reports": "Violation Reports Management",
+        "analytics": "Application Analytics",
+        "properties": "Property Listings",
+        "settings": "Settings",
+        "search": "Advanced Search"
+      }
+    },
+    "users": {
+      "title": "User Management",
+      "breadcrumb": {
+        "menu": "Navigation Menu",
+        "dashboard": "User Management Dashboard",
+        "usersCount": "users"
+      },
+      "search": {
+        "placeholder": "Search by name or user ID..."
+      },
+      "filters": {
+        "allUsers": "All Users",
+        "landlord": "Landlord",
+        "tenant": "Tenant"
+      },
+      "perPage": "per page",
+      "table": {
+        "headers": {
+          "userId": "User ID",
+          "user": "User",
+          "type": "Type",
+          "joinDate": "Join Date",
+          "lastOnline": "Last Online",
+          "posts": "Posts",
+          "status": "Status"
+        },
+        "userTypes": {
+          "landlord": "Landlord",
+          "tenant": "Tenant"
+        },
+        "postsBadge": "posts",
+        "notApplicable": "N/A",
+        "statuses": {
+          "normal": "Normal",
+          "banned": "Banned"
+        }
+      }
+    },
+    "admins": {
+      "title": "Admin Management",
+      "breadcrumb": {
+        "menu": "Navigation Menu",
+        "dashboard": "Admin Management Dashboard",
+        "adminsCount": "admins"
+      },
+      "search": {
+        "placeholder": "Search by name, ID or email..."
+      },
+      "filters": {
+        "allRoles": "All Roles",
+        "support": "Support",
+        "moderator": "Moderator",
+        "admin": "Admin",
+        "superAdmin": "Super Admin",
+        "allStatuses": "All Statuses",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "perPage": "per page",
+      "createNewAdmin": "Create New Admin",
+      "table": {
+        "headers": {
+          "adminId": "Admin ID",
+          "admin": "Admin",
+          "role": "Role",
+          "joinDate": "Join Date",
+          "lastOnline": "Last Online",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "roles": {
+          "support": "Support",
+          "moderator": "Moderator",
+          "admin": "Admin",
+          "super_admin": "Super Admin"
+        },
+        "statuses": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "actions": {
+          "viewDetails": "View Details",
+          "edit": "Edit",
+          "changeRole": "Change Role",
+          "deactivate": "Deactivate"
+        }
+      }
+    }
+  },
+  "premium": {
+    "title": "Paid Features & Promotions Management",
+    "description": "Manage membership packages, promotional codes, listing types, and boost packages",
+    "breadcrumb": {
+      "menu": "Navigation Menu",
+      "title": "Paid Features & Promotions",
+      "overview": "Overview"
+    },
+    "tabs": {
+      "overview": "Overview",
+      "membership": "Membership",
+      "promotions": "Promotions",
+      "listingTypes": "Listing Types",
+      "postBoosts": "Post Boosts"
+    },
+    "overview": {
+      "activeMemberships": "Active Memberships",
+      "packagesRunning": "Packages running",
+      "activePromos": "Active Promos",
+      "totalUses": "total uses",
+      "listingTypes": "Listing Types",
+      "regularVipTiers": "Regular + VIP tiers",
+      "boostPackages": "Boost Packages",
+      "value": "value",
+      "membershipRevenue": "Membership Package Revenue",
+      "revenue": "Revenue",
+      "users": "Users",
+      "recentPromoActivity": "Recent Promotional Activity",
+      "usage": "Usage"
+    },
+    "membership": {
+      "description": "Manage membership packages and pricing tiers",
+      "addPackage": "Add Package",
+      "table": {
+        "package": "Package",
+        "price": "Price",
+        "features": "Features",
+        "discount": "Discount",
+        "status": "Status",
+        "actions": "Actions",
+        "activeUsers": "active users",
+        "moreFeatures": "{count} more features",
+        "noDiscount": "No discount"
+      }
+    },
+    "promotions": {
+      "description": "Manage promotional codes and discount campaigns",
+      "createPromo": "Create Promo Code",
+      "table": {
+        "code": "Code",
+        "type": "Type",
+        "target": "Target",
+        "discount": "Discount",
+        "usage": "Usage",
+        "validUntil": "Valid Until",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "types": {
+        "percentage": "Percentage",
+        "fixed_amount": "Fixed Amount",
+        "free_trial": "Free Trial"
+      },
+      "targets": {
+        "all": "All Users",
+        "new_users": "New Users",
+        "premium": "Premium",
+        "basic": "Basic"
+      },
+      "statuses": {
+        "active": "Active",
+        "expired": "Expired",
+        "scheduled": "Scheduled"
+      }
+    },
+    "listingTypes": {
+      "description": "Manage pricing for regular and VIP listing tiers",
+      "dayPricing": "Day Pricing",
+      "days": "days",
+      "clickPricing": "Click Pricing",
+      "basePrice": "Base price",
+      "perClick": "per click",
+      "minClicks": "Min",
+      "maxClicks": "Max",
+      "clicks": "clicks",
+      "editPricing": "Edit Pricing",
+      "tiers": {
+        "regular": "Regular Listing",
+        "vip1": "VIP 1",
+        "vip2": "VIP 2",
+        "vip3": "VIP 3"
+      }
+    },
+    "postBoosts": {
+      "description": "Manage post boost packages and pricing",
+      "addBoost": "Add Boost Package",
+      "boostsPerDay": "boosts/day",
+      "activePackage": "Active Package",
+      "inactivePackage": "Inactive Package",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "edit": "Edit",
+      "delete": "Delete"
+    }
+  },
+  "posts": {
+    "title": "Post Verification",
+    "description": "Review and process property listings submitted by users for publication.",
+    "breadcrumb": {
+      "menu": "Navigation Menu",
+      "title": "Post Verification",
+      "overview": "Overview"
+    },
+    "stats": {
+      "total": "Total Posts",
+      "allSubmitted": "All submitted posts",
+      "pending": "Pending Review",
+      "awaitingVerification": "Awaiting verification",
+      "approved": "Approved",
+      "published": "Published posts",
+      "rejected": "Rejected",
+      "notApproved": "Not approved"
+    },
+    "search": {
+      "placeholder": "Search by title, poster name, or address..."
+    },
+    "filters": {
+      "allStatus": "All Status",
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "allTypes": "All Types",
+      "house": "House",
+      "apartment": "Apartment",
+      "office": "Office",
+      "land": "Land",
+      "allCategories": "All Categories",
+      "forSale": "For Sale",
+      "forRent": "For Rent",
+      "pickDateRange": "Pick a date range"
+    },
+    "table": {
+      "postDetails": "Post Details",
+      "poster": "Poster",
+      "propertyInfo": "Property Info",
+      "price": "Price",
+      "postedDate": "Posted Date",
+      "status": "Status",
+      "actions": "Actions",
+      "noPostsFound": "No posts found matching your criteria",
+      "viewDetails": "View Details",
+      "posts": "posts",
+      "month": "month"
+    },
+    "review": {
+      "title": "Review Post",
+      "postInfo": "Post Information",
+      "postCode": "Post Code",
+      "listingType": "Listing Type",
+      "vipLevel": "VIP",
+      "posterInfo": "Poster Information",
+      "totalPosts": "Total Posts",
+      "propertyDetails": "Property Details",
+      "type": "Type",
+      "area": "Area",
+      "district": "District",
+      "price": "Price",
+      "postedOn": "Posted On",
+      "currentStatus": "Current Status",
+      "rejectionReason": "Rejection Reason",
+      "rejectionPlaceholder": "Enter reason for rejecting this post...",
+      "approve": "Approve Post",
+      "reject": "Reject Post"
+    },
+    "listingTypes": {
+      "for_sale": "For Sale",
+      "for_rent": "For Rent"
+    },
+    "propertyTypes": {
+      "house": "House",
+      "apartment": "Apartment",
+      "office": "Office",
+      "land": "Land"
+    },
+    "statuses": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    }
+  },
+  "reports": {
+    "title": "Violation Report Management",
+    "description": "Review and manage user reports about posts that may violate community guidelines.",
+    "breadcrumb": {
+      "menu": "Navigation Menu",
+      "title": "Violation Report Management",
+      "overview": "Overview"
+    },
+    "stats": {
+      "total": "Total Reports",
+      "allTime": "All time reports",
+      "pending": "Pending Review",
+      "needAttention": "Need attention",
+      "resolved": "Resolved",
+      "actionTaken": "Action taken",
+      "dismissed": "Dismissed",
+      "noAction": "No action needed"
+    },
+    "search": {
+      "placeholder": "Search by post title, reporter name, or post ID..."
+    },
+    "filters": {
+      "allStatus": "All Status",
+      "pending": "Pending",
+      "resolved": "Resolved",
+      "dismissed": "Dismissed",
+      "allCategories": "All Categories",
+      "fakeFraudulent": "Fake/Fraudulent Listing",
+      "spamPromotional": "Spam/Promotional",
+      "inappropriateContent": "Inappropriate Content",
+      "wrongInformation": "Wrong Information",
+      "other": "Other"
+    },
+    "table": {
+      "postDetails": "Post Details",
+      "reporter": "Reporter",
+      "category": "Report Category",
+      "content": "Report Content",
+      "reportTime": "Report Time",
+      "status": "Status",
+      "actions": "Actions",
+      "noReportsFound": "No reports found matching your criteria",
+      "viewDetails": "View Details"
+    },
+    "review": {
+      "title": "Review Violation Report",
+      "reportedBy": "Reported by",
+      "on": "on",
+      "category": "Category",
+      "reportedPost": "Reported Post",
+      "postId": "Post ID",
+      "postStatus": "Post status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "reporterInfo": "Reporter Information",
+      "reportContent": "Report Content",
+      "currentStatus": "Current Status",
+      "actionReason": "Action Reason",
+      "actionPlaceholder": "Enter reason for your decision...",
+      "viewPost": "View Post",
+      "resolve": "Resolve Report",
+      "dismiss": "Dismiss Report"
+    },
+    "categories": {
+      "fake_fraudulent": "Fake/Fraudulent Listing",
+      "spam_promotional": "Spam/Promotional",
+      "inappropriate_content": "Inappropriate Content",
+      "wrong_information": "Wrong Information",
+      "other": "Other"
+    },
+    "statuses": {
+      "pending": "Pending",
+      "resolved": "Resolved",
+      "dismissed": "Dismissed"
+    }
   }
 }

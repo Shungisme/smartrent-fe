@@ -3,19 +3,28 @@ import { Input } from '@/components/atoms/input'
 import { Button } from '@/components/atoms/button'
 import { Avatar } from '@/components/atoms/avatar'
 import { Badge } from '@/components/atoms/badge'
+import { useTranslations } from 'next-intl'
 
 const AdminHeader: React.FC = () => {
+  const t = useTranslations('admin.header')
+
+  // TODO: Replace with real user data from auth context/store
+  const currentUser = {
+    name: 'Admin',
+    email: 'admin@smartrent.com',
+  }
+
   return (
     <header className='bg-white border-b border-gray-200 px-6 py-4'>
       <div className='flex items-center justify-between'>
         {/* Left - Page Title */}
-        <h1 className='text-2xl font-bold text-gray-900'>Quản Lý Người Dùng</h1>
+        <h1 className='text-2xl font-bold text-gray-900'>{t('title')}</h1>
 
         {/* Center - Search Bar */}
         <div className='flex-1 max-w-lg mx-8'>
           <Input
             type='text'
-            placeholder='Tìm kiếm nhanh...'
+            placeholder={t('searchPlaceholder')}
             className='w-full'
           />
         </div>
@@ -51,14 +60,16 @@ const AdminHeader: React.FC = () => {
           <div className='flex items-center gap-3'>
             <Avatar className='w-8 h-8'>
               <img
-                src='/public/images/default-image.jpg'
-                alt='Admin'
+                src='/images/default-image.jpg'
+                alt={currentUser.name}
                 className='w-full h-full object-cover'
               />
             </Avatar>
             <div className='flex flex-col'>
-              <span className='text-sm font-medium text-gray-900'>Admin</span>
-              <span className='text-xs text-gray-500'>admin@smartrent.com</span>
+              <span className='text-sm font-medium text-gray-900'>
+                {currentUser.name}
+              </span>
+              <span className='text-xs text-gray-500'>{currentUser.email}</span>
             </div>
             <Button variant='ghost' size='sm'>
               <svg

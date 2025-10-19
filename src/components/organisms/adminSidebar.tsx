@@ -1,18 +1,27 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
+import { useSwitchLanguage } from '@/contexts/switchLanguage/index.context'
 import {
   Calculator,
   ChartColumn,
   CreditCard,
   FileCheck,
   Home,
+  ChevronDown,
   Search,
   Settings,
   Shield,
   UserCogIcon,
   Users,
 } from 'lucide-react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/atoms/dropdown-menu'
 
 type SidebarItemProps = {
   icon?: React.ReactNode
@@ -66,6 +75,13 @@ type AdminSidebarProps = {
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
   const router = useRouter()
+  const t = useTranslations('admin.sidebar')
+  const { language, updateLanguage } = useSwitchLanguage()
+
+  const languageConfig = {
+    vi: { flag: '🇻🇳', name: 'Tiếng Việt', code: 'VI' },
+    en: { flag: '🇺🇸', name: 'English', code: 'EN' },
+  }
 
   // Route mapping for navigation
   const routeMap: Record<string, string> = {
@@ -89,31 +105,35 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
   }
 
   const mainNavItems = [
-    { key: 'users', label: 'Quản Lý Người Dùng', icon: <Users width={20} /> },
-    { key: 'admin', label: 'Quản Lý Admin', icon: <UserCogIcon width={20} /> },
+    { key: 'users', label: t('menuItems.users'), icon: <Users width={20} /> },
+    {
+      key: 'admin',
+      label: t('menuItems.admins'),
+      icon: <UserCogIcon width={20} />,
+    },
     {
       key: 'finance',
-      label: 'Quản Lý Tài Chính',
+      label: t('menuItems.finance'),
       icon: <Calculator width={20} />,
     },
     {
       key: 'premium',
-      label: 'Tính Năng Trả Phí & Khuyến Mãi',
+      label: t('menuItems.premium'),
       icon: <CreditCard width={20} />,
     },
     {
       key: 'posts',
-      label: 'Kiểm Duyệt Bài Đăng',
+      label: t('menuItems.posts'),
       icon: <FileCheck width={20} />,
     },
     {
       key: 'reports',
-      label: 'Quản Lý Báo Cáo Vi Phạm',
+      label: t('menuItems.reports'),
       icon: <Shield width={20} />,
     },
     {
       key: 'analytics',
-      label: 'Phân Tích Ứng Dụng',
+      label: t('menuItems.analytics'),
       icon: <ChartColumn width={20} />,
     },
   ]
@@ -121,33 +141,36 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
   const upcomingItems = [
     {
       key: 'properties',
-      label: 'Danh Sách Bất Động Sản',
+      label: t('menuItems.properties'),
       icon: <Home width={20} />,
     },
-    { key: 'settings', label: 'Cài Đặt', icon: <Settings width={20} /> },
-    { key: 'search', label: 'Tìm Kiếm Nâng Cao', icon: <Search width={20} /> },
+    {
+      key: 'settings',
+      label: t('menuItems.settings'),
+      icon: <Settings width={20} />,
+    },
+    {
+      key: 'search',
+      label: t('menuItems.search'),
+      icon: <Search width={20} />,
+    },
   ]
 
   return (
-    <div className='h-full bg-white border-r border-gray-200 overflow-y-auto'>
+    <div className='h-full bg-white border-r border-gray-200 overflow-y-auto flex flex-col'>
       {/* Logo */}
       <div className='p-6 border-b border-gray-200'>
         <div
           className='flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity'
           onClick={() => router.push('/admin')}
         >
-          <div className='w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center'>
-            <span className='text-white font-bold text-lg'>S</span>
-          </div>
-          <span className='font-bold text-xl text-gray-900'>
-            SmartRent Admin
-          </span>
+          <span className='font-bold text-xl text-gray-900'>{t('title')}</span>
         </div>
       </div>
 
       {/* Navigation */}
-      <div className='p-2'>
-        <SidebarSection title='Quản Trị'>
+      <div className='p-2 flex-1'>
+        <SidebarSection title={t('sections.management')}>
           {mainNavItems.map((item) => (
             <SidebarItem
               key={item.key}
@@ -159,7 +182,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
           ))}
         </SidebarSection>
 
-        <SidebarSection title='Sắp Ra Mắt'>
+        <SidebarSection title={t('sections.comingSoon')}>
           {upcomingItems.map((item) => (
             <SidebarItem
               key={item.key}
@@ -169,6 +192,48 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
             />
           ))}
         </SidebarSection>
+      </div>
+
+      {/* Language Switcher */}
+      <div className='p-4 border-t border-gray-200'>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className={cn(
+                'flex w-full items-center justify-between gap-2 rounded-md px-3 py-2',
+                'text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors',
+              )}
+            >
+              <div className='flex items-center gap-2'>
+                <span className='text-lg'>{languageConfig[language].flag}</span>
+                <span>{languageConfig[language].code}</span>
+              </div>
+              <ChevronDown className='h-4 w-4 text-gray-500' />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align='end' className='w-48'>
+            <DropdownMenuItem
+              onClick={() => updateLanguage('vi')}
+              className={cn(
+                'cursor-pointer',
+                language === 'vi' && 'bg-blue-50 text-blue-600',
+              )}
+            >
+              <span className='text-lg mr-2'>🇻🇳</span>
+              <span>Tiếng Việt</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => updateLanguage('en')}
+              className={cn(
+                'cursor-pointer',
+                language === 'en' && 'bg-blue-50 text-blue-600',
+              )}
+            >
+              <span className='text-lg mr-2'>🇺🇸</span>
+              <span>English</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   )

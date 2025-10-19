@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu'
 import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 export type AdminRole = 'support' | 'moderator' | 'admin' | 'super_admin'
 export type AdminStatus = 'active' | 'inactive'
@@ -31,16 +32,6 @@ type AdminTableProps = {
   sortDirection?: 'asc' | 'desc'
 }
 
-const getRoleLabel = (role: AdminRole): string => {
-  const labels: Record<AdminRole, string> = {
-    support: 'Hỗ Trợ',
-    moderator: 'Điều Hành Viên',
-    admin: 'Admin',
-    super_admin: 'Siêu Admin',
-  }
-  return labels[role]
-}
-
 const getRoleBadgeClass = (role: AdminRole): string => {
   const classes: Record<AdminRole, string> = {
     support: 'bg-blue-100 text-blue-800 border-blue-200',
@@ -56,6 +47,8 @@ type AdminRowProps = {
 }
 
 const AdminRow: React.FC<AdminRowProps> = ({ admin }) => {
+  const t = useTranslations('admin.admins.table')
+
   return (
     <tr className='border-b border-gray-200 hover:bg-gray-50'>
       <td className='px-6 py-4 text-sm font-medium text-gray-900'>
@@ -81,7 +74,7 @@ const AdminRow: React.FC<AdminRowProps> = ({ admin }) => {
           variant='outline'
           className={cn('px-3 py-1 font-medium', getRoleBadgeClass(admin.role))}
         >
-          {getRoleLabel(admin.role)}
+          {t(`roles.${admin.role}`)}
         </Badge>
       </td>
       <td className='px-6 py-4 text-sm text-gray-900'>{admin.joinDate}</td>
@@ -95,7 +88,7 @@ const AdminRow: React.FC<AdminRowProps> = ({ admin }) => {
               : 'bg-gray-100 text-gray-800 border-gray-200',
           )}
         >
-          {admin.status === 'active' ? 'Hoạt động' : 'Không hoạt động'}
+          {t(`statuses.${admin.status}`)}
         </Badge>
       </td>
       <td className='px-6 py-4'>
@@ -106,11 +99,11 @@ const AdminRow: React.FC<AdminRowProps> = ({ admin }) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
-            <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
-            <DropdownMenuItem>Chỉnh sửa</DropdownMenuItem>
-            <DropdownMenuItem>Thay đổi vai trò</DropdownMenuItem>
+            <DropdownMenuItem>{t('actions.viewDetails')}</DropdownMenuItem>
+            <DropdownMenuItem>{t('actions.edit')}</DropdownMenuItem>
+            <DropdownMenuItem>{t('actions.changeRole')}</DropdownMenuItem>
             <DropdownMenuItem className='text-red-600'>
-              Vô hiệu hóa
+              {t('actions.deactivate')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -125,6 +118,8 @@ const AdminTable: React.FC<AdminTableProps> = ({
   sortField,
   sortDirection,
 }) => {
+  const t = useTranslations('admin.admins.table.headers')
+
   const renderSortIcon = (field: 'joinDate' | 'lastOnline') => {
     if (sortField !== field) {
       return <span className='text-gray-400 ml-1'>↕</span>
@@ -142,13 +137,13 @@ const AdminTable: React.FC<AdminTableProps> = ({
         <thead className='bg-gray-50 border-b border-gray-200'>
           <tr>
             <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
-              ID Admin
+              {t('adminId')}
             </th>
             <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
-              Admin
+              {t('admin')}
             </th>
             <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
-              Vai Trò
+              {t('role')}
             </th>
             <th
               className='px-6 py-4 text-left text-sm font-semibold text-gray-900 cursor-pointer hover:bg-gray-100'
@@ -157,7 +152,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
               }
             >
               <div className='flex items-center'>
-                Ngày Tham Gia
+                {t('joinDate')}
                 {renderSortIcon('joinDate')}
               </div>
             </th>
@@ -168,15 +163,15 @@ const AdminTable: React.FC<AdminTableProps> = ({
               }
             >
               <div className='flex items-center'>
-                Lần Online Cuối
+                {t('lastOnline')}
                 {renderSortIcon('lastOnline')}
               </div>
             </th>
             <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
-              Trạng Thái
+              {t('status')}
             </th>
             <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
-              Thao Tác
+              {t('actions')}
             </th>
           </tr>
         </thead>

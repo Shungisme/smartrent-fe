@@ -5,6 +5,7 @@ import UserTable, { UserData } from '@/components/molecules/userTable'
 import Pagination from '@/components/molecules/pagination'
 import { Input } from '@/components/atoms/input'
 import type { NextPageWithLayout } from '@/types/next-page'
+import { useTranslations } from 'next-intl'
 
 // Mock data for 12 users matching the requirements
 const mockUsers: UserData[] = [
@@ -131,15 +132,16 @@ const mockUsers: UserData[] = [
 ]
 
 const UserManagement: NextPageWithLayout = () => {
+  const t = useTranslations('admin.users')
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(10)
 
   const breadcrumbItems = [
-    { label: 'Thực Đơn Điều Hướng' },
-    { label: 'Bảng Điều Khiển Quản Lý Người Dùng' },
-    { label: `${mockUsers.length} người dùng` },
+    { label: t('breadcrumb.menu') },
+    { label: t('breadcrumb.dashboard') },
+    { label: `${mockUsers.length} ${t('breadcrumb.usersCount')}` },
   ]
 
   // Filter and search logic
@@ -167,7 +169,7 @@ const UserManagement: NextPageWithLayout = () => {
           <div className='flex-1 max-w-md'>
             <Input
               type='text'
-              placeholder='Tìm kiếm theo tên hoặc ID người dùng...'
+              placeholder={t('search.placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className='w-full'
@@ -179,9 +181,9 @@ const UserManagement: NextPageWithLayout = () => {
             value={filterType}
             onChange={(e) => setFilterType(e.target.value)}
           >
-            <option value='all'>Tất Cả Người Dùng</option>
-            <option value='landlord'>Chủ nhà</option>
-            <option value='tenant'>Người thuê</option>
+            <option value='all'>{t('filters.allUsers')}</option>
+            <option value='landlord'>{t('filters.landlord')}</option>
+            <option value='tenant'>{t('filters.tenant')}</option>
           </select>
 
           <select
@@ -189,9 +191,9 @@ const UserManagement: NextPageWithLayout = () => {
             value={itemsPerPage}
             onChange={(e) => setItemsPerPage(Number(e.target.value))}
           >
-            <option value={5}>5 mỗi trang</option>
-            <option value={10}>10 mỗi trang</option>
-            <option value={20}>20 mỗi trang</option>
+            <option value={5}>5 {t('perPage')}</option>
+            <option value={10}>10 {t('perPage')}</option>
+            <option value={20}>20 {t('perPage')}</option>
           </select>
         </div>
 

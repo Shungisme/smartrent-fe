@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
 import { Input } from '@/components/atoms/input'
@@ -164,18 +165,6 @@ const mockReports: ReportData[] = [
   },
 ]
 
-// Helper functions
-const getCategoryLabel = (category: ReportCategory): string => {
-  const labels: Record<ReportCategory, string> = {
-    fake_fraudulent: 'Fake/Fraudulent Listing',
-    spam_promotional: 'Spam/Promotional',
-    inappropriate_content: 'Inappropriate Content',
-    wrong_information: 'Wrong Information',
-    other: 'Other',
-  }
-  return labels[category]
-}
-
 const getCategoryColor = (category: ReportCategory): string => {
   const colors: Record<ReportCategory, string> = {
     fake_fraudulent: 'bg-purple-100 text-purple-700 border-purple-200',
@@ -185,15 +174,6 @@ const getCategoryColor = (category: ReportCategory): string => {
     other: 'bg-gray-100 text-gray-700 border-gray-200',
   }
   return colors[category]
-}
-
-const getStatusLabel = (status: ReportStatus): string => {
-  const labels: Record<ReportStatus, string> = {
-    pending: 'Pending',
-    resolved: 'Resolved',
-    dismissed: 'Dismissed',
-  }
-  return labels[status]
 }
 
 const getStatusColor = (status: ReportStatus): string => {
@@ -220,6 +200,7 @@ const truncateText = (text: string, maxLength: number = 60): string => {
 }
 
 const ViolationReportManagement: NextPageWithLayout = () => {
+  const t = useTranslations('reports')
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<ReportStatus | 'all'>('all')
   const [categoryFilter, setCategoryFilter] = useState<ReportCategory | 'all'>(
@@ -230,9 +211,9 @@ const ViolationReportManagement: NextPageWithLayout = () => {
   const [actionReason, setActionReason] = useState('')
 
   const breadcrumbItems = [
-    { label: 'Thực Đơn Điều Hướng' },
-    { label: 'Quản Lý Báo Cáo Vi Phạm' },
-    { label: 'Tổng Quan' },
+    { label: t('breadcrumb.menu') },
+    { label: t('breadcrumb.title') },
+    { label: t('breadcrumb.overview') },
   ]
 
   // Calculate stats
@@ -312,13 +293,8 @@ const ViolationReportManagement: NextPageWithLayout = () => {
       <div className='space-y-6'>
         {/* Header */}
         <div>
-          <h1 className='text-3xl font-semibold text-gray-900'>
-            Violation Report Management
-          </h1>
-          <p className='mt-1 text-sm text-gray-500'>
-            Review and manage user reports about posts that may violate
-            community guidelines.
-          </p>
+          <h1 className='text-3xl font-semibold text-gray-900'>{t('title')}</h1>
+          <p className='mt-1 text-sm text-gray-500'>{t('description')}</p>
         </div>
 
         {/* Stats Cards */}
@@ -327,32 +303,46 @@ const ViolationReportManagement: NextPageWithLayout = () => {
             <div className='text-2xl font-bold text-gray-900'>
               {stats.total}
             </div>
-            <div className='mt-1 text-sm text-gray-400'>Total Reports</div>
-            <div className='mt-2 text-xs text-gray-500'>All time reports</div>
+            <div className='mt-1 text-sm text-gray-400'>{t('stats.total')}</div>
+            <div className='mt-2 text-xs text-gray-500'>
+              {t('stats.allTime')}
+            </div>
           </div>
 
           <div className='rounded-xl border border-gray-100 bg-white p-6'>
             <div className='text-2xl font-bold text-yellow-600'>
               {stats.pending}
             </div>
-            <div className='mt-1 text-sm text-gray-400'>Pending Review</div>
-            <div className='mt-2 text-xs text-gray-500'>Need attention</div>
+            <div className='mt-1 text-sm text-gray-400'>
+              {t('stats.pending')}
+            </div>
+            <div className='mt-2 text-xs text-gray-500'>
+              {t('stats.needAttention')}
+            </div>
           </div>
 
           <div className='rounded-xl border border-gray-100 bg-white p-6'>
             <div className='text-2xl font-bold text-green-600'>
               {stats.resolved}
             </div>
-            <div className='mt-1 text-sm text-gray-400'>Resolved</div>
-            <div className='mt-2 text-xs text-gray-500'>Action taken</div>
+            <div className='mt-1 text-sm text-gray-400'>
+              {t('stats.resolved')}
+            </div>
+            <div className='mt-2 text-xs text-gray-500'>
+              {t('stats.actionTaken')}
+            </div>
           </div>
 
           <div className='rounded-xl border border-gray-100 bg-white p-6'>
             <div className='text-2xl font-bold text-gray-500'>
               {stats.dismissed}
             </div>
-            <div className='mt-1 text-sm text-gray-400'>Dismissed</div>
-            <div className='mt-2 text-xs text-gray-500'>No action needed</div>
+            <div className='mt-1 text-sm text-gray-400'>
+              {t('stats.dismissed')}
+            </div>
+            <div className='mt-2 text-xs text-gray-500'>
+              {t('stats.noAction')}
+            </div>
           </div>
         </div>
 
@@ -363,7 +353,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
             <Search className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400' />
             <Input
               type='text'
-              placeholder='Search by post title, reporter name, or post ID...'
+              placeholder={t('search.placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className='w-full pl-10'
@@ -380,10 +370,10 @@ const ViolationReportManagement: NextPageWithLayout = () => {
               }
               className='rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
             >
-              <option value='all'>All Status</option>
-              <option value='pending'>Pending</option>
-              <option value='resolved'>Resolved</option>
-              <option value='dismissed'>Dismissed</option>
+              <option value='all'>{t('filters.allStatus')}</option>
+              <option value='pending'>{t('filters.pending')}</option>
+              <option value='resolved'>{t('filters.resolved')}</option>
+              <option value='dismissed'>{t('filters.dismissed')}</option>
             </select>
 
             {/* Category Filter */}
@@ -394,14 +384,20 @@ const ViolationReportManagement: NextPageWithLayout = () => {
               }
               className='rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
             >
-              <option value='all'>All Categories</option>
-              <option value='fake_fraudulent'>Fake/Fraudulent Listing</option>
-              <option value='spam_promotional'>Spam/Promotional</option>
-              <option value='inappropriate_content'>
-                Inappropriate Content
+              <option value='all'>{t('filters.allCategories')}</option>
+              <option value='fake_fraudulent'>
+                {t('filters.fakeFraudulent')}
               </option>
-              <option value='wrong_information'>Wrong Information</option>
-              <option value='other'>Other</option>
+              <option value='spam_promotional'>
+                {t('filters.spamPromotional')}
+              </option>
+              <option value='inappropriate_content'>
+                {t('filters.inappropriateContent')}
+              </option>
+              <option value='wrong_information'>
+                {t('filters.wrongInformation')}
+              </option>
+              <option value='other'>{t('filters.other')}</option>
             </select>
           </div>
         </div>
@@ -410,20 +406,20 @@ const ViolationReportManagement: NextPageWithLayout = () => {
         <div className='rounded-2xl border border-gray-200 bg-white shadow-sm'>
           {/* Table Header */}
           <div className='grid grid-cols-12 gap-4 border-b border-gray-100 bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-700'>
-            <div className='col-span-3'>Post Details</div>
-            <div className='col-span-2'>Reporter</div>
-            <div className='col-span-2'>Report Category</div>
-            <div className='col-span-2'>Report Content</div>
-            <div className='col-span-1'>Report Time</div>
-            <div className='col-span-1'>Status</div>
-            <div className='col-span-1 text-right'>Actions</div>
+            <div className='col-span-3'>{t('table.postDetails')}</div>
+            <div className='col-span-2'>{t('table.reporter')}</div>
+            <div className='col-span-2'>{t('table.category')}</div>
+            <div className='col-span-2'>{t('table.content')}</div>
+            <div className='col-span-1'>{t('table.reportTime')}</div>
+            <div className='col-span-1'>{t('table.status')}</div>
+            <div className='col-span-1 text-right'>{t('table.actions')}</div>
           </div>
 
           {/* Table Body */}
           <div className='divide-y divide-gray-100'>
             {filteredReports.length === 0 ? (
               <div className='px-4 py-12 text-center text-gray-500'>
-                No reports found matching your criteria
+                {t('table.noReportsFound')}
               </div>
             ) : (
               filteredReports.map((report) => (
@@ -468,8 +464,8 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                           )}
                         >
                           {report.post.status === 'active'
-                            ? 'Active'
-                            : 'Inactive'}
+                            ? t('review.active')
+                            : t('review.inactive')}
                         </Badge>
                       </div>
                     </div>
@@ -509,7 +505,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                         getCategoryColor(report.category),
                       )}
                     >
-                      {getCategoryLabel(report.category)}
+                      {t(`categories.${report.category}`)}
                     </Badge>
                   </div>
 
@@ -539,7 +535,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                         getStatusColor(report.status),
                       )}
                     >
-                      {getStatusLabel(report.status)}
+                      {t(`statuses.${report.status}`)}
                     </Badge>
                   </div>
 
@@ -551,7 +547,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                       onClick={() => handleReview(report)}
                       className='rounded-lg border-gray-300 px-3 py-1 text-sm hover:border-blue-500 hover:text-blue-600'
                     >
-                      Review
+                      {t('table.viewDetails')}
                     </Button>
                   </div>
                 </div>
@@ -566,7 +562,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
         <DialogContent className='max-w-3xl max-h-[90vh] overflow-y-auto'>
           <DialogHeader>
             <DialogTitle className='text-2xl font-semibold'>
-              Review Violation Report
+              {t('review.title')}
             </DialogTitle>
           </DialogHeader>
 
@@ -578,12 +574,12 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                   <AlertTriangle className='h-5 w-5 text-yellow-600 mt-0.5' />
                   <div>
                     <h4 className='font-medium text-yellow-900'>
-                      Report Category:{' '}
-                      {getCategoryLabel(selectedReport.category)}
+                      {t('review.category')}:{' '}
+                      {t(`categories.${selectedReport.category}`)}
                     </h4>
                     <p className='mt-1 text-sm text-yellow-800'>
-                      Reported on {selectedReport.reportDate} at{' '}
-                      {selectedReport.reportTime}
+                      {t('review.reportedBy')} {selectedReport.reportDate}{' '}
+                      {t('review.on')} {selectedReport.reportTime}
                     </p>
                   </div>
                 </div>
@@ -592,7 +588,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
               {/* Reported Post */}
               <div>
                 <h3 className='text-lg font-semibold text-gray-900 mb-3'>
-                  Reported Post
+                  {t('review.reportedPost')}
                 </h3>
                 <div className='rounded-lg border border-gray-200 p-4'>
                   <div className='flex gap-4'>
@@ -606,7 +602,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                         {selectedReport.post.title}
                       </h4>
                       <p className='text-sm text-gray-500 mt-1'>
-                        ID: {selectedReport.post.id}
+                        {t('review.postId')}: {selectedReport.post.id}
                       </p>
                       <div className='mt-2 flex items-center gap-3 text-sm text-gray-600'>
                         <span>
@@ -627,8 +623,8 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                           )}
                         >
                           {selectedReport.post.status === 'active'
-                            ? 'Active'
-                            : 'Inactive'}
+                            ? t('review.active')
+                            : t('review.inactive')}
                         </Badge>
                       </div>
                     </div>
@@ -639,7 +635,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
               {/* Reporter Info */}
               <div>
                 <h3 className='text-lg font-semibold text-gray-900 mb-3'>
-                  Reported By
+                  {t('review.reporterInfo')}
                 </h3>
                 <div className='flex items-center gap-3 rounded-lg border border-gray-200 p-4'>
                   <Avatar className='h-12 w-12'>
@@ -669,7 +665,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
               {/* Report Content */}
               <div>
                 <h3 className='text-lg font-semibold text-gray-900 mb-3'>
-                  Report Details
+                  {t('review.reportContent')}
                 </h3>
                 <div className='rounded-lg border border-gray-200 bg-gray-50 p-4'>
                   <p className='text-sm text-gray-700 leading-relaxed'>
@@ -681,7 +677,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
               {/* Current Status */}
               <div>
                 <h3 className='text-lg font-semibold text-gray-900 mb-3'>
-                  Current Status
+                  {t('review.currentStatus')}
                 </h3>
                 <Badge
                   variant='outline'
@@ -690,7 +686,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                     getStatusColor(selectedReport.status),
                   )}
                 >
-                  {getStatusLabel(selectedReport.status)}
+                  {t(`statuses.${selectedReport.status}`)}
                 </Badge>
               </div>
 
@@ -701,13 +697,13 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                     htmlFor='action-reason'
                     className='text-sm font-medium text-gray-700'
                   >
-                    Action Reason (optional)
+                    {t('review.actionReason')}
                   </label>
                   <textarea
                     id='action-reason'
                     value={actionReason}
                     onChange={(e) => setActionReason(e.target.value)}
-                    placeholder='Enter reason for your decision...'
+                    placeholder={t('review.actionPlaceholder')}
                     className='mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100'
                     rows={3}
                   />
@@ -722,7 +718,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                   className='flex-1'
                 >
                   <Eye className='mr-2 h-4 w-4' />
-                  View Post
+                  {t('review.viewPost')}
                 </Button>
 
                 {selectedReport.status === 'pending' && (
@@ -732,7 +728,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                       className='flex-1 bg-green-600 hover:bg-green-700'
                     >
                       <CheckCircle className='mr-2 h-4 w-4' />
-                      Resolve Report
+                      {t('review.resolve')}
                     </Button>
                     <Button
                       onClick={handleDismiss}
@@ -740,7 +736,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                       className='flex-1 border-gray-300 text-gray-700 hover:bg-gray-50'
                     >
                       <XCircle className='mr-2 h-4 w-4' />
-                      Dismiss Report
+                      {t('review.dismiss')}
                     </Button>
                   </>
                 )}

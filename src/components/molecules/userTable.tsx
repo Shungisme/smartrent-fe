@@ -2,6 +2,7 @@ import React from 'react'
 import { Avatar } from '@/components/atoms/avatar'
 import { Badge } from '@/components/atoms/badge'
 import { cn } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 export type UserData = {
   id: string
@@ -23,6 +24,8 @@ type UserRowProps = {
 }
 
 const UserRow: React.FC<UserRowProps> = ({ user }) => {
+  const t = useTranslations('admin.users.table')
+
   return (
     <tr className='border-b border-gray-200 hover:bg-gray-50'>
       <td className='px-6 py-4 text-sm font-medium text-gray-900'>{user.id}</td>
@@ -48,7 +51,7 @@ const UserRow: React.FC<UserRowProps> = ({ user }) => {
               : 'bg-gray-100 text-gray-800',
           )}
         >
-          {user.type === 'landlord' ? 'Chủ nhà' : 'Người thuê'}
+          {t(`userTypes.${user.type}`)}
         </Badge>
       </td>
       <td className='px-6 py-4 text-sm text-gray-900'>{user.joinDate}</td>
@@ -59,14 +62,14 @@ const UserRow: React.FC<UserRowProps> = ({ user }) => {
             variant='outline'
             className='bg-green-50 text-green-800 border-green-200'
           >
-            {user.posts} bài đăng
+            {user.posts} {t('postsBadge')}
           </Badge>
         ) : (
           <Badge
             variant='outline'
             className='bg-gray-50 text-gray-500 border-gray-200'
           >
-            Không áp dụng
+            {t('notApplicable')}
           </Badge>
         )}
       </td>
@@ -79,7 +82,7 @@ const UserRow: React.FC<UserRowProps> = ({ user }) => {
               : 'bg-red-600 text-white',
           )}
         >
-          {user.status === 'normal' ? 'Bình thường' : 'Bị cấm'}
+          {t(`statuses.${user.status}`)}
         </Badge>
       </td>
     </tr>
@@ -87,31 +90,33 @@ const UserRow: React.FC<UserRowProps> = ({ user }) => {
 }
 
 const UserTable: React.FC<UserTableProps> = ({ users }) => {
+  const t = useTranslations('admin.users.table.headers')
+
   return (
     <div className='bg-white rounded-2xl border border-gray-200 overflow-hidden'>
       <table className='w-full'>
         <thead className='bg-gray-50 border-b border-gray-200'>
           <tr>
             <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
-              ID Người Dùng
+              {t('userId')}
             </th>
             <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
-              Người Dùng
+              {t('user')}
             </th>
             <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
-              Loại
+              {t('type')}
             </th>
             <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
-              Ngày Tham Gia
+              {t('joinDate')}
             </th>
             <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
-              Lần Online Cuối
+              {t('lastOnline')}
             </th>
             <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
-              Bài Đăng
+              {t('posts')}
             </th>
             <th className='px-6 py-4 text-left text-sm font-semibold text-gray-900'>
-              Trạng Thái
+              {t('status')}
             </th>
           </tr>
         </thead>
