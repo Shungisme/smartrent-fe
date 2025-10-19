@@ -892,6 +892,136 @@
         }
       }
     },
+    "analytics": {
+      "title": "Application Analytics",
+      "subtitle": "Track platform performance, user engagement, and business metrics",
+      "breadcrumb": {
+        "title": "Application Analytics"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "users": "Users",
+        "posts": "Posts",
+        "revenue": "Revenue",
+        "reports": "Reports"
+      },
+      "filters": {
+        "chartType": {
+          "label": "Chart Type",
+          "line": "Line Chart",
+          "bar": "Bar Chart",
+          "area": "Area Chart"
+        },
+        "timeRange": {
+          "label": "Time Range",
+          "today": "Today",
+          "week": "This Week",
+          "month": "Past Month"
+        }
+      },
+      "overview": {
+        "stats": {
+          "totalUsers": "Total Users",
+          "newInPeriod": "new in period",
+          "totalPosts": "Total Posts",
+          "inPeriod": "in period",
+          "totalViews": "Total Views",
+          "clicks": "clicks",
+          "revenue": "Revenue",
+          "packagesSold": "packages sold"
+        },
+        "charts": {
+          "userGrowth": "User Growth",
+          "postActivity": "Post Activity",
+          "revenueOverTime": "Revenue Over Time",
+          "userTypeDistribution": "User Type Distribution",
+          "newUsers": "New users",
+          "newPosts": "New posts",
+          "unit": "Unit: VND"
+        },
+        "userTypes": {
+          "landlord": "Landlord",
+          "tenant": "Tenant"
+        },
+        "postStatus": {
+          "active": "Active",
+          "pending": "Pending",
+          "rejected": "Rejected"
+        },
+        "reportTypes": {
+          "spam": "Spam/Duplicate",
+          "inappropriate": "Inappropriate Content",
+          "fake": "Fake Listing",
+          "pricing": "Price Issues",
+          "other": "Other"
+        }
+      },
+      "posts": {
+        "stats": {
+          "totalPosts": "Total Posts",
+          "pending": "Pending",
+          "totalViews": "Total Views",
+          "clicks": "Clicks",
+          "inThisPeriod": "in this period"
+        },
+        "charts": {
+          "postActivity": "Post Activity",
+          "viewsAndClicks": "Views & Clicks",
+          "statusDistribution": "Post Status Distribution",
+          "newPosts": "New posts",
+          "views": "Views",
+          "clicks": "Clicks"
+        }
+      },
+      "users": {
+        "stats": {
+          "totalUsers": "Total Users",
+          "landlords": "Landlords",
+          "tenants": "Tenants",
+          "ofTotal": "of total"
+        },
+        "charts": {
+          "userGrowthOverTime": "User Growth Over Time",
+          "userTypeDistribution": "User Type Distribution",
+          "newUsers": "New users"
+        }
+      },
+      "revenue": {
+        "stats": {
+          "totalRevenue": "Total Revenue",
+          "packagesSold": "Membership Packages Sold",
+          "avgPerDay": "Avg Revenue/Day",
+          "avgPerPackage": "Avg Revenue/Package"
+        },
+        "charts": {
+          "revenueOverTime": "Revenue Over Time",
+          "unit": "Unit: VND"
+        },
+        "table": {
+          "title": "Revenue Analysis by Package",
+          "package": "Package",
+          "revenue": "Revenue",
+          "percentage": "Percentage",
+          "purchases": "Purchases",
+          "total": "Total"
+        }
+      },
+      "reports": {
+        "stats": {
+          "totalReports": "Total Reports",
+          "pending": "Pending",
+          "resolved": "Resolved",
+          "avgResolutionTime": "Avg Resolution Time",
+          "needsAction": "Needs action",
+          "ofTotal": "of total"
+        },
+        "charts": {
+          "reportsOverTime": "Reports Over Time",
+          "typeDistribution": "Report Type Distribution",
+          "reports": "Reports"
+        }
+      }
+    },
     "admins": {
       "title": "Admin Management",
       "breadcrumb": {
@@ -940,6 +1070,62 @@
           "changeRole": "Change Role",
           "deactivate": "Deactivate"
         }
+      }
+    },
+    "finance": {
+      "title": "Financial Management",
+      "subtitle": "Track revenue, invoices, and financial metrics of the system",
+      "breadcrumb": {
+        "title": "Financial Management"
+      },
+      "buttons": {
+        "createInvoice": "Create New Invoice",
+        "invoiceList": "Invoice List",
+        "exportReport": "Export Report",
+        "detailedAnalysis": "Detailed Analysis",
+        "viewAll": "View all"
+      },
+      "stats": {
+        "totalRevenue": "Total Revenue",
+        "comparedToLastMonth": "compared to last month",
+        "paidInvoices": "Paid Invoices",
+        "ofTotalInvoices": "of total invoices",
+        "unpaidInvoices": "Unpaid Invoices",
+        "overdue": "overdue",
+        "avgInvoiceValue": "Average Invoice Value",
+        "basedOnInvoices": "Based on 142 invoices"
+      },
+      "sections": {
+        "quickAccess": "Quick Access",
+        "recentInvoices": "Recent Invoices"
+      },
+      "charts": {
+        "revenueChart": {
+          "title": "Revenue Trend",
+          "unit": "Unit: Million ₫"
+        },
+        "donutChart": {
+          "title": "Invoice Status Distribution",
+          "total": "Total"
+        },
+        "performanceChart": {
+          "title": "Monthly Performance",
+          "revenue": "Revenue",
+          "avgValue": "Avg Value",
+          "revenueUnit": "Revenue: Million ₫",
+          "avgUnit": "Avg Value: Million ₫"
+        }
+      },
+      "invoice": {
+        "status": {
+          "paid": "Paid",
+          "unpaid": "Unpaid",
+          "overdue": "Overdue"
+        },
+        "dueDate": "Due date:"
+      },
+      "months": {
+        "short": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
       }
     }
   },

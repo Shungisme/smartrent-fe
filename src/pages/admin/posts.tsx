@@ -1,8 +1,12 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
-import { Input } from '@/components/atoms/input'
+import {
+  DataTable,
+  Column,
+  FilterConfig,
+} from '@/components/organisms/DataTable'
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { Avatar } from '@/components/atoms/avatar'
@@ -15,13 +19,10 @@ import {
 import { cn } from '@/lib/utils'
 import { NextPageWithLayout } from '@/types/next-page'
 import {
-  Search,
-  Calendar,
   Home,
   Building2,
   Briefcase,
   MapPin,
-  ChevronDown,
   CheckCircle,
   XCircle,
 } from 'lucide-react'
@@ -210,58 +211,190 @@ const getStatusLabel = (status: PostStatus): string => {
 
 const PostVerification: NextPageWithLayout = () => {
   const t = useTranslations('posts')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<PostStatus | 'all'>('all')
-  const [typeFilter, setTypeFilter] = useState<PropertyType | 'all'>('all')
-  const [listingTypeFilter, setListingTypeFilter] = useState<
-    ListingType | 'all'
-  >('all')
   const [selectedPost, setSelectedPost] = useState<PostData | null>(null)
   const [reviewModalOpen, setReviewModalOpen] = useState(false)
   const [rejectionReason, setRejectionReason] = useState('')
 
   const breadcrumbItems = [
-    { label: t('breadcrumb.menu') },
-    { label: t('breadcrumb.title') },
-    { label: t('breadcrumb.overview') },
+    { label: 'Admin Dashboard', href: '/admin' },
+    { label: t('breadcrumb.title') }, // Current page
   ]
 
   // Calculate stats
-  const stats = useMemo(() => {
-    const total = mockPosts.length
-    const pending = mockPosts.filter((p) => p.status === 'pending').length
-    const approved = mockPosts.filter((p) => p.status === 'approved').length
-    const rejected = mockPosts.filter((p) => p.status === 'rejected').length
+  const stats = {
+    total: mockPosts.length,
+    pending: mockPosts.filter((p) => p.status === 'pending').length,
+    approved: mockPosts.filter((p) => p.status === 'approved').length,
+    rejected: mockPosts.filter((p) => p.status === 'rejected').length,
+  }
 
-    return { total, pending, approved, rejected }
-  }, [])
+  // Define columns for DataTable
+  const columns: Column<PostData>[] = [
+    {
+      id: 'post',
+      header: t('table.postDetails'),
+      accessor: (row) => row.title,
+      sortable: true,
+      render: (_, row) => (
+        <div className='flex gap-3'>
+          <div className='relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg'>
+            <img
+              src={row.images[0]}
+              alt={row.title}
+              className='h-full w-full object-cover'
+            />
+            {row.images.length > 1 && (
+              <div className='absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-xs text-white'>
+                +{row.images.length - 1}
+              </div>
+            )}
+          </div>
+          <div className='flex-1 min-w-0'>
+            <div className='font-medium text-gray-900 truncate'>
+              {row.title}
+            </div>
+            <div className='mt-0.5 text-xs text-gray-400'>{row.postCode}</div>
+            <div className='mt-1 flex flex-wrap gap-1'>
+              {row.vipLevel && (
+                <Badge className='bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-2 py-0'>
+                  VIP{row.vipLevel}
+                </Badge>
+              )}
+              <Badge
+                className={cn(
+                  'text-xs px-2 py-0',
+                  row.listingType === 'for_sale'
+                    ? 'bg-blue-100 text-blue-800'
+                    : 'bg-purple-100 text-purple-800',
+                )}
+              >
+                {row.listingType === 'for_sale' ? 'For Sale' : 'For Rent'}
+              </Badge>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'poster',
+      header: t('table.poster'),
+      accessor: (row) => row.poster.name,
+      sortable: true,
+      render: (_, row) => (
+        <div className='flex items-center gap-2'>
+          <Avatar className='h-10 w-10'>
+            <img
+              src={row.poster.avatar || '/images/default-image.jpg'}
+              alt={row.poster.name}
+              className='h-full w-full object-cover'
+            />
+          </Avatar>
+          <div>
+            <div className='text-sm font-medium text-gray-900'>
+              {row.poster.name}
+            </div>
+            <div className='text-xs text-gray-500'>
+              {row.poster.totalPosts} posts
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'propertyInfo',
+      header: t('table.propertyInfo'),
+      accessor: (row) => row.propertyInfo.type,
+      render: (_, row) => (
+        <div className='flex items-center gap-2 text-sm text-gray-700'>
+          <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100'>
+            {getPropertyIcon(row.propertyInfo.type)}
+          </div>
+          <div>
+            <div className='font-medium'>
+              {getPropertyTypeLabel(row.propertyInfo.type)}
+            </div>
+            <div className='text-xs text-gray-500'>
+              {row.propertyInfo.area}m² • {row.propertyInfo.district}
+            </div>
+          </div>
+        </div>
+      ),
+      hideOnMobile: true,
+    },
+    {
+      id: 'price',
+      header: t('table.price'),
+      accessor: 'price',
+      render: (value) => (
+        <div className='text-sm font-semibold text-gray-900'>{value}</div>
+      ),
+    },
+    {
+      id: 'postedDate',
+      header: t('table.postedDate'),
+      accessor: 'postedDate',
+      sortable: true,
+      render: (_, row) => (
+        <div className='text-sm text-gray-500'>
+          <div>{row.postedDate}</div>
+          <div className='text-xs text-gray-400'>{row.postedTime}</div>
+        </div>
+      ),
+    },
+    {
+      id: 'status',
+      header: t('table.status'),
+      accessor: 'status',
+      render: (value) => (
+        <Badge
+          variant='outline'
+          className={cn('text-xs font-medium', getStatusColor(value))}
+        >
+          {getStatusLabel(value)}
+        </Badge>
+      ),
+    },
+  ]
 
-  // Filter and search posts
-  const filteredPosts = useMemo(() => {
-    return mockPosts.filter((post) => {
-      // Search filter
-      const searchLower = searchQuery.toLowerCase()
-      const matchesSearch =
-        !searchQuery ||
-        post.title.toLowerCase().includes(searchLower) ||
-        post.poster.name.toLowerCase().includes(searchLower) ||
-        post.propertyInfo.district.toLowerCase().includes(searchLower)
-
-      // Status filter
-      const matchesStatus =
-        statusFilter === 'all' || post.status === statusFilter
-
-      // Type filter
-      const matchesType =
-        typeFilter === 'all' || post.propertyInfo.type === typeFilter
-
-      // Listing type filter
-      const matchesListingType =
-        listingTypeFilter === 'all' || post.listingType === listingTypeFilter
-
-      return matchesSearch && matchesStatus && matchesType && matchesListingType
-    })
-  }, [searchQuery, statusFilter, typeFilter, listingTypeFilter])
+  // Define filters for DataTable
+  const filters: FilterConfig[] = [
+    {
+      id: 'search',
+      type: 'search',
+      label: t('search.placeholder'),
+      placeholder: t('search.placeholder'),
+    },
+    {
+      id: 'status',
+      type: 'select',
+      label: t('filters.allStatus'),
+      options: [
+        { value: 'pending', label: t('filters.pending') },
+        { value: 'approved', label: t('filters.approved') },
+        { value: 'rejected', label: t('filters.rejected') },
+      ],
+    },
+    {
+      id: 'propertyInfo.type',
+      type: 'select',
+      label: t('filters.allTypes'),
+      options: [
+        { value: 'house', label: t('filters.house') },
+        { value: 'apartment', label: t('filters.apartment') },
+        { value: 'office', label: t('filters.office') },
+        { value: 'land', label: t('filters.land') },
+      ],
+    },
+    {
+      id: 'listingType',
+      type: 'select',
+      label: t('filters.allCategories'),
+      options: [
+        { value: 'for_sale', label: t('filters.forSale') },
+        { value: 'for_rent', label: t('filters.forRent') },
+      ],
+    },
+  ]
 
   const handleReview = (post: PostData) => {
     setSelectedPost(post)
@@ -344,236 +477,43 @@ const PostVerification: NextPageWithLayout = () => {
           </div>
         </div>
 
-        {/* Search & Filters */}
-        <div className='space-y-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm'>
-          {/* Search Bar */}
-          <div className='relative'>
-            <Search className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400' />
-            <Input
-              type='text'
-              placeholder={t('search.placeholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className='w-full pl-10'
-            />
-          </div>
-
-          {/* Filters Row */}
-          <div className='flex flex-wrap items-center gap-3'>
-            {/* Status Filter */}
-            <select
-              value={statusFilter}
-              onChange={(e) =>
-                setStatusFilter(e.target.value as PostStatus | 'all')
-              }
-              className='rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
+        {/* DataTable Component */}
+        <DataTable
+          data={mockPosts}
+          columns={columns}
+          filters={filters}
+          filterMode='frontend'
+          pagination
+          itemsPerPage={10}
+          itemsPerPageOptions={[5, 10, 20, 50]}
+          sortable
+          defaultSort={{ key: 'postedDate', direction: 'desc' }}
+          actions={(row) => (
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => handleReview(row)}
+              className='rounded-lg border-gray-300 px-3 py-1 text-sm hover:border-blue-500 hover:text-blue-600'
             >
-              <option value='all'>{t('filters.allStatus')}</option>
-              <option value='pending'>{t('filters.pending')}</option>
-              <option value='approved'>{t('filters.approved')}</option>
-              <option value='rejected'>{t('filters.rejected')}</option>
-            </select>
-
-            {/* Property Type Filter */}
-            <select
-              value={typeFilter}
-              onChange={(e) =>
-                setTypeFilter(e.target.value as PropertyType | 'all')
-              }
-              className='rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
-            >
-              <option value='all'>{t('filters.allTypes')}</option>
-              <option value='house'>{t('filters.house')}</option>
-              <option value='apartment'>{t('filters.apartment')}</option>
-              <option value='office'>{t('filters.office')}</option>
-              <option value='land'>{t('filters.land')}</option>
-            </select>
-
-            {/* Listing Type Filter */}
-            <select
-              value={listingTypeFilter}
-              onChange={(e) =>
-                setListingTypeFilter(e.target.value as ListingType | 'all')
-              }
-              className='rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
-            >
-              <option value='all'>{t('filters.allCategories')}</option>
-              <option value='for_sale'>{t('filters.forSale')}</option>
-              <option value='for_rent'>{t('filters.forRent')}</option>
-            </select>
-
-            {/* Date Range Picker (placeholder) */}
-            <button className='flex items-center gap-2 rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm hover:border-gray-300'>
-              <Calendar className='h-4 w-4 text-gray-500' />
-              <span className='text-gray-700'>Pick a date range</span>
-              <ChevronDown className='h-4 w-4 text-gray-400' />
-            </button>
-          </div>
-        </div>
-
-        {/* Posts Table */}
-        <div className='rounded-2xl border border-gray-200 bg-white shadow-sm'>
-          {/* Table Header */}
-          <div className='grid grid-cols-12 gap-4 border-b border-gray-100 bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-700'>
-            <div className='col-span-3'>{t('table.postDetails')}</div>
-            <div className='col-span-2'>{t('table.poster')}</div>
-            <div className='col-span-2'>{t('table.propertyInfo')}</div>
-            <div className='col-span-1'>{t('table.price')}</div>
-            <div className='col-span-2'>{t('table.postedDate')}</div>
-            <div className='col-span-1'>{t('table.status')}</div>
-            <div className='col-span-1 text-right'>{t('table.actions')}</div>
-          </div>
-
-          {/* Table Body */}
-          <div className='divide-y divide-gray-100'>
-            {filteredPosts.length === 0 ? (
-              <div className='px-4 py-12 text-center text-gray-500'>
-                {t('table.noPostsFound')}
-              </div>
-            ) : (
-              filteredPosts.map((post) => (
-                <div
-                  key={post.id}
-                  className='grid grid-cols-12 gap-4 px-4 py-4 hover:bg-gray-50'
-                >
-                  {/* Post Details */}
-                  <div className='col-span-3 flex gap-3'>
-                    {/* Thumbnail */}
-                    <div className='relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg'>
-                      <img
-                        src={post.images[0]}
-                        alt={post.title}
-                        className='h-full w-full object-cover'
-                      />
-                      {post.images.length > 1 && (
-                        <div className='absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-xs text-white'>
-                          +{post.images.length - 1}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Title & Badges */}
-                    <div className='flex-1 min-w-0'>
-                      <div className='font-medium text-gray-900 truncate'>
-                        {post.title}
-                      </div>
-                      <div className='mt-0.5 text-xs text-gray-400'>
-                        {post.postCode}
-                      </div>
-                      <div className='mt-1 flex flex-wrap gap-1'>
-                        {post.vipLevel && (
-                          <Badge className='bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-2 py-0'>
-                            VIP{post.vipLevel}
-                          </Badge>
-                        )}
-                        <Badge
-                          className={cn(
-                            'text-xs px-2 py-0',
-                            post.listingType === 'for_sale'
-                              ? 'bg-blue-100 text-blue-800'
-                              : 'bg-purple-100 text-purple-800',
-                          )}
-                        >
-                          {post.listingType === 'for_sale'
-                            ? 'For Sale'
-                            : 'For Rent'}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Poster */}
-                  <div className='col-span-2 flex items-center gap-2'>
-                    <Avatar className='h-10 w-10'>
-                      <img
-                        src={post.poster.avatar || '/images/default-image.jpg'}
-                        alt={post.poster.name}
-                        className='h-full w-full object-cover'
-                      />
-                    </Avatar>
-                    <div>
-                      <div className='text-sm font-medium text-gray-900'>
-                        {post.poster.name}
-                      </div>
-                      <div className='text-xs text-gray-500'>
-                        {post.poster.totalPosts} posts
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Property Info */}
-                  <div className='col-span-2 flex items-center gap-2 text-sm text-gray-700'>
-                    <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100'>
-                      {getPropertyIcon(post.propertyInfo.type)}
-                    </div>
-                    <div>
-                      <div className='font-medium'>
-                        {getPropertyTypeLabel(post.propertyInfo.type)}
-                      </div>
-                      <div className='text-xs text-gray-500'>
-                        {post.propertyInfo.area}m² •{' '}
-                        {post.propertyInfo.district}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Price */}
-                  <div className='col-span-1 flex items-center text-sm font-semibold text-gray-900'>
-                    {post.price}
-                  </div>
-
-                  {/* Posted Date */}
-                  <div className='col-span-2 flex items-center text-sm text-gray-500'>
-                    <div>
-                      <div>{post.postedDate}</div>
-                      <div className='text-xs text-gray-400'>
-                        {post.postedTime}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Status */}
-                  <div className='col-span-1 flex items-center'>
-                    <Badge
-                      variant='outline'
-                      className={cn(
-                        'text-xs font-medium',
-                        getStatusColor(post.status),
-                      )}
-                    >
-                      {getStatusLabel(post.status)}
-                    </Badge>
-                  </div>
-
-                  {/* Actions */}
-                  <div className='col-span-1 flex items-center justify-end'>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      onClick={() => handleReview(post)}
-                      className='rounded-lg border-gray-300 px-3 py-1 text-sm hover:border-blue-500 hover:text-blue-600'
-                    >
-                      Review
-                    </Button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+              Review
+            </Button>
+          )}
+          emptyMessage={t('table.noPostsFound')}
+          getRowKey={(row) => row.id}
+        />
       </div>
 
       {/* Review Modal */}
       <Dialog open={reviewModalOpen} onOpenChange={setReviewModalOpen}>
-        <DialogContent className='max-w-3xl'>
+        <DialogContent className='max-w-3xl max-h-[90vh] overflow-y-auto w-[calc(100%-2rem)] mx-auto'>
           <DialogHeader>
-            <DialogTitle className='text-2xl font-semibold'>
+            <DialogTitle className='text-xl md:text-2xl font-semibold'>
               Review Post
             </DialogTitle>
           </DialogHeader>
 
           {selectedPost && (
-            <div className='space-y-6'>
+            <div className='space-y-4 md:space-y-6'>
               {/* Images */}
               <div className='flex gap-2 overflow-x-auto'>
                 {selectedPost.images.map((img, idx) => (
@@ -581,61 +521,63 @@ const PostVerification: NextPageWithLayout = () => {
                     key={idx}
                     src={img}
                     alt={`${selectedPost.title} ${idx + 1}`}
-                    className='h-32 w-48 flex-shrink-0 rounded-lg object-cover'
+                    className='h-24 w-32 md:h-32 md:w-48 flex-shrink-0 rounded-lg object-cover'
                   />
                 ))}
               </div>
 
               {/* Post Info */}
-              <div className='space-y-4'>
+              <div className='space-y-3 md:space-y-4'>
                 <div>
-                  <h3 className='text-xl font-semibold text-gray-900'>
+                  <h3 className='text-lg md:text-xl font-semibold text-gray-900'>
                     {selectedPost.title}
                   </h3>
-                  <p className='text-sm text-gray-500'>
+                  <p className='text-xs md:text-sm text-gray-500'>
                     {selectedPost.postCode}
                   </p>
                 </div>
 
-                <div className='grid grid-cols-2 gap-4'>
+                <div className='grid grid-cols-2 gap-3 md:gap-4'>
                   <div>
-                    <div className='text-sm font-medium text-gray-700'>
+                    <div className='text-xs md:text-sm font-medium text-gray-700'>
                       Property Type
                     </div>
-                    <div className='text-gray-900'>
+                    <div className='text-sm md:text-base text-gray-900'>
                       {getPropertyTypeLabel(selectedPost.propertyInfo.type)}
                     </div>
                   </div>
                   <div>
-                    <div className='text-sm font-medium text-gray-700'>
+                    <div className='text-xs md:text-sm font-medium text-gray-700'>
                       Area
                     </div>
-                    <div className='text-gray-900'>
+                    <div className='text-sm md:text-base text-gray-900'>
                       {selectedPost.propertyInfo.area}m²
                     </div>
                   </div>
                   <div>
-                    <div className='text-sm font-medium text-gray-700'>
+                    <div className='text-xs md:text-sm font-medium text-gray-700'>
                       Location
                     </div>
-                    <div className='text-gray-900'>
+                    <div className='text-sm md:text-base text-gray-900'>
                       {selectedPost.propertyInfo.district}
                     </div>
                   </div>
                   <div>
-                    <div className='text-sm font-medium text-gray-700'>
+                    <div className='text-xs md:text-sm font-medium text-gray-700'>
                       Price
                     </div>
-                    <div className='text-gray-900'>{selectedPost.price}</div>
+                    <div className='text-sm md:text-base text-gray-900'>
+                      {selectedPost.price}
+                    </div>
                   </div>
                 </div>
 
                 <div>
-                  <div className='text-sm font-medium text-gray-700'>
+                  <div className='text-xs md:text-sm font-medium text-gray-700'>
                     Posted by
                   </div>
                   <div className='mt-2 flex items-center gap-2'>
-                    <Avatar className='h-10 w-10'>
+                    <Avatar className='h-8 w-8 md:h-10 md:w-10'>
                       <img
                         src={
                           selectedPost.poster.avatar ||
@@ -646,10 +588,10 @@ const PostVerification: NextPageWithLayout = () => {
                       />
                     </Avatar>
                     <div>
-                      <div className='font-medium text-gray-900'>
+                      <div className='text-sm md:text-base font-medium text-gray-900'>
                         {selectedPost.poster.name}
                       </div>
-                      <div className='text-sm text-gray-500'>
+                      <div className='text-xs md:text-sm text-gray-500'>
                         {selectedPost.poster.totalPosts} posts
                       </div>
                     </div>
@@ -658,7 +600,7 @@ const PostVerification: NextPageWithLayout = () => {
 
                 {/* Current Status */}
                 <div>
-                  <div className='text-sm font-medium text-gray-700'>
+                  <div className='text-xs md:text-sm font-medium text-gray-700'>
                     Current Status
                   </div>
                   <Badge
@@ -674,7 +616,7 @@ const PostVerification: NextPageWithLayout = () => {
                   <div>
                     <label
                       htmlFor='rejection-reason'
-                      className='text-sm font-medium text-gray-700'
+                      className='text-xs md:text-sm font-medium text-gray-700'
                     >
                       Rejection Reason (optional)
                     </label>
@@ -683,7 +625,7 @@ const PostVerification: NextPageWithLayout = () => {
                       value={rejectionReason}
                       onChange={(e) => setRejectionReason(e.target.value)}
                       placeholder='Enter reason for rejection...'
-                      className='mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100'
+                      className='mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-xs md:text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100'
                       rows={3}
                     />
                   </div>
@@ -692,10 +634,10 @@ const PostVerification: NextPageWithLayout = () => {
 
               {/* Action Buttons */}
               {selectedPost.status === 'pending' && (
-                <div className='flex gap-3'>
+                <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
                   <Button
                     onClick={handleApprove}
-                    className='flex-1 bg-green-600 hover:bg-green-700'
+                    className='flex-1 bg-green-600 hover:bg-green-700 text-sm'
                   >
                     <CheckCircle className='mr-2 h-4 w-4' />
                     Approve Post
@@ -703,7 +645,7 @@ const PostVerification: NextPageWithLayout = () => {
                   <Button
                     onClick={handleReject}
                     variant='outline'
-                    className='flex-1 border-red-300 text-red-600 hover:bg-red-50'
+                    className='flex-1 border-red-300 text-red-600 hover:bg-red-50 text-sm'
                   >
                     <XCircle className='mr-2 h-4 w-4' />
                     Reject Post

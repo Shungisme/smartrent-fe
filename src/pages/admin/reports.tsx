@@ -1,8 +1,12 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
-import { Input } from '@/components/atoms/input'
+import {
+  DataTable,
+  Column,
+  FilterConfig,
+} from '@/components/organisms/DataTable'
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { Avatar } from '@/components/atoms/avatar'
@@ -14,7 +18,7 @@ import {
 } from '@/components/atoms/dialog'
 import { cn } from '@/lib/utils'
 import { NextPageWithLayout } from '@/types/next-page'
-import { Search, AlertTriangle, CheckCircle, XCircle, Eye } from 'lucide-react'
+import { AlertTriangle, CheckCircle, XCircle, Eye } from 'lucide-react'
 
 // Types
 type ReportStatus = 'pending' | 'resolved' | 'dismissed'
@@ -201,53 +205,182 @@ const truncateText = (text: string, maxLength: number = 60): string => {
 
 const ViolationReportManagement: NextPageWithLayout = () => {
   const t = useTranslations('reports')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<ReportStatus | 'all'>('all')
-  const [categoryFilter, setCategoryFilter] = useState<ReportCategory | 'all'>(
-    'all',
-  )
   const [selectedReport, setSelectedReport] = useState<ReportData | null>(null)
   const [reviewModalOpen, setReviewModalOpen] = useState(false)
   const [actionReason, setActionReason] = useState('')
 
   const breadcrumbItems = [
-    { label: t('breadcrumb.menu') },
-    { label: t('breadcrumb.title') },
-    { label: t('breadcrumb.overview') },
+    { label: 'Admin Dashboard', href: '/admin' },
+    { label: t('breadcrumb.title') }, // Current page
   ]
 
   // Calculate stats
-  const stats = useMemo(() => {
-    const total = mockReports.length
-    const pending = mockReports.filter((r) => r.status === 'pending').length
-    const resolved = mockReports.filter((r) => r.status === 'resolved').length
-    const dismissed = mockReports.filter((r) => r.status === 'dismissed').length
+  const stats = {
+    total: mockReports.length,
+    pending: mockReports.filter((r) => r.status === 'pending').length,
+    resolved: mockReports.filter((r) => r.status === 'resolved').length,
+    dismissed: mockReports.filter((r) => r.status === 'dismissed').length,
+  }
 
-    return { total, pending, resolved, dismissed }
-  }, [])
+  // Define columns for DataTable
+  const columns: Column<ReportData>[] = [
+    {
+      id: 'post',
+      header: t('table.postDetails'),
+      accessor: (row) => row.post.title,
+      sortable: true,
+      render: (_, row) => (
+        <div className='flex gap-3'>
+          <div className='relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg'>
+            <img
+              src={row.post.thumbnail}
+              alt={row.post.title}
+              className='h-full w-full object-cover'
+            />
+          </div>
+          <div className='flex-1 min-w-0'>
+            <div className='font-medium text-gray-900 truncate'>
+              {row.post.title}
+            </div>
+            <div className='mt-0.5 text-xs text-gray-400'>{row.post.id}</div>
+            <div className='mt-1 flex flex-wrap gap-1'>
+              <span className='text-xs text-gray-600'>
+                {row.post.propertyType}
+              </span>
+              <span className='text-xs text-gray-400'>•</span>
+              <span className='text-xs text-gray-600'>{row.post.area}m²</span>
+              <span className='text-xs text-gray-400'>•</span>
+              <Badge
+                className={cn(
+                  'text-xs px-1.5 py-0',
+                  row.post.status === 'active'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-gray-100 text-gray-500',
+                )}
+              >
+                {row.post.status === 'active'
+                  ? t('review.active')
+                  : t('review.inactive')}
+              </Badge>
+            </div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'reporter',
+      header: t('table.reporter'),
+      accessor: (row) => row.reporter.name,
+      sortable: true,
+      render: (_, row) => (
+        <div className='flex items-center gap-2'>
+          <Avatar className='h-10 w-10'>
+            {row.reporter.avatar ? (
+              <img
+                src={row.reporter.avatar}
+                alt={row.reporter.name}
+                className='h-full w-full object-cover'
+              />
+            ) : (
+              <div className='flex h-full w-full items-center justify-center bg-blue-100 text-blue-700 font-semibold text-sm'>
+                {getInitials(row.reporter.name)}
+              </div>
+            )}
+          </Avatar>
+          <div className='min-w-0'>
+            <div className='text-sm font-medium text-gray-900 truncate'>
+              {row.reporter.name}
+            </div>
+            <div className='text-xs text-gray-400'>{row.reporter.id}</div>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'category',
+      header: t('table.category'),
+      accessor: 'category',
+      render: (value) => (
+        <Badge
+          variant='outline'
+          className={cn('text-xs font-medium', getCategoryColor(value))}
+        >
+          {t(`categories.${value}`)}
+        </Badge>
+      ),
+    },
+    {
+      id: 'content',
+      header: t('table.content'),
+      accessor: 'content',
+      render: (value) => (
+        <div className='text-sm text-gray-600 line-clamp-2'>
+          {truncateText(value, 80)}
+        </div>
+      ),
+      hideOnMobile: true,
+    },
+    {
+      id: 'reportTime',
+      header: t('table.reportTime'),
+      accessor: 'reportDate',
+      sortable: true,
+      render: (_, row) => (
+        <div className='text-sm text-gray-500'>
+          <div>{row.reportDate}</div>
+          <div className='text-xs text-gray-400'>{row.reportTime}</div>
+        </div>
+      ),
+    },
+    {
+      id: 'status',
+      header: t('table.status'),
+      accessor: 'status',
+      render: (value) => (
+        <Badge
+          variant='outline'
+          className={cn('text-xs font-medium', getStatusColor(value))}
+        >
+          {t(`statuses.${value}`)}
+        </Badge>
+      ),
+    },
+  ]
 
-  // Filter and search reports
-  const filteredReports = useMemo(() => {
-    return mockReports.filter((report) => {
-      // Search filter
-      const searchLower = searchQuery.toLowerCase()
-      const matchesSearch =
-        !searchQuery ||
-        report.post.title.toLowerCase().includes(searchLower) ||
-        report.reporter.name.toLowerCase().includes(searchLower) ||
-        report.post.id.toLowerCase().includes(searchLower)
-
-      // Status filter
-      const matchesStatus =
-        statusFilter === 'all' || report.status === statusFilter
-
-      // Category filter
-      const matchesCategory =
-        categoryFilter === 'all' || report.category === categoryFilter
-
-      return matchesSearch && matchesStatus && matchesCategory
-    })
-  }, [searchQuery, statusFilter, categoryFilter])
+  // Define filters for DataTable
+  const filters: FilterConfig[] = [
+    {
+      id: 'search',
+      type: 'search',
+      label: t('search.placeholder'),
+      placeholder: t('search.placeholder'),
+    },
+    {
+      id: 'status',
+      type: 'select',
+      label: t('filters.allStatus'),
+      options: [
+        { value: 'pending', label: t('filters.pending') },
+        { value: 'resolved', label: t('filters.resolved') },
+        { value: 'dismissed', label: t('filters.dismissed') },
+      ],
+    },
+    {
+      id: 'category',
+      type: 'select',
+      label: t('filters.allCategories'),
+      options: [
+        { value: 'fake_fraudulent', label: t('filters.fakeFraudulent') },
+        { value: 'spam_promotional', label: t('filters.spamPromotional') },
+        {
+          value: 'inappropriate_content',
+          label: t('filters.inappropriateContent'),
+        },
+        { value: 'wrong_information', label: t('filters.wrongInformation') },
+        { value: 'other', label: t('filters.other') },
+      ],
+    },
+  ]
 
   const handleReview = (report: ReportData) => {
     setSelectedReport(report)
@@ -346,238 +479,53 @@ const ViolationReportManagement: NextPageWithLayout = () => {
           </div>
         </div>
 
-        {/* Search & Filters */}
-        <div className='space-y-4 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm'>
-          {/* Search Bar */}
-          <div className='relative'>
-            <Search className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400' />
-            <Input
-              type='text'
-              placeholder={t('search.placeholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className='w-full pl-10'
-            />
-          </div>
-
-          {/* Filters Row */}
-          <div className='flex flex-wrap items-center gap-3'>
-            {/* Status Filter */}
-            <select
-              value={statusFilter}
-              onChange={(e) =>
-                setStatusFilter(e.target.value as ReportStatus | 'all')
-              }
-              className='rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
+        {/* DataTable Component */}
+        <DataTable
+          data={mockReports}
+          columns={columns}
+          filters={filters}
+          filterMode='frontend'
+          pagination
+          itemsPerPage={10}
+          itemsPerPageOptions={[5, 10, 20, 50]}
+          sortable
+          defaultSort={{ key: 'reportDate', direction: 'desc' }}
+          actions={(row) => (
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={() => handleReview(row)}
+              className='rounded-lg border-gray-300 px-3 py-1 text-sm hover:border-blue-500 hover:text-blue-600'
             >
-              <option value='all'>{t('filters.allStatus')}</option>
-              <option value='pending'>{t('filters.pending')}</option>
-              <option value='resolved'>{t('filters.resolved')}</option>
-              <option value='dismissed'>{t('filters.dismissed')}</option>
-            </select>
-
-            {/* Category Filter */}
-            <select
-              value={categoryFilter}
-              onChange={(e) =>
-                setCategoryFilter(e.target.value as ReportCategory | 'all')
-              }
-              className='rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
-            >
-              <option value='all'>{t('filters.allCategories')}</option>
-              <option value='fake_fraudulent'>
-                {t('filters.fakeFraudulent')}
-              </option>
-              <option value='spam_promotional'>
-                {t('filters.spamPromotional')}
-              </option>
-              <option value='inappropriate_content'>
-                {t('filters.inappropriateContent')}
-              </option>
-              <option value='wrong_information'>
-                {t('filters.wrongInformation')}
-              </option>
-              <option value='other'>{t('filters.other')}</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Reports Table */}
-        <div className='rounded-2xl border border-gray-200 bg-white shadow-sm'>
-          {/* Table Header */}
-          <div className='grid grid-cols-12 gap-4 border-b border-gray-100 bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-700'>
-            <div className='col-span-3'>{t('table.postDetails')}</div>
-            <div className='col-span-2'>{t('table.reporter')}</div>
-            <div className='col-span-2'>{t('table.category')}</div>
-            <div className='col-span-2'>{t('table.content')}</div>
-            <div className='col-span-1'>{t('table.reportTime')}</div>
-            <div className='col-span-1'>{t('table.status')}</div>
-            <div className='col-span-1 text-right'>{t('table.actions')}</div>
-          </div>
-
-          {/* Table Body */}
-          <div className='divide-y divide-gray-100'>
-            {filteredReports.length === 0 ? (
-              <div className='px-4 py-12 text-center text-gray-500'>
-                {t('table.noReportsFound')}
-              </div>
-            ) : (
-              filteredReports.map((report) => (
-                <div
-                  key={report.id}
-                  className='grid grid-cols-12 gap-4 px-4 py-4 hover:bg-gray-50'
-                >
-                  {/* Post Details */}
-                  <div className='col-span-3 flex gap-3'>
-                    {/* Thumbnail */}
-                    <div className='relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg'>
-                      <img
-                        src={report.post.thumbnail}
-                        alt={report.post.title}
-                        className='h-full w-full object-cover'
-                      />
-                    </div>
-
-                    {/* Title & Tags */}
-                    <div className='flex-1 min-w-0'>
-                      <div className='font-medium text-gray-900 truncate'>
-                        {report.post.title}
-                      </div>
-                      <div className='mt-0.5 text-xs text-gray-400'>
-                        {report.post.id}
-                      </div>
-                      <div className='mt-1 flex flex-wrap gap-1'>
-                        <span className='text-xs text-gray-600'>
-                          {report.post.propertyType}
-                        </span>
-                        <span className='text-xs text-gray-400'>•</span>
-                        <span className='text-xs text-gray-600'>
-                          {report.post.area}m²
-                        </span>
-                        <span className='text-xs text-gray-400'>•</span>
-                        <Badge
-                          className={cn(
-                            'text-xs px-1.5 py-0',
-                            report.post.status === 'active'
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-gray-100 text-gray-500',
-                          )}
-                        >
-                          {report.post.status === 'active'
-                            ? t('review.active')
-                            : t('review.inactive')}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Reporter */}
-                  <div className='col-span-2 flex items-center gap-2'>
-                    <Avatar className='h-10 w-10'>
-                      {report.reporter.avatar ? (
-                        <img
-                          src={report.reporter.avatar}
-                          alt={report.reporter.name}
-                          className='h-full w-full object-cover'
-                        />
-                      ) : (
-                        <div className='flex h-full w-full items-center justify-center bg-blue-100 text-blue-700 font-semibold text-sm'>
-                          {getInitials(report.reporter.name)}
-                        </div>
-                      )}
-                    </Avatar>
-                    <div className='min-w-0'>
-                      <div className='text-sm font-medium text-gray-900 truncate'>
-                        {report.reporter.name}
-                      </div>
-                      <div className='text-xs text-gray-400'>
-                        {report.reporter.id}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Report Category */}
-                  <div className='col-span-2 flex items-center'>
-                    <Badge
-                      variant='outline'
-                      className={cn(
-                        'text-xs font-medium',
-                        getCategoryColor(report.category),
-                      )}
-                    >
-                      {t(`categories.${report.category}`)}
-                    </Badge>
-                  </div>
-
-                  {/* Report Content */}
-                  <div className='col-span-2 flex items-center text-sm text-gray-600'>
-                    <div className='line-clamp-2'>
-                      {truncateText(report.content, 80)}
-                    </div>
-                  </div>
-
-                  {/* Report Time */}
-                  <div className='col-span-1 flex items-center text-sm text-gray-500'>
-                    <div>
-                      <div>{report.reportDate}</div>
-                      <div className='text-xs text-gray-400'>
-                        {report.reportTime}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Status */}
-                  <div className='col-span-1 flex items-center'>
-                    <Badge
-                      variant='outline'
-                      className={cn(
-                        'text-xs font-medium',
-                        getStatusColor(report.status),
-                      )}
-                    >
-                      {t(`statuses.${report.status}`)}
-                    </Badge>
-                  </div>
-
-                  {/* Actions */}
-                  <div className='col-span-1 flex items-center justify-end'>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      onClick={() => handleReview(report)}
-                      className='rounded-lg border-gray-300 px-3 py-1 text-sm hover:border-blue-500 hover:text-blue-600'
-                    >
-                      {t('table.viewDetails')}
-                    </Button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+              {t('table.viewDetails')}
+            </Button>
+          )}
+          emptyMessage={t('table.noReportsFound')}
+          getRowKey={(row) => row.id}
+        />
       </div>
 
       {/* Review Modal */}
       <Dialog open={reviewModalOpen} onOpenChange={setReviewModalOpen}>
-        <DialogContent className='max-w-3xl max-h-[90vh] overflow-y-auto'>
+        <DialogContent className='max-w-3xl max-h-[90vh] overflow-y-auto w-[calc(100%-2rem)] mx-auto'>
           <DialogHeader>
-            <DialogTitle className='text-2xl font-semibold'>
+            <DialogTitle className='text-xl md:text-2xl font-semibold'>
               {t('review.title')}
             </DialogTitle>
           </DialogHeader>
 
           {selectedReport && (
-            <div className='space-y-6'>
+            <div className='space-y-4 md:space-y-6'>
               {/* Report Info */}
-              <div className='rounded-lg bg-yellow-50 border border-yellow-200 p-4'>
-                <div className='flex items-start gap-3'>
-                  <AlertTriangle className='h-5 w-5 text-yellow-600 mt-0.5' />
+              <div className='rounded-lg bg-yellow-50 border border-yellow-200 p-3 md:p-4'>
+                <div className='flex items-start gap-2 md:gap-3'>
+                  <AlertTriangle className='h-4 w-4 md:h-5 md:w-5 text-yellow-600 mt-0.5' />
                   <div>
-                    <h4 className='font-medium text-yellow-900'>
+                    <h4 className='text-sm md:text-base font-medium text-yellow-900'>
                       {t('review.category')}:{' '}
                       {t(`categories.${selectedReport.category}`)}
                     </h4>
-                    <p className='mt-1 text-sm text-yellow-800'>
+                    <p className='mt-1 text-xs md:text-sm text-yellow-800'>
                       {t('review.reportedBy')} {selectedReport.reportDate}{' '}
                       {t('review.on')} {selectedReport.reportTime}
                     </p>
@@ -587,24 +535,24 @@ const ViolationReportManagement: NextPageWithLayout = () => {
 
               {/* Reported Post */}
               <div>
-                <h3 className='text-lg font-semibold text-gray-900 mb-3'>
+                <h3 className='text-base md:text-lg font-semibold text-gray-900 mb-2 md:mb-3'>
                   {t('review.reportedPost')}
                 </h3>
-                <div className='rounded-lg border border-gray-200 p-4'>
-                  <div className='flex gap-4'>
+                <div className='rounded-lg border border-gray-200 p-3 md:p-4'>
+                  <div className='flex flex-col sm:flex-row gap-3 md:gap-4'>
                     <img
                       src={selectedReport.post.thumbnail}
                       alt={selectedReport.post.title}
-                      className='h-24 w-24 flex-shrink-0 rounded-lg object-cover'
+                      className='h-32 w-full sm:h-24 sm:w-24 flex-shrink-0 rounded-lg object-cover'
                     />
-                    <div className='flex-1'>
+                    <div className='flex-1 min-w-0'>
                       <h4 className='font-semibold text-gray-900'>
                         {selectedReport.post.title}
                       </h4>
-                      <p className='text-sm text-gray-500 mt-1'>
+                      <p className='text-xs md:text-sm text-gray-500 mt-1'>
                         {t('review.postId')}: {selectedReport.post.id}
                       </p>
-                      <div className='mt-2 flex items-center gap-3 text-sm text-gray-600'>
+                      <div className='mt-2 flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm text-gray-600'>
                         <span>
                           {selectedReport.post.propertyType} •{' '}
                           {selectedReport.post.area}m²
@@ -634,11 +582,11 @@ const ViolationReportManagement: NextPageWithLayout = () => {
 
               {/* Reporter Info */}
               <div>
-                <h3 className='text-lg font-semibold text-gray-900 mb-3'>
+                <h3 className='text-base md:text-lg font-semibold text-gray-900 mb-2 md:mb-3'>
                   {t('review.reporterInfo')}
                 </h3>
-                <div className='flex items-center gap-3 rounded-lg border border-gray-200 p-4'>
-                  <Avatar className='h-12 w-12'>
+                <div className='flex items-center gap-3 rounded-lg border border-gray-200 p-3 md:p-4'>
+                  <Avatar className='h-10 w-10 md:h-12 md:w-12'>
                     {selectedReport.reporter.avatar ? (
                       <img
                         src={selectedReport.reporter.avatar}
@@ -664,11 +612,11 @@ const ViolationReportManagement: NextPageWithLayout = () => {
 
               {/* Report Content */}
               <div>
-                <h3 className='text-lg font-semibold text-gray-900 mb-3'>
+                <h3 className='text-base md:text-lg font-semibold text-gray-900 mb-2 md:mb-3'>
                   {t('review.reportContent')}
                 </h3>
-                <div className='rounded-lg border border-gray-200 bg-gray-50 p-4'>
-                  <p className='text-sm text-gray-700 leading-relaxed'>
+                <div className='rounded-lg border border-gray-200 bg-gray-50 p-3 md:p-4'>
+                  <p className='text-xs md:text-sm text-gray-700 leading-relaxed'>
                     {selectedReport.content}
                   </p>
                 </div>
@@ -676,7 +624,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
 
               {/* Current Status */}
               <div>
-                <h3 className='text-lg font-semibold text-gray-900 mb-3'>
+                <h3 className='text-base md:text-lg font-semibold text-gray-900 mb-2 md:mb-3'>
                   {t('review.currentStatus')}
                 </h3>
                 <Badge
@@ -695,7 +643,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                 <div>
                   <label
                     htmlFor='action-reason'
-                    className='text-sm font-medium text-gray-700'
+                    className='text-xs md:text-sm font-medium text-gray-700'
                   >
                     {t('review.actionReason')}
                   </label>
@@ -704,18 +652,18 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                     value={actionReason}
                     onChange={(e) => setActionReason(e.target.value)}
                     placeholder={t('review.actionPlaceholder')}
-                    className='mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100'
+                    className='mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-xs md:text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100'
                     rows={3}
                   />
                 </div>
               )}
 
               {/* Action Buttons */}
-              <div className='flex gap-3'>
+              <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
                 <Button
                   onClick={handleViewPost}
                   variant='outline'
-                  className='flex-1'
+                  className='flex-1 text-sm'
                 >
                   <Eye className='mr-2 h-4 w-4' />
                   {t('review.viewPost')}
@@ -725,7 +673,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                   <>
                     <Button
                       onClick={handleResolve}
-                      className='flex-1 bg-green-600 hover:bg-green-700'
+                      className='flex-1 bg-green-600 hover:bg-green-700 text-sm'
                     >
                       <CheckCircle className='mr-2 h-4 w-4' />
                       {t('review.resolve')}
@@ -733,7 +681,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                     <Button
                       onClick={handleDismiss}
                       variant='outline'
-                      className='flex-1 border-gray-300 text-gray-700 hover:bg-gray-50'
+                      className='flex-1 border-gray-300 text-gray-700 hover:bg-gray-50 text-sm'
                     >
                       <XCircle className='mr-2 h-4 w-4' />
                       {t('review.dismiss')}

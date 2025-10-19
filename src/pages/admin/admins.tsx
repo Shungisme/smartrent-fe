@@ -1,12 +1,37 @@
-import React, { useState, useMemo } from 'react'
+import React from 'react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
-import AdminTable, { AdminData } from '@/components/molecules/adminTable'
-import Pagination from '@/components/molecules/pagination'
-import { Input } from '@/components/atoms/input'
+import {
+  DataTable,
+  Column,
+  FilterConfig,
+} from '@/components/organisms/DataTable'
+import { Avatar } from '@/components/atoms/avatar'
+import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/atoms/dropdown-menu'
+import { cn } from '@/lib/utils'
 import type { NextPageWithLayout } from '@/types/next-page'
 import { useTranslations } from 'next-intl'
+
+type AdminRole = 'support' | 'moderator' | 'admin' | 'super_admin'
+type AdminStatus = 'active' | 'inactive'
+
+type AdminData = {
+  id: string
+  name: string
+  email: string
+  avatar?: string
+  role: AdminRole
+  joinDate: string
+  lastOnline: string
+  status: AdminStatus
+}
 
 // Mock data for 5 admins
 const mockAdmins: AdminData[] = [
@@ -62,154 +87,177 @@ const mockAdmins: AdminData[] = [
   },
 ]
 
-// Helper function to parse date from dd/mm/yyyy format
-const parseDate = (dateStr: string): Date => {
-  const [day, month, year] = dateStr.split('/').map(Number)
-  return new Date(year, month - 1, day)
+const getRoleBadgeClass = (role: AdminRole): string => {
+  const classes: Record<AdminRole, string> = {
+    support: 'bg-blue-100 text-blue-800 border-blue-200',
+    moderator: 'bg-purple-100 text-purple-800 border-purple-200',
+    admin: 'bg-orange-100 text-orange-800 border-orange-200',
+    super_admin: 'bg-red-100 text-red-800 border-red-200',
+  }
+  return classes[role]
 }
 
 const AdminManagement: NextPageWithLayout = () => {
   const t = useTranslations('admin.admins')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filterRole, setFilterRole] = useState('all')
-  const [filterStatus, setFilterStatus] = useState('all')
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(10)
-  const [sortField, setSortField] = useState<'joinDate' | 'lastOnline' | null>(
-    null,
-  )
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
 
   const breadcrumbItems = [
-    { label: t('breadcrumb.menu') },
-    { label: t('breadcrumb.dashboard') },
-    { label: `${mockAdmins.length} ${t('breadcrumb.adminsCount')}` },
+    { label: 'Admin Dashboard', href: '/admin' },
+    { label: t('breadcrumb.dashboard') }, // Current page
   ]
 
-  // Filter, search and sort logic
-  const filteredAndSortedAdmins = useMemo(() => {
-    let result = [...mockAdmins]
+  // Define columns for DataTable
+  const columns: Column<AdminData>[] = [
+    {
+      id: 'id',
+      header: t('table.headers.adminId'),
+      accessor: 'id',
+      render: (value) => (
+        <div className='text-sm font-medium text-gray-900'>{value}</div>
+      ),
+    },
+    {
+      id: 'admin',
+      header: t('table.headers.admin'),
+      accessor: (row) => row.name,
+      sortable: true,
+      render: (_, row) => (
+        <div className='flex items-center gap-3'>
+          <Avatar className='w-10 h-10'>
+            <img
+              src={row.avatar || '/images/default-image.jpg'}
+              alt={row.name}
+              className='w-full h-full object-cover'
+            />
+          </Avatar>
+          <div className='flex flex-col'>
+            <span className='font-medium text-gray-900'>{row.name}</span>
+            <span className='text-sm text-gray-500'>{row.email}</span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      id: 'role',
+      header: t('table.headers.role'),
+      accessor: 'role',
+      render: (value) => (
+        <Badge
+          variant='outline'
+          className={cn('px-3 py-1 font-medium', getRoleBadgeClass(value))}
+        >
+          {t(`table.roles.${value}`)}
+        </Badge>
+      ),
+    },
+    {
+      id: 'joinDate',
+      header: t('table.headers.joinDate'),
+      accessor: 'joinDate',
+      sortable: true,
+      render: (value) => <div className='text-sm text-gray-900'>{value}</div>,
+    },
+    {
+      id: 'lastOnline',
+      header: t('table.headers.lastOnline'),
+      accessor: 'lastOnline',
+      sortable: true,
+      render: (value) => <div className='text-sm text-gray-900'>{value}</div>,
+    },
+    {
+      id: 'status',
+      header: t('table.headers.status'),
+      accessor: 'status',
+      render: (value) => (
+        <Badge
+          className={cn(
+            'px-3 py-1',
+            value === 'active'
+              ? 'bg-green-100 text-green-800 border-green-200'
+              : 'bg-gray-100 text-gray-800 border-gray-200',
+          )}
+        >
+          {t(`table.statuses.${value}`)}
+        </Badge>
+      ),
+    },
+  ]
 
-    // Search filter
-    if (searchQuery) {
-      const searchLower = searchQuery.toLowerCase()
-      result = result.filter(
-        (admin) =>
-          admin.name.toLowerCase().includes(searchLower) ||
-          admin.id.toLowerCase().includes(searchLower) ||
-          admin.email.toLowerCase().includes(searchLower),
-      )
-    }
-
-    // Role filter
-    if (filterRole !== 'all') {
-      result = result.filter((admin) => admin.role === filterRole)
-    }
-
-    // Status filter
-    if (filterStatus !== 'all') {
-      result = result.filter((admin) => admin.status === filterStatus)
-    }
-
-    // Sort
-    if (sortField) {
-      result.sort((a, b) => {
-        const dateA = parseDate(a[sortField])
-        const dateB = parseDate(b[sortField])
-        return sortDirection === 'asc'
-          ? dateA.getTime() - dateB.getTime()
-          : dateB.getTime() - dateA.getTime()
-      })
-    }
-
-    return result
-  }, [searchQuery, filterRole, filterStatus, sortField, sortDirection])
-
-  // Pagination logic
-  const totalPages = Math.ceil(filteredAndSortedAdmins.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const currentAdmins = filteredAndSortedAdmins.slice(startIndex, endIndex)
-
-  const handleSort = (
-    field: 'joinDate' | 'lastOnline',
-    direction: 'asc' | 'desc',
-  ) => {
-    setSortField(field)
-    setSortDirection(direction)
-  }
+  // Define filters for DataTable
+  const filters: FilterConfig[] = [
+    {
+      id: 'search',
+      type: 'search',
+      label: t('search.placeholder'),
+      placeholder: t('search.placeholder'),
+    },
+    {
+      id: 'role',
+      type: 'select',
+      label: t('filters.allRoles'),
+      options: [
+        { value: 'support', label: t('filters.support') },
+        { value: 'moderator', label: t('filters.moderator') },
+        { value: 'admin', label: t('filters.admin') },
+        { value: 'super_admin', label: t('filters.superAdmin') },
+      ],
+    },
+    {
+      id: 'status',
+      type: 'select',
+      label: t('filters.allStatuses'),
+      options: [
+        { value: 'active', label: t('filters.active') },
+        { value: 'inactive', label: t('filters.inactive') },
+      ],
+    },
+  ]
 
   return (
     <div>
       <Breadcrumb items={breadcrumbItems} />
 
       <div className='space-y-6'>
-        {/* Search and Filters */}
-        <div className='flex items-center justify-between gap-4'>
-          <div className='flex items-center gap-4 flex-1'>
-            <div className='flex-1 max-w-md'>
-              <Input
-                type='text'
-                placeholder={t('search.placeholder')}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className='w-full'
-              />
-            </div>
-
-            <select
-              className='px-3 py-2 border border-gray-300 rounded-md bg-white text-sm'
-              value={filterRole}
-              onChange={(e) => setFilterRole(e.target.value)}
-            >
-              <option value='all'>{t('filters.allRoles')}</option>
-              <option value='support'>{t('filters.support')}</option>
-              <option value='moderator'>{t('filters.moderator')}</option>
-              <option value='admin'>{t('filters.admin')}</option>
-              <option value='super_admin'>{t('filters.superAdmin')}</option>
-            </select>
-
-            <select
-              className='px-3 py-2 border border-gray-300 rounded-md bg-white text-sm'
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-            >
-              <option value='all'>{t('filters.allStatuses')}</option>
-              <option value='active'>{t('filters.active')}</option>
-              <option value='inactive'>{t('filters.inactive')}</option>
-            </select>
-
-            <select
-              className='px-3 py-2 border border-gray-300 rounded-md bg-white text-sm'
-              value={itemsPerPage}
-              onChange={(e) => setItemsPerPage(Number(e.target.value))}
-            >
-              <option value={10}>10 {t('perPage')}</option>
-              <option value={20}>20 {t('perPage')}</option>
-              <option value={50}>50 {t('perPage')}</option>
-            </select>
-          </div>
-
+        {/* Header with Create Button */}
+        <div className='flex items-center justify-end'>
           <Button className='bg-blue-600 hover:bg-blue-700 text-white'>
             + {t('createNewAdmin')}
           </Button>
         </div>
 
-        {/* Admin Table */}
-        <AdminTable
-          admins={currentAdmins}
-          onSort={handleSort}
-          sortField={sortField}
-          sortDirection={sortDirection}
-        />
-
-        {/* Pagination */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={filteredAndSortedAdmins.length}
-          itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
+        {/* DataTable Component */}
+        <DataTable
+          data={mockAdmins}
+          columns={columns}
+          filters={filters}
+          filterMode='frontend'
+          pagination
+          itemsPerPage={10}
+          itemsPerPageOptions={[10, 20, 50]}
+          sortable
+          defaultSort={{ key: 'joinDate', direction: 'desc' }}
+          actions={() => (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
+                  <span className='text-gray-500'>⋮</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end'>
+                <DropdownMenuItem>
+                  {t('table.actions.viewDetails')}
+                </DropdownMenuItem>
+                <DropdownMenuItem>{t('table.actions.edit')}</DropdownMenuItem>
+                <DropdownMenuItem>
+                  {t('table.actions.changeRole')}
+                </DropdownMenuItem>
+                <DropdownMenuItem className='text-red-600'>
+                  {t('table.actions.deactivate')}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+          emptyMessage='No admins found'
+          getRowKey={(row) => row.id}
         />
       </div>
     </div>

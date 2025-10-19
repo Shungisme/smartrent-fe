@@ -1,11 +1,27 @@
-import React, { useState } from 'react'
+import React from 'react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
-import UserTable, { UserData } from '@/components/molecules/userTable'
-import Pagination from '@/components/molecules/pagination'
-import { Input } from '@/components/atoms/input'
+import {
+  DataTable,
+  Column,
+  FilterConfig,
+} from '@/components/organisms/DataTable'
+import { Avatar } from '@/components/atoms/avatar'
+import { Badge } from '@/components/atoms/badge'
+import { cn } from '@/lib/utils'
 import type { NextPageWithLayout } from '@/types/next-page'
 import { useTranslations } from 'next-intl'
+
+type UserData = {
+  id: string
+  name: string
+  avatar?: string
+  type: 'landlord' | 'tenant'
+  joinDate: string
+  lastOnline: string
+  posts: number | null
+  status: 'normal' | 'banned'
+}
 
 // Mock data for 12 users matching the requirements
 const mockUsers: UserData[] = [
@@ -133,80 +149,149 @@ const mockUsers: UserData[] = [
 
 const UserManagement: NextPageWithLayout = () => {
   const t = useTranslations('admin.users')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filterType, setFilterType] = useState('all')
-  const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(10)
 
   const breadcrumbItems = [
-    { label: t('breadcrumb.menu') },
-    { label: t('breadcrumb.dashboard') },
-    { label: `${mockUsers.length} ${t('breadcrumb.usersCount')}` },
+    { label: 'Admin Dashboard', href: '/admin' },
+    { label: t('breadcrumb.dashboard') }, // Current page
   ]
 
-  // Filter and search logic
-  const filteredUsers = mockUsers.filter((user) => {
-    const matchesSearch =
-      user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.id.includes(searchQuery)
-    const matchesFilter = filterType === 'all' || user.type === filterType
-    return matchesSearch && matchesFilter
-  })
+  // Define columns for DataTable
+  const columns: Column<UserData>[] = [
+    {
+      id: 'id',
+      header: t('table.headers.userId'),
+      accessor: 'id',
+      render: (value) => (
+        <div className='text-sm font-medium text-gray-900'>{value}</div>
+      ),
+    },
+    {
+      id: 'user',
+      header: t('table.headers.user'),
+      accessor: (row) => row.name,
+      sortable: true,
+      render: (_, row) => (
+        <div className='flex items-center gap-3'>
+          <Avatar className='w-10 h-10'>
+            <img
+              src={row.avatar || '/images/default-image.jpg'}
+              alt={row.name}
+              className='w-full h-full object-cover'
+            />
+          </Avatar>
+          <span className='font-medium text-gray-900'>{row.name}</span>
+        </div>
+      ),
+    },
+    {
+      id: 'type',
+      header: t('table.headers.type'),
+      accessor: 'type',
+      render: (value) => (
+        <Badge
+          variant={value === 'landlord' ? 'default' : 'secondary'}
+          className={cn(
+            'px-3 py-1',
+            value === 'landlord'
+              ? 'bg-blue-100 text-blue-800'
+              : 'bg-gray-100 text-gray-800',
+          )}
+        >
+          {t(`table.userTypes.${value}`)}
+        </Badge>
+      ),
+    },
+    {
+      id: 'joinDate',
+      header: t('table.headers.joinDate'),
+      accessor: 'joinDate',
+      sortable: true,
+      render: (value) => <div className='text-sm text-gray-900'>{value}</div>,
+    },
+    {
+      id: 'lastOnline',
+      header: t('table.headers.lastOnline'),
+      accessor: 'lastOnline',
+      sortable: true,
+      render: (value) => <div className='text-sm text-gray-900'>{value}</div>,
+    },
+    {
+      id: 'posts',
+      header: t('table.headers.posts'),
+      accessor: 'posts',
+      render: (value) =>
+        value !== null ? (
+          <Badge
+            variant='outline'
+            className='bg-green-50 text-green-800 border-green-200'
+          >
+            {value} {t('table.postsBadge')}
+          </Badge>
+        ) : (
+          <Badge
+            variant='outline'
+            className='bg-gray-50 text-gray-500 border-gray-200'
+          >
+            {t('table.notApplicable')}
+          </Badge>
+        ),
+    },
+    {
+      id: 'status',
+      header: t('table.headers.status'),
+      accessor: 'status',
+      render: (value) => (
+        <Badge
+          className={cn(
+            'px-3 py-1',
+            value === 'normal'
+              ? 'bg-black text-white'
+              : 'bg-red-600 text-white',
+          )}
+        >
+          {t(`table.statuses.${value}`)}
+        </Badge>
+      ),
+    },
+  ]
 
-  // Pagination logic
-  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const currentUsers = filteredUsers.slice(startIndex, endIndex)
+  // Define filters for DataTable
+  const filters: FilterConfig[] = [
+    {
+      id: 'search',
+      type: 'search',
+      label: t('search.placeholder'),
+      placeholder: t('search.placeholder'),
+    },
+    {
+      id: 'type',
+      type: 'select',
+      label: t('filters.allUsers'),
+      options: [
+        { value: 'landlord', label: t('filters.landlord') },
+        { value: 'tenant', label: t('filters.tenant') },
+      ],
+    },
+  ]
 
   return (
     <div>
       <Breadcrumb items={breadcrumbItems} />
 
       <div className='space-y-6'>
-        {/* Search and Filters */}
-        <div className='flex items-center gap-4'>
-          <div className='flex-1 max-w-md'>
-            <Input
-              type='text'
-              placeholder={t('search.placeholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className='w-full'
-            />
-          </div>
-
-          <select
-            className='px-3 py-2 border border-gray-300 rounded-md bg-white text-sm'
-            value={filterType}
-            onChange={(e) => setFilterType(e.target.value)}
-          >
-            <option value='all'>{t('filters.allUsers')}</option>
-            <option value='landlord'>{t('filters.landlord')}</option>
-            <option value='tenant'>{t('filters.tenant')}</option>
-          </select>
-
-          <select
-            className='px-3 py-2 border border-gray-300 rounded-md bg-white text-sm'
-            value={itemsPerPage}
-            onChange={(e) => setItemsPerPage(Number(e.target.value))}
-          >
-            <option value={5}>5 {t('perPage')}</option>
-            <option value={10}>10 {t('perPage')}</option>
-            <option value={20}>20 {t('perPage')}</option>
-          </select>
-        </div>
-
-        {/* User Table */}
-        <UserTable users={currentUsers} />
-
-        {/* Pagination */}
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={filteredUsers.length}
-          itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
+        {/* DataTable Component */}
+        <DataTable
+          data={mockUsers}
+          columns={columns}
+          filters={filters}
+          filterMode='frontend'
+          pagination
+          itemsPerPage={10}
+          itemsPerPageOptions={[5, 10, 20]}
+          sortable
+          defaultSort={{ key: 'joinDate', direction: 'desc' }}
+          emptyMessage='No users found'
+          getRowKey={(row) => row.id}
         />
       </div>
     </div>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { Card } from '@/components/atoms/card'
 
 type PerformanceChartProps = {
@@ -10,21 +11,45 @@ type PerformanceChartProps = {
 const PerformanceChart: React.FC<PerformanceChartProps> = ({
   revenue = [200, 280, 250, 380, 350, 420, 500, 450, 520, 580, 550, 620],
   avgInvoice = [15, 17, 16, 19, 18, 20, 22, 21, 23, 24, 23, 25],
-  labels = [
-    'T1',
-    'T2',
-    'T3',
-    'T4',
-    'T5',
-    'T6',
-    'T7',
-    'T8',
-    'T9',
-    'T10',
-    'T11',
-    'T12',
-  ],
+  labels,
 }) => {
+  const t = useTranslations('admin.finance')
+  const locale = useLocale()
+
+  // Default month labels based on locale
+  const defaultMonthLabels =
+    locale === 'en'
+      ? [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ]
+      : [
+          'T1',
+          'T2',
+          'T3',
+          'T4',
+          'T5',
+          'T6',
+          'T7',
+          'T8',
+          'T9',
+          'T10',
+          'T11',
+          'T12',
+        ]
+
+  const monthLabels = labels || defaultMonthLabels
+
   const maxRevenue = Math.max(...revenue)
   const maxAvg = Math.max(...avgInvoice)
 
@@ -32,16 +57,20 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
     <Card className='p-6'>
       <div className='mb-4 flex items-center justify-between'>
         <h3 className='text-lg font-semibold text-gray-900'>
-          Hiệu Suất Hàng Tháng
+          {t('charts.performanceChart.title')}
         </h3>
         <div className='flex items-center gap-4'>
           <div className='flex items-center gap-2'>
             <div className='h-3 w-3 rounded bg-blue-500' />
-            <span className='text-sm text-gray-600'>Doanh thu</span>
+            <span className='text-sm text-gray-600'>
+              {t('charts.performanceChart.revenue')}
+            </span>
           </div>
           <div className='flex items-center gap-2'>
             <div className='h-0.5 w-6 bg-green-500' />
-            <span className='text-sm text-gray-600'>Giá trị TB</span>
+            <span className='text-sm text-gray-600'>
+              {t('charts.performanceChart.avgValue')}
+            </span>
           </div>
         </div>
       </div>
@@ -120,7 +149,7 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
 
         {/* X-axis labels */}
         <div className='mt-2 flex justify-between px-2'>
-          {labels.map((label, index) => (
+          {monthLabels.map((label, index) => (
             <span key={index} className='text-xs text-gray-500'>
               {label}
             </span>
@@ -129,8 +158,8 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
       </div>
 
       <div className='mt-4 flex justify-between text-sm text-gray-600'>
-        <span>Doanh thu: Triệu ₫</span>
-        <span>Giá trị TB: Triệu ₫</span>
+        <span>{t('charts.performanceChart.revenueUnit')}</span>
+        <span>{t('charts.performanceChart.avgUnit')}</span>
       </div>
     </Card>
   )

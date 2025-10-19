@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import StatsCard from '@/components/molecules/statsCard'
 import LineChartCard from '@/components/molecules/lineChartCard'
 import AreaChartCard from '@/components/molecules/areaChartCard'
@@ -18,6 +19,7 @@ type OverviewTabProps = {
 }
 
 const OverviewTab: React.FC<OverviewTabProps> = ({ timeRange }) => {
+  const t = useTranslations('admin.analytics.overview')
   // Filter data based on time range
   const filterData = <T extends { date: string }>(data: T[]): T[] => {
     switch (timeRange) {
@@ -56,32 +58,41 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ timeRange }) => {
   )
   const avgPackagesSold = Math.round(filteredRevenueData.length * 4.8)
 
+  // Translate user type distribution labels
+  const translatedUserTypeDistribution = userTypeDistribution.map((item) => ({
+    ...item,
+    label:
+      item.label === 'Chủ Nhà'
+        ? t('userTypes.landlord')
+        : t('userTypes.tenant'),
+  }))
+
   return (
     <div className='space-y-6'>
       {/* Stats Cards */}
       <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
         <StatsCard
-          title='Tổng Người Dùng'
+          title={t('stats.totalUsers')}
           value={totalUsers.toLocaleString('vi-VN')}
-          subtitle={`+${newUsers} mới trong kỳ`}
+          subtitle={`+${newUsers} ${t('stats.newInPeriod')}`}
           icon={<TrendingUp className='h-5 w-5' />}
         />
         <StatsCard
-          title='Tổng Tin Đăng'
+          title={t('stats.totalPosts')}
           value={totalPosts.toLocaleString('vi-VN')}
-          subtitle={`+${newPosts} trong kỳ`}
+          subtitle={`+${newPosts} ${t('stats.inPeriod')}`}
           icon={<FileText className='h-5 w-5' />}
         />
         <StatsCard
-          title='Tổng Lượt Xem'
+          title={t('stats.totalViews')}
           value={totalViews.toLocaleString('vi-VN')}
-          subtitle={`${totalClicks.toLocaleString('vi-VN')} lượt nhấp`}
+          subtitle={`${totalClicks.toLocaleString('vi-VN')} ${t('stats.clicks')}`}
           icon={<Eye className='h-5 w-5' />}
         />
         <StatsCard
-          title='Doanh Thu'
+          title={t('stats.revenue')}
           value={formatCurrency(totalRevenue)}
-          subtitle={`${avgPackagesSold} gói đã bán`}
+          subtitle={`${avgPackagesSold} ${t('stats.packagesSold')}`}
           icon={<DollarSign className='h-5 w-5' />}
         />
       </div>
@@ -90,12 +101,12 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ timeRange }) => {
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         {/* User Growth Chart */}
         <LineChartCard
-          title='Tăng Trưởng Người Dùng'
+          title={t('charts.userGrowth')}
           datasets={[
             {
               data: filteredUserData.map((d) => d.newUsers),
               color: '#2563EB',
-              label: 'Người dùng mới',
+              label: t('charts.newUsers'),
             },
           ]}
           labels={filteredUserData.map((d) => d.date)}
@@ -104,12 +115,12 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ timeRange }) => {
 
         {/* Post Activity Chart */}
         <LineChartCard
-          title='Hoạt Động Bài Đăng'
+          title={t('charts.postActivity')}
           datasets={[
             {
               data: filteredPostData.map((d) => d.newPosts),
               color: '#22C55E',
-              label: 'Bài đăng mới',
+              label: t('charts.newPosts'),
             },
           ]}
           labels={filteredPostData.map((d) => d.date)}
@@ -118,17 +129,17 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ timeRange }) => {
 
         {/* Revenue Chart */}
         <AreaChartCard
-          title='Doanh Thu Theo Thời Gian'
+          title={t('charts.revenueOverTime')}
           data={filteredRevenueData.map((d) => d.revenue)}
           labels={filteredRevenueData.map((d) => d.date)}
           color='#6366F1'
-          unit='Đơn vị: VNĐ'
+          unit={t('charts.unit')}
         />
 
         {/* User Type Distribution */}
         <PieChartCard
-          title='Phân Bố Loại Người Dùng'
-          data={userTypeDistribution}
+          title={t('charts.userTypeDistribution')}
+          data={translatedUserTypeDistribution}
           showPercentage={true}
         />
       </div>

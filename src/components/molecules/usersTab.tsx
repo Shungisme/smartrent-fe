@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import StatsCard from '@/components/molecules/statsCard'
 import LineChartCard from '@/components/molecules/lineChartCard'
 import PieChartCard from '@/components/molecules/pieChartCard'
@@ -15,6 +16,8 @@ type UsersTabProps = {
 }
 
 const UsersTab: React.FC<UsersTabProps> = ({ timeRange }) => {
+  const t = useTranslations('admin.analytics.users')
+  const tOverview = useTranslations('admin.analytics.overview')
   // Filter data based on time range
   const filterData = <T extends { date: string }>(data: T[]): T[] => {
     switch (timeRange) {
@@ -33,25 +36,34 @@ const UsersTab: React.FC<UsersTabProps> = ({ timeRange }) => {
     filteredUserData[filteredUserData.length - 1]?.totalUsers ||
     userStats.totalUsers
 
+  // Translate user type distribution labels
+  const translatedUserTypeDistribution = userTypeDistribution.map((item) => ({
+    ...item,
+    label:
+      item.label === 'Chủ Nhà'
+        ? tOverview('userTypes.landlord')
+        : tOverview('userTypes.tenant'),
+  }))
+
   return (
     <div className='space-y-6'>
       {/* Stats Cards */}
       <div className='grid grid-cols-1 gap-6 md:grid-cols-3'>
         <StatsCard
-          title='Tổng Người Dùng'
+          title={t('stats.totalUsers')}
           value={totalUsers.toLocaleString('vi-VN')}
           icon={<Users className='h-5 w-5' />}
         />
         <StatsCard
-          title='Chủ Nhà'
+          title={t('stats.landlords')}
           value={userStats.landlords.toLocaleString('vi-VN')}
-          subtitle={`${userStats.landlords === 680 ? '40' : calculatePercentage(userStats.landlords, totalUsers)}% tổng số`}
+          subtitle={`${userStats.landlords === 680 ? '40' : calculatePercentage(userStats.landlords, totalUsers)}% ${t('stats.ofTotal')}`}
           icon={<UserCheck className='h-5 w-5' />}
         />
         <StatsCard
-          title='Người Thuê'
+          title={t('stats.tenants')}
           value={userStats.tenants.toLocaleString('vi-VN')}
-          subtitle={`${userStats.tenants === 1240 ? '74' : calculatePercentage(userStats.tenants, totalUsers)}% tổng số`}
+          subtitle={`${userStats.tenants === 1240 ? '74' : calculatePercentage(userStats.tenants, totalUsers)}% ${t('stats.ofTotal')}`}
           icon={<UserPlus className='h-5 w-5' />}
         />
       </div>
@@ -60,12 +72,12 @@ const UsersTab: React.FC<UsersTabProps> = ({ timeRange }) => {
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         {/* User Growth Chart */}
         <LineChartCard
-          title='Tăng Trưởng Người Dùng Theo Thời Gian'
+          title={t('charts.userGrowthOverTime')}
           datasets={[
             {
               data: filteredUserData.map((d) => d.newUsers),
               color: '#2563EB',
-              label: 'Người dùng mới',
+              label: t('charts.newUsers'),
             },
           ]}
           labels={filteredUserData.map((d) => d.date)}
@@ -75,8 +87,8 @@ const UsersTab: React.FC<UsersTabProps> = ({ timeRange }) => {
 
         {/* User Type Distribution */}
         <PieChartCard
-          title='Phân Bố Loại Người Dùng'
-          data={userTypeDistribution}
+          title={t('charts.userTypeDistribution')}
+          data={translatedUserTypeDistribution}
           showPercentage={true}
           height='h-80'
         />
