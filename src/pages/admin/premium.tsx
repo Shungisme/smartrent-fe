@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
 import AddMembershipModal, {
@@ -267,26 +268,8 @@ const getPromoStatusColor = (status: PromoStatus): string => {
   return colors[status]
 }
 
-const getPromoTypeLabel = (type: PromoType): string => {
-  const labels: Record<PromoType, string> = {
-    percentage: 'Percentage',
-    fixed_amount: 'Fixed Amount',
-    free_trial: 'Free Trial',
-  }
-  return labels[type]
-}
-
-const getTargetLabel = (target: PromoTarget): string => {
-  const labels: Record<PromoTarget, string> = {
-    all: 'All Users',
-    new_users: 'New Users',
-    premium: 'Premium',
-    basic: 'Basic',
-  }
-  return labels[target]
-}
-
 const PaidFeaturesManagement: NextPageWithLayout = () => {
+  const t = useTranslations('premium')
   const [activeTab, setActiveTab] = useState('overview')
 
   // Modal states
@@ -320,9 +303,9 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
   }
 
   const breadcrumbItems = [
-    { label: 'Thực Đơn Điều Hướng' },
-    { label: 'Tính Năng Trả Phí & Khuyến Mãi' },
-    { label: 'Tổng Quan' },
+    { label: t('breadcrumb.menu') },
+    { label: t('breadcrumb.title') },
+    { label: t('breadcrumb.overview') },
   ]
 
   // Calculate overview stats
@@ -348,23 +331,22 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
       <div className='space-y-6'>
         {/* Header */}
         <div>
-          <h1 className='text-3xl font-semibold text-gray-900'>
-            Paid Features & Promotions Management
-          </h1>
-          <p className='mt-1 text-sm text-gray-500'>
-            Manage membership packages, promotional codes, listing types, and
-            boost packages
-          </p>
+          <h1 className='text-3xl font-semibold text-gray-900'>{t('title')}</h1>
+          <p className='mt-1 text-sm text-gray-500'>{t('description')}</p>
         </div>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className='grid w-full grid-cols-5'>
-            <TabsTrigger value='overview'>Overview</TabsTrigger>
-            <TabsTrigger value='membership'>Membership</TabsTrigger>
-            <TabsTrigger value='promotions'>Promotions</TabsTrigger>
-            <TabsTrigger value='listing-types'>Listing Types</TabsTrigger>
-            <TabsTrigger value='post-boosts'>Post Boosts</TabsTrigger>
+            <TabsTrigger value='overview'>{t('tabs.overview')}</TabsTrigger>
+            <TabsTrigger value='membership'>{t('tabs.membership')}</TabsTrigger>
+            <TabsTrigger value='promotions'>{t('tabs.promotions')}</TabsTrigger>
+            <TabsTrigger value='listing-types'>
+              {t('tabs.listingTypes')}
+            </TabsTrigger>
+            <TabsTrigger value='post-boosts'>
+              {t('tabs.postBoosts')}
+            </TabsTrigger>
           </TabsList>
 
           {/* Tab 1: Overview */}
@@ -375,13 +357,13 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                 <div className='flex items-start justify-between'>
                   <div>
                     <div className='text-sm text-gray-500'>
-                      Active Memberships
+                      {t('overview.activeMemberships')}
                     </div>
                     <div className='mt-2 text-3xl font-bold text-gray-900'>
                       {stats.activeMemberships}
                     </div>
                     <div className='mt-1 text-xs text-gray-500'>
-                      Packages running
+                      {t('overview.packagesRunning')}
                     </div>
                   </div>
                   <div className='rounded-lg bg-blue-100 p-3'>
@@ -393,12 +375,14 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
               <Card className='p-6'>
                 <div className='flex items-start justify-between'>
                   <div>
-                    <div className='text-sm text-gray-500'>Active Promos</div>
+                    <div className='text-sm text-gray-500'>
+                      {t('overview.activePromos')}
+                    </div>
                     <div className='mt-2 text-3xl font-bold text-gray-900'>
                       {stats.activePromos}
                     </div>
                     <div className='mt-1 text-xs text-gray-500'>
-                      {stats.totalPromoUsage} total uses
+                      {stats.totalPromoUsage} {t('overview.totalUses')}
                     </div>
                   </div>
                   <div className='rounded-lg bg-green-100 p-3'>
@@ -410,12 +394,14 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
               <Card className='p-6'>
                 <div className='flex items-start justify-between'>
                   <div>
-                    <div className='text-sm text-gray-500'>Listing Types</div>
+                    <div className='text-sm text-gray-500'>
+                      {t('overview.listingTypes')}
+                    </div>
                     <div className='mt-2 text-3xl font-bold text-gray-900'>
                       {stats.listingTypes}
                     </div>
                     <div className='mt-1 text-xs text-gray-500'>
-                      Regular + VIP tiers
+                      {t('overview.regularVipTiers')}
                     </div>
                   </div>
                   <div className='rounded-lg bg-purple-100 p-3'>
@@ -427,12 +413,14 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
               <Card className='p-6'>
                 <div className='flex items-start justify-between'>
                   <div>
-                    <div className='text-sm text-gray-500'>Boost Packages</div>
+                    <div className='text-sm text-gray-500'>
+                      {t('overview.boostPackages')}
+                    </div>
                     <div className='mt-2 text-3xl font-bold text-gray-900'>
                       {stats.boostPackages}
                     </div>
                     <div className='mt-1 text-xs text-gray-500'>
-                      {stats.totalBoostValue}đ value
+                      {stats.totalBoostValue}đ {t('overview.value')}
                     </div>
                   </div>
                   <div className='rounded-lg bg-orange-100 p-3'>
@@ -445,7 +433,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
             {/* Membership Package Revenue */}
             <Card className='p-6'>
               <h3 className='text-lg font-semibold text-gray-900 mb-4'>
-                Membership Package Revenue
+                {t('overview.membershipRevenue')}
               </h3>
               <div className='space-y-3'>
                 {mockMemberships.map((pkg) => (
@@ -466,13 +454,17 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                     </div>
                     <div className='flex items-center gap-8'>
                       <div className='text-right'>
-                        <div className='text-sm text-gray-500'>Revenue</div>
+                        <div className='text-sm text-gray-500'>
+                          {t('overview.revenue')}
+                        </div>
                         <div className='font-semibold text-gray-900'>
                           {pkg.revenue}
                         </div>
                       </div>
                       <div className='text-right'>
-                        <div className='text-sm text-gray-500'>Users</div>
+                        <div className='text-sm text-gray-500'>
+                          {t('overview.users')}
+                        </div>
                         <div className='font-semibold text-gray-900'>
                           {pkg.activeUsers}
                         </div>
@@ -491,7 +483,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
             {/* Recent Promotional Activity */}
             <Card className='p-6'>
               <h3 className='text-lg font-semibold text-gray-900 mb-4'>
-                Recent Promotional Activity
+                {t('overview.recentPromoActivity')}
               </h3>
               <div className='space-y-3'>
                 {mockPromotions.slice(0, 3).map((promo) => (
@@ -514,7 +506,9 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                     </div>
                     <div className='flex items-center gap-6'>
                       <div className='text-right'>
-                        <div className='text-sm text-gray-500'>Usage</div>
+                        <div className='text-sm text-gray-500'>
+                          {t('overview.usage')}
+                        </div>
                         <div className='font-semibold text-gray-900'>
                           {promo.usage.current}/{promo.usage.limit}
                         </div>
@@ -532,7 +526,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                           getPromoStatusColor(promo.status),
                         )}
                       >
-                        {promo.status}
+                        {t(`promotions.statuses.${promo.status}`)}
                       </Badge>
                     </div>
                   </div>
@@ -545,14 +539,14 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
           <TabsContent value='membership' className='space-y-6'>
             <div className='flex justify-between items-center'>
               <p className='text-sm text-gray-500'>
-                Manage membership packages and pricing tiers
+                {t('membership.description')}
               </p>
               <Button
                 className='bg-blue-600 hover:bg-blue-700'
                 onClick={() => setMembershipModalOpen(true)}
               >
                 <Plus className='h-4 w-4 mr-2' />
-                Add Package
+                {t('membership.addPackage')}
               </Button>
             </div>
 
@@ -562,22 +556,22 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                   <thead className='bg-gray-50 border-b border-gray-200'>
                     <tr>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
-                        Package
+                        {t('membership.table.package')}
                       </th>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
-                        Price
+                        {t('membership.table.price')}
                       </th>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
-                        Features
+                        {t('membership.table.features')}
                       </th>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
-                        Discount
+                        {t('membership.table.discount')}
                       </th>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
-                        Status
+                        {t('membership.table.status')}
                       </th>
                       <th className='px-6 py-4 text-center text-sm font-semibold text-gray-700'>
-                        Actions
+                        {t('membership.table.actions')}
                       </th>
                     </tr>
                   </thead>
@@ -604,7 +598,8 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                             {pkg.price}
                           </div>
                           <div className='text-xs text-gray-500'>
-                            {pkg.activeUsers} active users
+                            {pkg.activeUsers}{' '}
+                            {t('membership.table.activeUsers')}
                           </div>
                         </td>
                         <td className='px-6 py-4'>
@@ -620,7 +615,9 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                             ))}
                             {pkg.features.length > 2 && (
                               <Badge variant='outline' className='text-xs'>
-                                +{pkg.features.length - 2} more
+                                {t('membership.table.moreFeatures', {
+                                  count: pkg.features.length - 2,
+                                })}
                               </Badge>
                             )}
                           </div>
@@ -632,7 +629,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                             </Badge>
                           ) : (
                             <span className='text-sm text-gray-400'>
-                              No discount
+                              {t('membership.table.noDiscount')}
                             </span>
                           )}
                         </td>
@@ -677,14 +674,14 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
           <TabsContent value='promotions' className='space-y-6'>
             <div className='flex justify-between items-center'>
               <p className='text-sm text-gray-500'>
-                Manage promotional codes and discount campaigns
+                {t('promotions.description')}
               </p>
               <Button
                 className='bg-green-600 hover:bg-green-700'
                 onClick={() => setPromoModalOpen(true)}
               >
                 <Plus className='h-4 w-4 mr-2' />
-                Create Promo Code
+                {t('promotions.createPromo')}
               </Button>
             </div>
 
@@ -694,25 +691,25 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                   <thead className='bg-gray-50 border-b border-gray-200'>
                     <tr>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
-                        Code
+                        {t('promotions.table.code')}
                       </th>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
-                        Type
+                        {t('promotions.table.type')}
                       </th>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
-                        Target
+                        {t('promotions.table.target')}
                       </th>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
-                        Usage
+                        {t('promotions.table.usage')}
                       </th>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
-                        Valid Until
+                        {t('promotions.table.validUntil')}
                       </th>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
-                        Status
+                        {t('promotions.table.status')}
                       </th>
                       <th className='px-6 py-4 text-center text-sm font-semibold text-gray-700'>
-                        Actions
+                        {t('promotions.table.actions')}
                       </th>
                     </tr>
                   </thead>
@@ -729,12 +726,12 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                         </td>
                         <td className='px-6 py-4'>
                           <Badge variant='outline' className='text-xs'>
-                            {getPromoTypeLabel(promo.type)}
+                            {t(`promotions.types.${promo.type}`)}
                           </Badge>
                         </td>
                         <td className='px-6 py-4'>
                           <span className='text-sm text-gray-700'>
-                            {getTargetLabel(promo.target)}
+                            {t(`promotions.targets.${promo.target}`)}
                           </span>
                         </td>
                         <td className='px-6 py-4'>
@@ -765,7 +762,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                               getPromoStatusColor(promo.status),
                             )}
                           >
-                            {promo.status}
+                            {t(`promotions.statuses.${promo.status}`)}
                           </Badge>
                         </td>
                         <td className='px-6 py-4'>
@@ -797,7 +794,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
           {/* Tab 4: Listing Types */}
           <TabsContent value='listing-types' className='space-y-6'>
             <p className='text-sm text-gray-500'>
-              Manage pricing for regular and VIP listing tiers
+              {t('listingTypes.description')}
             </p>
 
             <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
@@ -808,7 +805,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                       <Badge
                         className={cn('text-sm font-medium', listingType.color)}
                       >
-                        {listingType.name}
+                        {t(`listingTypes.tiers.${listingType.tier}`)}
                       </Badge>
                     </div>
                     <label className='relative inline-flex items-center cursor-pointer'>
@@ -825,7 +822,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                   {/* Day Pricing */}
                   <div className='mb-4'>
                     <h4 className='text-sm font-semibold text-gray-700 mb-3'>
-                      Per-Day Pricing
+                      {t('listingTypes.dayPricing')}
                     </h4>
                     <div className='grid grid-cols-2 gap-3'>
                       {listingType.dayPricing.map((pricing) => (
@@ -834,7 +831,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                           className='rounded-lg border border-gray-200 p-3'
                         >
                           <div className='text-xs text-gray-500'>
-                            {pricing.days} days
+                            {pricing.days} {t('listingTypes.days')}
                           </div>
                           <div className='font-semibold text-gray-900'>
                             {pricing.price}
@@ -847,24 +844,27 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                   {/* Click Pricing */}
                   <div className='mb-4'>
                     <h4 className='text-sm font-semibold text-gray-700 mb-3'>
-                      Per-Click Pricing
+                      {t('listingTypes.clickPricing')}
                     </h4>
                     <div className='rounded-lg border border-gray-200 p-3'>
                       <div className='flex items-center justify-between'>
                         <span className='text-sm text-gray-600'>
-                          Base Price
+                          {t('listingTypes.basePrice')}
                         </span>
                         <span className='font-semibold text-gray-900'>
-                          {listingType.clickPricing.basePrice}/click
+                          {listingType.clickPricing.basePrice}/
+                          {t('listingTypes.perClick')}
                         </span>
                       </div>
                       <div className='mt-2 flex items-center justify-between'>
                         <span className='text-sm text-gray-600'>
-                          Click Range
+                          {t('listingTypes.minClicks')} -{' '}
+                          {t('listingTypes.maxClicks')}
                         </span>
                         <span className='text-sm text-gray-700'>
                           {listingType.clickPricing.minClicks} -{' '}
-                          {listingType.clickPricing.maxClicks.toLocaleString()}
+                          {listingType.clickPricing.maxClicks.toLocaleString()}{' '}
+                          {t('listingTypes.clicks')}
                         </span>
                       </div>
                     </div>
@@ -903,7 +903,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                     }}
                   >
                     <Pencil className='h-4 w-4 mr-2' />
-                    Edit Pricing
+                    {t('listingTypes.editPricing')}
                   </Button>
                 </Card>
               ))}
@@ -914,14 +914,14 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
           <TabsContent value='post-boosts' className='space-y-6'>
             <div className='flex justify-between items-center'>
               <p className='text-sm text-gray-500'>
-                Manage post boost packages and pricing
+                {t('postBoosts.description')}
               </p>
               <Button
                 className='bg-orange-600 hover:bg-orange-700'
                 onClick={() => setBoostModalOpen(true)}
               >
                 <Plus className='h-4 w-4 mr-2' />
-                Add Boost Package
+                {t('postBoosts.addBoost')}
               </Button>
             </div>
 
@@ -961,7 +961,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                     <div className='rounded-lg bg-gray-50 p-3'>
                       <div className='flex items-center justify-between'>
                         <span className='text-sm text-gray-600'>
-                          Boosts per day
+                          {t('postBoosts.boostsPerDay')}
                         </span>
                         <span className='font-semibold text-gray-900'>
                           {boost.boostsPerDay}x
@@ -974,7 +974,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                     <div className='flex gap-2 pt-2'>
                       <Button variant='outline' className='flex-1'>
                         <Pencil className='h-4 w-4 mr-1' />
-                        Edit
+                        {t('postBoosts.edit')}
                       </Button>
                       <Button
                         variant='outline'

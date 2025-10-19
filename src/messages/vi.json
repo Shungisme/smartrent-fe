@@ -794,5 +794,384 @@
     "financial": "Báo cáo Tài chính",
     "occupancy": "Tỷ lệ Lấp đầy",
     "performance": "Hiệu suất Bất động sản"
+  },
+  "admin": {
+    "header": {
+      "title": "Quản Lý Người Dùng",
+      "searchPlaceholder": "Tìm kiếm nhanh..."
+    },
+    "sidebar": {
+      "title": "SmartRent Admin",
+      "sections": {
+        "management": "Quản Trị",
+        "comingSoon": "Sắp Ra Mắt"
+      },
+      "menuItems": {
+        "users": "Quản Lý Người Dùng",
+        "admins": "Quản Lý Admin",
+        "finance": "Quản Lý Tài Chính",
+        "premium": "Tính Năng Trả Phí & Khuyến Mãi",
+        "posts": "Kiểm Duyệt Bài Đăng",
+        "reports": "Quản Lý Báo Cáo Vi Phạm",
+        "analytics": "Phân Tích Ứng Dụng",
+        "properties": "Danh Sách Bất Động Sản",
+        "settings": "Cài Đặt",
+        "search": "Tìm Kiếm Nâng Cao"
+      }
+    },
+    "users": {
+      "title": "Quản Lý Người Dùng",
+      "breadcrumb": {
+        "menu": "Thực Đơn Điều Hướng",
+        "dashboard": "Bảng Điều Khiển Quản Lý Người Dùng",
+        "usersCount": "người dùng"
+      },
+      "search": {
+        "placeholder": "Tìm kiếm theo tên hoặc ID người dùng..."
+      },
+      "filters": {
+        "allUsers": "Tất Cả Người Dùng",
+        "landlord": "Chủ nhà",
+        "tenant": "Người thuê"
+      },
+      "perPage": "mỗi trang",
+      "table": {
+        "headers": {
+          "userId": "ID Người Dùng",
+          "user": "Người Dùng",
+          "type": "Loại",
+          "joinDate": "Ngày Tham Gia",
+          "lastOnline": "Lần Online Cuối",
+          "posts": "Bài Đăng",
+          "status": "Trạng Thái"
+        },
+        "userTypes": {
+          "landlord": "Chủ nhà",
+          "tenant": "Người thuê"
+        },
+        "postsBadge": "bài đăng",
+        "notApplicable": "Không áp dụng",
+        "statuses": {
+          "normal": "Bình thường",
+          "banned": "Bị cấm"
+        }
+      }
+    },
+    "admins": {
+      "title": "Quản Lý Admin",
+      "breadcrumb": {
+        "menu": "Thực Đơn Điều Hướng",
+        "dashboard": "Bảng Điều Khiển Quản Lý Admin",
+        "adminsCount": "admin"
+      },
+      "search": {
+        "placeholder": "Tìm kiếm theo tên, ID hoặc email..."
+      },
+      "filters": {
+        "allRoles": "Tất Cả Vai Trò",
+        "support": "Hỗ Trợ",
+        "moderator": "Điều Hành Viên",
+        "admin": "Admin",
+        "superAdmin": "Siêu Admin",
+        "allStatuses": "Tất Cả Trạng Thái",
+        "active": "Hoạt động",
+        "inactive": "Không hoạt động"
+      },
+      "perPage": "mỗi trang",
+      "createNewAdmin": "Tạo Admin Mới",
+      "table": {
+        "headers": {
+          "adminId": "ID Admin",
+          "admin": "Admin",
+          "role": "Vai Trò",
+          "joinDate": "Ngày Tham Gia",
+          "lastOnline": "Lần Online Cuối",
+          "status": "Trạng Thái",
+          "actions": "Thao Tác"
+        },
+        "roles": {
+          "support": "Hỗ Trợ",
+          "moderator": "Điều Hành Viên",
+          "admin": "Admin",
+          "super_admin": "Siêu Admin"
+        },
+        "statuses": {
+          "active": "Hoạt động",
+          "inactive": "Không hoạt động"
+        },
+        "actions": {
+          "viewDetails": "Xem chi tiết",
+          "edit": "Chỉnh sửa",
+          "changeRole": "Thay đổi vai trò",
+          "deactivate": "Vô hiệu hóa"
+        }
+      }
+    }
+  },
+  "premium": {
+    "title": "Quản Lý Tính Năng Trả Phí & Khuyến Mãi",
+    "description": "Quản lý gói thành viên, mã khuyến mãi, loại tin đăng và gói đẩy tin",
+    "breadcrumb": {
+      "menu": "Thực Đơn Điều Hướng",
+      "title": "Tính Năng Trả Phí & Khuyến Mãi",
+      "overview": "Tổng Quan"
+    },
+    "tabs": {
+      "overview": "Tổng Quan",
+      "membership": "Thành Viên",
+      "promotions": "Khuyến Mãi",
+      "listingTypes": "Loại Tin Đăng",
+      "postBoosts": "Đẩy Tin"
+    },
+    "overview": {
+      "activeMemberships": "Gói Thành Viên Hoạt Động",
+      "packagesRunning": "Gói đang chạy",
+      "activePromos": "Khuyến Mãi Hoạt Động",
+      "totalUses": "tổng lượt dùng",
+      "listingTypes": "Loại Tin Đăng",
+      "regularVipTiers": "Regular + VIP tiers",
+      "boostPackages": "Gói Đẩy Tin",
+      "value": "giá trị",
+      "membershipRevenue": "Doanh Thu Gói Thành Viên",
+      "revenue": "Doanh thu",
+      "users": "Người dùng",
+      "recentPromoActivity": "Hoạt Động Khuyến Mãi Gần Đây",
+      "usage": "Đã dùng"
+    },
+    "membership": {
+      "description": "Quản lý gói thành viên và bậc giá",
+      "addPackage": "Thêm Gói",
+      "table": {
+        "package": "Gói",
+        "price": "Giá",
+        "features": "Tính Năng",
+        "discount": "Giảm Giá",
+        "status": "Trạng Thái",
+        "actions": "Thao Tác",
+        "activeUsers": "người dùng đang dùng",
+        "moreFeatures": "thêm {count} tính năng",
+        "noDiscount": "Không giảm giá"
+      }
+    },
+    "promotions": {
+      "description": "Quản lý mã khuyến mãi và chiến dịch giảm giá",
+      "createPromo": "Tạo Mã Khuyến Mãi",
+      "table": {
+        "code": "Mã",
+        "type": "Loại",
+        "target": "Đối Tượng",
+        "discount": "Giảm Giá",
+        "usage": "Đã Dùng",
+        "validUntil": "Hết Hạn",
+        "status": "Trạng Thái",
+        "actions": "Thao Tác"
+      },
+      "types": {
+        "percentage": "Phần Trăm",
+        "fixed_amount": "Số Tiền Cố Định",
+        "free_trial": "Dùng Thử Miễn Phí"
+      },
+      "targets": {
+        "all": "Tất Cả Người Dùng",
+        "new_users": "Người Dùng Mới",
+        "premium": "Premium",
+        "basic": "Basic"
+      },
+      "statuses": {
+        "active": "Hoạt Động",
+        "expired": "Hết Hạn",
+        "scheduled": "Đã Lên Lịch"
+      }
+    },
+    "listingTypes": {
+      "description": "Quản lý giá cho các bậc tin đăng thường và VIP",
+      "dayPricing": "Giá Theo Ngày",
+      "days": "ngày",
+      "clickPricing": "Giá Theo Lượt Click",
+      "basePrice": "Giá cơ bản",
+      "perClick": "mỗi click",
+      "minClicks": "Tối thiểu",
+      "maxClicks": "Tối đa",
+      "clicks": "clicks",
+      "editPricing": "Chỉnh Sửa Giá",
+      "tiers": {
+        "regular": "Tin Thường",
+        "vip1": "VIP 1",
+        "vip2": "VIP 2",
+        "vip3": "VIP 3"
+      }
+    },
+    "postBoosts": {
+      "description": "Quản lý gói đẩy tin và giá",
+      "addBoost": "Thêm Gói Đẩy Tin",
+      "boostsPerDay": "lượt đẩy/ngày",
+      "activePackage": "Gói Hoạt Động",
+      "inactivePackage": "Gói Không Hoạt Động",
+      "activate": "Kích Hoạt",
+      "deactivate": "Vô Hiệu Hóa",
+      "edit": "Chỉnh Sửa",
+      "delete": "Xóa"
+    }
+  },
+  "posts": {
+    "title": "Kiểm Duyệt Bài Đăng",
+    "description": "Xem xét và xử lý tin đăng bất động sản được gửi bởi người dùng để xuất bản.",
+    "breadcrumb": {
+      "menu": "Thực Đơn Điều Hướng",
+      "title": "Kiểm Duyệt Bài Đăng",
+      "overview": "Tổng Quan"
+    },
+    "stats": {
+      "total": "Tổng Bài Đăng",
+      "allSubmitted": "Tất cả bài đã gửi",
+      "pending": "Chờ Duyệt",
+      "awaitingVerification": "Đang chờ xác minh",
+      "approved": "Đã Duyệt",
+      "published": "Đã xuất bản",
+      "rejected": "Từ Chối",
+      "notApproved": "Chưa được duyệt"
+    },
+    "search": {
+      "placeholder": "Tìm theo tiêu đề, tên người đăng hoặc địa chỉ..."
+    },
+    "filters": {
+      "allStatus": "Tất Cả Trạng Thái",
+      "pending": "Chờ Duyệt",
+      "approved": "Đã Duyệt",
+      "rejected": "Từ Chối",
+      "allTypes": "Tất Cả Loại",
+      "house": "Nhà",
+      "apartment": "Căn hộ",
+      "office": "Văn phòng",
+      "land": "Đất",
+      "allCategories": "Tất Cả Danh Mục",
+      "forSale": "Bán",
+      "forRent": "Cho Thuê",
+      "pickDateRange": "Chọn khoảng thời gian"
+    },
+    "table": {
+      "postDetails": "Chi Tiết Bài Đăng",
+      "poster": "Người Đăng",
+      "propertyInfo": "Thông Tin BĐS",
+      "price": "Giá",
+      "postedDate": "Ngày Đăng",
+      "status": "Trạng Thái",
+      "actions": "Thao Tác",
+      "noPostsFound": "Không tìm thấy bài đăng phù hợp",
+      "viewDetails": "Xem Chi Tiết",
+      "posts": "bài đăng",
+      "month": "tháng"
+    },
+    "review": {
+      "title": "Xem Xét Bài Đăng",
+      "postInfo": "Thông Tin Bài Đăng",
+      "postCode": "Mã Bài Đăng",
+      "listingType": "Loại Tin",
+      "vipLevel": "VIP",
+      "posterInfo": "Thông Tin Người Đăng",
+      "totalPosts": "Tổng số bài đăng",
+      "propertyDetails": "Chi Tiết BĐS",
+      "type": "Loại",
+      "area": "Diện tích",
+      "district": "Quận",
+      "price": "Giá",
+      "postedOn": "Đăng lúc",
+      "currentStatus": "Trạng Thái Hiện Tại",
+      "rejectionReason": "Lý Do Từ Chối",
+      "rejectionPlaceholder": "Nhập lý do từ chối bài đăng này...",
+      "approve": "Duyệt Bài",
+      "reject": "Từ Chối"
+    },
+    "listingTypes": {
+      "for_sale": "Bán",
+      "for_rent": "Cho Thuê"
+    },
+    "propertyTypes": {
+      "house": "Nhà",
+      "apartment": "Căn hộ",
+      "office": "Văn phòng",
+      "land": "Đất"
+    },
+    "statuses": {
+      "pending": "Chờ Duyệt",
+      "approved": "Đã Duyệt",
+      "rejected": "Từ Chối"
+    }
+  },
+  "reports": {
+    "title": "Quản Lý Báo Cáo Vi Phạm",
+    "description": "Xem xét và xử lý báo cáo của người dùng về bài đăng có thể vi phạm quy tắc cộng đồng.",
+    "breadcrumb": {
+      "menu": "Thực Đơn Điều Hướng",
+      "title": "Quản Lý Báo Cáo Vi Phạm",
+      "overview": "Tổng Quan"
+    },
+    "stats": {
+      "total": "Tổng Báo Cáo",
+      "allTime": "Tất cả báo cáo",
+      "pending": "Chờ Xử Lý",
+      "needAttention": "Cần xử lý",
+      "resolved": "Đã Xử Lý",
+      "actionTaken": "Đã có hành động",
+      "dismissed": "Đã Bỏ Qua",
+      "noAction": "Không cần xử lý"
+    },
+    "search": {
+      "placeholder": "Tìm theo tiêu đề bài đăng, tên người báo cáo hoặc ID bài đăng..."
+    },
+    "filters": {
+      "allStatus": "Tất Cả Trạng Thái",
+      "pending": "Chờ Xử Lý",
+      "resolved": "Đã Xử Lý",
+      "dismissed": "Đã Bỏ Qua",
+      "allCategories": "Tất Cả Danh Mục",
+      "fakeFraudulent": "Tin Giả/Lừa Đảo",
+      "spamPromotional": "Spam/Quảng Cáo",
+      "inappropriateContent": "Nội Dung Không Phù Hợp",
+      "wrongInformation": "Thông Tin Sai",
+      "other": "Khác"
+    },
+    "table": {
+      "postDetails": "Chi Tiết Bài Đăng",
+      "reporter": "Người Báo Cáo",
+      "category": "Danh Mục Báo Cáo",
+      "content": "Nội Dung Báo Cáo",
+      "reportTime": "Thời Gian Báo Cáo",
+      "status": "Trạng Thái",
+      "actions": "Thao Tác",
+      "noReportsFound": "Không tìm thấy báo cáo phù hợp",
+      "viewDetails": "Xem Chi Tiết"
+    },
+    "review": {
+      "title": "Xem Xét Báo Cáo Vi Phạm",
+      "reportedBy": "Báo cáo bởi",
+      "on": "vào",
+      "category": "Danh mục",
+      "reportedPost": "Bài Đăng Bị Báo Cáo",
+      "postId": "ID Bài Đăng",
+      "postStatus": "Trạng thái bài đăng",
+      "active": "Hoạt động",
+      "inactive": "Không hoạt động",
+      "reporterInfo": "Thông Tin Người Báo Cáo",
+      "reportContent": "Nội Dung Báo Cáo",
+      "currentStatus": "Trạng Thái Hiện Tại",
+      "actionReason": "Lý Do Hành Động",
+      "actionPlaceholder": "Nhập lý do quyết định của bạn...",
+      "viewPost": "Xem Bài Đăng",
+      "resolve": "Xử Lý",
+      "dismiss": "Bỏ Qua"
+    },
+    "categories": {
+      "fake_fraudulent": "Tin Giả/Lừa Đảo",
+      "spam_promotional": "Spam/Quảng Cáo",
+      "inappropriate_content": "Nội Dung Không Phù Hợp",
+      "wrong_information": "Thông Tin Sai",
+      "other": "Khác"
+    },
+    "statuses": {
+      "pending": "Chờ Xử Lý",
+      "resolved": "Đã Xử Lý",
+      "dismissed": "Đã Bỏ Qua"
+    }
   }
 }

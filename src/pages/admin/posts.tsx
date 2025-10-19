@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
 import { Input } from '@/components/atoms/input'
@@ -208,6 +209,7 @@ const getStatusLabel = (status: PostStatus): string => {
 }
 
 const PostVerification: NextPageWithLayout = () => {
+  const t = useTranslations('posts')
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<PostStatus | 'all'>('all')
   const [typeFilter, setTypeFilter] = useState<PropertyType | 'all'>('all')
@@ -219,9 +221,9 @@ const PostVerification: NextPageWithLayout = () => {
   const [rejectionReason, setRejectionReason] = useState('')
 
   const breadcrumbItems = [
-    { label: 'Thực Đơn Điều Hướng' },
-    { label: 'Kiểm Duyệt Bài Đăng' },
-    { label: 'Tổng Quan' },
+    { label: t('breadcrumb.menu') },
+    { label: t('breadcrumb.title') },
+    { label: t('breadcrumb.overview') },
   ]
 
   // Calculate stats
@@ -289,13 +291,8 @@ const PostVerification: NextPageWithLayout = () => {
       <div className='space-y-6'>
         {/* Header */}
         <div>
-          <h1 className='text-3xl font-semibold text-gray-900'>
-            Post Verification
-          </h1>
-          <p className='mt-1 text-sm text-gray-500'>
-            Review and process property listings submitted by users for
-            publication.
-          </p>
+          <h1 className='text-3xl font-semibold text-gray-900'>{t('title')}</h1>
+          <p className='mt-1 text-sm text-gray-500'>{t('description')}</p>
         </div>
 
         {/* Stats Cards */}
@@ -304,9 +301,9 @@ const PostVerification: NextPageWithLayout = () => {
             <div className='text-2xl font-bold text-gray-900'>
               {stats.total}
             </div>
-            <div className='mt-1 text-sm text-gray-400'>Total Posts</div>
+            <div className='mt-1 text-sm text-gray-400'>{t('stats.total')}</div>
             <div className='mt-2 text-xs text-gray-500'>
-              All submitted posts
+              {t('stats.allSubmitted')}
             </div>
           </div>
 
@@ -314,9 +311,11 @@ const PostVerification: NextPageWithLayout = () => {
             <div className='text-2xl font-bold text-yellow-600'>
               {stats.pending}
             </div>
-            <div className='mt-1 text-sm text-gray-400'>Pending Review</div>
+            <div className='mt-1 text-sm text-gray-400'>
+              {t('stats.pending')}
+            </div>
             <div className='mt-2 text-xs text-gray-500'>
-              Awaiting verification
+              {t('stats.awaitingVerification')}
             </div>
           </div>
 
@@ -324,16 +323,24 @@ const PostVerification: NextPageWithLayout = () => {
             <div className='text-2xl font-bold text-green-600'>
               {stats.approved}
             </div>
-            <div className='mt-1 text-sm text-gray-400'>Approved</div>
-            <div className='mt-2 text-xs text-gray-500'>Published posts</div>
+            <div className='mt-1 text-sm text-gray-400'>
+              {t('stats.approved')}
+            </div>
+            <div className='mt-2 text-xs text-gray-500'>
+              {t('stats.published')}
+            </div>
           </div>
 
           <div className='rounded-xl border border-gray-100 bg-white p-6'>
             <div className='text-2xl font-bold text-red-600'>
               {stats.rejected}
             </div>
-            <div className='mt-1 text-sm text-gray-400'>Rejected</div>
-            <div className='mt-2 text-xs text-gray-500'>Not approved</div>
+            <div className='mt-1 text-sm text-gray-400'>
+              {t('stats.rejected')}
+            </div>
+            <div className='mt-2 text-xs text-gray-500'>
+              {t('stats.notApproved')}
+            </div>
           </div>
         </div>
 
@@ -344,7 +351,7 @@ const PostVerification: NextPageWithLayout = () => {
             <Search className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400' />
             <Input
               type='text'
-              placeholder='Search by title, poster name, or address...'
+              placeholder={t('search.placeholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className='w-full pl-10'
@@ -361,10 +368,10 @@ const PostVerification: NextPageWithLayout = () => {
               }
               className='rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
             >
-              <option value='all'>All Status</option>
-              <option value='pending'>Pending</option>
-              <option value='approved'>Approved</option>
-              <option value='rejected'>Rejected</option>
+              <option value='all'>{t('filters.allStatus')}</option>
+              <option value='pending'>{t('filters.pending')}</option>
+              <option value='approved'>{t('filters.approved')}</option>
+              <option value='rejected'>{t('filters.rejected')}</option>
             </select>
 
             {/* Property Type Filter */}
@@ -375,11 +382,11 @@ const PostVerification: NextPageWithLayout = () => {
               }
               className='rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
             >
-              <option value='all'>All Types</option>
-              <option value='house'>Nhà</option>
-              <option value='apartment'>Căn hộ</option>
-              <option value='office'>Văn phòng</option>
-              <option value='land'>Đất</option>
+              <option value='all'>{t('filters.allTypes')}</option>
+              <option value='house'>{t('filters.house')}</option>
+              <option value='apartment'>{t('filters.apartment')}</option>
+              <option value='office'>{t('filters.office')}</option>
+              <option value='land'>{t('filters.land')}</option>
             </select>
 
             {/* Listing Type Filter */}
@@ -390,9 +397,9 @@ const PostVerification: NextPageWithLayout = () => {
               }
               className='rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
             >
-              <option value='all'>All Categories</option>
-              <option value='for_sale'>For Sale</option>
-              <option value='for_rent'>For Rent</option>
+              <option value='all'>{t('filters.allCategories')}</option>
+              <option value='for_sale'>{t('filters.forSale')}</option>
+              <option value='for_rent'>{t('filters.forRent')}</option>
             </select>
 
             {/* Date Range Picker (placeholder) */}
@@ -408,20 +415,20 @@ const PostVerification: NextPageWithLayout = () => {
         <div className='rounded-2xl border border-gray-200 bg-white shadow-sm'>
           {/* Table Header */}
           <div className='grid grid-cols-12 gap-4 border-b border-gray-100 bg-gray-50 px-4 py-3 text-sm font-semibold text-gray-700'>
-            <div className='col-span-3'>Post Details</div>
-            <div className='col-span-2'>Poster</div>
-            <div className='col-span-2'>Property Info</div>
-            <div className='col-span-1'>Price</div>
-            <div className='col-span-2'>Posted Date</div>
-            <div className='col-span-1'>Status</div>
-            <div className='col-span-1 text-right'>Actions</div>
+            <div className='col-span-3'>{t('table.postDetails')}</div>
+            <div className='col-span-2'>{t('table.poster')}</div>
+            <div className='col-span-2'>{t('table.propertyInfo')}</div>
+            <div className='col-span-1'>{t('table.price')}</div>
+            <div className='col-span-2'>{t('table.postedDate')}</div>
+            <div className='col-span-1'>{t('table.status')}</div>
+            <div className='col-span-1 text-right'>{t('table.actions')}</div>
           </div>
 
           {/* Table Body */}
           <div className='divide-y divide-gray-100'>
             {filteredPosts.length === 0 ? (
               <div className='px-4 py-12 text-center text-gray-500'>
-                No posts found matching your criteria
+                {t('table.noPostsFound')}
               </div>
             ) : (
               filteredPosts.map((post) => (

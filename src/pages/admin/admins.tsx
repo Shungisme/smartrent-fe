@@ -6,6 +6,7 @@ import Pagination from '@/components/molecules/pagination'
 import { Input } from '@/components/atoms/input'
 import { Button } from '@/components/atoms/button'
 import type { NextPageWithLayout } from '@/types/next-page'
+import { useTranslations } from 'next-intl'
 
 // Mock data for 5 admins
 const mockAdmins: AdminData[] = [
@@ -68,6 +69,7 @@ const parseDate = (dateStr: string): Date => {
 }
 
 const AdminManagement: NextPageWithLayout = () => {
+  const t = useTranslations('admin.admins')
   const [searchQuery, setSearchQuery] = useState('')
   const [filterRole, setFilterRole] = useState('all')
   const [filterStatus, setFilterStatus] = useState('all')
@@ -79,9 +81,9 @@ const AdminManagement: NextPageWithLayout = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
 
   const breadcrumbItems = [
-    { label: 'Thực Đơn Điều Hướng' },
-    { label: 'Bảng Điều Khiển Quản Lý Admin' },
-    { label: `${mockAdmins.length} admin` },
+    { label: t('breadcrumb.menu') },
+    { label: t('breadcrumb.dashboard') },
+    { label: `${mockAdmins.length} ${t('breadcrumb.adminsCount')}` },
   ]
 
   // Filter, search and sort logic
@@ -148,7 +150,7 @@ const AdminManagement: NextPageWithLayout = () => {
             <div className='flex-1 max-w-md'>
               <Input
                 type='text'
-                placeholder='Tìm kiếm theo tên, ID hoặc email...'
+                placeholder={t('search.placeholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className='w-full'
@@ -160,11 +162,11 @@ const AdminManagement: NextPageWithLayout = () => {
               value={filterRole}
               onChange={(e) => setFilterRole(e.target.value)}
             >
-              <option value='all'>Tất Cả Vai Trò</option>
-              <option value='support'>Hỗ Trợ</option>
-              <option value='moderator'>Điều Hành Viên</option>
-              <option value='admin'>Admin</option>
-              <option value='super_admin'>Siêu Admin</option>
+              <option value='all'>{t('filters.allRoles')}</option>
+              <option value='support'>{t('filters.support')}</option>
+              <option value='moderator'>{t('filters.moderator')}</option>
+              <option value='admin'>{t('filters.admin')}</option>
+              <option value='super_admin'>{t('filters.superAdmin')}</option>
             </select>
 
             <select
@@ -172,9 +174,9 @@ const AdminManagement: NextPageWithLayout = () => {
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
             >
-              <option value='all'>Tất Cả Trạng Thái</option>
-              <option value='active'>Hoạt động</option>
-              <option value='inactive'>Không hoạt động</option>
+              <option value='all'>{t('filters.allStatuses')}</option>
+              <option value='active'>{t('filters.active')}</option>
+              <option value='inactive'>{t('filters.inactive')}</option>
             </select>
 
             <select
@@ -182,14 +184,14 @@ const AdminManagement: NextPageWithLayout = () => {
               value={itemsPerPage}
               onChange={(e) => setItemsPerPage(Number(e.target.value))}
             >
-              <option value={10}>10 mỗi trang</option>
-              <option value={20}>20 mỗi trang</option>
-              <option value={50}>50 mỗi trang</option>
+              <option value={10}>10 {t('perPage')}</option>
+              <option value={20}>20 {t('perPage')}</option>
+              <option value={50}>50 {t('perPage')}</option>
             </select>
           </div>
 
           <Button className='bg-blue-600 hover:bg-blue-700 text-white'>
-            + Tạo Admin Mới
+            + {t('createNewAdmin')}
           </Button>
         </div>
 
