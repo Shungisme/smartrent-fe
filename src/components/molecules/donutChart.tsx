@@ -1,21 +1,25 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import { Card } from '@/components/atoms/card'
 
 type DonutChartProps = {
   data?: { label: string; value: number; color: string }[]
 }
 
-const DonutChart: React.FC<DonutChartProps> = ({
-  data = [
-    { label: 'Đã thanh toán', value: 124, color: '#22c55e' },
-    { label: 'Chưa thanh toán', value: 18, color: '#eab308' },
-    { label: 'Quá hạn', value: 7, color: '#ef4444' },
-  ],
-}) => {
-  const total = data.reduce((sum, item) => sum + item.value, 0)
+const DonutChart: React.FC<DonutChartProps> = ({ data }) => {
+  const t = useTranslations('admin.finance')
+
+  const defaultData = [
+    { label: t('invoice.status.paid'), value: 124, color: '#22c55e' },
+    { label: t('invoice.status.unpaid'), value: 18, color: '#eab308' },
+    { label: t('invoice.status.overdue'), value: 7, color: '#ef4444' },
+  ]
+
+  const chartData = data || defaultData
+  const total = chartData.reduce((sum, item) => sum + item.value, 0)
   let currentAngle = 0
 
-  const segments = data.map((item) => {
+  const segments = chartData.map((item) => {
     const percentage = (item.value / total) * 100
     const angle = (percentage / 100) * 360
     const startAngle = currentAngle
@@ -46,7 +50,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
   return (
     <Card className='p-6'>
       <h3 className='mb-4 text-lg font-semibold text-gray-900'>
-        Phân Bố Trạng Thái Hóa Đơn
+        {t('charts.donutChart.title')}
       </h3>
       <div className='flex items-center justify-between'>
         <svg className='h-48 w-48' viewBox='0 0 100 100'>
@@ -80,7 +84,7 @@ const DonutChart: React.FC<DonutChartProps> = ({
             className='text-xs'
             fill='#6b7280'
           >
-            Tổng
+            {t('charts.donutChart.total')}
           </text>
         </svg>
 

@@ -857,6 +857,136 @@
         }
       }
     },
+    "analytics": {
+      "title": "Phân Tích Ứng Dụng",
+      "subtitle": "Theo dõi hiệu suất nền tảng, sự tương tác của người dùng và các chỉ số kinh doanh",
+      "breadcrumb": {
+        "title": "Phân Tích Ứng Dụng"
+      },
+      "tabs": {
+        "overview": "Tổng Quan",
+        "users": "Người Dùng",
+        "posts": "Bài Đăng",
+        "revenue": "Doanh Thu",
+        "reports": "Báo Cáo"
+      },
+      "filters": {
+        "chartType": {
+          "label": "Loại biểu đồ",
+          "line": "Biểu đồ đường",
+          "bar": "Biểu đồ cột",
+          "area": "Biểu đồ khu vực"
+        },
+        "timeRange": {
+          "label": "Khoảng thời gian",
+          "today": "Hôm nay",
+          "week": "Tuần này",
+          "month": "Tháng qua"
+        }
+      },
+      "overview": {
+        "stats": {
+          "totalUsers": "Tổng Người Dùng",
+          "newInPeriod": "mới trong kỳ",
+          "totalPosts": "Tổng Tin Đăng",
+          "inPeriod": "trong kỳ",
+          "totalViews": "Tổng Lượt Xem",
+          "clicks": "lượt nhấp",
+          "revenue": "Doanh Thu",
+          "packagesSold": "gói đã bán"
+        },
+        "charts": {
+          "userGrowth": "Tăng Trưởng Người Dùng",
+          "postActivity": "Hoạt Động Bài Đăng",
+          "revenueOverTime": "Doanh Thu Theo Thời Gian",
+          "userTypeDistribution": "Phân Bố Loại Người Dùng",
+          "newUsers": "Người dùng mới",
+          "newPosts": "Bài đăng mới",
+          "unit": "Đơn vị: VNĐ"
+        },
+        "userTypes": {
+          "landlord": "Chủ Nhà",
+          "tenant": "Người Thuê"
+        },
+        "postStatus": {
+          "active": "Hoạt động",
+          "pending": "Chờ duyệt",
+          "rejected": "Bị từ chối"
+        },
+        "reportTypes": {
+          "spam": "Spam/Trùng lặp",
+          "inappropriate": "Nội dung không phù hợp",
+          "fake": "Tin đăng giả",
+          "pricing": "Vấn đề giá cả",
+          "other": "Khác"
+        }
+      },
+      "posts": {
+        "stats": {
+          "totalPosts": "Tổng Bài Đăng",
+          "pending": "Chờ Duyệt",
+          "totalViews": "Tổng Lượt Xem",
+          "clicks": "Lượt Nhấp",
+          "inThisPeriod": "trong kỳ này"
+        },
+        "charts": {
+          "postActivity": "Hoạt Động Bài Đăng",
+          "viewsAndClicks": "Lượt Xem & Lượt Nhấp",
+          "statusDistribution": "Phân Bố Trạng Thái Bài Đăng",
+          "newPosts": "Bài đăng mới",
+          "views": "Lượt xem",
+          "clicks": "Lượt nhấp"
+        }
+      },
+      "users": {
+        "stats": {
+          "totalUsers": "Tổng Người Dùng",
+          "landlords": "Chủ Nhà",
+          "tenants": "Người Thuê",
+          "ofTotal": "tổng số"
+        },
+        "charts": {
+          "userGrowthOverTime": "Tăng Trưởng Người Dùng Theo Thời Gian",
+          "userTypeDistribution": "Phân Bố Loại Người Dùng",
+          "newUsers": "Người dùng mới"
+        }
+      },
+      "revenue": {
+        "stats": {
+          "totalRevenue": "Tổng Doanh Thu",
+          "packagesSold": "Gói Thành Viên Đã Bán",
+          "avgPerDay": "Doanh Thu TB/Ngày",
+          "avgPerPackage": "Doanh Thu TB/Gói"
+        },
+        "charts": {
+          "revenueOverTime": "Doanh Thu Theo Thời Gian",
+          "unit": "Đơn vị: VNĐ"
+        },
+        "table": {
+          "title": "Phân Tích Doanh Thu Theo Gói",
+          "package": "Gói",
+          "revenue": "Doanh Thu",
+          "percentage": "Tỷ Lệ",
+          "purchases": "Lượt Mua",
+          "total": "Tổng"
+        }
+      },
+      "reports": {
+        "stats": {
+          "totalReports": "Tổng Báo Cáo",
+          "pending": "Chờ Xử Lý",
+          "resolved": "Đã Giải Quyết",
+          "avgResolutionTime": "Thời Gian Xử Lý TB",
+          "needsAction": "Cần xử lý",
+          "ofTotal": "tổng số"
+        },
+        "charts": {
+          "reportsOverTime": "Số Lượng Báo Cáo Theo Thời Gian",
+          "typeDistribution": "Phân Loại Báo Cáo Vi Phạm",
+          "reports": "Báo cáo"
+        }
+      }
+    },
     "admins": {
       "title": "Quản Lý Admin",
       "breadcrumb": {
@@ -905,6 +1035,62 @@
           "changeRole": "Thay đổi vai trò",
           "deactivate": "Vô hiệu hóa"
         }
+      }
+    },
+    "finance": {
+      "title": "Quản Lý Tài Chính",
+      "subtitle": "Theo dõi doanh thu, hóa đơn và các chỉ số tài chính của hệ thống",
+      "breadcrumb": {
+        "title": "Quản Lý Tài Chính"
+      },
+      "buttons": {
+        "createInvoice": "Tạo Hóa Đơn Mới",
+        "invoiceList": "Danh Sách Hóa Đơn",
+        "exportReport": "Xuất Báo Cáo",
+        "detailedAnalysis": "Phân Tích Chi Tiết",
+        "viewAll": "Xem tất cả"
+      },
+      "stats": {
+        "totalRevenue": "Tổng Doanh Thu",
+        "comparedToLastMonth": "so với tháng trước",
+        "paidInvoices": "Hóa Đơn Đã Thanh Toán",
+        "ofTotalInvoices": "tổng số hóa đơn",
+        "unpaidInvoices": "Hóa Đơn Chưa Thanh Toán",
+        "overdue": "quá hạn",
+        "avgInvoiceValue": "Giá Trị Trung Bình Hóa Đơn",
+        "basedOnInvoices": "Dựa trên 142 hóa đơn"
+      },
+      "sections": {
+        "quickAccess": "Truy Cập Nhanh",
+        "recentInvoices": "Hóa Đơn Gần Đây"
+      },
+      "charts": {
+        "revenueChart": {
+          "title": "Xu Hướng Doanh Thu",
+          "unit": "Đơn vị: Triệu ₫"
+        },
+        "donutChart": {
+          "title": "Phân Bố Trạng Thái Hóa Đơn",
+          "total": "Tổng"
+        },
+        "performanceChart": {
+          "title": "Hiệu Suất Hàng Tháng",
+          "revenue": "Doanh thu",
+          "avgValue": "Giá trị TB",
+          "revenueUnit": "Doanh thu: Triệu ₫",
+          "avgUnit": "Giá trị TB: Triệu ₫"
+        }
+      },
+      "invoice": {
+        "status": {
+          "paid": "Đã thanh toán",
+          "unpaid": "Chưa thanh toán",
+          "overdue": "Quá hạn"
+        },
+        "dueDate": "Đến hạn:"
+      },
+      "months": {
+        "short": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"]
       }
     }
   },

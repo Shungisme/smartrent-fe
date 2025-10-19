@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import StatsCard from '@/components/molecules/statsCard'
 import LineChartCard from '@/components/molecules/lineChartCard'
 import PieChartCard from '@/components/molecules/pieChartCard'
@@ -15,6 +16,8 @@ type ReportsTabProps = {
 }
 
 const ReportsTab: React.FC<ReportsTabProps> = ({ timeRange }) => {
+  const t = useTranslations('admin.analytics.reports')
+  const tOverview = useTranslations('admin.analytics.overview')
   // Filter data based on time range
   const filterData = <T extends { date: string }>(data: T[]): T[] => {
     switch (timeRange) {
@@ -30,32 +33,50 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ timeRange }) => {
 
   const filteredReportsData = filterData(reportsOverTimeData)
 
+  // Translate report type distribution labels
+  const translatedReportTypeDistribution = reportTypeDistribution.map(
+    (item) => {
+      let translatedLabel = item.label
+      if (item.label === 'Spam/Trùng lặp')
+        translatedLabel = tOverview('reportTypes.spam')
+      else if (item.label === 'Nội dung không phù hợp')
+        translatedLabel = tOverview('reportTypes.inappropriate')
+      else if (item.label === 'Tin đăng giả')
+        translatedLabel = tOverview('reportTypes.fake')
+      else if (item.label === 'Vấn đề giá cả')
+        translatedLabel = tOverview('reportTypes.pricing')
+      else if (item.label === 'Khác')
+        translatedLabel = tOverview('reportTypes.other')
+      return { ...item, label: translatedLabel }
+    },
+  )
+
   return (
     <div className='space-y-6'>
       {/* Stats Cards */}
       <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
         <StatsCard
-          title='Tổng Báo Cáo'
+          title={t('stats.totalReports')}
           value={reportStats.totalReports.toString()}
           icon={<AlertTriangle className='h-5 w-5' />}
         />
         <StatsCard
-          title='Chờ Xử Lý'
+          title={t('stats.pending')}
           value={reportStats.pendingReports.toString()}
           badge={{
-            text: 'Cần xử lý',
+            text: t('stats.needsAction'),
             variant: 'warning',
           }}
           icon={<Clock className='h-5 w-5' />}
         />
         <StatsCard
-          title='Đã Giải Quyết'
+          title={t('stats.resolved')}
           value={reportStats.resolvedReports.toString()}
-          subtitle={`${reportStats.resolvedPercentage}% tổng số`}
+          subtitle={`${reportStats.resolvedPercentage}% ${t('stats.ofTotal')}`}
           icon={<CheckCircle className='h-5 w-5' />}
         />
         <StatsCard
-          title='Thời Gian Xử Lý TB'
+          title={t('stats.avgResolutionTime')}
           value={`${reportStats.avgResolutionTime}h`}
           icon={<Timer className='h-5 w-5' />}
         />
@@ -65,12 +86,12 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ timeRange }) => {
       <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
         {/* Reports Over Time Chart */}
         <LineChartCard
-          title='Số Lượng Báo Cáo Theo Thời Gian'
+          title={t('charts.reportsOverTime')}
           datasets={[
             {
               data: filteredReportsData.map((d) => d.reports),
               color: '#F97316',
-              label: 'Báo cáo',
+              label: t('charts.reports'),
             },
           ]}
           labels={filteredReportsData.map((d) => d.date)}
@@ -80,8 +101,8 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ timeRange }) => {
 
         {/* Report Type Distribution */}
         <PieChartCard
-          title='Phân Loại Báo Cáo Vi Phạm'
-          data={reportTypeDistribution}
+          title={t('charts.typeDistribution')}
+          data={translatedReportTypeDistribution}
           showPercentage={true}
           height='h-80'
         />

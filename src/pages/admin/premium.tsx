@@ -303,9 +303,8 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
   }
 
   const breadcrumbItems = [
-    { label: t('breadcrumb.menu') },
-    { label: t('breadcrumb.title') },
-    { label: t('breadcrumb.overview') },
+    { label: 'Admin Dashboard', href: '/admin' },
+    { label: t('breadcrumb.title') }, // Current page
   ]
 
   // Calculate overview stats
@@ -337,17 +336,25 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className='grid w-full grid-cols-5'>
-            <TabsTrigger value='overview'>{t('tabs.overview')}</TabsTrigger>
-            <TabsTrigger value='membership'>{t('tabs.membership')}</TabsTrigger>
-            <TabsTrigger value='promotions'>{t('tabs.promotions')}</TabsTrigger>
-            <TabsTrigger value='listing-types'>
-              {t('tabs.listingTypes')}
-            </TabsTrigger>
-            <TabsTrigger value='post-boosts'>
-              {t('tabs.postBoosts')}
-            </TabsTrigger>
-          </TabsList>
+          <div className='overflow-x-auto'>
+            <TabsList className='inline-flex w-auto min-w-full'>
+              <TabsTrigger value='overview' className='flex-shrink-0'>
+                {t('tabs.overview')}
+              </TabsTrigger>
+              <TabsTrigger value='membership' className='flex-shrink-0'>
+                {t('tabs.membership')}
+              </TabsTrigger>
+              <TabsTrigger value='promotions' className='flex-shrink-0'>
+                {t('tabs.promotions')}
+              </TabsTrigger>
+              <TabsTrigger value='listing-types' className='flex-shrink-0'>
+                {t('tabs.listingTypes')}
+              </TabsTrigger>
+              <TabsTrigger value='post-boosts' className='flex-shrink-0'>
+                {t('tabs.postBoosts')}
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Tab 1: Overview */}
           <TabsContent value='overview' className='space-y-6'>
@@ -537,12 +544,12 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
 
           {/* Tab 2: Membership */}
           <TabsContent value='membership' className='space-y-6'>
-            <div className='flex justify-between items-center'>
+            <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3'>
               <p className='text-sm text-gray-500'>
                 {t('membership.description')}
               </p>
               <Button
-                className='bg-blue-600 hover:bg-blue-700'
+                className='bg-blue-600 hover:bg-blue-700 w-full sm:w-auto'
                 onClick={() => setMembershipModalOpen(true)}
               >
                 <Plus className='h-4 w-4 mr-2' />
@@ -552,7 +559,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
 
             <Card className='overflow-hidden'>
               <div className='overflow-x-auto'>
-                <table className='w-full'>
+                <table className='w-full min-w-[800px]'>
                   <thead className='bg-gray-50 border-b border-gray-200'>
                     <tr>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
@@ -672,12 +679,12 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
 
           {/* Tab 3: Promotions */}
           <TabsContent value='promotions' className='space-y-6'>
-            <div className='flex justify-between items-center'>
+            <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3'>
               <p className='text-sm text-gray-500'>
                 {t('promotions.description')}
               </p>
               <Button
-                className='bg-green-600 hover:bg-green-700'
+                className='bg-green-600 hover:bg-green-700 w-full sm:w-auto'
                 onClick={() => setPromoModalOpen(true)}
               >
                 <Plus className='h-4 w-4 mr-2' />
@@ -687,7 +694,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
 
             <Card className='overflow-hidden'>
               <div className='overflow-x-auto'>
-                <table className='w-full'>
+                <table className='w-full min-w-[900px]'>
                   <thead className='bg-gray-50 border-b border-gray-200'>
                     <tr>
                       <th className='px-6 py-4 text-left text-sm font-semibold text-gray-700'>
@@ -912,12 +919,12 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
 
           {/* Tab 5: Post Boosts */}
           <TabsContent value='post-boosts' className='space-y-6'>
-            <div className='flex justify-between items-center'>
+            <div className='flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3'>
               <p className='text-sm text-gray-500'>
                 {t('postBoosts.description')}
               </p>
               <Button
-                className='bg-orange-600 hover:bg-orange-700'
+                className='bg-orange-600 hover:bg-orange-700 w-full sm:w-auto'
                 onClick={() => setBoostModalOpen(true)}
               >
                 <Plus className='h-4 w-4 mr-2' />

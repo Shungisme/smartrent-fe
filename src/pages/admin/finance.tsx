@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
 import StatsCard from '@/components/molecules/statsCard'
@@ -61,19 +62,28 @@ const recentInvoices: InvoiceData[] = [
 ]
 
 const FinancialManagement: NextPageWithLayout = () => {
+  const t = useTranslations('admin.finance')
   const [dateRange, setDateRange] = useState('01/10/2025 - 31/10/2025')
 
   const breadcrumbItems = [
-    { label: 'Thực Đơn Điều Hướng' },
-    { label: 'Quản Lý Tài Chính' },
-    { label: 'Tổng Quan' },
+    { label: 'Admin Dashboard', href: '/admin' },
+    { label: t('breadcrumb.title') },
   ]
 
   const quickAccessButtons = [
-    { icon: <FileText className='h-5 w-5' />, label: 'Danh Sách Hóa Đơn' },
-    { icon: <FilePlus className='h-5 w-5' />, label: 'Tạo Hóa Đơn Mới' },
-    { icon: <Download className='h-5 w-5' />, label: 'Xuất Báo Cáo' },
-    { icon: <BarChart3 className='h-5 w-5' />, label: 'Phân Tích Chi Tiết' },
+    { icon: <FileText className='h-5 w-5' />, label: t('buttons.invoiceList') },
+    {
+      icon: <FilePlus className='h-5 w-5' />,
+      label: t('buttons.createInvoice'),
+    },
+    {
+      icon: <Download className='h-5 w-5' />,
+      label: t('buttons.exportReport'),
+    },
+    {
+      icon: <BarChart3 className='h-5 w-5' />,
+      label: t('buttons.detailedAnalysis'),
+    },
   ]
 
   return (
@@ -82,29 +92,27 @@ const FinancialManagement: NextPageWithLayout = () => {
 
       <div className='space-y-6'>
         {/* Header Section */}
-        <div className='flex items-start justify-between'>
+        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4'>
           <div>
-            <h1 className='text-3xl font-bold text-gray-900'>
-              Quản Lý Tài Chính
+            <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
+              {t('title')}
             </h1>
-            <p className='mt-1 text-sm text-gray-600'>
-              Theo dõi doanh thu, hóa đơn và các chỉ số tài chính của hệ thống
-            </p>
+            <p className='mt-1 text-sm text-gray-600'>{t('subtitle')}</p>
           </div>
 
-          <div className='flex items-center gap-3'>
+          <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto'>
             <div className='relative'>
               <Calendar className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400' />
               <Input
                 type='text'
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                className='w-64 pl-10'
+                className='w-full sm:w-64 pl-10'
               />
             </div>
-            <Button className='bg-blue-600 hover:bg-blue-700 text-white'>
+            <Button className='bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto'>
               <FilePlus className='mr-2 h-4 w-4' />
-              Tạo Hóa Đơn Mới
+              {t('buttons.createInvoice')}
             </Button>
           </div>
         </div>
@@ -112,30 +120,33 @@ const FinancialManagement: NextPageWithLayout = () => {
         {/* Stats Cards */}
         <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
           <StatsCard
-            title='Tổng Doanh Thu'
+            title={t('stats.totalRevenue')}
             value='2.8B ₫'
-            trend={{ value: '+15.2% so với tháng trước', isPositive: true }}
+            trend={{
+              value: `+15.2% ${t('stats.comparedToLastMonth')}`,
+              isPositive: true,
+            }}
             icon={<DollarSign className='h-6 w-6' />}
           />
 
           <StatsCard
-            title='Hóa Đơn Đã Thanh Toán'
+            title={t('stats.paidInvoices')}
             value='124'
-            subtitle='87% tổng số hóa đơn'
+            subtitle={`87% ${t('stats.ofTotalInvoices')}`}
             icon={<FileCheck className='h-6 w-6' />}
           />
 
           <StatsCard
-            title='Hóa Đơn Chưa Thanh Toán'
+            title={t('stats.unpaidInvoices')}
             value='18'
-            badge={{ text: '7 quá hạn', variant: 'danger' }}
+            badge={{ text: `7 ${t('stats.overdue')}`, variant: 'danger' }}
             icon={<AlertCircle className='h-6 w-6' />}
           />
 
           <StatsCard
-            title='Giá Trị Trung Bình Hóa Đơn'
+            title={t('stats.avgInvoiceValue')}
             value='18.5M ₫'
-            subtitle='Dựa trên 142 hóa đơn'
+            subtitle={t('stats.basedOnInvoices')}
             icon={<TrendingUp className='h-6 w-6' />}
           />
         </div>
@@ -151,7 +162,7 @@ const FinancialManagement: NextPageWithLayout = () => {
           {/* Quick Access */}
           <div className='rounded-2xl border border-gray-200 bg-white p-6'>
             <h3 className='mb-4 text-lg font-semibold text-gray-900'>
-              Truy Cập Nhanh
+              {t('sections.quickAccess')}
             </h3>
             <div className='space-y-2'>
               {quickAccessButtons.map((button, index) => (
@@ -171,10 +182,10 @@ const FinancialManagement: NextPageWithLayout = () => {
           <div className='lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-6'>
             <div className='mb-4 flex items-center justify-between'>
               <h3 className='text-lg font-semibold text-gray-900'>
-                Hóa Đơn Gần Đây
+                {t('sections.recentInvoices')}
               </h3>
               <Button variant='ghost' size='sm'>
-                Xem tất cả
+                {t('buttons.viewAll')}
               </Button>
             </div>
             <div className='space-y-3'>

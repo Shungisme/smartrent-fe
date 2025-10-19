@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import { Badge } from '@/components/atoms/badge'
 import { cn } from '@/lib/utils'
 
@@ -26,16 +27,12 @@ const getStatusColor = (status: InvoiceStatus): string => {
   return colors[status]
 }
 
-const getStatusLabel = (status: InvoiceStatus): string => {
-  const labels: Record<InvoiceStatus, string> = {
-    paid: 'Đã thanh toán',
-    unpaid: 'Chưa thanh toán',
-    overdue: 'Quá hạn',
-  }
-  return labels[status]
-}
-
 const InvoiceCard: React.FC<InvoiceCardProps> = ({ invoice, className }) => {
+  const t = useTranslations('admin.finance.invoice')
+
+  const getStatusLabel = (status: InvoiceStatus): string => {
+    return t(`status.${status}`)
+  }
   return (
     <div
       className={cn(
@@ -59,7 +56,7 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({ invoice, className }) => {
           {invoice.customerName}
         </p>
         <p className='mt-0.5 text-xs text-gray-500'>
-          Đến hạn: {invoice.dueDate}
+          {t('dueDate')} {invoice.dueDate}
         </p>
       </div>
       <div className='text-right'>

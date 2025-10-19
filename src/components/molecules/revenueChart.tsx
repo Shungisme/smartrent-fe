@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations, useLocale } from 'next-intl'
 import { Card } from '@/components/atoms/card'
 
 type RevenueChartProps = {
@@ -8,21 +9,45 @@ type RevenueChartProps = {
 
 const RevenueChart: React.FC<RevenueChartProps> = ({
   data = [250, 310, 280, 420, 380, 450, 520, 480, 550, 600, 580, 650],
-  labels = [
-    'T1',
-    'T2',
-    'T3',
-    'T4',
-    'T5',
-    'T6',
-    'T7',
-    'T8',
-    'T9',
-    'T10',
-    'T11',
-    'T12',
-  ],
+  labels,
 }) => {
+  const t = useTranslations('admin.finance')
+  const locale = useLocale()
+
+  // Default month labels based on locale
+  const defaultMonthLabels =
+    locale === 'en'
+      ? [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ]
+      : [
+          'T1',
+          'T2',
+          'T3',
+          'T4',
+          'T5',
+          'T6',
+          'T7',
+          'T8',
+          'T9',
+          'T10',
+          'T11',
+          'T12',
+        ]
+
+  const monthLabels = labels || defaultMonthLabels
+
   const maxValue = Math.max(...data)
   const points = data
     .map((value, index) => {
@@ -35,7 +60,7 @@ const RevenueChart: React.FC<RevenueChartProps> = ({
   return (
     <Card className='p-6'>
       <h3 className='mb-4 text-lg font-semibold text-gray-900'>
-        Xu Hướng Doanh Thu
+        {t('charts.revenueChart.title')}
       </h3>
       <div className='relative h-64'>
         <svg
@@ -83,14 +108,16 @@ const RevenueChart: React.FC<RevenueChartProps> = ({
 
         {/* X-axis labels */}
         <div className='mt-2 flex justify-between px-1'>
-          {labels.map((label, index) => (
+          {monthLabels.map((label, index) => (
             <span key={index} className='text-xs text-gray-500'>
               {label}
             </span>
           ))}
         </div>
       </div>
-      <div className='mt-4 text-sm text-gray-600'>Đơn vị: Triệu ₫</div>
+      <div className='mt-4 text-sm text-gray-600'>
+        {t('charts.revenueChart.unit')}
+      </div>
     </Card>
   )
 }

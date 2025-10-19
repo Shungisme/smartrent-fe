@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import { Card } from '@/components/atoms/card'
 import StatsCard from '@/components/molecules/statsCard'
 import AreaChartCard from '@/components/molecules/areaChartCard'
@@ -18,6 +19,7 @@ type RevenueTabAnalyticsProps = {
 const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
   timeRange,
 }) => {
+  const t = useTranslations('admin.analytics.revenue')
   // Filter data based on time range
   const filterData = <T extends { date: string }>(data: T[]): T[] => {
     switch (timeRange) {
@@ -44,22 +46,22 @@ const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
       {/* Stats Cards */}
       <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
         <StatsCard
-          title='Tổng Doanh Thu'
+          title={t('stats.totalRevenue')}
           value={formatCurrency(totalRevenue)}
           icon={<DollarSign className='h-5 w-5' />}
         />
         <StatsCard
-          title='Gói Thành Viên Đã Bán'
+          title={t('stats.packagesSold')}
           value={estimatedPackagesSold.toString()}
           icon={<Package className='h-5 w-5' />}
         />
         <StatsCard
-          title='Doanh Thu TB/Ngày'
+          title={t('stats.avgPerDay')}
           value={formatCurrency(avgRevenuePerDay)}
           icon={<TrendingUp className='h-5 w-5' />}
         />
         <StatsCard
-          title='Doanh Thu TB/Gói'
+          title={t('stats.avgPerPackage')}
           value={formatCurrency(revenueStats.avgRevenuePerPackage)}
           icon={<Award className='h-5 w-5' />}
         />
@@ -67,34 +69,34 @@ const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
 
       {/* Revenue Chart */}
       <AreaChartCard
-        title='Doanh Thu Theo Thời Gian'
+        title={t('charts.revenueOverTime')}
         data={filteredRevenueData.map((d) => d.revenue)}
         labels={filteredRevenueData.map((d) => d.date)}
         color='#6366F1'
         height='h-80'
-        unit='Đơn vị: VNĐ'
+        unit={t('charts.unit')}
       />
 
       {/* Revenue Breakdown Table */}
       <Card className='p-6'>
         <h3 className='mb-4 text-lg font-semibold text-gray-900'>
-          Phân Tích Doanh Thu Theo Gói
+          {t('table.title')}
         </h3>
         <div className='overflow-x-auto'>
           <table className='w-full'>
             <thead>
               <tr className='border-b border-gray-200'>
                 <th className='pb-3 text-left text-sm font-semibold text-gray-700'>
-                  Gói
+                  {t('table.package')}
                 </th>
                 <th className='pb-3 text-right text-sm font-semibold text-gray-700'>
-                  Doanh Thu
+                  {t('table.revenue')}
                 </th>
                 <th className='pb-3 text-right text-sm font-semibold text-gray-700'>
-                  Tỷ Lệ
+                  {t('table.percentage')}
                 </th>
                 <th className='pb-3 text-right text-sm font-semibold text-gray-700'>
-                  Lượt Mua
+                  {t('table.purchases')}
                 </th>
               </tr>
             </thead>
@@ -126,7 +128,9 @@ const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
             </tbody>
             <tfoot className='border-t-2 border-gray-300'>
               <tr>
-                <td className='pt-4 font-semibold text-gray-900'>Tổng</td>
+                <td className='pt-4 font-semibold text-gray-900'>
+                  {t('table.total')}
+                </td>
                 <td className='pt-4 text-right font-semibold text-gray-900'>
                   {formatCurrency(
                     revenueByPackage.reduce((sum, pkg) => sum + pkg.revenue, 0),
