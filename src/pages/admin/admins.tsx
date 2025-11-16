@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
 import {
@@ -15,9 +15,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/atoms/dropdown-menu'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/atoms/dialog'
+import { Input } from '@/components/atoms/input'
+import { Label } from '@/components/atoms/label'
 import { cn } from '@/lib/utils'
 import type { NextPageWithLayout } from '@/types/next-page'
 import { useTranslations } from 'next-intl'
+import { getRoles } from '@/api/services/role.service'
+import { createAdmin } from '@/api/services/admin.service'
+import { Role } from '@/api/types/role.type'
 
 type AdminRole = 'support' | 'moderator' | 'admin' | 'super_admin'
 type AdminStatus = 'active' | 'inactive'
@@ -99,6 +110,73 @@ const getRoleBadgeClass = (role: AdminRole): string => {
 
 const AdminManagement: NextPageWithLayout = () => {
   const t = useTranslations('admin.admins')
+
+  // State for roles
+  const [roles, setRoles] = useState<Role[]>([])
+  const [rolesLoading, setRolesLoading] = useState(true)
+
+  // State for create admin dialog
+  const [createDialogOpen, setCreateDialogOpen] = useState(false)
+  const [creating, setCreating] = useState(false)
+  const [formData, setFormData] = useState({
+    phoneCode: '+84',
+    phoneNumber: '',
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    roles: [] as string[],
+  })
+
+  // Fetch roles on mount
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const response = await getRoles()
+        if (response.success) {
+          setRoles(response.data)
+        }
+      } catch (error) {
+        console.error('Failed to fetch roles:', error)
+      } finally {
+        setRolesLoading(false)
+      }
+    }
+    fetchRoles()
+  }, [])
+
+  // Handle create admin
+  const handleCreateAdmin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setCreating(true)
+
+    try {
+      const response = await createAdmin(formData)
+      if (response.success) {
+        alert(
+          `Admin created successfully!\nTemporary Password: ${response.data.password}\n\nPlease save this password securely.`,
+        )
+        setCreateDialogOpen(false)
+        setFormData({
+          phoneCode: '+84',
+          phoneNumber: '',
+          email: '',
+          password: '',
+          firstName: '',
+          lastName: '',
+          roles: [],
+        })
+        // Refresh page to show new admin (in production, you would refetch the list)
+        window.location.reload()
+      } else {
+        alert(`Error: ${response.message}`)
+      }
+    } catch (error: any) {
+      alert(`Failed to create admin: ${error.message}`)
+    } finally {
+      setCreating(false)
+    }
+  }
 
   const breadcrumbItems = [
     { label: 'Admin Dashboard', href: '/admin' },
@@ -219,7 +297,10 @@ const AdminManagement: NextPageWithLayout = () => {
       <div className='space-y-6'>
         {/* Header with Create Button */}
         <div className='flex items-center justify-end'>
-          <Button className='bg-blue-600 hover:bg-blue-700 text-white'>
+          <Button
+            className='bg-blue-600 hover:bg-blue-700 text-white'
+            onClick={() => setCreateDialogOpen(true)}
+          >
             + {t('createNewAdmin')}
           </Button>
         </div>
@@ -259,6 +340,149 @@ const AdminManagement: NextPageWithLayout = () => {
           emptyMessage='No admins found'
           getRowKey={(row) => row.id}
         />
+
+        {/* Create Admin Dialog */}
+        <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+          <DialogContent className='max-w-md'>
+            <DialogHeader>
+              <DialogTitle>Create New Admin</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={handleCreateAdmin} className='space-y-4'>
+              <div>
+                <Label htmlFor='firstName'>First Name *</Label>
+                <Input
+                  id='firstName'
+                  value={formData.firstName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, firstName: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor='lastName'>Last Name *</Label>
+                <Input
+                  id='lastName'
+                  value={formData.lastName}
+                  onChange={(e) =>
+                    setFormData({ ...formData, lastName: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              <div>
+                <Label htmlFor='email'>Email *</Label>
+                <Input
+                  id='email'
+                  type='email'
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              <div className='grid grid-cols-3 gap-2'>
+                <div>
+                  <Label htmlFor='phoneCode'>Code *</Label>
+                  <Input
+                    id='phoneCode'
+                    value={formData.phoneCode}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phoneCode: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className='col-span-2'>
+                  <Label htmlFor='phoneNumber'>Phone Number *</Label>
+                  <Input
+                    id='phoneNumber'
+                    value={formData.phoneNumber}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phoneNumber: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor='password'>Password *</Label>
+                <Input
+                  id='password'
+                  type='password'
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  required
+                  minLength={8}
+                />
+              </div>
+
+              <div>
+                <Label>Roles * (Select at least one)</Label>
+                {rolesLoading ? (
+                  <p className='text-sm text-gray-500'>Loading roles...</p>
+                ) : (
+                  <div className='space-y-2 mt-2'>
+                    {roles.map((role) => (
+                      <label
+                        key={role.roleId}
+                        className='flex items-center gap-2'
+                      >
+                        <input
+                          type='checkbox'
+                          checked={formData.roles.includes(role.roleId)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setFormData({
+                                ...formData,
+                                roles: [...formData.roles, role.roleId],
+                              })
+                            } else {
+                              setFormData({
+                                ...formData,
+                                roles: formData.roles.filter(
+                                  (r) => r !== role.roleId,
+                                ),
+                              })
+                            }
+                          }}
+                          className='rounded border-gray-300'
+                        />
+                        <span className='text-sm'>{role.roleName}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className='flex gap-3 pt-4'>
+                <Button
+                  type='button'
+                  variant='outline'
+                  onClick={() => setCreateDialogOpen(false)}
+                  disabled={creating}
+                  className='flex-1'
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type='submit'
+                  disabled={creating || formData.roles.length === 0}
+                  className='flex-1 bg-blue-600 hover:bg-blue-700'
+                >
+                  {creating ? 'Creating...' : 'Create Admin'}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )

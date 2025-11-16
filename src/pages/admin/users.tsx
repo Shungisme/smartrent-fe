@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
 import {
@@ -11,6 +11,8 @@ import { Badge } from '@/components/atoms/badge'
 import { cn } from '@/lib/utils'
 import type { NextPageWithLayout } from '@/types/next-page'
 import { useTranslations } from 'next-intl'
+import { getUserList } from '@/api/services/user.service'
+import { UserProfile } from '@/api/types/user.type'
 
 type UserData = {
   id: string
@@ -23,137 +25,64 @@ type UserData = {
   status: 'normal' | 'banned'
 }
 
-// Mock data for 12 users matching the requirements
-const mockUsers: UserData[] = [
-  {
-    id: '001',
-    name: 'Nguyễn Văn An',
-    avatar: '/images/default-image.jpg',
-    type: 'landlord',
-    joinDate: '15/03/2024',
-    lastOnline: '28/03/2024',
-    posts: 3,
-    status: 'normal',
-  },
-  {
-    id: '002',
-    name: 'Trần Thị Bình',
-    avatar: '/images/default-image.jpg',
-    type: 'tenant',
-    joinDate: '20/03/2024',
-    lastOnline: '27/03/2024',
-    posts: null,
-    status: 'normal',
-  },
-  {
-    id: '003',
-    name: 'Lê Hoàng Cường',
-    avatar: '/images/default-image.jpg',
-    type: 'landlord',
-    joinDate: '10/03/2024',
-    lastOnline: '29/03/2024',
-    posts: 7,
-    status: 'normal',
-  },
-  {
-    id: '004',
-    name: 'Phạm Mai Dung',
-    avatar: '/images/default-image.jpg',
-    type: 'tenant',
-    joinDate: '25/02/2024',
-    lastOnline: '26/03/2024',
-    posts: null,
-    status: 'banned',
-  },
-  {
-    id: '005',
-    name: 'Hoàng Minh Đức',
-    avatar: '/images/default-image.jpg',
-    type: 'landlord',
-    joinDate: '05/03/2024',
-    lastOnline: '28/03/2024',
-    posts: 2,
-    status: 'normal',
-  },
-  {
-    id: '006',
-    name: 'Vũ Thị Giang',
-    avatar: '/images/default-image.jpg',
-    type: 'tenant',
-    joinDate: '18/03/2024',
-    lastOnline: '29/03/2024',
-    posts: null,
-    status: 'normal',
-  },
-  {
-    id: '007',
-    name: 'Đỗ Văn Hải',
-    avatar: '/images/default-image.jpg',
-    type: 'landlord',
-    joinDate: '12/03/2024',
-    lastOnline: '27/03/2024',
-    posts: 5,
-    status: 'normal',
-  },
-  {
-    id: '008',
-    name: 'Ngô Thị Lan',
-    avatar: '/images/default-image.jpg',
-    type: 'tenant',
-    joinDate: '22/03/2024',
-    lastOnline: '28/03/2024',
-    posts: null,
-    status: 'normal',
-  },
-  {
-    id: '009',
-    name: 'Bùi Quang Minh',
-    avatar: '/images/default-image.jpg',
-    type: 'landlord',
-    joinDate: '08/03/2024',
-    lastOnline: '25/03/2024',
-    posts: 1,
-    status: 'banned',
-  },
-  {
-    id: '010',
-    name: 'Lương Thị Oanh',
-    avatar: '/images/default-image.jpg',
-    type: 'tenant',
-    joinDate: '28/02/2024',
-    lastOnline: '29/03/2024',
-    posts: null,
-    status: 'normal',
-  },
-  {
-    id: '011',
-    name: 'Trịnh Văn Phúc',
-    avatar: '/images/default-image.jpg',
-    type: 'landlord',
-    joinDate: '14/03/2024',
-    lastOnline: '26/03/2024',
-    posts: 4,
-    status: 'normal',
-  },
-  {
-    id: '012',
-    name: 'Cao Thị Quỳnh',
-    avatar: '/images/default-image.jpg',
-    type: 'tenant',
-    joinDate: '16/03/2024',
-    lastOnline: '28/03/2024',
-    posts: null,
-    status: 'normal',
-  },
-]
-
 const UserManagement: NextPageWithLayout = () => {
   const t = useTranslations('admin.users')
+
+  // State for API data
+  const [users, setUsers] = useState<UserProfile[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [currentPage, setCurrentPage] = useState(0)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [totalPages, setTotalPages] = useState(0)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [pageSize, setPageSize] = useState(10)
+
+  // Fetch users from API
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        // API uses 1-indexed pages, frontend uses 0-indexed
+        const response = await getUserList(currentPage + 1, pageSize)
+        if (response.success && response.data) {
+          setUsers(response.data.data)
+          setTotalPages(response.data.totalPages)
+        } else {
+          setError(response.message || 'Failed to load users')
+        }
+      } catch (err: any) {
+        setError(err.message || 'An error occurred while loading users')
+        console.error('Error fetching users:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUsers()
+  }, [currentPage, pageSize])
 
   const breadcrumbItems = [
     { label: 'Admin Dashboard', href: '/admin' },
     { label: t('breadcrumb.dashboard') }, // Current page
   ]
+
+  // Transform API data to match UI format
+  const transformedUsers: UserData[] = users.map((user) => ({
+    id: user.userId,
+    name: `${user.firstName} ${user.lastName}`,
+    avatar: undefined, // API doesn't return avatar yet
+    type: 'tenant', // API doesn't specify type yet, default to tenant
+    joinDate: new Date(user.userId).toLocaleDateString('vi-VN'), // Temporary until API provides join date
+    lastOnline: new Date().toLocaleDateString('vi-VN'), // Temporary until API provides last online
+    posts: null, // API doesn't return posts count yet
+    status: 'normal', // API doesn't return status yet, default to normal
+  }))
 
   // Define columns for DataTable
   const columns: Column<UserData>[] = [
@@ -274,6 +203,41 @@ const UserManagement: NextPageWithLayout = () => {
     },
   ]
 
+  // Show loading state
+  if (loading && users.length === 0) {
+    return (
+      <div>
+        <Breadcrumb items={breadcrumbItems} />
+        <div className='flex items-center justify-center py-12'>
+          <div className='text-center'>
+            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto'></div>
+            <p className='mt-4 text-gray-600'>Loading users...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div>
+        <Breadcrumb items={breadcrumbItems} />
+        <div className='flex items-center justify-center py-12'>
+          <div className='text-center'>
+            <p className='text-red-600 mb-4'>{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <Breadcrumb items={breadcrumbItems} />
@@ -281,16 +245,16 @@ const UserManagement: NextPageWithLayout = () => {
       <div className='space-y-6'>
         {/* DataTable Component */}
         <DataTable
-          data={mockUsers}
+          data={transformedUsers}
           columns={columns}
           filters={filters}
           filterMode='frontend'
           pagination
-          itemsPerPage={10}
-          itemsPerPageOptions={[5, 10, 20]}
+          itemsPerPage={pageSize}
+          itemsPerPageOptions={[5, 10, 20, 50]}
           sortable
           defaultSort={{ key: 'joinDate', direction: 'desc' }}
-          emptyMessage='No users found'
+          emptyMessage={loading ? 'Loading users...' : 'No users found'}
           getRowKey={(row) => row.id}
         />
       </div>
