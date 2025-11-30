@@ -11,8 +11,17 @@ import { Badge } from '@/components/atoms/badge'
 import { cn } from '@/lib/utils'
 import type { NextPageWithLayout } from '@/types/next-page'
 import { useTranslations } from 'next-intl'
-import { getUserList } from '@/api/services/user.service'
-import { UserProfile } from '@/api/types/user.type'
+import {
+  getUserList,
+  updateUser,
+  deleteUser,
+  createUser,
+} from '@/api/services/user.service'
+import {
+  UserProfile,
+  UserUpdateRequest,
+  CreateUserRequest,
+} from '@/api/types/user.type'
 
 type UserData = {
   id: string
@@ -26,7 +35,23 @@ type UserData = {
 }
 
 const UserManagement: NextPageWithLayout = () => {
+  // Edit/Delete modal state
+  const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
+  const [editForm, setEditForm] = useState<Partial<UserUpdateRequest>>({})
+  const [editLoading, setEditLoading] = useState(false)
+  const [editError, setEditError] = useState<string | null>(null)
+  const [showDelete, setShowDelete] = useState<UserProfile | null>(null)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const t = useTranslations('admin.users')
+
+  // Create user modal state
+  const [showCreate, setShowCreate] = useState(false)
+  const [createForm, setCreateForm] = useState<
+    Partial<CreateUserRequest & { password: string }>
+  >({})
+  const [createLoading, setCreateLoading] = useState(false)
+  const [createError, setCreateError] = useState<string | null>(null)
 
   // State for API data
   const [users, setUsers] = useState<UserProfile[]>([])
@@ -182,6 +207,45 @@ const UserManagement: NextPageWithLayout = () => {
         </Badge>
       ),
     },
+    {
+      id: 'actions',
+      header: t('table.headers.actions') || 'Actions',
+      accessor: () => '',
+      render: (_, row) => (
+        <div className='flex gap-2'>
+          <button
+            className='px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200'
+            onClick={() => {
+              const user = users.find((u) => u.userId === row.id)
+              if (user) {
+                setEditingUser(user)
+                setEditForm({
+                  email: user.email,
+                  firstName: user.firstName,
+                  lastName: user.lastName,
+                  idDocument: user.idDocument,
+                  taxNumber: user.taxNumber,
+                  contactPhoneNumber: user.contactPhoneNumber,
+                  isVerified: (user as any).isVerified ?? false,
+                })
+                setEditError(null)
+              }
+            }}
+          >
+            {t('table.actions.edit') || 'Edit'}
+          </button>
+          <button
+            className='px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200'
+            onClick={() => {
+              const user = users.find((u) => u.userId === row.id)
+              if (user) setShowDelete(user)
+            }}
+          >
+            {t('table.actions.delete') || 'Delete'}
+          </button>
+        </div>
+      ),
+    },
   ]
 
   // Define filters for DataTable
@@ -243,6 +307,18 @@ const UserManagement: NextPageWithLayout = () => {
       <Breadcrumb items={breadcrumbItems} />
 
       <div className='space-y-6'>
+        <div className='flex justify-end'>
+          <button
+            className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 mb-2'
+            onClick={() => {
+              setShowCreate(true)
+              setCreateForm({})
+              setCreateError(null)
+            }}
+          >
+            + {t('create.button') || 'Create User'}
+          </button>
+        </div>
         {/* DataTable Component */}
         <DataTable
           data={transformedUsers}
@@ -258,6 +334,322 @@ const UserManagement: NextPageWithLayout = () => {
           getRowKey={(row) => row.id}
         />
       </div>
+
+      {/* Create User Modal */}
+      {showCreate && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center'>
+          <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-md'>
+            <h2 className='text-lg font-semibold mb-4'>
+              {t('create.title') || 'Create User'}
+            </h2>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault()
+                setCreateLoading(true)
+                setCreateError(null)
+                try {
+                  const resp = await createUser(createForm as CreateUserRequest)
+                  if (resp.success && resp.data) {
+                    setShowCreate(false)
+                    setUsers((prev) => [resp.data, ...prev])
+                  } else {
+                    setCreateError(resp.message || 'Failed to create user')
+                  }
+                } catch (err: any) {
+                  setCreateError(err.message || 'Error creating user')
+                } finally {
+                  setCreateLoading(false)
+                }
+              }}
+            >
+              <div className='space-y-3'>
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Phone Code'
+                  value={createForm.phoneCode || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, phoneCode: e.target.value }))
+                  }
+                  required
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Phone Number'
+                  value={createForm.phoneNumber || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({
+                      ...f,
+                      phoneNumber: e.target.value,
+                    }))
+                  }
+                  required
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Email'
+                  value={createForm.email || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, email: e.target.value }))
+                  }
+                  required
+                  type='email'
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Password'
+                  value={createForm.password || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, password: e.target.value }))
+                  }
+                  required
+                  type='password'
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='First Name'
+                  value={createForm.firstName || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, firstName: e.target.value }))
+                  }
+                  required
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Last Name'
+                  value={createForm.lastName || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, lastName: e.target.value }))
+                  }
+                  required
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='ID Document'
+                  value={createForm.idDocument || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, idDocument: e.target.value }))
+                  }
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Tax Number'
+                  value={createForm.taxNumber || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, taxNumber: e.target.value }))
+                  }
+                />
+                {createError && (
+                  <div className='text-red-600 text-sm'>{createError}</div>
+                )}
+              </div>
+              <div className='flex justify-end gap-2 mt-6'>
+                <button
+                  type='button'
+                  className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
+                  onClick={() => setShowCreate(false)}
+                  disabled={createLoading}
+                >
+                  {t('create.cancel') || 'Cancel'}
+                </button>
+                <button
+                  type='submit'
+                  className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700'
+                  disabled={createLoading}
+                >
+                  {createLoading
+                    ? t('create.creating') || 'Creating...'
+                    : t('create.create') || 'Create'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit User Modal */}
+      {editingUser && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center'>
+          <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-md'>
+            <h2 className='text-lg font-semibold mb-4'>
+              {t('edit.title') || 'Edit User'}
+            </h2>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault()
+                setEditLoading(true)
+                setEditError(null)
+                try {
+                  const resp = await updateUser(editingUser.userId, editForm)
+                  if (resp.success && resp.data) {
+                    setEditingUser(null)
+                    // Refresh user list
+                    setUsers((prev) =>
+                      prev.map((u) =>
+                        u.userId === resp.data.userId ? resp.data : u,
+                      ),
+                    )
+                  } else {
+                    setEditError(resp.message || 'Failed to update user')
+                  }
+                } catch (err: any) {
+                  setEditError(err.message || 'Error updating user')
+                } finally {
+                  setEditLoading(false)
+                }
+              }}
+            >
+              <div className='space-y-3'>
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Email'
+                  value={editForm.email || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, email: e.target.value }))
+                  }
+                  required
+                  type='email'
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='First Name'
+                  value={editForm.firstName || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, firstName: e.target.value }))
+                  }
+                  required
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Last Name'
+                  value={editForm.lastName || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, lastName: e.target.value }))
+                  }
+                  required
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='ID Document'
+                  value={editForm.idDocument || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, idDocument: e.target.value }))
+                  }
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Tax Number'
+                  value={editForm.taxNumber || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, taxNumber: e.target.value }))
+                  }
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Contact Phone'
+                  value={editForm.contactPhoneNumber || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({
+                      ...f,
+                      contactPhoneNumber: e.target.value,
+                    }))
+                  }
+                />
+                <label className='flex items-center gap-2'>
+                  <input
+                    type='checkbox'
+                    checked={!!editForm.isVerified}
+                    onChange={(e) =>
+                      setEditForm((f) => ({
+                        ...f,
+                        isVerified: e.target.checked,
+                      }))
+                    }
+                  />
+                  {t('edit.verified') || 'Verified'}
+                </label>
+                {editError && (
+                  <div className='text-red-600 text-sm'>{editError}</div>
+                )}
+              </div>
+              <div className='flex justify-end gap-2 mt-6'>
+                <button
+                  type='button'
+                  className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
+                  onClick={() => setEditingUser(null)}
+                  disabled={editLoading}
+                >
+                  {t('edit.cancel') || 'Cancel'}
+                </button>
+                <button
+                  type='submit'
+                  className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
+                  disabled={editLoading}
+                >
+                  {editLoading
+                    ? t('edit.saving') || 'Saving...'
+                    : t('edit.save') || 'Save'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete User Modal */}
+      {showDelete && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center'>
+          <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-sm'>
+            <h2 className='text-lg font-semibold mb-4'>
+              {t('delete.title') || 'Delete User'}
+            </h2>
+            <p className='mb-4'>
+              {t('delete.confirm') ||
+                'Are you sure you want to delete this user?'}
+              <br />
+              <span className='font-semibold'>{showDelete.email}</span>
+            </p>
+            {deleteError && (
+              <div className='text-red-600 text-sm mb-2'>{deleteError}</div>
+            )}
+            <div className='flex justify-end gap-2'>
+              <button
+                className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
+                onClick={() => setShowDelete(null)}
+                disabled={deleteLoading}
+              >
+                {t('delete.cancel') || 'Cancel'}
+              </button>
+              <button
+                className='px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700'
+                disabled={deleteLoading}
+                onClick={async () => {
+                  setDeleteLoading(true)
+                  setDeleteError(null)
+                  try {
+                    const resp = await deleteUser(showDelete.userId)
+                    if (resp.success) {
+                      setShowDelete(null)
+                      setUsers((prev) =>
+                        prev.filter((u) => u.userId !== showDelete.userId),
+                      )
+                    } else {
+                      setDeleteError(resp.message || 'Failed to delete user')
+                    }
+                  } catch (err: any) {
+                    setDeleteError(err.message || 'Error deleting user')
+                  } finally {
+                    setDeleteLoading(false)
+                  }
+                }}
+              >
+                {deleteLoading
+                  ? t('delete.deleting') || 'Deleting...'
+                  : t('delete.delete') || 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

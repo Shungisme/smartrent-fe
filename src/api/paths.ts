@@ -19,8 +19,9 @@ export const PATHS = {
     GET_PROFILE: '/v1/users',
     LIST: '/v1/users/list',
     UPDATE_CONTACT_PHONE: '/v1/users/contact-phone',
+    UPDATE: '/v1/users/:userId', // PUT (admin)
+    DELETE: '/v1/users/:userId', // DELETE (admin)
     PROFILE: '/v1/users/profile',
-    UPDATE: '/v1/users/update',
     CHANGE_PASSWORD: '/v1/users/change-password',
   },
 

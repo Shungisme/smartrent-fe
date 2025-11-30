@@ -48,6 +48,41 @@ export class UserService {
   }
 
   /**
+   * Update user (admin operation)
+   * PUT /v1/users/{userId}
+   * Updates an existing user's information. Admin only.
+   * @param userId - User ID to update
+   * @param data - Partial user fields to update
+   */
+  static async updateUser(
+    userId: string,
+    data: Partial<Omit<UserProfile, 'userId'>> & { isVerified?: boolean },
+  ): Promise<ApiResponse<UserProfile>> {
+    const url = ENV.API.USER.UPDATE.replace(':userId', userId)
+    const response = await apiRequest<UserProfile>({
+      method: 'PUT',
+      url,
+      data,
+    })
+    return response
+  }
+
+  /**
+   * Delete user (admin operation)
+   * DELETE /v1/users/{userId}
+   * Deletes a user from the system. Admin only.
+   * @param userId - User ID to delete
+   */
+  static async deleteUser(userId: string): Promise<ApiResponse<null>> {
+    const url = ENV.API.USER.DELETE.replace(':userId', userId)
+    const response = await apiRequest<null>({
+      method: 'DELETE',
+      url,
+    })
+    return response
+  }
+
+  /**
    * Update contact phone number
    * PATCH /v1/users/contact-phone
    * Updates the authenticated user's contact phone number.
@@ -98,5 +133,11 @@ export class UserService {
 }
 
 // Export individual methods for convenience
-export const { getUserProfile, createUser, updateContactPhone, getUserList } =
-  UserService
+export const {
+  getUserProfile,
+  createUser,
+  updateContactPhone,
+  getUserList,
+  updateUser,
+  deleteUser,
+} = UserService

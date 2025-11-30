@@ -843,7 +843,8 @@
           "joinDate": "Ngày Tham Gia",
           "lastOnline": "Lần Online Cuối",
           "posts": "Bài Đăng",
-          "status": "Trạng Thái"
+          "status": "Trạng Thái",
+          "actions": "Hành Động"
         },
         "userTypes": {
           "landlord": "Chủ nhà",
@@ -854,7 +855,32 @@
         "statuses": {
           "normal": "Bình thường",
           "banned": "Bị cấm"
+        },
+        "actions": {
+          "edit": "Chỉnh sửa",
+          "delete": "Xóa"
         }
+      },
+      "delete": {
+        "title": "Xóa Người Dùng",
+        "confirm": "Bạn có chắc chắn muốn xóa người dùng này không? Hành động này không thể hoàn tác.",
+        "deleting": "Đang xóa...",
+        "cancel": "Hủy",
+        "delete": "Xóa"
+      },
+      "edit": {
+        "title": "Chỉnh sửa Người Dùng",
+        "save": "Lưu Thay Đổi",
+        "saving": "Đang Lưu...",
+        "verified": "Đã Xác Minh",
+        "cancel": "Hủy"
+      },
+      "create": {
+        "title": "Tạo Người Dùng Mới",
+        "create": "Tạo",
+        "creating": "Đang Tạo...",
+        "cancel": "Hủy",
+        "button": "Tạo Người Dùng Mới"
       }
     },
     "analytics": {

@@ -343,7 +343,7 @@ const AdminManagement: NextPageWithLayout = () => {
 
         {/* Create Admin Dialog */}
         <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-          <DialogContent className='max-w-md'>
+          <DialogContent className='max-w-md max-h-[50vh] overflow-y-auto'>
             <DialogHeader>
               <DialogTitle>Create New Admin</DialogTitle>
             </DialogHeader>

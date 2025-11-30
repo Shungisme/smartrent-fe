@@ -1,3 +1,13 @@
+// Request body for PUT /v1/users/{userId} (Admin update)
+export interface UserUpdateRequest {
+  email?: string
+  firstName?: string
+  lastName?: string
+  idDocument?: string
+  taxNumber?: string
+  contactPhoneNumber?: string
+  isVerified?: boolean
+}
 // User profile response from GET /v1/users
 export interface UserProfile {
   userId: string
