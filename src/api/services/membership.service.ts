@@ -9,6 +9,7 @@ import {
   UserMembership,
   MembershipHistoryList,
 } from '@/api/types/membership.type'
+import { PaginatedResponse } from '../types/pagination.type'
 
 /**
  * Membership Service
@@ -47,12 +48,14 @@ export class MembershipService {
    * Only active packages are returned.
    */
   static async getMembershipPackages(): Promise<
-    ApiResponse<MembershipPackageList>
+    ApiResponse<PaginatedResponse<MembershipPackageList>>
   > {
-    const response = await apiRequest<MembershipPackageList>({
-      method: 'GET',
-      url: ENV.API.MEMBERSHIP.GET_PACKAGES,
-    })
+    const response = await apiRequest<PaginatedResponse<MembershipPackageList>>(
+      {
+        method: 'GET',
+        url: ENV.API.MEMBERSHIP.GET_PACKAGES,
+      },
+    )
 
     return response
   }

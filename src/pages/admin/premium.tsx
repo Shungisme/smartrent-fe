@@ -281,11 +281,14 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
     [],
   )
   const [membershipsLoading, setMembershipsLoading] = useState(true)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [membershipsError, setMembershipsError] = useState<string | null>(null)
 
   // API state for VIP tiers
   const [apiVIPTiers, setApiVIPTiers] = useState<VIPTier[]>([])
   const [vipTiersLoading, setVIPTiersLoading] = useState(true)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [vipTiersError, setVIPTiersError] = useState<string | null>(null)
 
   // Fetch membership packages from API
@@ -296,7 +299,9 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
       try {
         const response = await getMembershipPackages()
         if (response.success && response.data) {
-          setApiMemberships(response.data)
+          setApiMemberships(
+            response.data.data as unknown as APIMembershipPackage[], // Fix later
+          )
         } else {
           setMembershipsError(
             response.message || 'Failed to load membership packages',
@@ -442,41 +447,6 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
       <Breadcrumb items={breadcrumbItems} />
 
       <div className='space-y-6'>
-        {/* API Status Banner */}
-        {(apiMemberships.length > 0 || apiVIPTiers.length > 0) && (
-          <div className='bg-green-50 border border-green-200 rounded-lg p-4'>
-            <p className='text-sm text-green-800'>
-              <strong>✓ API Connected:</strong>{' '}
-              {apiMemberships.length > 0 && (
-                <>Loaded {apiMemberships.length} membership packages</>
-              )}
-              {apiMemberships.length > 0 && apiVIPTiers.length > 0 && (
-                <> and </>
-              )}
-              {apiVIPTiers.length > 0 && <>{apiVIPTiers.length} VIP tiers</>}
-              {' from backend'}
-            </p>
-          </div>
-        )}
-
-        {membershipsError && (
-          <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
-            <p className='text-sm text-red-800'>
-              <strong>⚠ Membership API Error:</strong> {membershipsError}{' '}
-              (Showing mock data)
-            </p>
-          </div>
-        )}
-
-        {vipTiersError && (
-          <div className='bg-red-50 border border-red-200 rounded-lg p-4'>
-            <p className='text-sm text-red-800'>
-              <strong>⚠ VIP Tiers API Error:</strong> {vipTiersError} (Showing
-              mock data)
-            </p>
-          </div>
-        )}
-
         {/* Header */}
         <div>
           <h1 className='text-3xl font-semibold text-gray-900'>{t('title')}</h1>

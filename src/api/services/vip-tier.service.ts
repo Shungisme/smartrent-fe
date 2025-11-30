@@ -6,7 +6,6 @@
 
 import { apiRequest } from '@/configs/axios/axiosClient'
 import { ENV } from '@/constants/env'
-import { PATHS } from '@/api/paths'
 import type {
   VIPTier,
   VIPTiersResponse,
@@ -28,7 +27,7 @@ export class VIPTierService {
   static async getActiveVIPTiers(): Promise<VIPTiersResponse> {
     const response = await apiRequest<VIPTiersResponse>({
       method: 'GET',
-      url: ENV.API + PATHS.VIP_TIER.GET_ACTIVE,
+      url: ENV.API.VIP_TIER.GET_ACTIVE,
     })
 
     if (!response.success || !response.data) {
@@ -53,8 +52,7 @@ export class VIPTierService {
   static async getVIPTierByCode(
     tierCode: VIPTierCode | string,
   ): Promise<VIPTier> {
-    const url =
-      ENV.API + PATHS.VIP_TIER.GET_BY_CODE.replace(':tierCode', tierCode)
+    const url = ENV.API.VIP_TIER.GET_BY_CODE.replace(':tierCode', tierCode)
 
     const response = await apiRequest<VIPTier>({
       method: 'GET',
@@ -84,7 +82,7 @@ export class VIPTierService {
   static async getAllVIPTiers(): Promise<VIPTiersResponse> {
     const response = await apiRequest<VIPTiersResponse>({
       method: 'GET',
-      url: ENV.API + PATHS.VIP_TIER.GET_ALL,
+      url: ENV.API.VIP_TIER.GET_ALL,
     })
 
     if (!response.success || !response.data) {
