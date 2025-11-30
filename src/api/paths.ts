@@ -36,16 +36,20 @@ export const PATHS = {
 
   // Admin endpoints
   ADMIN: {
-    GET_PROFILE: '/v1/admins',
-    CREATE: '/v1/admins',
-    USERS: '/v1/admin/users',
-    PROPERTIES: '/v1/admin/properties',
-    DASHBOARD: '/v1/admin/dashboard',
+    GET_PROFILE: '/v1/admins', // GET admin profile by ID (self)
+    CREATE: '/v1/admins', // POST create admin
+    UPDATE: '/v1/admins/:adminId', // PUT update admin
+    DELETE: '/v1/admins/:adminId', // DELETE admin
+    LIST: '/v1/admins/list', // GET all admins (paginated)
   },
 
   // Role endpoints
   ROLE: {
-    LIST: '/v1/roles',
+    LIST: '/v1/roles', // GET all roles (paginated)
+    CREATE: '/v1/roles', // POST create role
+    GET: '/v1/roles/:roleId', // GET role by ID
+    UPDATE: '/v1/roles/:roleId', // PUT update role
+    DELETE: '/v1/roles/:roleId', // DELETE role
   },
 
   // Membership endpoints

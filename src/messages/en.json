@@ -851,7 +851,8 @@
         "analytics": "Application Analytics",
         "properties": "Property Listings",
         "settings": "Settings",
-        "search": "Advanced Search"
+        "search": "Advanced Search",
+        "roles": "Role Management"
       }
     },
     "users": {
@@ -1091,11 +1092,22 @@
           "inactive": "Inactive"
         },
         "actions": {
-          "viewDetails": "View Details",
           "edit": "Edit",
-          "changeRole": "Change Role",
-          "deactivate": "Deactivate"
+          "delete": "Delete"
         }
+      },
+      "edit": {
+        "title": "Edit Admin",
+        "save": "Save Changes",
+        "saving": "Saving...",
+        "cancel": "Cancel"
+      },
+      "delete": {
+        "title": "Delete Admin",
+        "confirm": "Are you sure you want to delete this admin?",
+        "delete": "Delete",
+        "deleting": "Deleting...",
+        "cancel": "Cancel"
       }
     },
     "finance": {

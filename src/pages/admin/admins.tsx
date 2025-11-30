@@ -10,12 +10,6 @@ import { Avatar } from '@/components/atoms/avatar'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/atoms/dropdown-menu'
-import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -27,76 +21,28 @@ import { cn } from '@/lib/utils'
 import type { NextPageWithLayout } from '@/types/next-page'
 import { useTranslations } from 'next-intl'
 import { getRoles } from '@/api/services/role.service'
-import { createAdmin } from '@/api/services/admin.service'
+import {
+  getAdminList,
+  createAdmin,
+  updateAdmin,
+  deleteAdmin,
+} from '@/api/services/admin.service'
+import { AdminProfile, UpdateAdminRequest } from '@/api/types/admin.type'
 import { Role } from '@/api/types/role.type'
 
 type AdminRole = 'support' | 'moderator' | 'admin' | 'super_admin'
-type AdminStatus = 'active' | 'inactive'
 
-type AdminData = {
+// Real admin data state
+type AdminRow = {
   id: string
   name: string
   email: string
   avatar?: string
-  role: AdminRole
+  role: string[]
   joinDate: string
   lastOnline: string
-  status: AdminStatus
+  status: string
 }
-
-// Mock data for 5 admins
-const mockAdmins: AdminData[] = [
-  {
-    id: 'a004',
-    name: 'David Rodriguez',
-    email: 'david.rodriguez@smartrent.com',
-    avatar: '/images/default-image.jpg',
-    role: 'support',
-    joinDate: '05/01/2024',
-    lastOnline: '18/01/2025',
-    status: 'active',
-  },
-  {
-    id: 'a003',
-    name: 'Emma Thompson',
-    email: 'emma.thompson@smartrent.com',
-    avatar: '/images/default-image.jpg',
-    role: 'moderator',
-    joinDate: '10/11/2023',
-    lastOnline: '19/01/2025',
-    status: 'active',
-  },
-  {
-    id: 'a005',
-    name: 'Lisa Park',
-    email: 'lisa.park@smartrent.com',
-    avatar: '/images/default-image.jpg',
-    role: 'moderator',
-    joinDate: '18/03/2024',
-    lastOnline: '15/01/2025',
-    status: 'inactive',
-  },
-  {
-    id: 'a002',
-    name: 'Michael Chen',
-    email: 'michael.chen@smartrent.com',
-    avatar: '/images/default-image.jpg',
-    role: 'admin',
-    joinDate: '22/08/2023',
-    lastOnline: '20/01/2025',
-    status: 'active',
-  },
-  {
-    id: 'a001',
-    name: 'Sarah Wilson',
-    email: 'sarah.wilson@smartrent.com',
-    avatar: '/images/default-image.jpg',
-    role: 'super_admin',
-    joinDate: '15/06/2023',
-    lastOnline: '20/01/2025',
-    status: 'active',
-  },
-]
 
 const getRoleBadgeClass = (role: AdminRole): string => {
   const classes: Record<AdminRole, string> = {
@@ -114,6 +60,28 @@ const AdminManagement: NextPageWithLayout = () => {
   // State for roles
   const [roles, setRoles] = useState<Role[]>([])
   const [rolesLoading, setRolesLoading] = useState(true)
+
+  // State for admin list
+  const [admins, setAdmins] = useState<AdminProfile[]>([])
+  const [loading, setLoading] = useState(true)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [error, setError] = useState<string | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [currentPage, setCurrentPage] = useState(0)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [totalPages, setTotalPages] = useState(0)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [pageSize, setPageSize] = useState(10)
+
+  // Edit/Delete modal state
+  const [editingAdmin, setEditingAdmin] = useState<AdminProfile | null>(null)
+  const [editForm, setEditForm] = useState<Partial<UpdateAdminRequest>>({})
+  const [editLoading, setEditLoading] = useState(false)
+  const [editError, setEditError] = useState<string | null>(null)
+  const [showDelete, setShowDelete] = useState<AdminProfile | null>(null)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
 
   // State for create admin dialog
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
@@ -134,7 +102,7 @@ const AdminManagement: NextPageWithLayout = () => {
       try {
         const response = await getRoles()
         if (response.success) {
-          setRoles(response.data)
+          setRoles(response.data.data)
         }
       } catch (error) {
         console.error('Failed to fetch roles:', error)
@@ -145,14 +113,39 @@ const AdminManagement: NextPageWithLayout = () => {
     fetchRoles()
   }, [])
 
+  // Fetch admins from API
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        const response = await getAdminList({
+          page: currentPage + 1,
+          size: pageSize,
+        })
+        if (response.success && response.data) {
+          setAdmins(response.data.data)
+          setTotalPages(response.data.totalPages)
+        } else {
+          setError(response.message || 'Failed to load admins')
+        }
+      } catch (err: any) {
+        setError(err.message || 'An error occurred while loading admins')
+        console.error('Error fetching admins:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchAdmins()
+  }, [currentPage, pageSize])
+
   // Handle create admin
   const handleCreateAdmin = async (e: React.FormEvent) => {
     e.preventDefault()
     setCreating(true)
-
     try {
       const response = await createAdmin(formData)
-      if (response.success) {
+      if (response.success && response.data) {
         alert(
           `Admin created successfully!\nTemporary Password: ${response.data.password}\n\nPlease save this password securely.`,
         )
@@ -166,8 +159,21 @@ const AdminManagement: NextPageWithLayout = () => {
           lastName: '',
           roles: [],
         })
-        // Refresh page to show new admin (in production, you would refetch the list)
-        window.location.reload()
+        // Map CreateAdminResponse to AdminProfile shape for state
+        setAdmins((prev) => [
+          {
+            adminId: response.data.adminId,
+            phoneCode: response.data.phoneCode,
+            phoneNumber: response.data.phoneNumber,
+            email: response.data.email,
+            firstName: response.data.firstName,
+            lastName: response.data.lastName,
+            roles: response.data.roles,
+            idDocument: null,
+            taxNumber: null,
+          },
+          ...prev,
+        ])
       } else {
         alert(`Error: ${response.message}`)
       }
@@ -183,8 +189,20 @@ const AdminManagement: NextPageWithLayout = () => {
     { label: t('breadcrumb.dashboard') }, // Current page
   ]
 
+  // Transform API data to match UI format
+  const transformedAdmins: AdminRow[] = admins.map((admin) => ({
+    id: admin.adminId,
+    name: `${admin.firstName} ${admin.lastName}`,
+    email: admin.email,
+    avatar: undefined, // No avatar in API
+    role: admin.roles,
+    joinDate: '', // No join date in API
+    lastOnline: '', // No last online in API
+    status: 'active', // No status in API
+  }))
+
   // Define columns for DataTable
-  const columns: Column<AdminData>[] = [
+  const columns: Column<AdminRow>[] = [
     {
       id: 'id',
       header: t('table.headers.adminId'),
@@ -218,14 +236,19 @@ const AdminManagement: NextPageWithLayout = () => {
       id: 'role',
       header: t('table.headers.role'),
       accessor: 'role',
-      render: (value) => (
-        <Badge
-          variant='outline'
-          className={cn('px-3 py-1 font-medium', getRoleBadgeClass(value))}
-        >
-          {t(`table.roles.${value}`)}
-        </Badge>
-      ),
+      render: (value) =>
+        value.map((role: string) => (
+          <Badge
+            key={role}
+            variant='outline'
+            className={cn(
+              'px-3 py-1 font-medium',
+              getRoleBadgeClass(role as AdminRole),
+            )}
+          >
+            {`${role}`}
+          </Badge>
+        )),
     },
     {
       id: 'joinDate',
@@ -256,6 +279,44 @@ const AdminManagement: NextPageWithLayout = () => {
         >
           {t(`table.statuses.${value}`)}
         </Badge>
+      ),
+    },
+    {
+      id: 'actions',
+      header: t('table.headers.actions') || 'Actions',
+      accessor: () => '',
+      render: (_, row) => (
+        <div className='flex gap-2'>
+          <button
+            className='px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200'
+            onClick={() => {
+              const admin = admins.find((a) => a.adminId === row.id)
+              if (admin) {
+                setEditingAdmin(admin)
+                setEditForm({
+                  email: admin.email,
+                  firstName: admin.firstName,
+                  lastName: admin.lastName,
+                  phoneCode: admin.phoneCode,
+                  phoneNumber: admin.phoneNumber,
+                  roles: admin.roles,
+                })
+                setEditError(null)
+              }
+            }}
+          >
+            {t('table.actions.edit') || 'Edit'}
+          </button>
+          <button
+            className='px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200'
+            onClick={() => {
+              const admin = admins.find((a) => a.adminId === row.id)
+              if (admin) setShowDelete(admin)
+            }}
+          >
+            {t('table.actions.delete') || 'Delete'}
+          </button>
+        </div>
       ),
     },
   ]
@@ -307,39 +368,224 @@ const AdminManagement: NextPageWithLayout = () => {
 
         {/* DataTable Component */}
         <DataTable
-          data={mockAdmins}
+          data={transformedAdmins}
           columns={columns}
           filters={filters}
           filterMode='frontend'
           pagination
-          itemsPerPage={10}
+          itemsPerPage={pageSize}
           itemsPerPageOptions={[10, 20, 50]}
           sortable
           defaultSort={{ key: 'joinDate', direction: 'desc' }}
-          actions={() => (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
-                  <span className='text-gray-500'>⋮</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align='end'>
-                <DropdownMenuItem>
-                  {t('table.actions.viewDetails')}
-                </DropdownMenuItem>
-                <DropdownMenuItem>{t('table.actions.edit')}</DropdownMenuItem>
-                <DropdownMenuItem>
-                  {t('table.actions.changeRole')}
-                </DropdownMenuItem>
-                <DropdownMenuItem className='text-red-600'>
-                  {t('table.actions.deactivate')}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
-          emptyMessage='No admins found'
+          emptyMessage={loading ? 'Loading admins...' : 'No admins found'}
           getRowKey={(row) => row.id}
         />
+        {/* Edit Admin Modal */}
+        {editingAdmin && (
+          <div className='fixed inset-0 z-50 flex items-center justify-center'>
+            <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-md'>
+              <h2 className='text-lg font-semibold mb-4'>
+                {t('edit.title') || 'Edit Admin'}
+              </h2>
+              <form
+                onSubmit={async (e) => {
+                  e.preventDefault()
+                  setEditLoading(true)
+                  setEditError(null)
+                  try {
+                    const resp = await updateAdmin(
+                      editingAdmin.adminId,
+                      editForm,
+                    )
+                    if (resp.success && resp.data) {
+                      setEditingAdmin(null)
+                      setAdmins((prev) =>
+                        prev.map((a) =>
+                          a.adminId === resp.data.adminId ? resp.data : a,
+                        ),
+                      )
+                    } else {
+                      setEditError(resp.message || 'Failed to update admin')
+                    }
+                  } catch (err: any) {
+                    setEditError(err.message || 'Error updating admin')
+                  } finally {
+                    setEditLoading(false)
+                  }
+                }}
+              >
+                <div className='space-y-3'>
+                  <input
+                    className='w-full border rounded px-3 py-2'
+                    placeholder='Email'
+                    value={editForm.email || ''}
+                    onChange={(e) =>
+                      setEditForm((f) => ({ ...f, email: e.target.value }))
+                    }
+                    required
+                    type='email'
+                  />
+                  <input
+                    className='w-full border rounded px-3 py-2'
+                    placeholder='First Name'
+                    value={editForm.firstName || ''}
+                    onChange={(e) =>
+                      setEditForm((f) => ({ ...f, firstName: e.target.value }))
+                    }
+                    required
+                  />
+                  <input
+                    className='w-full border rounded px-3 py-2'
+                    placeholder='Last Name'
+                    value={editForm.lastName || ''}
+                    onChange={(e) =>
+                      setEditForm((f) => ({ ...f, lastName: e.target.value }))
+                    }
+                    required
+                  />
+                  <input
+                    className='w-full border rounded px-3 py-2'
+                    placeholder='Phone Code'
+                    value={editForm.phoneCode || ''}
+                    onChange={(e) =>
+                      setEditForm((f) => ({ ...f, phoneCode: e.target.value }))
+                    }
+                    required
+                  />
+                  <input
+                    className='w-full border rounded px-3 py-2'
+                    placeholder='Phone Number'
+                    value={editForm.phoneNumber || ''}
+                    onChange={(e) =>
+                      setEditForm((f) => ({
+                        ...f,
+                        phoneNumber: e.target.value,
+                      }))
+                    }
+                    required
+                  />
+                  <div>
+                    <label className='block mb-1'>Roles</label>
+                    {rolesLoading ? (
+                      <p className='text-sm text-gray-500'>Loading roles...</p>
+                    ) : (
+                      <div className='space-y-2 mt-2'>
+                        {roles.map((role) => (
+                          <label
+                            key={role.roleId}
+                            className='flex items-center gap-2'
+                          >
+                            <input
+                              type='checkbox'
+                              checked={
+                                editForm.roles?.includes(role.roleId) || false
+                              }
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setEditForm((f) => ({
+                                    ...f,
+                                    roles: [...(f.roles || []), role.roleId],
+                                  }))
+                                } else {
+                                  setEditForm((f) => ({
+                                    ...f,
+                                    roles: (f.roles || []).filter(
+                                      (r) => r !== role.roleId,
+                                    ),
+                                  }))
+                                }
+                              }}
+                              className='rounded border-gray-300'
+                            />
+                            <span className='text-sm'>{role.roleName}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  {editError && (
+                    <div className='text-red-600 text-sm'>{editError}</div>
+                  )}
+                </div>
+                <div className='flex justify-end gap-2 mt-6'>
+                  <button
+                    type='button'
+                    className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
+                    onClick={() => setEditingAdmin(null)}
+                    disabled={editLoading}
+                  >
+                    {t('edit.cancel') || 'Cancel'}
+                  </button>
+                  <button
+                    type='submit'
+                    className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
+                    disabled={editLoading}
+                  >
+                    {editLoading
+                      ? t('edit.saving') || 'Saving...'
+                      : t('edit.save') || 'Save'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Admin Modal */}
+        {showDelete && (
+          <div className='fixed inset-0 z-50 flex items-center justify-center'>
+            <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-sm'>
+              <h2 className='text-lg font-semibold mb-4'>
+                {t('delete.title') || 'Delete Admin'}
+              </h2>
+              <p className='mb-4'>
+                {t('delete.confirm') ||
+                  'Are you sure you want to delete this admin?'}
+                <br />
+                <span className='font-semibold'>{showDelete.email}</span>
+              </p>
+              {deleteError && (
+                <div className='text-red-600 text-sm mb-2'>{deleteError}</div>
+              )}
+              <div className='flex justify-end gap-2'>
+                <button
+                  className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
+                  onClick={() => setShowDelete(null)}
+                  disabled={deleteLoading}
+                >
+                  {t('delete.cancel') || 'Cancel'}
+                </button>
+                <button
+                  className='px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700'
+                  disabled={deleteLoading}
+                  onClick={async () => {
+                    setDeleteLoading(true)
+                    setDeleteError(null)
+                    try {
+                      const resp = await deleteAdmin(showDelete.adminId)
+                      if (resp.success) {
+                        setShowDelete(null)
+                        setAdmins((prev) =>
+                          prev.filter((a) => a.adminId !== showDelete.adminId),
+                        )
+                      } else {
+                        setDeleteError(resp.message || 'Failed to delete admin')
+                      }
+                    } catch (err: any) {
+                      setDeleteError(err.message || 'Error deleting admin')
+                    } finally {
+                      setDeleteLoading(false)
+                    }
+                  }}
+                >
+                  {deleteLoading
+                    ? t('delete.deleting') || 'Deleting...'
+                    : t('delete.delete') || 'Delete'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Create Admin Dialog */}
         <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>

@@ -85,12 +85,13 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
 
   // Route mapping for navigation
   const routeMap: Record<string, string> = {
-    users: '/admin/users',
     dashboard: '/admin',
+    users: '/admin/users',
     admin: '/admin/admins',
-    finance: '/admin/finance',
     posts: '/admin/posts',
+    roles: '/admin/roles',
     reports: '/admin/reports',
+    finance: '/admin/finance',
     properties: '/admin/listings',
     premium: '/admin/premium',
     analytics: '/admin/analytics',
@@ -109,6 +110,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
     {
       key: 'admin',
       label: t('menuItems.admins'),
+      icon: <UserCogIcon width={20} />,
+    },
+    {
+      key: 'roles',
+      label: t('menuItems.roles'),
       icon: <UserCogIcon width={20} />,
     },
     {

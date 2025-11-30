@@ -1,3 +1,21 @@
+// Request body for PUT /v1/admins/{adminId} (Update admin)
+export interface UpdateAdminRequest {
+  phoneCode?: string
+  phoneNumber?: string
+  email?: string
+  firstName?: string
+  lastName?: string
+  roles?: string[]
+}
+
+// Paginated admin list response
+export interface AdminListResponse {
+  currentPage: number
+  pageSize: number
+  totalPages: number
+  totalElements: number
+  data: AdminProfile[]
+}
 /**
  * Admin Type Definitions
  * Types for administrator account management

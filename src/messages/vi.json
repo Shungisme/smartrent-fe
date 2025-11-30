@@ -816,7 +816,8 @@
         "analytics": "Phân Tích Ứng Dụng",
         "properties": "Danh Sách Bất Động Sản",
         "settings": "Cài Đặt",
-        "search": "Tìm Kiếm Nâng Cao"
+        "search": "Tìm Kiếm Nâng Cao",
+        "roles": "Quản Lý Vai Trò"
       }
     },
     "users": {
@@ -1056,11 +1057,22 @@
           "inactive": "Không hoạt động"
         },
         "actions": {
-          "viewDetails": "Xem chi tiết",
           "edit": "Chỉnh sửa",
-          "changeRole": "Thay đổi vai trò",
-          "deactivate": "Vô hiệu hóa"
+          "delete": "Xóa"
         }
+      },
+      "edit": {
+        "title": "Chỉnh sửa Admin",
+        "save": "Lưu thay đổi",
+        "saving": "Đang lưu...",
+        "cancel": "Hủy"
+      },
+      "delete": {
+        "title": "Xóa Admin",
+        "confirm": "Bạn có chắc chắn muốn xóa admin này không?",
+        "delete": "Xóa",
+        "deleting": "Đang xóa...",
+        "cancel": "Hủy"
       }
     },
     "finance": {

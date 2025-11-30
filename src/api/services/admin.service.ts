@@ -47,7 +47,58 @@ export class AdminService {
 
     return response
   }
+
+  /**
+   * Update admin
+   * PUT /v1/admins/:adminId
+   * Updates an existing administrator's information
+   */
+  static async updateAdmin(
+    adminId: string,
+    data: Partial<CreateAdminRequest>,
+  ): Promise<ApiResponse<AdminProfile>> {
+    const url = ENV.API.ADMIN.UPDATE.replace(':adminId', adminId)
+    return apiRequest<AdminProfile>({
+      method: 'PUT',
+      url,
+      data,
+    })
+  }
+
+  /**
+   * Delete admin
+   * DELETE /v1/admins/:adminId
+   * Deletes an administrator from the system
+   */
+  static async deleteAdmin(adminId: string): Promise<ApiResponse<null>> {
+    const url = ENV.API.ADMIN.DELETE.replace(':adminId', adminId)
+    return apiRequest<null>({
+      method: 'DELETE',
+      url,
+    })
+  }
+
+  /**
+   * Get all admins (paginated)
+   * GET /v1/admins/list
+   */
+  static async getAdminList(params?: {
+    page?: number
+    size?: number
+  }): Promise<ApiResponse<any>> {
+    return apiRequest<any>({
+      method: 'GET',
+      url: ENV.API.ADMIN.LIST,
+      params,
+    })
+  }
 }
 
 // Export individual methods for convenience
-export const { getAdminProfile, createAdmin } = AdminService
+export const {
+  getAdminProfile,
+  createAdmin,
+  updateAdmin,
+  deleteAdmin,
+  getAdminList,
+} = AdminService
