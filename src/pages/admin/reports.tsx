@@ -1,428 +1,192 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
-import {
-  DataTable,
-  Column,
-  FilterConfig,
-} from '@/components/organisms/DataTable'
+import { DataTable } from '@/components/organisms/DataTable'
+import { Dialog, DialogContent } from '@/components/atoms/dialog'
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { Avatar } from '@/components/atoms/avatar'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/atoms/dialog'
-import { cn } from '@/lib/utils'
-import { NextPageWithLayout } from '@/types/next-page'
-import { AlertTriangle, CheckCircle, XCircle, Eye } from 'lucide-react'
+import { AlertTriangle, Eye, CheckCircle, XCircle } from 'lucide-react'
+import cn from 'classnames'
+// TODO: API call to dismiss report
 
-// Types
-type ReportStatus = 'pending' | 'resolved' | 'dismissed'
-type ReportCategory =
-  | 'fake_fraudulent'
-  | 'spam_promotional'
-  | 'inappropriate_content'
-  | 'wrong_information'
-  | 'other'
+import { ListingReportService } from '@/api/services/listing-report.service'
+import { ListingReport } from '@/api/types/listing-report.type'
 
-type ReportData = {
-  id: string
-  post: {
-    id: string
-    title: string
-    thumbnail: string
-    propertyType: string
-    area: number
-    price: string
-    status: 'active' | 'inactive'
-  }
-  reporter: {
-    id: string
-    name: string
-    avatar?: string
-  }
-  category: ReportCategory
-  content: string
-  reportTime: string
-  reportDate: string
-  status: ReportStatus
-}
-
-// Mock data
-const mockReports: ReportData[] = [
-  {
-    id: 'r001',
-    post: {
-      id: 'post001',
-      title: 'Modern Studio Apartment in District 1',
-      thumbnail: '/images/default-image.jpg',
-      propertyType: 'Studio',
-      area: 35,
-      price: '12,000,000đ',
-      status: 'active',
-    },
-    reporter: {
-      id: 'user002',
-      name: 'Tran Thi Mai',
-      avatar: '/images/default-image.jpg',
-    },
-    category: 'fake_fraudulent',
-    content:
-      "This listing appears to be fake. The images don't match the actual property and the price seems unrealistic for the location.",
-    reportTime: '21:30',
-    reportDate: 'Jan 20, 2025',
-    status: 'pending',
-  },
-  {
-    id: 'r002',
-    post: {
-      id: 'post002',
-      title: 'Cheap Room for Students - Very Good Price!!!',
-      thumbnail: '/images/default-image.jpg',
-      propertyType: 'Room',
-      area: 15,
-      price: '2,000,000đ',
-      status: 'active',
-    },
-    reporter: {
-      id: 'user004',
-      name: 'Pham Minh Hieu',
-    },
-    category: 'spam_promotional',
-    content:
-      'This post contains excessive promotional language and appears to be spam. Multiple exclamation marks and unrealistic claims.',
-    reportTime: '23:45',
-    reportDate: 'Jan 19, 2025',
-    status: 'dismissed',
-  },
-  {
-    id: 'r003',
-    post: {
-      id: 'post003',
-      title: 'Luxury Villa with Pool',
-      thumbnail: '/images/default-image.jpg',
-      propertyType: 'Villa',
-      area: 300,
-      price: '25,000,000,000đ',
-      status: 'inactive',
-    },
-    reporter: {
-      id: 'user005',
-      name: 'Nguyen Van An',
-      avatar: '/images/default-image.jpg',
-    },
-    category: 'wrong_information',
-    content:
-      'The property information is incorrect. The listed area does not match the actual size, and amenities mentioned are not present.',
-    reportTime: '14:20',
-    reportDate: 'Jan 18, 2025',
-    status: 'resolved',
-  },
-  {
-    id: 'r004',
-    post: {
-      id: 'post004',
-      title: 'Office Space Downtown',
-      thumbnail: '/images/default-image.jpg',
-      propertyType: 'Office',
-      area: 80,
-      price: '30,000,000đ/month',
-      status: 'inactive',
-    },
-    reporter: {
-      id: 'user006',
-      name: 'Le Thi Hoa',
-    },
-    category: 'inappropriate_content',
-    content:
-      'The post contains inappropriate images and descriptions that violate community guidelines.',
-    reportTime: '09:15',
-    reportDate: 'Jan 17, 2025',
-    status: 'resolved',
-  },
-  {
-    id: 'r005',
-    post: {
-      id: 'post005',
-      title: 'Beachfront Property Investment',
-      thumbnail: '/images/default-image.jpg',
-      propertyType: 'Land',
-      area: 500,
-      price: '50,000,000,000đ',
-      status: 'active',
-    },
-    reporter: {
-      id: 'user007',
-      name: 'Do Van Cuong',
-      avatar: '/images/default-image.jpg',
-    },
-    category: 'fake_fraudulent',
-    content:
-      'Suspected fraudulent investment scheme. The property may not exist or ownership claims are questionable.',
-    reportTime: '16:50',
-    reportDate: 'Jan 21, 2025',
-    status: 'pending',
-  },
-]
-
-const getCategoryColor = (category: ReportCategory): string => {
-  const colors: Record<ReportCategory, string> = {
-    fake_fraudulent: 'bg-purple-100 text-purple-700 border-purple-200',
-    spam_promotional: 'bg-yellow-100 text-yellow-700 border-yellow-200',
-    inappropriate_content: 'bg-red-100 text-red-700 border-red-200',
-    wrong_information: 'bg-orange-100 text-orange-700 border-orange-200',
-    other: 'bg-gray-100 text-gray-700 border-gray-200',
-  }
-  return colors[category]
-}
-
-const getStatusColor = (status: ReportStatus): string => {
-  const colors: Record<ReportStatus, string> = {
-    pending: 'bg-yellow-50 text-yellow-800 border-yellow-200',
-    resolved: 'bg-green-50 text-green-700 border-green-200',
-    dismissed: 'bg-gray-100 text-gray-500 border-gray-200',
-  }
-  return colors[status]
-}
-
-const getInitials = (name: string): string => {
-  return name
-    .split(' ')
+const getInitials = (name: string) =>
+  name
+    ?.split(' ')
     .map((n) => n[0])
     .join('')
-    .toUpperCase()
-    .slice(0, 2)
+    .toUpperCase() || ''
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'PENDING':
+      return 'bg-yellow-100 text-yellow-800'
+    case 'RESOLVED':
+      return 'bg-green-100 text-green-800'
+    case 'REJECTED':
+      return 'bg-gray-100 text-gray-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
+}
+const statusMap = {
+  PENDING: 'pending',
+  RESOLVED: 'resolved',
+  REJECTED: 'dismissed',
 }
 
-const truncateText = (text: string, maxLength: number = 60): string => {
-  if (text.length <= maxLength) return text
-  return text.slice(0, maxLength) + '...'
-}
+const breadcrumbItems = [
+  { label: 'Admin', href: '/admin' },
+  { label: 'Reports', href: '/admin/reports' },
+]
 
-const ViolationReportManagement: NextPageWithLayout = () => {
+const ViolationReportManagement = () => {
   const t = useTranslations('reports')
-  const [selectedReport, setSelectedReport] = useState<ReportData | null>(null)
+  const [stats, setStats] = useState({
+    total: 0,
+    pending: 0,
+    resolved: 0,
+    dismissed: 0,
+  })
+  const [reports, setReports] = useState<ListingReport[]>([])
+  const [loading, setLoading] = useState(false)
   const [reviewModalOpen, setReviewModalOpen] = useState(false)
+  const [selectedReport, setSelectedReport] = useState<ListingReport | null>(
+    null,
+  )
   const [actionReason, setActionReason] = useState('')
 
-  const breadcrumbItems = [
-    { label: 'Admin Dashboard', href: '/admin' },
-    { label: t('breadcrumb.title') }, // Current page
-  ]
+  // Fetch reports from API
+  const fetchReports = useCallback(async () => {
+    setLoading(true)
+    try {
+      const res = await ListingReportService.getReports({ page: 1, size: 50 })
+      setReports(res.data.data)
+      // Calculate stats
+      const statObj = { total: 0, pending: 0, resolved: 0, dismissed: 0 }
+      statObj.total = res.data.totalElements
+      statObj.pending = res.data.data.filter(
+        (r) => r.status === 'PENDING',
+      ).length
+      statObj.resolved = res.data.data.filter(
+        (r) => r.status === 'RESOLVED',
+      ).length
+      statObj.dismissed = res.data.data.filter(
+        (r) => r.status === 'REJECTED',
+      ).length
+      setStats(statObj)
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
-  // Calculate stats
-  const stats = {
-    total: mockReports.length,
-    pending: mockReports.filter((r) => r.status === 'pending').length,
-    resolved: mockReports.filter((r) => r.status === 'resolved').length,
-    dismissed: mockReports.filter((r) => r.status === 'dismissed').length,
-  }
+  useEffect(() => {
+    fetchReports()
+  }, [fetchReports])
 
-  // Define columns for DataTable
-  const columns: Column<ReportData>[] = [
-    {
-      id: 'post',
-      header: t('table.postDetails'),
-      accessor: (row) => row.post.title,
-      sortable: true,
-      render: (_, row) => (
-        <div className='flex gap-3'>
-          <div className='relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg'>
-            <img
-              src={row.post.thumbnail}
-              alt={row.post.title}
-              className='h-full w-full object-cover'
-            />
-          </div>
-          <div className='flex-1 min-w-0'>
-            <div className='font-medium text-gray-900 truncate'>
-              {row.post.title}
-            </div>
-            <div className='mt-0.5 text-xs text-gray-400'>{row.post.id}</div>
-            <div className='mt-1 flex flex-wrap gap-1'>
-              <span className='text-xs text-gray-600'>
-                {row.post.propertyType}
-              </span>
-              <span className='text-xs text-gray-400'>•</span>
-              <span className='text-xs text-gray-600'>{row.post.area}m²</span>
-              <span className='text-xs text-gray-400'>•</span>
-              <Badge
-                className={cn(
-                  'text-xs px-1.5 py-0',
-                  row.post.status === 'active'
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-gray-100 text-gray-500',
-                )}
-              >
-                {row.post.status === 'active'
-                  ? t('review.active')
-                  : t('review.inactive')}
-              </Badge>
-            </div>
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: 'reporter',
-      header: t('table.reporter'),
-      accessor: (row) => row.reporter.name,
-      sortable: true,
-      render: (_, row) => (
-        <div className='flex items-center gap-2'>
-          <Avatar className='h-10 w-10'>
-            {row.reporter.avatar ? (
-              <img
-                src={row.reporter.avatar}
-                alt={row.reporter.name}
-                className='h-full w-full object-cover'
-              />
-            ) : (
-              <div className='flex h-full w-full items-center justify-center bg-blue-100 text-blue-700 font-semibold text-sm'>
-                {getInitials(row.reporter.name)}
-              </div>
-            )}
-          </Avatar>
-          <div className='min-w-0'>
-            <div className='text-sm font-medium text-gray-900 truncate'>
-              {row.reporter.name}
-            </div>
-            <div className='text-xs text-gray-400'>{row.reporter.id}</div>
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: 'category',
-      header: t('table.category'),
-      accessor: 'category',
-      render: (value) => (
-        <Badge
-          variant='outline'
-          className={cn('text-xs font-medium', getCategoryColor(value))}
-        >
-          {t(`categories.${value}`)}
-        </Badge>
-      ),
-    },
-    {
-      id: 'content',
-      header: t('table.content'),
-      accessor: 'content',
-      render: (value) => (
-        <div className='text-sm text-gray-600 line-clamp-2'>
-          {truncateText(value, 80)}
-        </div>
-      ),
-      hideOnMobile: true,
-    },
-    {
-      id: 'reportTime',
-      header: t('table.reportTime'),
-      accessor: 'reportDate',
-      sortable: true,
-      render: (_, row) => (
-        <div className='text-sm text-gray-500'>
-          <div>{row.reportDate}</div>
-          <div className='text-xs text-gray-400'>{row.reportTime}</div>
-        </div>
-      ),
-    },
-    {
-      id: 'status',
-      header: t('table.status'),
-      accessor: 'status',
-      render: (value) => (
-        <Badge
-          variant='outline'
-          className={cn('text-xs font-medium', getStatusColor(value))}
-        >
-          {t(`statuses.${value}`)}
-        </Badge>
-      ),
-    },
-  ]
-
-  // Define filters for DataTable
-  const filters: FilterConfig[] = [
-    {
-      id: 'search',
-      type: 'search',
-      label: t('search.placeholder'),
-      placeholder: t('search.placeholder'),
-    },
-    {
-      id: 'status',
-      type: 'select',
-      label: t('filters.allStatus'),
-      options: [
-        { value: 'pending', label: t('filters.pending') },
-        { value: 'resolved', label: t('filters.resolved') },
-        { value: 'dismissed', label: t('filters.dismissed') },
-      ],
-    },
-    {
-      id: 'category',
-      type: 'select',
-      label: t('filters.allCategories'),
-      options: [
-        { value: 'fake_fraudulent', label: t('filters.fakeFraudulent') },
-        { value: 'spam_promotional', label: t('filters.spamPromotional') },
-        {
-          value: 'inappropriate_content',
-          label: t('filters.inappropriateContent'),
-        },
-        { value: 'wrong_information', label: t('filters.wrongInformation') },
-        { value: 'other', label: t('filters.other') },
-      ],
-    },
-  ]
-
-  const handleReview = (report: ReportData) => {
+  // Open review modal
+  const handleOpenReview = (report: ListingReport) => {
     setSelectedReport(report)
+    setActionReason('')
     setReviewModalOpen(true)
-    setActionReason('')
   }
 
-  const handleResolve = () => {
-    console.log(
-      'Resolving report:',
-      selectedReport?.id,
-      'Reason:',
-      actionReason,
-    )
-    // TODO: API call to resolve report
-    setReviewModalOpen(false)
-    setSelectedReport(null)
-    setActionReason('')
+  // Resolve report
+  const handleResolve = async () => {
+    if (!selectedReport) return
+    try {
+      await ListingReportService.resolveReport(selectedReport.reportId, {
+        status: 'RESOLVED',
+        adminNotes: actionReason,
+      })
+      setReviewModalOpen(false)
+      setSelectedReport(null)
+      setActionReason('')
+      fetchReports()
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e)
+    }
   }
 
-  const handleDismiss = () => {
-    console.log(
-      'Dismissing report:',
-      selectedReport?.id,
-      'Reason:',
-      actionReason,
-    )
-    // TODO: API call to dismiss report
-    setReviewModalOpen(false)
-    setSelectedReport(null)
-    setActionReason('')
+  // Dismiss (reject) report
+  const handleDismiss = async () => {
+    if (!selectedReport) return
+    try {
+      await ListingReportService.resolveReport(selectedReport.reportId, {
+        status: 'REJECTED',
+        adminNotes: actionReason,
+      })
+      setReviewModalOpen(false)
+      setSelectedReport(null)
+      setActionReason('')
+      fetchReports()
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e)
+    }
   }
 
   const handleViewPost = () => {
-    console.log('Viewing post:', selectedReport?.post.id)
-    // TODO: Navigate to post details or open in new tab
+    if (!selectedReport) return
+    window.open(`/listing/${selectedReport.listingId}`, '_blank')
   }
+
+  // Columns for DataTable
+  const columns = [
+    {
+      id: 'reportId',
+      accessor: 'reportId' as keyof ListingReport,
+      header: 'ID',
+    },
+    {
+      id: 'listingId',
+      accessor: 'listingId' as keyof ListingReport,
+      header: t('review.postId'),
+    },
+    {
+      id: 'category',
+      accessor: 'category' as keyof ListingReport,
+      header: t('review.category'),
+    },
+    {
+      id: 'status',
+      accessor: 'status' as keyof ListingReport,
+      header: t('review.currentStatus'),
+      cell: ({ row }: any) => (
+        <Badge className={cn('text-xs', getStatusColor(row.original.status))}>
+          {t(
+            `statuses.${statusMap[row.original.status as keyof typeof statusMap]}`,
+          )}
+        </Badge>
+      ),
+    },
+    {
+      id: 'reporterName',
+      accessor: 'reporterName' as keyof ListingReport,
+      header: t('review.reportedBy'),
+    },
+    {
+      id: 'actions',
+      accessor: () => undefined as any,
+      header: t('review.actions'),
+      cell: ({ row }: any) => (
+        <Button size='sm' onClick={() => handleOpenReview(row.original)}>
+          {t('review.review')}
+        </Button>
+      ),
+    },
+  ]
 
   return (
     <div>
       <Breadcrumb items={breadcrumbItems} />
-
       <div className='space-y-6'>
         {/* Header */}
         <div>
@@ -441,7 +205,6 @@ const ViolationReportManagement: NextPageWithLayout = () => {
               {t('stats.allTime')}
             </div>
           </div>
-
           <div className='rounded-xl border border-gray-100 bg-white p-6'>
             <div className='text-2xl font-bold text-yellow-600'>
               {stats.pending}
@@ -453,7 +216,6 @@ const ViolationReportManagement: NextPageWithLayout = () => {
               {t('stats.needAttention')}
             </div>
           </div>
-
           <div className='rounded-xl border border-gray-100 bg-white p-6'>
             <div className='text-2xl font-bold text-green-600'>
               {stats.resolved}
@@ -465,7 +227,6 @@ const ViolationReportManagement: NextPageWithLayout = () => {
               {t('stats.actionTaken')}
             </div>
           </div>
-
           <div className='rounded-xl border border-gray-100 bg-white p-6'>
             <div className='text-2xl font-bold text-gray-500'>
               {stats.dismissed}
@@ -480,40 +241,14 @@ const ViolationReportManagement: NextPageWithLayout = () => {
         </div>
 
         {/* DataTable Component */}
-        <DataTable
-          data={mockReports}
-          columns={columns}
-          filters={filters}
-          filterMode='frontend'
-          pagination
-          itemsPerPage={10}
-          itemsPerPageOptions={[5, 10, 20, 50]}
-          sortable
-          defaultSort={{ key: 'reportDate', direction: 'desc' }}
-          actions={(row) => (
-            <Button
-              variant='outline'
-              size='sm'
-              onClick={() => handleReview(row)}
-              className='rounded-lg border-gray-300 px-3 py-1 text-sm hover:border-blue-500 hover:text-blue-600'
-            >
-              {t('table.viewDetails')}
-            </Button>
-          )}
-          emptyMessage={t('table.noReportsFound')}
-          getRowKey={(row) => row.id}
-        />
+        <div className='bg-white rounded-xl border border-gray-100 p-4'>
+          <DataTable columns={columns} data={reports} loading={loading} />
+        </div>
       </div>
 
       {/* Review Modal */}
       <Dialog open={reviewModalOpen} onOpenChange={setReviewModalOpen}>
-        <DialogContent className='max-w-3xl max-h-[90vh] overflow-y-auto w-[calc(100%-2rem)] mx-auto'>
-          <DialogHeader>
-            <DialogTitle className='text-xl md:text-2xl font-semibold'>
-              {t('review.title')}
-            </DialogTitle>
-          </DialogHeader>
-
+        <DialogContent>
           {selectedReport && (
             <div className='space-y-4 md:space-y-6'>
               {/* Report Info */}
@@ -526,14 +261,20 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                       {t(`categories.${selectedReport.category}`)}
                     </h4>
                     <p className='mt-1 text-xs md:text-sm text-yellow-800'>
-                      {t('review.reportedBy')} {selectedReport.reportDate}{' '}
-                      {t('review.on')} {selectedReport.reportTime}
+                      {t('review.reportedBy')} {selectedReport.reporterName}
+                      {selectedReport.createdAt && (
+                        <>
+                          {' '}
+                          {t('review.on')}{' '}
+                          {new Date(selectedReport.createdAt).toLocaleString()}
+                        </>
+                      )}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Reported Post */}
+              {/* Listing Info */}
               <div>
                 <h3 className='text-base md:text-lg font-semibold text-gray-900 mb-2 md:mb-3'>
                   {t('review.reportedPost')}
@@ -541,38 +282,30 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                 <div className='rounded-lg border border-gray-200 p-3 md:p-4'>
                   <div className='flex flex-col sm:flex-row gap-3 md:gap-4'>
                     <img
-                      src={selectedReport.post.thumbnail}
-                      alt={selectedReport.post.title}
+                      src={'/images/default-image.jpg'}
+                      alt={selectedReport.listingId + ''}
                       className='h-32 w-full sm:h-24 sm:w-24 flex-shrink-0 rounded-lg object-cover'
                     />
                     <div className='flex-1 min-w-0'>
                       <h4 className='font-semibold text-gray-900'>
-                        {selectedReport.post.title}
+                        {t('review.postId')}: {selectedReport.listingId}
                       </h4>
-                      <p className='text-xs md:text-sm text-gray-500 mt-1'>
-                        {t('review.postId')}: {selectedReport.post.id}
-                      </p>
                       <div className='mt-2 flex flex-wrap items-center gap-2 md:gap-3 text-xs md:text-sm text-gray-600'>
-                        <span>
-                          {selectedReport.post.propertyType} •{' '}
-                          {selectedReport.post.area}m²
-                        </span>
+                        <span>{selectedReport.category}</span>
                         <span>•</span>
                         <span className='font-semibold'>
-                          {selectedReport.post.price}
+                          {selectedReport.status}
                         </span>
                         <span>•</span>
                         <Badge
                           className={cn(
                             'text-xs',
-                            selectedReport.post.status === 'active'
-                              ? 'bg-green-100 text-green-700'
-                              : 'bg-gray-100 text-gray-500',
+                            getStatusColor(selectedReport.status),
                           )}
                         >
-                          {selectedReport.post.status === 'active'
-                            ? t('review.active')
-                            : t('review.inactive')}
+                          {t(
+                            `statuses.${statusMap[selectedReport.status as keyof typeof statusMap]}`,
+                          )}
                         </Badge>
                       </div>
                     </div>
@@ -587,24 +320,19 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                 </h3>
                 <div className='flex items-center gap-3 rounded-lg border border-gray-200 p-3 md:p-4'>
                   <Avatar className='h-10 w-10 md:h-12 md:w-12'>
-                    {selectedReport.reporter.avatar ? (
-                      <img
-                        src={selectedReport.reporter.avatar}
-                        alt={selectedReport.reporter.name}
-                        className='h-full w-full object-cover'
-                      />
-                    ) : (
-                      <div className='flex h-full w-full items-center justify-center bg-blue-100 text-blue-700 font-semibold'>
-                        {getInitials(selectedReport.reporter.name)}
-                      </div>
-                    )}
+                    <div className='flex h-full w-full items-center justify-center bg-blue-100 text-blue-700 font-semibold'>
+                      {getInitials(selectedReport.reporterName)}
+                    </div>
                   </Avatar>
                   <div>
                     <div className='font-medium text-gray-900'>
-                      {selectedReport.reporter.name}
+                      {selectedReport.reporterName}
                     </div>
                     <div className='text-sm text-gray-500'>
-                      User ID: {selectedReport.reporter.id}
+                      {selectedReport.reporterEmail}
+                    </div>
+                    <div className='text-sm text-gray-500'>
+                      {selectedReport.reporterPhone}
                     </div>
                   </div>
                 </div>
@@ -617,7 +345,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                 </h3>
                 <div className='rounded-lg border border-gray-200 bg-gray-50 p-3 md:p-4'>
                   <p className='text-xs md:text-sm text-gray-700 leading-relaxed'>
-                    {selectedReport.content}
+                    {selectedReport.otherFeedback}
                   </p>
                 </div>
               </div>
@@ -634,12 +362,14 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                     getStatusColor(selectedReport.status),
                   )}
                 >
-                  {t(`statuses.${selectedReport.status}`)}
+                  {t(
+                    `statuses.${statusMap[selectedReport.status as keyof typeof statusMap]}`,
+                  )}
                 </Badge>
               </div>
 
               {/* Action Reason (if taking action) */}
-              {selectedReport.status === 'pending' && (
+              {selectedReport.status === 'PENDING' && (
                 <div>
                   <label
                     htmlFor='action-reason'
@@ -669,7 +399,7 @@ const ViolationReportManagement: NextPageWithLayout = () => {
                   {t('review.viewPost')}
                 </Button>
 
-                {selectedReport.status === 'pending' && (
+                {selectedReport.status === 'PENDING' && (
                   <>
                     <Button
                       onClick={handleResolve}

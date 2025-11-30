@@ -1418,7 +1418,8 @@
       "actionPlaceholder": "Enter reason for your decision...",
       "viewPost": "View Post",
       "resolve": "Resolve Report",
-      "dismiss": "Dismiss Report"
+      "dismiss": "Dismiss Report",
+      "actions": "Actions"
     },
     "categories": {
       "fake_fraudulent": "Fake/Fraudulent Listing",

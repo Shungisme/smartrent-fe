@@ -1383,7 +1383,8 @@
       "actionPlaceholder": "Nhập lý do quyết định của bạn...",
       "viewPost": "Xem Bài Đăng",
       "resolve": "Xử Lý",
-      "dismiss": "Bỏ Qua"
+      "dismiss": "Bỏ Qua",
+      "actions": "Thao Tác"
     },
     "categories": {
       "fake_fraudulent": "Tin Giả/Lừa Đảo",
