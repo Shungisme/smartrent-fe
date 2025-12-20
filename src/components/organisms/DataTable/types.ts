@@ -68,6 +68,7 @@ export interface DataTableProps<T = any> {
   // Filter configuration
   filters?: FilterConfig[]
   filterMode?: FilterMode // Default: 'frontend'
+  filterValues?: Record<string, any> // External filter values for controlled mode
   onFilterChange?: (filters: Record<string, any>) => void
 
   // Pagination

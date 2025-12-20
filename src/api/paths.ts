@@ -68,4 +68,11 @@ export const PATHS = {
     GET_BY_CODE: '/v1/vip-tiers/:tierCode',
     GET_ALL: '/v1/vip-tiers/all',
   },
+
+  // Listing endpoints (Admin)
+  LISTING: {
+    ADMIN_LIST: '/v1/listings/admin/list', // POST get all listings for admin
+    ADMIN_DETAIL: '/v1/listings/:id/admin', // GET listing detail with admin info
+    ADMIN_VERIFY: '/v1/admin/listings/:listingId/status', // PUT verify/reject listing
+  },
 }

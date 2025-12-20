@@ -4,6 +4,7 @@ import { CustomAxiosRequestConfig } from './types'
 import { getAccessToken, getRefreshToken } from './utils'
 import { AuthService } from '@/api/services/auth.service'
 import { cookieManager } from '@/utils/cookies'
+import { decodeToken } from '@/utils/decode-jwt'
 
 const refreshToken = async (): Promise<string | null> => {
   try {
@@ -40,6 +41,24 @@ const isTokenExpired = (token: string): boolean => {
 const clearAuthTokens = () => {
   if (typeof document !== 'undefined') {
     cookieManager.clearAuthTokens()
+  }
+}
+
+const getAdminIdFromToken = (token: string): string | null => {
+  try {
+    const decoded = decodeToken(token)
+
+    return decoded.sub as string // Temporarily use 'sub' as adminId
+
+    // if (!decoded.user) {
+    //   return null
+    // }
+
+    // const user = decoded.user as AdminApi
+    // return (user && user.adminId) ? user.adminId : null
+  } catch (error) {
+    console.error('Failed to extract adminId from token:', error)
+    return null
   }
 }
 
@@ -85,6 +104,13 @@ export function createAuthRequestInterceptor(cookies?: any) {
     if (accessToken) {
       config.headers = config.headers || {}
       config.headers.Authorization = `Bearer ${accessToken}`
+
+      // Add X-Admin-Id header for admin requests
+      const adminId = getAdminIdFromToken(accessToken)
+      console.log('Admin ID from token:', adminId)
+      if (adminId) {
+        config.headers['X-Admin-Id'] = adminId
+      }
     }
 
     if (!config.baseURL && !config.url?.startsWith('http')) {
