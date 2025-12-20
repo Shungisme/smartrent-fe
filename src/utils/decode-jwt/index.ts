@@ -1,4 +1,4 @@
-import { UserApi } from '@/api/types/user.type'
+import { UserApi, AdminApi } from '@/api/types/user.type'
 import { jwtDecode } from 'jwt-decode'
 
 interface CustomJwtPayload {
@@ -8,7 +8,7 @@ interface CustomJwtPayload {
   rfId: string
   exp: number
   iat: number
-  user: UserApi
+  user: UserApi | AdminApi
   jti: string
 }
 

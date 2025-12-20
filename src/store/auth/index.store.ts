@@ -1,10 +1,38 @@
-import { UserApi } from '@/api/types/user.type'
+import { UserApi, AdminApi } from '@/api/types/user.type'
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import { AuthTokens } from '@/configs/axios/types'
 import { cookieManager } from '@/utils/cookies'
 
-interface User extends UserApi {}
+// Unified user interface that works with both User and Admin
+interface User extends Omit<UserApi, 'id'> {
+  id: string
+  roles?: string[]
+}
+
+// Helper function to normalize admin data to user format
+function normalizeAdminToUser(admin: AdminApi): User {
+  return {
+    id: admin.adminId,
+    phoneCode: admin.phoneCode,
+    phoneNumber: admin.phoneNumber,
+    email: admin.email,
+    password: '', // Not available in JWT
+    firstName: admin.firstName,
+    lastName: admin.lastName,
+    idDocument: admin.idDocument,
+    taxNumber: admin.taxNumber,
+    roles: admin.roles,
+  }
+}
+
+// Helper function to normalize regular user data
+function normalizeUserToUser(user: UserApi): User {
+  return {
+    ...user,
+    roles: [],
+  }
+}
 
 interface AuthState {
   // State
@@ -100,3 +128,7 @@ export const useAuthStore = create<AuthState>()(
     },
   ),
 )
+
+// Export helper functions for normalizing user data
+export { normalizeAdminToUser, normalizeUserToUser }
+export type { User }

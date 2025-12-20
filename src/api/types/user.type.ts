@@ -8,6 +8,7 @@ export interface UserUpdateRequest {
   contactPhoneNumber?: string
   isVerified?: boolean
 }
+
 // User profile response from GET /v1/users
 export interface UserProfile {
   userId: string
@@ -33,6 +34,19 @@ export interface UserApi {
   lastName: string
   idDocument: string
   taxNumber: string
+}
+
+// Admin profile response from JWT token
+export interface AdminApi {
+  adminId: string
+  phoneCode: string
+  phoneNumber: string
+  email: string
+  firstName: string
+  lastName: string
+  idDocument: string
+  taxNumber: string
+  roles?: string[]
 }
 
 // Request body for POST /v1/users (Create user)

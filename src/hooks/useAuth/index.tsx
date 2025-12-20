@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useAuthStore } from '@/store/auth/index.store'
+import { useAuthStore, normalizeAdminToUser } from '@/store/auth/index.store'
 import { AuthService } from '@/api/services/auth.service'
 import {
   LoginRequest,
@@ -9,6 +9,11 @@ import {
 import { cookieManager } from '@/utils/cookies'
 import { VerificationAPI } from '@/api/types/verification.type'
 import { decodeToken } from '@/utils/decode-jwt'
+import { AdminApi } from '@/api/types/user.type'
+
+export { useAuthGuard, useForceLogout } from './useAuthGuard'
+export { useChangePassword } from './useChangePassword'
+export { useUpdateProfile } from './useUpdateProfile'
 
 export const useAuth = () => {
   return useAuthStore()
@@ -22,21 +27,31 @@ export const useLogin = () => {
       setError(null)
       setLoading(true)
 
-      const result = await AuthService.login(credentials)
+      try {
+        const result = await AuthService.login(credentials)
+        const { success, message, data: tokens } = result
 
-      const { success, message, data: tokens } = result
+        setLoading(false)
 
-      setLoading(false)
+        if (!success) {
+          setError(message)
+          return result
+        }
 
-      if (!success) {
-        setError(message)
+        // Decode refreshToken instead of accessToken because it contains user data
+        const decoded = decodeToken(tokens.refreshToken)
+        // Normalize user data to ensure it matches the User type
+        const normalizedUser = normalizeAdminToUser(decoded.user as AdminApi)
+        login(normalizedUser, tokens)
+
         return result
+      } catch (error) {
+        setLoading(false)
+        const errorMessage =
+          error instanceof Error ? error.message : 'Login failed'
+        setError(errorMessage)
+        return { success: false, message: errorMessage }
       }
-
-      const { user } = decodeToken(tokens.accessToken)
-
-      login(user, tokens)
-      return result
     },
     [setLoading, setError, login],
   )
@@ -52,19 +67,31 @@ export const useAdminLogin = () => {
       setError(null)
       setLoading(true)
 
-      const result = await AuthService.adminLogin(credentials)
+      try {
+        const result = await AuthService.adminLogin(credentials)
+        const { success, message, data: tokens } = result
 
-      const { success, message, data: tokens } = result
+        setLoading(false)
 
-      if (!success) {
-        setError(message)
+        if (!success) {
+          setError(message)
+          return result
+        }
+
+        // Decode refreshToken instead of accessToken because it contains user data
+        const { user: rawUser } = decodeToken(tokens.refreshToken)
+        // Normalize admin data to user format
+        const normalizedUser = normalizeAdminToUser(rawUser as AdminApi)
+        login(normalizedUser, tokens)
+
         return result
+      } catch (error) {
+        setLoading(false)
+        const errorMessage =
+          error instanceof Error ? error.message : 'Admin login failed'
+        setError(errorMessage)
+        return { success: false, message: errorMessage }
       }
-
-      const { user } = decodeToken(tokens.accessToken)
-
-      login(user, tokens)
-      return result
     },
     [setLoading, setError, login],
   )
@@ -80,17 +107,25 @@ export const useRegister = () => {
       setLoading(true)
       setError(null)
 
-      const result = await AuthService.register(data)
+      try {
+        const result = await AuthService.register(data)
+        const { success, message } = result
 
-      const { success, message } = result
+        setLoading(false)
 
-      setLoading(false)
-      if (!success) {
-        setError(message)
+        if (!success) {
+          setError(message)
+          return result
+        }
+
         return result
+      } catch (error) {
+        setLoading(false)
+        const errorMessage =
+          error instanceof Error ? error.message : 'Registration failed'
+        setError(errorMessage)
+        return { success: false, message: errorMessage }
       }
-
-      return result
     },
     [setLoading, setError],
   )
@@ -103,18 +138,36 @@ export const useLogout = () => {
 
   const logoutUser = useCallback(async () => {
     const accessToken = cookieManager.getAccessToken()
-    if (accessToken) {
+
+    // If no access token, just clear local state and return
+    if (!accessToken) {
+      console.warn('[Logout] No access token found, clearing local state')
+      logout()
+      return { success: true, message: 'Logged out locally (no token found)' }
+    }
+
+    try {
       const result = await AuthService.logout(accessToken)
       const { success, message } = result
 
       if (!success) {
         setError(message)
+        // Still logout locally even if API call fails
+        logout()
         return result
       }
+
       logout()
       return result
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Logout failed'
+      setError(errorMessage)
+      // Always logout locally regardless of API error
+      logout()
+      return { success: false, message: errorMessage }
     }
-  }, [logout])
+  }, [logout, setError])
 
   return { logoutUser }
 }
@@ -124,22 +177,31 @@ export const useTokenRefresh = () => {
 
   const refreshAuthTokens = useCallback(async () => {
     const currentTokens = getStoredTokens()
+
     if (!currentTokens?.refreshToken) {
       return { success: false, message: 'No refresh token available' }
     }
 
-    const result = await AuthService.refreshToken(currentTokens.refreshToken)
-    const { success, message, data: newTokens } = result
+    try {
+      const result = await AuthService.refreshToken(currentTokens.refreshToken)
+      const { success, message, data: newTokens } = result
 
-    if (!success) {
-      setError(message)
+      if (!success) {
+        setError(message)
+        logout()
+        return result
+      }
+
+      refreshTokens(newTokens)
       return result
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Token refresh failed'
+      setError(errorMessage)
+      logout()
+      return { success: false, message: errorMessage }
     }
-
-    refreshTokens(newTokens)
-    logout()
-    return result
-  }, [refreshTokens, getStoredTokens])
+  }, [refreshTokens, getStoredTokens, logout, setError])
 
   return { refreshAuthTokens }
 }
@@ -152,16 +214,25 @@ export const useVerifyOtp = () => {
       setLoading(true)
       setError(null)
 
-      const result = await AuthService.verifyOtp(data)
+      try {
+        const result = await AuthService.verifyOtp(data)
+        const { success, message } = result
 
-      const { success, message } = result
+        setLoading(false)
 
-      if (!success) {
-        setError(message)
+        if (!success) {
+          setError(message)
+          return result
+        }
+
         return result
+      } catch (error) {
+        setLoading(false)
+        const errorMessage =
+          error instanceof Error ? error.message : 'OTP verification failed'
+        setError(errorMessage)
+        return { success: false, message: errorMessage }
       }
-
-      return result
     },
     [setLoading, setError],
   )
@@ -177,16 +248,25 @@ export const useResendOtp = () => {
       setLoading(true)
       setError(null)
 
-      const result = await AuthService.resendOtp(email)
+      try {
+        const result = await AuthService.resendOtp(email)
+        const { success, message } = result
 
-      const { success, message } = result
+        setLoading(false)
 
-      if (!success) {
-        setError(message)
+        if (!success) {
+          setError(message)
+          return result
+        }
+
         return result
+      } catch (error) {
+        setLoading(false)
+        const errorMessage =
+          error instanceof Error ? error.message : 'Failed to resend OTP'
+        setError(errorMessage)
+        return { success: false, message: errorMessage }
       }
-
-      return result
     },
     [setLoading, setError],
   )
@@ -202,16 +282,25 @@ export const useValidToken = () => {
       setLoading(true)
       setError(null)
 
-      const result = await AuthService.validToken(token)
+      try {
+        const result = await AuthService.validToken(token)
+        const { success, message } = result
 
-      const { success, message } = result
+        setLoading(false)
 
-      if (!success) {
-        setError(message)
+        if (!success) {
+          setError(message)
+          return result
+        }
+
         return result
+      } catch (error) {
+        setLoading(false)
+        const errorMessage =
+          error instanceof Error ? error.message : 'Token validation failed'
+        setError(errorMessage)
+        return { success: false, message: errorMessage }
       }
-
-      return result
     },
     [setLoading, setError],
   )
