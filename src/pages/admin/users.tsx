@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
 import {
@@ -11,6 +11,17 @@ import { Badge } from '@/components/atoms/badge'
 import { cn } from '@/lib/utils'
 import type { NextPageWithLayout } from '@/types/next-page'
 import { useTranslations } from 'next-intl'
+import {
+  getUserList,
+  updateUser,
+  deleteUser,
+  createUser,
+} from '@/api/services/user.service'
+import {
+  UserProfile,
+  UserUpdateRequest,
+  CreateUserRequest,
+} from '@/api/types/user.type'
 
 type UserData = {
   id: string
@@ -23,137 +34,80 @@ type UserData = {
   status: 'normal' | 'banned'
 }
 
-// Mock data for 12 users matching the requirements
-const mockUsers: UserData[] = [
-  {
-    id: '001',
-    name: 'Nguyễn Văn An',
-    avatar: '/images/default-image.jpg',
-    type: 'landlord',
-    joinDate: '15/03/2024',
-    lastOnline: '28/03/2024',
-    posts: 3,
-    status: 'normal',
-  },
-  {
-    id: '002',
-    name: 'Trần Thị Bình',
-    avatar: '/images/default-image.jpg',
-    type: 'tenant',
-    joinDate: '20/03/2024',
-    lastOnline: '27/03/2024',
-    posts: null,
-    status: 'normal',
-  },
-  {
-    id: '003',
-    name: 'Lê Hoàng Cường',
-    avatar: '/images/default-image.jpg',
-    type: 'landlord',
-    joinDate: '10/03/2024',
-    lastOnline: '29/03/2024',
-    posts: 7,
-    status: 'normal',
-  },
-  {
-    id: '004',
-    name: 'Phạm Mai Dung',
-    avatar: '/images/default-image.jpg',
-    type: 'tenant',
-    joinDate: '25/02/2024',
-    lastOnline: '26/03/2024',
-    posts: null,
-    status: 'banned',
-  },
-  {
-    id: '005',
-    name: 'Hoàng Minh Đức',
-    avatar: '/images/default-image.jpg',
-    type: 'landlord',
-    joinDate: '05/03/2024',
-    lastOnline: '28/03/2024',
-    posts: 2,
-    status: 'normal',
-  },
-  {
-    id: '006',
-    name: 'Vũ Thị Giang',
-    avatar: '/images/default-image.jpg',
-    type: 'tenant',
-    joinDate: '18/03/2024',
-    lastOnline: '29/03/2024',
-    posts: null,
-    status: 'normal',
-  },
-  {
-    id: '007',
-    name: 'Đỗ Văn Hải',
-    avatar: '/images/default-image.jpg',
-    type: 'landlord',
-    joinDate: '12/03/2024',
-    lastOnline: '27/03/2024',
-    posts: 5,
-    status: 'normal',
-  },
-  {
-    id: '008',
-    name: 'Ngô Thị Lan',
-    avatar: '/images/default-image.jpg',
-    type: 'tenant',
-    joinDate: '22/03/2024',
-    lastOnline: '28/03/2024',
-    posts: null,
-    status: 'normal',
-  },
-  {
-    id: '009',
-    name: 'Bùi Quang Minh',
-    avatar: '/images/default-image.jpg',
-    type: 'landlord',
-    joinDate: '08/03/2024',
-    lastOnline: '25/03/2024',
-    posts: 1,
-    status: 'banned',
-  },
-  {
-    id: '010',
-    name: 'Lương Thị Oanh',
-    avatar: '/images/default-image.jpg',
-    type: 'tenant',
-    joinDate: '28/02/2024',
-    lastOnline: '29/03/2024',
-    posts: null,
-    status: 'normal',
-  },
-  {
-    id: '011',
-    name: 'Trịnh Văn Phúc',
-    avatar: '/images/default-image.jpg',
-    type: 'landlord',
-    joinDate: '14/03/2024',
-    lastOnline: '26/03/2024',
-    posts: 4,
-    status: 'normal',
-  },
-  {
-    id: '012',
-    name: 'Cao Thị Quỳnh',
-    avatar: '/images/default-image.jpg',
-    type: 'tenant',
-    joinDate: '16/03/2024',
-    lastOnline: '28/03/2024',
-    posts: null,
-    status: 'normal',
-  },
-]
-
 const UserManagement: NextPageWithLayout = () => {
+  // Edit/Delete modal state
+  const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
+  const [editForm, setEditForm] = useState<Partial<UserUpdateRequest>>({})
+  const [editLoading, setEditLoading] = useState(false)
+  const [editError, setEditError] = useState<string | null>(null)
+  const [showDelete, setShowDelete] = useState<UserProfile | null>(null)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
   const t = useTranslations('admin.users')
+
+  // Create user modal state
+  const [showCreate, setShowCreate] = useState(false)
+  const [createForm, setCreateForm] = useState<
+    Partial<CreateUserRequest & { password: string }>
+  >({})
+  const [createLoading, setCreateLoading] = useState(false)
+  const [createError, setCreateError] = useState<string | null>(null)
+
+  // State for API data
+  const [users, setUsers] = useState<UserProfile[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [currentPage, setCurrentPage] = useState(0)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [totalPages, setTotalPages] = useState(0)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [pageSize, setPageSize] = useState(10)
+
+  // Fetch users from API
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true)
+      setError(null)
+      try {
+        // API uses 1-indexed pages, frontend uses 0-indexed
+        const response = await getUserList(currentPage + 1, pageSize)
+        if (response.success && response.data) {
+          setUsers(response.data.data)
+          setTotalPages(response.data.totalPages)
+        } else {
+          setError(response.message || 'Failed to load users')
+        }
+      } catch (err: any) {
+        setError(err.message || 'An error occurred while loading users')
+        console.error('Error fetching users:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUsers()
+  }, [currentPage, pageSize])
 
   const breadcrumbItems = [
     { label: 'Admin Dashboard', href: '/admin' },
     { label: t('breadcrumb.dashboard') }, // Current page
   ]
+
+  // Transform API data to match UI format
+  const transformedUsers: UserData[] = users.map((user) => ({
+    id: user.userId,
+    name: `${user.firstName} ${user.lastName}`,
+    avatar: undefined, // API doesn't return avatar yet
+    type: 'tenant', // API doesn't specify type yet, default to tenant
+    joinDate: new Date(user.userId).toLocaleDateString('vi-VN'), // Temporary until API provides join date
+    lastOnline: new Date().toLocaleDateString('vi-VN'), // Temporary until API provides last online
+    posts: null, // API doesn't return posts count yet
+    status: 'normal', // API doesn't return status yet, default to normal
+  }))
 
   // Define columns for DataTable
   const columns: Column<UserData>[] = [
@@ -253,6 +207,45 @@ const UserManagement: NextPageWithLayout = () => {
         </Badge>
       ),
     },
+    {
+      id: 'actions',
+      header: t('table.headers.actions') || 'Actions',
+      accessor: () => '',
+      render: (_, row) => (
+        <div className='flex gap-2'>
+          <button
+            className='px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200'
+            onClick={() => {
+              const user = users.find((u) => u.userId === row.id)
+              if (user) {
+                setEditingUser(user)
+                setEditForm({
+                  email: user.email,
+                  firstName: user.firstName,
+                  lastName: user.lastName,
+                  idDocument: user.idDocument,
+                  taxNumber: user.taxNumber,
+                  contactPhoneNumber: user.contactPhoneNumber,
+                  isVerified: (user as any).isVerified ?? false,
+                })
+                setEditError(null)
+              }
+            }}
+          >
+            {t('table.actions.edit') || 'Edit'}
+          </button>
+          <button
+            className='px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200'
+            onClick={() => {
+              const user = users.find((u) => u.userId === row.id)
+              if (user) setShowDelete(user)
+            }}
+          >
+            {t('table.actions.delete') || 'Delete'}
+          </button>
+        </div>
+      ),
+    },
   ]
 
   // Define filters for DataTable
@@ -274,26 +267,389 @@ const UserManagement: NextPageWithLayout = () => {
     },
   ]
 
+  // Show loading state
+  if (loading && users.length === 0) {
+    return (
+      <div>
+        <Breadcrumb items={breadcrumbItems} />
+        <div className='flex items-center justify-center py-12'>
+          <div className='text-center'>
+            <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto'></div>
+            <p className='mt-4 text-gray-600'>Loading users...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div>
+        <Breadcrumb items={breadcrumbItems} />
+        <div className='flex items-center justify-center py-12'>
+          <div className='text-center'>
+            <p className='text-red-600 mb-4'>{error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       <Breadcrumb items={breadcrumbItems} />
 
       <div className='space-y-6'>
+        <div className='flex justify-end'>
+          <button
+            className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 mb-2'
+            onClick={() => {
+              setShowCreate(true)
+              setCreateForm({})
+              setCreateError(null)
+            }}
+          >
+            + {t('create.button') || 'Create User'}
+          </button>
+        </div>
         {/* DataTable Component */}
         <DataTable
-          data={mockUsers}
+          data={transformedUsers}
           columns={columns}
           filters={filters}
           filterMode='frontend'
           pagination
-          itemsPerPage={10}
-          itemsPerPageOptions={[5, 10, 20]}
+          itemsPerPage={pageSize}
+          itemsPerPageOptions={[5, 10, 20, 50]}
           sortable
           defaultSort={{ key: 'joinDate', direction: 'desc' }}
-          emptyMessage='No users found'
+          emptyMessage={loading ? 'Loading users...' : 'No users found'}
           getRowKey={(row) => row.id}
         />
       </div>
+
+      {/* Create User Modal */}
+      {showCreate && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center'>
+          <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-md'>
+            <h2 className='text-lg font-semibold mb-4'>
+              {t('create.title') || 'Create User'}
+            </h2>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault()
+                setCreateLoading(true)
+                setCreateError(null)
+                try {
+                  const resp = await createUser(createForm as CreateUserRequest)
+                  if (resp.success && resp.data) {
+                    setShowCreate(false)
+                    setUsers((prev) => [resp.data, ...prev])
+                  } else {
+                    setCreateError(resp.message || 'Failed to create user')
+                  }
+                } catch (err: any) {
+                  setCreateError(err.message || 'Error creating user')
+                } finally {
+                  setCreateLoading(false)
+                }
+              }}
+            >
+              <div className='space-y-3'>
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Phone Code'
+                  value={createForm.phoneCode || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, phoneCode: e.target.value }))
+                  }
+                  required
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Phone Number'
+                  value={createForm.phoneNumber || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({
+                      ...f,
+                      phoneNumber: e.target.value,
+                    }))
+                  }
+                  required
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Email'
+                  value={createForm.email || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, email: e.target.value }))
+                  }
+                  required
+                  type='email'
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Password'
+                  value={createForm.password || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, password: e.target.value }))
+                  }
+                  required
+                  type='password'
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='First Name'
+                  value={createForm.firstName || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, firstName: e.target.value }))
+                  }
+                  required
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Last Name'
+                  value={createForm.lastName || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, lastName: e.target.value }))
+                  }
+                  required
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='ID Document'
+                  value={createForm.idDocument || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, idDocument: e.target.value }))
+                  }
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Tax Number'
+                  value={createForm.taxNumber || ''}
+                  onChange={(e) =>
+                    setCreateForm((f) => ({ ...f, taxNumber: e.target.value }))
+                  }
+                />
+                {createError && (
+                  <div className='text-red-600 text-sm'>{createError}</div>
+                )}
+              </div>
+              <div className='flex justify-end gap-2 mt-6'>
+                <button
+                  type='button'
+                  className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
+                  onClick={() => setShowCreate(false)}
+                  disabled={createLoading}
+                >
+                  {t('create.cancel') || 'Cancel'}
+                </button>
+                <button
+                  type='submit'
+                  className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700'
+                  disabled={createLoading}
+                >
+                  {createLoading
+                    ? t('create.creating') || 'Creating...'
+                    : t('create.create') || 'Create'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit User Modal */}
+      {editingUser && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center'>
+          <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-md'>
+            <h2 className='text-lg font-semibold mb-4'>
+              {t('edit.title') || 'Edit User'}
+            </h2>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault()
+                setEditLoading(true)
+                setEditError(null)
+                try {
+                  const resp = await updateUser(editingUser.userId, editForm)
+                  if (resp.success && resp.data) {
+                    setEditingUser(null)
+                    // Refresh user list
+                    setUsers((prev) =>
+                      prev.map((u) =>
+                        u.userId === resp.data.userId ? resp.data : u,
+                      ),
+                    )
+                  } else {
+                    setEditError(resp.message || 'Failed to update user')
+                  }
+                } catch (err: any) {
+                  setEditError(err.message || 'Error updating user')
+                } finally {
+                  setEditLoading(false)
+                }
+              }}
+            >
+              <div className='space-y-3'>
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Email'
+                  value={editForm.email || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, email: e.target.value }))
+                  }
+                  required
+                  type='email'
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='First Name'
+                  value={editForm.firstName || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, firstName: e.target.value }))
+                  }
+                  required
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Last Name'
+                  value={editForm.lastName || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, lastName: e.target.value }))
+                  }
+                  required
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='ID Document'
+                  value={editForm.idDocument || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, idDocument: e.target.value }))
+                  }
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Tax Number'
+                  value={editForm.taxNumber || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, taxNumber: e.target.value }))
+                  }
+                />
+                <input
+                  className='w-full border rounded px-3 py-2'
+                  placeholder='Contact Phone'
+                  value={editForm.contactPhoneNumber || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({
+                      ...f,
+                      contactPhoneNumber: e.target.value,
+                    }))
+                  }
+                />
+                <label className='flex items-center gap-2'>
+                  <input
+                    type='checkbox'
+                    checked={!!editForm.isVerified}
+                    onChange={(e) =>
+                      setEditForm((f) => ({
+                        ...f,
+                        isVerified: e.target.checked,
+                      }))
+                    }
+                  />
+                  {t('edit.verified') || 'Verified'}
+                </label>
+                {editError && (
+                  <div className='text-red-600 text-sm'>{editError}</div>
+                )}
+              </div>
+              <div className='flex justify-end gap-2 mt-6'>
+                <button
+                  type='button'
+                  className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
+                  onClick={() => setEditingUser(null)}
+                  disabled={editLoading}
+                >
+                  {t('edit.cancel') || 'Cancel'}
+                </button>
+                <button
+                  type='submit'
+                  className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
+                  disabled={editLoading}
+                >
+                  {editLoading
+                    ? t('edit.saving') || 'Saving...'
+                    : t('edit.save') || 'Save'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete User Modal */}
+      {showDelete && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center'>
+          <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-sm'>
+            <h2 className='text-lg font-semibold mb-4'>
+              {t('delete.title') || 'Delete User'}
+            </h2>
+            <p className='mb-4'>
+              {t('delete.confirm') ||
+                'Are you sure you want to delete this user?'}
+              <br />
+              <span className='font-semibold'>{showDelete.email}</span>
+            </p>
+            {deleteError && (
+              <div className='text-red-600 text-sm mb-2'>{deleteError}</div>
+            )}
+            <div className='flex justify-end gap-2'>
+              <button
+                className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
+                onClick={() => setShowDelete(null)}
+                disabled={deleteLoading}
+              >
+                {t('delete.cancel') || 'Cancel'}
+              </button>
+              <button
+                className='px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700'
+                disabled={deleteLoading}
+                onClick={async () => {
+                  setDeleteLoading(true)
+                  setDeleteError(null)
+                  try {
+                    const resp = await deleteUser(showDelete.userId)
+                    if (resp.success) {
+                      setShowDelete(null)
+                      setUsers((prev) =>
+                        prev.filter((u) => u.userId !== showDelete.userId),
+                      )
+                    } else {
+                      setDeleteError(resp.message || 'Failed to delete user')
+                    }
+                  } catch (err: any) {
+                    setDeleteError(err.message || 'Error deleting user')
+                  } finally {
+                    setDeleteLoading(false)
+                  }
+                }}
+              >
+                {deleteLoading
+                  ? t('delete.deleting') || 'Deleting...'
+                  : t('delete.delete') || 'Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

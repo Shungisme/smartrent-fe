@@ -120,6 +120,7 @@ export function DataTable<T = any>(props: DataTableProps<T>) {
   const {
     data,
     filterMode = 'frontend',
+    filterValues,
     onFilterChange,
     onSortChange,
     onPageChange,
@@ -134,6 +135,7 @@ export function DataTable<T = any>(props: DataTableProps<T>) {
     <DataTableProvider
       data={data}
       filterMode={filterMode}
+      filterValues={filterValues}
       onFilterChange={onFilterChange}
       onSortChange={onSortChange}
       onPageChange={onPageChange}

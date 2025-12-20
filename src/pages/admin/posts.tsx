@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
+import { useDebounce } from '@/hooks/useDebounce'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
 import {
@@ -25,170 +26,204 @@ import {
   MapPin,
   CheckCircle,
   XCircle,
+  Loader2,
 } from 'lucide-react'
+import { ListingService } from '@/api/services/listing.service'
+import {
+  AdminListingItem,
+  ListingStatisticsSummary,
+  VipType,
+  ListingFilterRequest,
+} from '@/api/types/listing.type'
 
-// Types
-type PostStatus = 'pending' | 'approved' | 'rejected'
-type PropertyType = 'house' | 'apartment' | 'office' | 'land'
-type ListingType = 'for_sale' | 'for_rent'
-
-type PostData = {
+// UI Display Types
+type PostStatus = 'pending' | 'approved' | 'rejected' | 'expired'
+type UIPostData = {
   id: string
   title: string
   postCode: string
   images: string[]
-  listingType: ListingType
+  listingType: 'for_sale' | 'for_rent'
   vipLevel?: number
   poster: {
     name: string
     avatar?: string
-    totalPosts: number
+    userId: string
+    phone: string
   }
   propertyInfo: {
-    type: PropertyType
+    type: string
     area: number
     district: string
+    fullAddress: string
   }
   price: string
+  priceRaw: number
   postedDate: string
   postedTime: string
+  expiryDate: string
   status: PostStatus
+  verified: boolean
+  isVerify: boolean
+  rejectionReason?: string | null
+  verificationNotes?: string | null
 }
-
-// Mock data
-const mockPosts: PostData[] = [
-  {
-    id: 'p001',
-    title: 'Luxury Villa for Sale - District 2',
-    postCode: 'POST-2024-001',
-    images: [
-      '/images/default-image.jpg',
-      '/images/example.png',
-      '/images/rental-auth-bg.jpg',
-    ],
-    listingType: 'for_sale',
-    vipLevel: 3,
-    poster: {
-      name: 'Pham Minh Hieu',
-      avatar: '/images/default-image.jpg',
-      totalPosts: 15,
-    },
-    propertyInfo: {
-      type: 'house',
-      area: 250,
-      district: 'District 2',
-    },
-    price: '8,500,000,000đ',
-    postedDate: '15/01/2024',
-    postedTime: '09:30',
-    status: 'pending',
-  },
-  {
-    id: 'p002',
-    title: 'Office Space for Rent - CBD Area',
-    postCode: 'POST-2024-002',
-    images: ['/images/default-image.jpg', '/images/example.png'],
-    listingType: 'for_rent',
-    poster: {
-      name: 'Do Thi Lan',
-      avatar: '/images/default-image.jpg',
-      totalPosts: 8,
-    },
-    propertyInfo: {
-      type: 'office',
-      area: 120,
-      district: 'District 1',
-    },
-    price: '25,000,000đ/month',
-    postedDate: '16/01/2024',
-    postedTime: '14:15',
-    status: 'pending',
-  },
-  {
-    id: 'p003',
-    title: 'Spacious 2BR Apartment for Sale - District 7',
-    postCode: 'POST-2024-003',
-    images: ['/images/default-image.jpg'],
-    listingType: 'for_sale',
-    poster: {
-      name: 'Tran Thi Mai',
-      avatar: '/images/default-image.jpg',
-      totalPosts: 22,
-    },
-    propertyInfo: {
-      type: 'apartment',
-      area: 85,
-      district: 'District 7',
-    },
-    price: '3,200,000,000đ',
-    postedDate: '14/01/2024',
-    postedTime: '11:00',
-    status: 'approved',
-  },
-  {
-    id: 'p004',
-    title: 'Modern Studio Apartment - District 1',
-    postCode: 'POST-2024-004',
-    images: ['/images/default-image.jpg', '/images/example.png'],
-    listingType: 'for_sale',
-    vipLevel: 2,
-    poster: {
-      name: 'Nguyen Van Khanh',
-      avatar: '/images/default-image.jpg',
-      totalPosts: 12,
-    },
-    propertyInfo: {
-      type: 'apartment',
-      area: 45,
-      district: 'District 1',
-    },
-    price: '2,500,000,000đ',
-    postedDate: '17/01/2024',
-    postedTime: '16:45',
-    status: 'pending',
-  },
-  {
-    id: 'p005',
-    title: 'Commercial Land Plot - Thu Duc',
-    postCode: 'POST-2024-005',
-    images: ['/images/default-image.jpg'],
-    listingType: 'for_sale',
-    poster: {
-      name: 'Le Hoang Nam',
-      avatar: '/images/default-image.jpg',
-      totalPosts: 5,
-    },
-    propertyInfo: {
-      type: 'land',
-      area: 500,
-      district: 'Thu Duc City',
-    },
-    price: '15,000,000,000đ',
-    postedDate: '13/01/2024',
-    postedTime: '08:20',
-    status: 'rejected',
-  },
-]
 
 // Helper functions
-const getPropertyIcon = (type: PropertyType) => {
-  const icons = {
-    house: <Home className='h-4 w-4' />,
-    apartment: <Building2 className='h-4 w-4' />,
-    office: <Briefcase className='h-4 w-4' />,
-    land: <MapPin className='h-4 w-4' />,
+const getVipLevel = (vipType: VipType): number | undefined => {
+  const levels: Record<VipType, number | undefined> = {
+    NORMAL: undefined,
+    SILVER: 1,
+    GOLD: 2,
+    DIAMOND: 3,
   }
-  return icons[type]
+  return levels[vipType]
 }
 
-const getPropertyTypeLabel = (type: PropertyType): string => {
-  const labels = {
-    house: 'Nhà',
-    apartment: 'Căn hộ',
-    office: 'Văn phòng',
-    land: 'Đất',
+const getPropertyIcon = (type: string) => {
+  const iconMap: Record<string, React.ReactElement> = {
+    HOUSE: <Home className='h-4 w-4' />,
+    APARTMENT: <Building2 className='h-4 w-4' />,
+    OFFICE: <Briefcase className='h-4 w-4' />,
+    LAND: <MapPin className='h-4 w-4' />,
+    ROOM: <Building2 className='h-4 w-4' />,
   }
-  return labels[type]
+  return iconMap[type] || <Home className='h-4 w-4' />
+}
+
+const getPropertyTypeLabel = (type: string): string => {
+  const labels: Record<string, string> = {
+    HOUSE: 'Nhà',
+    APARTMENT: 'Căn hộ',
+    OFFICE: 'Văn phòng',
+    LAND: 'Đất',
+    ROOM: 'Phòng trọ',
+    OTHER: 'Khác',
+  }
+  return labels[type] || type
+}
+
+const formatPrice = (price: number, priceUnit: string): string => {
+  const formatted = new Intl.NumberFormat('vi-VN').format(price)
+  const unitMap: Record<string, string> = {
+    VND_PER_MONTH: 'đ/tháng',
+    VND_PER_YEAR: 'đ/năm',
+    VND_TOTAL: 'đ',
+  }
+  return `${formatted}${unitMap[priceUnit] || 'đ'}`
+}
+
+const formatDateTime = (isoString: string): { date: string; time: string } => {
+  const date = new Date(isoString)
+  return {
+    date: date.toLocaleDateString('vi-VN'),
+    time: date.toLocaleTimeString('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+    }),
+  }
+}
+
+// Helper function to map UI filters to API filter format
+const mapUIFiltersToAPI = (
+  uiFilters: Record<string, any>,
+): Partial<ListingFilterRequest> => {
+  const apiFilters: Partial<ListingFilterRequest> = {
+    page: 0, // Backend uses 0-based pagination
+    size: 20,
+    sortBy: 'NEWEST',
+  }
+
+  // Search keyword
+  if (uiFilters.search) {
+    apiFilters.keyword = uiFilters.search
+  }
+
+  // Status mapping
+  if (uiFilters.status) {
+    switch (uiFilters.status) {
+      case 'pending':
+        apiFilters.isVerify = false
+        apiFilters.verified = undefined
+        apiFilters.expired = false
+        break
+      case 'approved':
+        apiFilters.verified = true
+        apiFilters.isVerify = true
+        apiFilters.expired = false
+        break
+      case 'rejected':
+        apiFilters.verified = false
+        apiFilters.isVerify = true
+        apiFilters.expired = false
+        break
+      case 'expired':
+        apiFilters.expired = true
+        break
+    }
+  }
+
+  // Property type (productType in API)
+  if (uiFilters['propertyInfo.type']) {
+    apiFilters.productType = uiFilters['propertyInfo.type']
+  }
+
+  // Listing type mapping
+  if (uiFilters.listingType) {
+    apiFilters.listingType =
+      uiFilters.listingType === 'for_rent' ? 'FOR_RENT' : 'FOR_SALE'
+  }
+
+  return apiFilters
+}
+
+const mapApiDataToUI = (item: AdminListingItem): UIPostData => {
+  const { date, time } = formatDateTime(item.postDate)
+  const { date: expiryDate } = formatDateTime(item.expiryDate)
+
+  let status: PostStatus = 'pending'
+  if (item.expired) {
+    status = 'expired'
+  } else if (item.verified && item.isVerify) {
+    status = 'approved'
+  } else if (!item.verified && item.isVerify) {
+    status = 'rejected'
+  } else {
+    status = 'pending'
+  }
+
+  return {
+    id: item.listingId.toString(),
+    title: item.title,
+    postCode: `POST-${item.listingId}`,
+    images: item.media?.map((m) => m.url) || [],
+    listingType: item.listingType === 'FOR_RENT' ? 'for_rent' : 'for_sale',
+    vipLevel: getVipLevel(item.vipType),
+    poster: {
+      name: item.user
+        ? `${item.user.firstName} ${item.user.lastName}`
+        : 'Unknown User',
+      avatar: undefined,
+      userId: item.user?.userId || item.userId,
+      phone: item.user?.contactPhoneNumber || '',
+    },
+    propertyInfo: {
+      type: item.productType,
+      area: item.area || 0,
+      district: item.address?.legacyDistrictName || 'N/A',
+      fullAddress: item.address?.fullAddress || 'N/A',
+    },
+    price: formatPrice(item.price, item.priceUnit),
+    priceRaw: item.price,
+    postedDate: date,
+    postedTime: time,
+    expiryDate: expiryDate,
+    status,
+    verified: item.verified,
+    isVerify: item.isVerify,
+    rejectionReason: item.adminVerification?.rejectionReason,
+    verificationNotes: item.adminVerification?.verificationNotes,
+  }
 }
 
 const getStatusColor = (status: PostStatus): string => {
@@ -196,6 +231,7 @@ const getStatusColor = (status: PostStatus): string => {
     pending: 'bg-yellow-50 text-yellow-800 border-yellow-200',
     approved: 'bg-green-50 text-green-700 border-green-200',
     rejected: 'bg-red-50 text-red-700 border-red-200',
+    expired: 'bg-gray-50 text-gray-700 border-gray-200',
   }
   return colors[status]
 }
@@ -205,31 +241,153 @@ const getStatusLabel = (status: PostStatus): string => {
     pending: 'Pending',
     approved: 'Approved',
     rejected: 'Rejected',
+    expired: 'Expired',
   }
   return labels[status]
 }
 
 const PostVerification: NextPageWithLayout = () => {
   const t = useTranslations('posts')
-  const [selectedPost, setSelectedPost] = useState<PostData | null>(null)
+  const [posts, setPosts] = useState<UIPostData[]>([])
+  const [initialLoading, setInitialLoading] = useState(true)
+  const [tableLoading, setTableLoading] = useState(false)
+  const [selectedPost, setSelectedPost] = useState<UIPostData | null>(null)
   const [reviewModalOpen, setReviewModalOpen] = useState(false)
   const [rejectionReason, setRejectionReason] = useState('')
+  const [verificationNotes, setVerificationNotes] = useState('')
+  const [actionLoading, setActionLoading] = useState(false)
+  const [stats, setStats] = useState<ListingStatisticsSummary>({
+    pendingVerification: 0,
+    verified: 0,
+    expired: 0,
+    drafts: 0,
+    shadows: 0,
+    normalListings: 0,
+    silverListings: 0,
+    goldListings: 0,
+    diamondListings: 0,
+  })
+  const [filterValues, setFilterValues] = useState<Record<string, any>>({})
+  const debouncedSearchTerm = useDebounce(filterValues.search || '', 500)
+
+  // Update filterValues with actual search term for DataTable to maintain input state
+  const controlledFilterValues = {
+    ...filterValues,
+    search: filterValues.search, // Keep the actual input value, not debounced
+  }
+
+  // Fetch listings on mount and when filters change
+  useEffect(() => {
+    fetchListings()
+  }, [
+    debouncedSearchTerm,
+    filterValues.status,
+    filterValues['propertyInfo.type'],
+    filterValues.listingType,
+  ])
+
+  const fetchListings = async () => {
+    try {
+      // Only show full-page loading on initial load
+      if (initialLoading) {
+        setInitialLoading(true)
+      } else {
+        setTableLoading(true)
+      }
+
+      // Map UI filters to API format
+      const apiFilters = mapUIFiltersToAPI({
+        ...filterValues,
+        search: debouncedSearchTerm,
+      })
+
+      const response = await ListingService.getAdminListings(apiFilters)
+
+      if (response.data) {
+        const uiData = response.data.listings.map(mapApiDataToUI)
+        setPosts(uiData)
+        setStats(response.data.statistics)
+      }
+    } catch (error) {
+      console.error('Error fetching listings:', error)
+      alert('Failed to load listings. Please try again.')
+    } finally {
+      setInitialLoading(false)
+      setTableLoading(false)
+    }
+  }
+
+  // Handle filter changes from DataTable
+  const handleFilterChange = (newFilters: Record<string, any>) => {
+    setFilterValues(newFilters)
+  }
 
   const breadcrumbItems = [
     { label: 'Admin Dashboard', href: '/admin' },
     { label: t('breadcrumb.title') }, // Current page
   ]
 
-  // Calculate stats
-  const stats = {
-    total: mockPosts.length,
-    pending: mockPosts.filter((p) => p.status === 'pending').length,
-    approved: mockPosts.filter((p) => p.status === 'approved').length,
-    rejected: mockPosts.filter((p) => p.status === 'rejected').length,
+  const handleReview = (post: UIPostData) => {
+    setSelectedPost(post)
+    setReviewModalOpen(true)
+    setRejectionReason(post.rejectionReason || '')
+    setVerificationNotes(post.verificationNotes || '')
+  }
+
+  const handleApprove = async () => {
+    if (!selectedPost) return
+
+    try {
+      setActionLoading(true)
+      await ListingService.verifyListing(
+        selectedPost.id,
+        verificationNotes || 'Listing approved',
+      )
+
+      alert('Listing has been approved successfully.')
+
+      // Refresh listings
+      await fetchListings()
+      setReviewModalOpen(false)
+      setSelectedPost(null)
+      setVerificationNotes('')
+    } catch (error) {
+      console.error('Error approving listing:', error)
+      alert('Failed to approve listing. Please try again.')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleReject = async () => {
+    if (!selectedPost) return
+
+    if (!rejectionReason.trim()) {
+      alert('Please provide a reason for rejection.')
+      return
+    }
+
+    try {
+      setActionLoading(true)
+      await ListingService.rejectListing(selectedPost.id, rejectionReason)
+
+      alert('Listing has been rejected.')
+
+      // Refresh listings
+      await fetchListings()
+      setReviewModalOpen(false)
+      setSelectedPost(null)
+      setRejectionReason('')
+    } catch (error) {
+      console.error('Error rejecting listing:', error)
+      alert('Failed to reject listing. Please try again.')
+    } finally {
+      setActionLoading(false)
+    }
   }
 
   // Define columns for DataTable
-  const columns: Column<PostData>[] = [
+  const columns: Column<UIPostData>[] = [
     {
       id: 'post',
       header: t('table.postDetails'),
@@ -283,19 +441,15 @@ const PostVerification: NextPageWithLayout = () => {
       render: (_, row) => (
         <div className='flex items-center gap-2'>
           <Avatar className='h-10 w-10'>
-            <img
-              src={row.poster.avatar || '/images/default-image.jpg'}
-              alt={row.poster.name}
-              className='h-full w-full object-cover'
-            />
+            <div className='h-full w-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold'>
+              {row.poster.name.charAt(0).toUpperCase()}
+            </div>
           </Avatar>
           <div>
             <div className='text-sm font-medium text-gray-900'>
               {row.poster.name}
             </div>
-            <div className='text-xs text-gray-500'>
-              {row.poster.totalPosts} posts
-            </div>
+            <div className='text-xs text-gray-500'>{row.poster.phone}</div>
           </div>
         </div>
       ),
@@ -379,10 +533,10 @@ const PostVerification: NextPageWithLayout = () => {
       type: 'select',
       label: t('filters.allTypes'),
       options: [
-        { value: 'house', label: t('filters.house') },
-        { value: 'apartment', label: t('filters.apartment') },
-        { value: 'office', label: t('filters.office') },
-        { value: 'land', label: t('filters.land') },
+        { value: 'HOUSE', label: t('filters.house') },
+        { value: 'APARTMENT', label: t('filters.apartment') },
+        { value: 'OFFICE', label: t('filters.office') },
+        { value: 'LAND', label: t('filters.land') },
       ],
     },
     {
@@ -396,112 +550,104 @@ const PostVerification: NextPageWithLayout = () => {
     },
   ]
 
-  const handleReview = (post: PostData) => {
-    setSelectedPost(post)
-    setReviewModalOpen(true)
-    setRejectionReason('')
-  }
-
-  const handleApprove = () => {
-    console.log('Approving post:', selectedPost?.id)
-    // TODO: API call to approve post
-    setReviewModalOpen(false)
-    setSelectedPost(null)
-  }
-
-  const handleReject = () => {
-    console.log('Rejecting post:', selectedPost?.id, 'Reason:', rejectionReason)
-    // TODO: API call to reject post with reason
-    setReviewModalOpen(false)
-    setSelectedPost(null)
-    setRejectionReason('')
-  }
-
   return (
     <div>
       <Breadcrumb items={breadcrumbItems} />
 
-      <div className='space-y-6'>
-        {/* Header */}
-        <div>
-          <h1 className='text-3xl font-semibold text-gray-900'>{t('title')}</h1>
-          <p className='mt-1 text-sm text-gray-500'>{t('description')}</p>
+      {initialLoading ? (
+        <div className='flex items-center justify-center h-64'>
+          <Loader2 className='h-8 w-8 animate-spin text-blue-600' />
         </div>
+      ) : (
+        <div className='space-y-6'>
+          {/* Header */}
+          <div>
+            <h1 className='text-3xl font-semibold text-gray-900'>
+              {t('title')}
+            </h1>
+            <p className='mt-1 text-sm text-gray-500'>{t('description')}</p>
+          </div>
 
-        {/* Stats Cards */}
-        <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
-          <div className='rounded-xl border border-gray-100 bg-white p-6'>
-            <div className='text-2xl font-bold text-gray-900'>
-              {stats.total}
+          {/* Stats Cards */}
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
+            <div className='rounded-xl border border-gray-100 bg-white p-6'>
+              <div className='text-2xl font-bold text-gray-900'>
+                {posts.length}
+              </div>
+              <div className='mt-1 text-sm text-gray-400'>
+                {t('stats.total')}
+              </div>
+              <div className='mt-2 text-xs text-gray-500'>
+                {t('stats.allSubmitted')}
+              </div>
             </div>
-            <div className='mt-1 text-sm text-gray-400'>{t('stats.total')}</div>
-            <div className='mt-2 text-xs text-gray-500'>
-              {t('stats.allSubmitted')}
+
+            <div className='rounded-xl border border-gray-100 bg-white p-6'>
+              <div className='text-2xl font-bold text-yellow-600'>
+                {stats.pendingVerification}
+              </div>
+              <div className='mt-1 text-sm text-gray-400'>
+                {t('stats.pending')}
+              </div>
+              <div className='mt-2 text-xs text-gray-500'>
+                {t('stats.awaitingVerification')}
+              </div>
+            </div>
+
+            <div className='rounded-xl border border-gray-100 bg-white p-6'>
+              <div className='text-2xl font-bold text-green-600'>
+                {stats.verified}
+              </div>
+              <div className='mt-1 text-sm text-gray-400'>
+                {t('stats.approved')}
+              </div>
+              <div className='mt-2 text-xs text-gray-500'>
+                {t('stats.published')}
+              </div>
+            </div>
+
+            <div className='rounded-xl border border-gray-100 bg-white p-6'>
+              <div className='text-2xl font-bold text-red-600'>
+                {stats.expired}
+              </div>
+              <div className='mt-1 text-sm text-gray-400'>
+                {t('stats.rejected')}
+              </div>
+              <div className='mt-2 text-xs text-gray-500'>
+                {t('stats.notApproved')}
+              </div>
             </div>
           </div>
 
-          <div className='rounded-xl border border-gray-100 bg-white p-6'>
-            <div className='text-2xl font-bold text-yellow-600'>
-              {stats.pending}
-            </div>
-            <div className='mt-1 text-sm text-gray-400'>
-              {t('stats.pending')}
-            </div>
-            <div className='mt-2 text-xs text-gray-500'>
-              {t('stats.awaitingVerification')}
-            </div>
-          </div>
-
-          <div className='rounded-xl border border-gray-100 bg-white p-6'>
-            <div className='text-2xl font-bold text-green-600'>
-              {stats.approved}
-            </div>
-            <div className='mt-1 text-sm text-gray-400'>
-              {t('stats.approved')}
-            </div>
-            <div className='mt-2 text-xs text-gray-500'>
-              {t('stats.published')}
-            </div>
-          </div>
-
-          <div className='rounded-xl border border-gray-100 bg-white p-6'>
-            <div className='text-2xl font-bold text-red-600'>
-              {stats.rejected}
-            </div>
-            <div className='mt-1 text-sm text-gray-400'>
-              {t('stats.rejected')}
-            </div>
-            <div className='mt-2 text-xs text-gray-500'>
-              {t('stats.notApproved')}
-            </div>
-          </div>
+          {/* DataTable Component */}
+          <DataTable
+            data={posts}
+            columns={columns}
+            filters={filters}
+            filterMode='api'
+            filterValues={controlledFilterValues}
+            onFilterChange={handleFilterChange}
+            loading={tableLoading}
+            pagination
+            itemsPerPage={10}
+            itemsPerPageOptions={[5, 10, 20, 50]}
+            sortable
+            defaultSort={{ key: 'postedDate', direction: 'desc' }}
+            actions={(row) => (
+              <Button
+                variant='outline'
+                size='sm'
+                onClick={() => handleReview(row)}
+                className='rounded-lg border-gray-300 px-3 py-1 text-sm hover:border-blue-500 hover:text-blue-600'
+              >
+                Review
+              </Button>
+            )}
+            emptyMessage={t('table.noPostsFound')}
+            getRowKey={(row) => row.id}
+          />
         </div>
-
-        {/* DataTable Component */}
-        <DataTable
-          data={mockPosts}
-          columns={columns}
-          filters={filters}
-          filterMode='frontend'
-          pagination
-          itemsPerPage={10}
-          itemsPerPageOptions={[5, 10, 20, 50]}
-          sortable
-          defaultSort={{ key: 'postedDate', direction: 'desc' }}
-          actions={(row) => (
-            <Button
-              variant='outline'
-              size='sm'
-              onClick={() => handleReview(row)}
-              className='rounded-lg border-gray-300 px-3 py-1 text-sm hover:border-blue-500 hover:text-blue-600'
-            >
-              Review
-            </Button>
-          )}
-          emptyMessage={t('table.noPostsFound')}
-          getRowKey={(row) => row.id}
-        />
-      </div>
+      )}
 
       {/* Review Modal */}
       <Dialog open={reviewModalOpen} onOpenChange={setReviewModalOpen}>
@@ -592,7 +738,7 @@ const PostVerification: NextPageWithLayout = () => {
                         {selectedPost.poster.name}
                       </div>
                       <div className='text-xs md:text-sm text-gray-500'>
-                        {selectedPost.poster.totalPosts} posts
+                        {selectedPost.poster.phone}
                       </div>
                     </div>
                   </div>
@@ -611,24 +757,68 @@ const PostVerification: NextPageWithLayout = () => {
                   </Badge>
                 </div>
 
-                {/* Rejection Reason (if rejecting) */}
+                {/* Rejection Reason / Verification Notes */}
                 {selectedPost.status === 'pending' && (
-                  <div>
-                    <label
-                      htmlFor='rejection-reason'
-                      className='text-xs md:text-sm font-medium text-gray-700'
-                    >
-                      Rejection Reason (optional)
-                    </label>
-                    <textarea
-                      id='rejection-reason'
-                      value={rejectionReason}
-                      onChange={(e) => setRejectionReason(e.target.value)}
-                      placeholder='Enter reason for rejection...'
-                      className='mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-xs md:text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100'
-                      rows={3}
-                    />
-                  </div>
+                  <>
+                    <div>
+                      <label
+                        htmlFor='verification-notes'
+                        className='text-xs md:text-sm font-medium text-gray-700'
+                      >
+                        Verification Notes (optional)
+                      </label>
+                      <textarea
+                        id='verification-notes'
+                        value={verificationNotes}
+                        onChange={(e) => setVerificationNotes(e.target.value)}
+                        placeholder='Enter notes for approval...'
+                        className='mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-xs md:text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100'
+                        rows={2}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor='rejection-reason'
+                        className='text-xs md:text-sm font-medium text-gray-700'
+                      >
+                        Rejection Reason (required for rejection)
+                      </label>
+                      <textarea
+                        id='rejection-reason'
+                        value={rejectionReason}
+                        onChange={(e) => setRejectionReason(e.target.value)}
+                        placeholder='Enter reason for rejection...'
+                        className='mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-xs md:text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100'
+                        rows={3}
+                      />
+                    </div>
+                  </>
+                )}
+
+                {/* Display existing notes if already reviewed */}
+                {selectedPost.status !== 'pending' && (
+                  <>
+                    {selectedPost.verificationNotes && (
+                      <div>
+                        <div className='text-xs md:text-sm font-medium text-gray-700'>
+                          Verification Notes
+                        </div>
+                        <div className='mt-1 text-sm text-gray-600'>
+                          {selectedPost.verificationNotes}
+                        </div>
+                      </div>
+                    )}
+                    {selectedPost.rejectionReason && (
+                      <div>
+                        <div className='text-xs md:text-sm font-medium text-gray-700'>
+                          Rejection Reason
+                        </div>
+                        <div className='mt-1 text-sm text-red-600'>
+                          {selectedPost.rejectionReason}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 
@@ -637,17 +827,27 @@ const PostVerification: NextPageWithLayout = () => {
                 <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
                   <Button
                     onClick={handleApprove}
+                    disabled={actionLoading}
                     className='flex-1 bg-green-600 hover:bg-green-700 text-sm'
                   >
-                    <CheckCircle className='mr-2 h-4 w-4' />
+                    {actionLoading ? (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    ) : (
+                      <CheckCircle className='mr-2 h-4 w-4' />
+                    )}
                     Approve Post
                   </Button>
                   <Button
                     onClick={handleReject}
+                    disabled={actionLoading}
                     variant='outline'
                     className='flex-1 border-red-300 text-red-600 hover:bg-red-50 text-sm'
                   >
-                    <XCircle className='mr-2 h-4 w-4' />
+                    {actionLoading ? (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    ) : (
+                      <XCircle className='mr-2 h-4 w-4' />
+                    )}
                     Reject Post
                   </Button>
                 </div>

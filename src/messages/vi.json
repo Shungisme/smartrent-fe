@@ -816,7 +816,8 @@
         "analytics": "Phân Tích Ứng Dụng",
         "properties": "Danh Sách Bất Động Sản",
         "settings": "Cài Đặt",
-        "search": "Tìm Kiếm Nâng Cao"
+        "search": "Tìm Kiếm Nâng Cao",
+        "roles": "Quản Lý Vai Trò"
       }
     },
     "users": {
@@ -843,7 +844,8 @@
           "joinDate": "Ngày Tham Gia",
           "lastOnline": "Lần Online Cuối",
           "posts": "Bài Đăng",
-          "status": "Trạng Thái"
+          "status": "Trạng Thái",
+          "actions": "Hành Động"
         },
         "userTypes": {
           "landlord": "Chủ nhà",
@@ -854,7 +856,32 @@
         "statuses": {
           "normal": "Bình thường",
           "banned": "Bị cấm"
+        },
+        "actions": {
+          "edit": "Chỉnh sửa",
+          "delete": "Xóa"
         }
+      },
+      "delete": {
+        "title": "Xóa Người Dùng",
+        "confirm": "Bạn có chắc chắn muốn xóa người dùng này không? Hành động này không thể hoàn tác.",
+        "deleting": "Đang xóa...",
+        "cancel": "Hủy",
+        "delete": "Xóa"
+      },
+      "edit": {
+        "title": "Chỉnh sửa Người Dùng",
+        "save": "Lưu Thay Đổi",
+        "saving": "Đang Lưu...",
+        "verified": "Đã Xác Minh",
+        "cancel": "Hủy"
+      },
+      "create": {
+        "title": "Tạo Người Dùng Mới",
+        "create": "Tạo",
+        "creating": "Đang Tạo...",
+        "cancel": "Hủy",
+        "button": "Tạo Người Dùng Mới"
       }
     },
     "analytics": {
@@ -1030,11 +1057,22 @@
           "inactive": "Không hoạt động"
         },
         "actions": {
-          "viewDetails": "Xem chi tiết",
           "edit": "Chỉnh sửa",
-          "changeRole": "Thay đổi vai trò",
-          "deactivate": "Vô hiệu hóa"
+          "delete": "Xóa"
         }
+      },
+      "edit": {
+        "title": "Chỉnh sửa Admin",
+        "save": "Lưu thay đổi",
+        "saving": "Đang lưu...",
+        "cancel": "Hủy"
+      },
+      "delete": {
+        "title": "Xóa Admin",
+        "confirm": "Bạn có chắc chắn muốn xóa admin này không?",
+        "delete": "Xóa",
+        "deleting": "Đang xóa...",
+        "cancel": "Hủy"
       }
     },
     "finance": {
@@ -1090,7 +1128,20 @@
         "dueDate": "Đến hạn:"
       },
       "months": {
-        "short": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10", "T11", "T12"]
+        "short": [
+          "T1",
+          "T2",
+          "T3",
+          "T4",
+          "T5",
+          "T6",
+          "T7",
+          "T8",
+          "T9",
+          "T10",
+          "T11",
+          "T12"
+        ]
       }
     }
   },
@@ -1345,7 +1396,8 @@
       "actionPlaceholder": "Nhập lý do quyết định của bạn...",
       "viewPost": "Xem Bài Đăng",
       "resolve": "Xử Lý",
-      "dismiss": "Bỏ Qua"
+      "dismiss": "Bỏ Qua",
+      "actions": "Thao Tác"
     },
     "categories": {
       "fake_fraudulent": "Tin Giả/Lừa Đảo",

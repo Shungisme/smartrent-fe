@@ -29,6 +29,7 @@ interface DataTableProviderProps<T> {
   children: React.ReactNode
   data: T[]
   filterMode?: FilterMode
+  filterValues?: Record<string, any> // External filter values for controlled mode
   onFilterChange?: (filters: Record<string, any>) => void
   onSortChange?: (sort: SortConfig<T>) => void
   onPageChange?: (page: number) => void
@@ -42,6 +43,7 @@ export function DataTableProvider<T = any>({
   children,
   data,
   filterMode = 'frontend',
+  filterValues: externalFilterValues,
   onFilterChange,
   onSortChange,
   onPageChange,
@@ -51,7 +53,9 @@ export function DataTableProvider<T = any>({
   loading = false,
 }: DataTableProviderProps<T>) {
   // State management
-  const [filters, setFilters] = useState<Record<string, any>>({})
+  const [filters, setFilters] = useState<Record<string, any>>(
+    externalFilterValues || {},
+  )
   const [sortConfig, setSortConfig] = useState<SortConfig<T>>(
     defaultSort || { key: null, direction: null },
   )
@@ -232,6 +236,13 @@ export function DataTableProvider<T = any>({
   const clearSelection = useCallback(() => {
     setSelectedRows([])
   }, [])
+
+  // Sync internal filters with external values (for controlled mode)
+  useEffect(() => {
+    if (externalFilterValues) {
+      setFilters(externalFilterValues)
+    }
+  }, [externalFilterValues])
 
   // Reset page when data changes in API mode
   useEffect(() => {

@@ -1,11 +1,19 @@
-import { UserApi } from '@/api/types/user.type'
-import { createContext, PropsWithChildren, useContext, useEffect } from 'react'
-import { useAuthStore } from '@/store/auth/index.store'
+import { AdminApi } from '@/api/types/user.type'
+import {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useMemo,
+} from 'react'
+import {
+  useAuthStore,
+  normalizeAdminToUser,
+  User,
+} from '@/store/auth/index.store'
 import { AuthTokens } from '@/configs/axios/types'
 import { useValidToken } from '@/hooks/useAuth'
 import { decodeToken } from '@/utils/decode-jwt'
-
-interface User extends UserApi {}
 
 type AuthContextType = {
   user: User | null
@@ -35,15 +43,28 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
 
   const { validToken } = useValidToken()
 
+  // Initialize auth on mount/reload - check cookies sync with store
   useEffect(() => {
     const initializeAuth = async () => {
       try {
         const tokens = getStoredTokens()
+
+        // If localStorage says authenticated but no cookies → logout
+        if (isAuthenticated && !tokens?.accessToken) {
+          console.warn('[Auth] Cookies missing on load, logging out...')
+          logout()
+          return
+        }
+
+        // If we have tokens, validate them
         if (tokens?.accessToken) {
           const result = await validToken(tokens.accessToken)
-          if (result.data?.valid) {
-            const { user } = decodeToken(tokens.accessToken)
-            login(user, tokens)
+          if (result.success && 'data' in result && result.data?.valid) {
+            // Decode refreshToken instead of accessToken because it contains user data
+            const { user: rawUser } = decodeToken(tokens.refreshToken)
+            // Normalize admin data to user format
+            const normalizedUser = normalizeAdminToUser(rawUser as AdminApi)
+            login(normalizedUser, tokens)
           } else {
             logout()
           }
@@ -57,16 +78,28 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     initializeAuth()
   }, [])
 
-  const contextValue: AuthContextType = {
-    user,
-    isAuthenticated,
-    isLoading,
-    error,
-    login,
-    logout,
-    updateUser,
-    clearError,
-  }
+  const contextValue: AuthContextType = useMemo(
+    () => ({
+      user,
+      isAuthenticated,
+      isLoading,
+      error,
+      login,
+      logout,
+      updateUser,
+      clearError,
+    }),
+    [
+      user,
+      isAuthenticated,
+      isLoading,
+      error,
+      login,
+      logout,
+      updateUser,
+      clearError,
+    ],
+  )
 
   return (
     <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

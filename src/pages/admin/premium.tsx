@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
@@ -35,6 +35,10 @@ import {
   Trash2,
   Zap,
 } from 'lucide-react'
+import { getMembershipPackages } from '@/api/services/membership.service'
+import { MembershipPackage as APIMembershipPackage } from '@/api/types/membership.type'
+import { VIPTierService } from '@/api/services/vip-tier.service'
+import { VIPTier } from '@/api/types/vip-tier.type'
 
 // Types
 type MembershipStatus = 'active' | 'inactive'
@@ -272,6 +276,121 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
   const t = useTranslations('premium')
   const [activeTab, setActiveTab] = useState('overview')
 
+  // API state for membership packages
+  const [apiMemberships, setApiMemberships] = useState<APIMembershipPackage[]>(
+    [],
+  )
+  const [membershipsLoading, setMembershipsLoading] = useState(true)
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [membershipsError, setMembershipsError] = useState<string | null>(null)
+
+  // API state for VIP tiers
+  const [apiVIPTiers, setApiVIPTiers] = useState<VIPTier[]>([])
+  const [vipTiersLoading, setVIPTiersLoading] = useState(true)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [vipTiersError, setVIPTiersError] = useState<string | null>(null)
+
+  // Fetch membership packages from API
+  useEffect(() => {
+    const fetchMemberships = async () => {
+      setMembershipsLoading(true)
+      setMembershipsError(null)
+      try {
+        const response = await getMembershipPackages()
+        if (response.success && response.data) {
+          setApiMemberships(
+            response.data.data as unknown as APIMembershipPackage[], // Fix later
+          )
+        } else {
+          setMembershipsError(
+            response.message || 'Failed to load membership packages',
+          )
+        }
+      } catch (err: any) {
+        setMembershipsError(err.message || 'An error occurred')
+        console.error('Error fetching memberships:', err)
+      } finally {
+        setMembershipsLoading(false)
+      }
+    }
+
+    fetchMemberships()
+  }, [])
+
+  // Fetch VIP tiers from API
+  useEffect(() => {
+    const fetchVIPTiers = async () => {
+      setVIPTiersLoading(true)
+      setVIPTiersError(null)
+      try {
+        const tiers = await VIPTierService.getAllVIPTiers()
+        setApiVIPTiers(tiers)
+      } catch (err: any) {
+        setVIPTiersError(err.message || 'Failed to load VIP tiers')
+        console.error('Error fetching VIP tiers:', err)
+      } finally {
+        setVIPTiersLoading(false)
+      }
+    }
+
+    fetchVIPTiers()
+  }, [])
+
+  // Transform API memberships to UI format
+  const transformedMemberships: MembershipPackage[] = apiMemberships.map(
+    (pkg) => ({
+      id: pkg.membershipId.toString(),
+      name: pkg.packageName,
+      price: `${pkg.salePrice.toLocaleString()}đ/${pkg.durationMonths}mo`,
+      features: pkg.benefits.map(
+        (b) => `${b.benefitNameDisplay} (${b.quantityPerMonth}/month)`,
+      ),
+      discount: pkg.discountPercentage,
+      status: pkg.isActive ? 'active' : 'inactive',
+      revenue: '0đ', // API doesn't provide revenue yet
+      activeUsers: 0, // API doesn't provide user count yet
+    }),
+  )
+
+  // Use API data if available, otherwise fallback to mock
+  const displayMemberships =
+    apiMemberships.length > 0 ? transformedMemberships : mockMemberships
+
+  // Helper function to get tier color based on tier code
+  const getTierColor = (tierCode: string): string => {
+    const colors: Record<string, string> = {
+      NORMAL: 'bg-gray-100 text-gray-700',
+      SILVER: 'bg-blue-100 text-blue-700',
+      GOLD: 'bg-purple-100 text-purple-700',
+      DIAMOND: 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white',
+    }
+    return colors[tierCode] || 'bg-gray-100 text-gray-700'
+  }
+
+  // Transform API VIP tiers to UI format
+  const transformedVIPTiers: ListingTypePricing[] = apiVIPTiers.map((tier) => ({
+    tier: tier.tierCode.toLowerCase() as PricingTier,
+    name: tier.tierNameEn,
+    isActive: tier.isActive,
+    dayPricing: [
+      { days: 1, price: `${tier.pricePerDay.toLocaleString()}đ` },
+      { days: 10, price: `${tier.price10Days.toLocaleString()}đ` },
+      { days: 15, price: `${tier.price15Days.toLocaleString()}đ` },
+      { days: 30, price: `${tier.price30Days.toLocaleString()}đ` },
+    ],
+    clickPricing: {
+      basePrice: '0đ', // API doesn't provide click pricing
+      minClicks: 0,
+      maxClicks: tier.maxImages * 1000, // Estimate based on max images
+    },
+    color: getTierColor(tier.tierCode),
+  }))
+
+  // Use API data if available, otherwise fallback to mock
+  const displayListingTypes =
+    apiVIPTiers.length > 0 ? transformedVIPTiers : mockListingTypes
+
   // Modal states
   const [membershipModalOpen, setMembershipModalOpen] = useState(false)
   const [promoModalOpen, setPromoModalOpen] = useState(false)
@@ -309,13 +428,13 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
 
   // Calculate overview stats
   const stats = {
-    activeMemberships: `${mockMemberships.filter((m) => m.status === 'active').length}/${mockMemberships.length}`,
+    activeMemberships: `${displayMemberships.filter((m) => m.status === 'active').length}/${displayMemberships.length}`,
     activePromos: mockPromotions.filter((p) => p.status === 'active').length,
     totalPromoUsage: mockPromotions.reduce(
       (sum, p) => sum + p.usage.current,
       0,
     ),
-    listingTypes: mockListingTypes.filter((l) => l.isActive).length,
+    listingTypes: displayListingTypes.filter((l) => l.isActive).length,
     boostPackages: mockBoostPackages.filter((b) => b.isActive).length,
     totalBoostValue: mockBoostPackages
       .filter((b) => b.isActive)
@@ -442,49 +561,60 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
               <h3 className='text-lg font-semibold text-gray-900 mb-4'>
                 {t('overview.membershipRevenue')}
               </h3>
-              <div className='space-y-3'>
-                {mockMemberships.map((pkg) => (
-                  <div
-                    key={pkg.id}
-                    className='flex items-center justify-between rounded-lg border border-gray-100 p-4'
-                  >
-                    <div className='flex items-center gap-4'>
-                      <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100'>
-                        <Crown className='h-6 w-6 text-blue-600' />
-                      </div>
-                      <div>
-                        <div className='font-semibold text-gray-900'>
-                          {pkg.name}
+              {membershipsLoading ? (
+                <div className='flex items-center justify-center py-8'>
+                  <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600'></div>
+                  <span className='ml-3 text-gray-600'>
+                    Loading packages...
+                  </span>
+                </div>
+              ) : (
+                <div className='space-y-3'>
+                  {displayMemberships.map((pkg) => (
+                    <div
+                      key={pkg.id}
+                      className='flex items-center justify-between rounded-lg border border-gray-100 p-4'
+                    >
+                      <div className='flex items-center gap-4'>
+                        <div className='flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100'>
+                          <Crown className='h-6 w-6 text-blue-600' />
                         </div>
-                        <div className='text-sm text-gray-500'>{pkg.price}</div>
+                        <div>
+                          <div className='font-semibold text-gray-900'>
+                            {pkg.name}
+                          </div>
+                          <div className='text-sm text-gray-500'>
+                            {pkg.price}
+                          </div>
+                        </div>
+                      </div>
+                      <div className='flex items-center gap-8'>
+                        <div className='text-right'>
+                          <div className='text-sm text-gray-500'>
+                            {t('overview.revenue')}
+                          </div>
+                          <div className='font-semibold text-gray-900'>
+                            {pkg.revenue}
+                          </div>
+                        </div>
+                        <div className='text-right'>
+                          <div className='text-sm text-gray-500'>
+                            {t('overview.users')}
+                          </div>
+                          <div className='font-semibold text-gray-900'>
+                            {pkg.activeUsers}
+                          </div>
+                        </div>
+                        {pkg.discount > 0 && (
+                          <Badge className='bg-green-100 text-green-800'>
+                            {pkg.discount}% off
+                          </Badge>
+                        )}
                       </div>
                     </div>
-                    <div className='flex items-center gap-8'>
-                      <div className='text-right'>
-                        <div className='text-sm text-gray-500'>
-                          {t('overview.revenue')}
-                        </div>
-                        <div className='font-semibold text-gray-900'>
-                          {pkg.revenue}
-                        </div>
-                      </div>
-                      <div className='text-right'>
-                        <div className='text-sm text-gray-500'>
-                          {t('overview.users')}
-                        </div>
-                        <div className='font-semibold text-gray-900'>
-                          {pkg.activeUsers}
-                        </div>
-                      </div>
-                      {pkg.discount > 0 && (
-                        <Badge className='bg-green-100 text-green-800'>
-                          {pkg.discount}% off
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </Card>
 
             {/* Recent Promotional Activity */}
@@ -583,94 +713,116 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
                     </tr>
                   </thead>
                   <tbody className='divide-y divide-gray-100'>
-                    {mockMemberships.map((pkg) => (
-                      <tr key={pkg.id} className='hover:bg-gray-50'>
-                        <td className='px-6 py-4'>
-                          <div className='flex items-center gap-3'>
-                            <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100'>
-                              <Crown className='h-5 w-5 text-blue-600' />
-                            </div>
-                            <div>
-                              <div className='font-semibold text-gray-900'>
-                                {pkg.name}
-                              </div>
-                              <div className='text-xs text-gray-500'>
-                                {pkg.id}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className='px-6 py-4'>
-                          <div className='font-semibold text-gray-900'>
-                            {pkg.price}
-                          </div>
-                          <div className='text-xs text-gray-500'>
-                            {pkg.activeUsers}{' '}
-                            {t('membership.table.activeUsers')}
-                          </div>
-                        </td>
-                        <td className='px-6 py-4'>
-                          <div className='flex flex-wrap gap-1'>
-                            {pkg.features.slice(0, 2).map((feature, idx) => (
-                              <Badge
-                                key={idx}
-                                variant='outline'
-                                className='text-xs'
-                              >
-                                {feature}
-                              </Badge>
-                            ))}
-                            {pkg.features.length > 2 && (
-                              <Badge variant='outline' className='text-xs'>
-                                {t('membership.table.moreFeatures', {
-                                  count: pkg.features.length - 2,
-                                })}
-                              </Badge>
-                            )}
-                          </div>
-                        </td>
-                        <td className='px-6 py-4'>
-                          {pkg.discount > 0 ? (
-                            <Badge className='bg-green-100 text-green-800'>
-                              {pkg.discount}%
-                            </Badge>
-                          ) : (
-                            <span className='text-sm text-gray-400'>
-                              {t('membership.table.noDiscount')}
+                    {membershipsLoading ? (
+                      <tr>
+                        <td colSpan={6} className='px-6 py-12 text-center'>
+                          <div className='flex items-center justify-center'>
+                            <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600'></div>
+                            <span className='ml-3 text-gray-600'>
+                              Loading packages...
                             </span>
-                          )}
-                        </td>
-                        <td className='px-6 py-4'>
-                          <label className='relative inline-flex items-center cursor-pointer'>
-                            <input
-                              type='checkbox'
-                              className='sr-only peer'
-                              checked={pkg.status === 'active'}
-                              readOnly
-                            />
-                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                          </label>
-                        </td>
-                        <td className='px-6 py-4'>
-                          <div className='flex items-center justify-center gap-2'>
-                            <Button
-                              variant='ghost'
-                              size='sm'
-                              className='h-8 w-8 p-0'
-                            >
-                              <Pencil className='h-4 w-4' />
-                            </Button>
-                            <Button
-                              variant='ghost'
-                              size='sm'
-                              className='h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50'
-                            >
-                              <Trash2 className='h-4 w-4' />
-                            </Button>
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    ) : displayMemberships.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={6}
+                          className='px-6 py-12 text-center text-gray-500'
+                        >
+                          No membership packages found
+                        </td>
+                      </tr>
+                    ) : (
+                      displayMemberships.map((pkg) => (
+                        <tr key={pkg.id} className='hover:bg-gray-50'>
+                          <td className='px-6 py-4'>
+                            <div className='flex items-center gap-3'>
+                              <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100'>
+                                <Crown className='h-5 w-5 text-blue-600' />
+                              </div>
+                              <div>
+                                <div className='font-semibold text-gray-900'>
+                                  {pkg.name}
+                                </div>
+                                <div className='text-xs text-gray-500'>
+                                  {pkg.id}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className='px-6 py-4'>
+                            <div className='font-semibold text-gray-900'>
+                              {pkg.price}
+                            </div>
+                            <div className='text-xs text-gray-500'>
+                              {pkg.activeUsers}{' '}
+                              {t('membership.table.activeUsers')}
+                            </div>
+                          </td>
+                          <td className='px-6 py-4'>
+                            <div className='flex flex-wrap gap-1'>
+                              {pkg.features.slice(0, 2).map((feature, idx) => (
+                                <Badge
+                                  key={idx}
+                                  variant='outline'
+                                  className='text-xs'
+                                >
+                                  {feature}
+                                </Badge>
+                              ))}
+                              {pkg.features.length > 2 && (
+                                <Badge variant='outline' className='text-xs'>
+                                  {t('membership.table.moreFeatures', {
+                                    count: pkg.features.length - 2,
+                                  })}
+                                </Badge>
+                              )}
+                            </div>
+                          </td>
+                          <td className='px-6 py-4'>
+                            {pkg.discount > 0 ? (
+                              <Badge className='bg-green-100 text-green-800'>
+                                {pkg.discount}%
+                              </Badge>
+                            ) : (
+                              <span className='text-sm text-gray-400'>
+                                {t('membership.table.noDiscount')}
+                              </span>
+                            )}
+                          </td>
+                          <td className='px-6 py-4'>
+                            <label className='relative inline-flex items-center cursor-pointer'>
+                              <input
+                                type='checkbox'
+                                className='sr-only peer'
+                                checked={pkg.status === 'active'}
+                                readOnly
+                              />
+                              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                          </td>
+                          <td className='px-6 py-4'>
+                            <div className='flex items-center justify-center gap-2'>
+                              <Button
+                                variant='ghost'
+                                size='sm'
+                                className='h-8 w-8 p-0'
+                              >
+                                <Pencil className='h-4 w-4' />
+                              </Button>
+                              <Button
+                                variant='ghost'
+                                size='sm'
+                                className='h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50'
+                              >
+                                <Trash2 className='h-4 w-4' />
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -804,117 +956,131 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
               {t('listingTypes.description')}
             </p>
 
-            <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
-              {mockListingTypes.map((listingType) => (
-                <Card key={listingType.tier} className='p-6'>
-                  <div className='flex items-start justify-between mb-4'>
-                    <div>
-                      <Badge
-                        className={cn('text-sm font-medium', listingType.color)}
-                      >
-                        {t(`listingTypes.tiers.${listingType.tier}`)}
-                      </Badge>
-                    </div>
-                    <label className='relative inline-flex items-center cursor-pointer'>
-                      <input
-                        type='checkbox'
-                        className='sr-only peer'
-                        checked={listingType.isActive}
-                        readOnly
-                      />
-                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                    </label>
-                  </div>
-
-                  {/* Day Pricing */}
-                  <div className='mb-4'>
-                    <h4 className='text-sm font-semibold text-gray-700 mb-3'>
-                      {t('listingTypes.dayPricing')}
-                    </h4>
-                    <div className='grid grid-cols-2 gap-3'>
-                      {listingType.dayPricing.map((pricing) => (
-                        <div
-                          key={pricing.days}
-                          className='rounded-lg border border-gray-200 p-3'
+            {vipTiersLoading ? (
+              <div className='flex justify-center py-12'>
+                <div className='text-center'>
+                  <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto'></div>
+                  <p className='mt-4 text-sm text-gray-600'>
+                    Loading VIP tiers...
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
+                {displayListingTypes.map((listingType) => (
+                  <Card key={listingType.tier} className='p-6'>
+                    <div className='flex items-start justify-between mb-4'>
+                      <div>
+                        <Badge
+                          className={cn(
+                            'text-sm font-medium',
+                            listingType.color,
+                          )}
                         >
-                          <div className='text-xs text-gray-500'>
-                            {pricing.days} {t('listingTypes.days')}
+                          {t(`listingTypes.tiers.${listingType.tier}`)}
+                        </Badge>
+                      </div>
+                      <label className='relative inline-flex items-center cursor-pointer'>
+                        <input
+                          type='checkbox'
+                          className='sr-only peer'
+                          checked={listingType.isActive}
+                          readOnly
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+
+                    {/* Day Pricing */}
+                    <div className='mb-4'>
+                      <h4 className='text-sm font-semibold text-gray-700 mb-3'>
+                        {t('listingTypes.dayPricing')}
+                      </h4>
+                      <div className='grid grid-cols-2 gap-3'>
+                        {listingType.dayPricing.map((pricing) => (
+                          <div
+                            key={pricing.days}
+                            className='rounded-lg border border-gray-200 p-3'
+                          >
+                            <div className='text-xs text-gray-500'>
+                              {pricing.days} {t('listingTypes.days')}
+                            </div>
+                            <div className='font-semibold text-gray-900'>
+                              {pricing.price}
+                            </div>
                           </div>
-                          <div className='font-semibold text-gray-900'>
-                            {pricing.price}
-                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Click Pricing */}
+                    <div className='mb-4'>
+                      <h4 className='text-sm font-semibold text-gray-700 mb-3'>
+                        {t('listingTypes.clickPricing')}
+                      </h4>
+                      <div className='rounded-lg border border-gray-200 p-3'>
+                        <div className='flex items-center justify-between'>
+                          <span className='text-sm text-gray-600'>
+                            {t('listingTypes.basePrice')}
+                          </span>
+                          <span className='font-semibold text-gray-900'>
+                            {listingType.clickPricing.basePrice}/
+                            {t('listingTypes.perClick')}
+                          </span>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Click Pricing */}
-                  <div className='mb-4'>
-                    <h4 className='text-sm font-semibold text-gray-700 mb-3'>
-                      {t('listingTypes.clickPricing')}
-                    </h4>
-                    <div className='rounded-lg border border-gray-200 p-3'>
-                      <div className='flex items-center justify-between'>
-                        <span className='text-sm text-gray-600'>
-                          {t('listingTypes.basePrice')}
-                        </span>
-                        <span className='font-semibold text-gray-900'>
-                          {listingType.clickPricing.basePrice}/
-                          {t('listingTypes.perClick')}
-                        </span>
-                      </div>
-                      <div className='mt-2 flex items-center justify-between'>
-                        <span className='text-sm text-gray-600'>
-                          {t('listingTypes.minClicks')} -{' '}
-                          {t('listingTypes.maxClicks')}
-                        </span>
-                        <span className='text-sm text-gray-700'>
-                          {listingType.clickPricing.minClicks} -{' '}
-                          {listingType.clickPricing.maxClicks.toLocaleString()}{' '}
-                          {t('listingTypes.clicks')}
-                        </span>
+                        <div className='mt-2 flex items-center justify-between'>
+                          <span className='text-sm text-gray-600'>
+                            {t('listingTypes.minClicks')} -{' '}
+                            {t('listingTypes.maxClicks')}
+                          </span>
+                          <span className='text-sm text-gray-700'>
+                            {listingType.clickPricing.minClicks} -{' '}
+                            {listingType.clickPricing.maxClicks.toLocaleString()}{' '}
+                            {t('listingTypes.clicks')}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <Button
-                    variant='outline'
-                    className='w-full'
-                    onClick={() => {
-                      const pricing1Day =
-                        listingType.dayPricing.find((p) => p.days === 1)
-                          ?.price || ''
-                      const pricing10Days =
-                        listingType.dayPricing.find((p) => p.days === 10)
-                          ?.price || ''
-                      const pricing15Days =
-                        listingType.dayPricing.find((p) => p.days === 15)
-                          ?.price || ''
-                      const pricing30Days =
-                        listingType.dayPricing.find((p) => p.days === 30)
-                          ?.price || ''
+                    <Button
+                      variant='outline'
+                      className='w-full'
+                      onClick={() => {
+                        const pricing1Day =
+                          listingType.dayPricing.find((p) => p.days === 1)
+                            ?.price || ''
+                        const pricing10Days =
+                          listingType.dayPricing.find((p) => p.days === 10)
+                            ?.price || ''
+                        const pricing15Days =
+                          listingType.dayPricing.find((p) => p.days === 15)
+                            ?.price || ''
+                        const pricing30Days =
+                          listingType.dayPricing.find((p) => p.days === 30)
+                            ?.price || ''
 
-                      setPricingInitialData({
-                        listingType: listingType.name,
-                        pricing1Day,
-                        pricing10Days,
-                        pricing15Days,
-                        pricing30Days,
-                        baseClickPrice: listingType.clickPricing.basePrice,
-                        minClickPrice:
-                          listingType.clickPricing.minClicks.toString(),
-                        maxClickPrice:
-                          listingType.clickPricing.maxClicks.toString(),
-                      })
-                      setPricingModalOpen(true)
-                    }}
-                  >
-                    <Pencil className='h-4 w-4 mr-2' />
-                    {t('listingTypes.editPricing')}
-                  </Button>
-                </Card>
-              ))}
-            </div>
+                        setPricingInitialData({
+                          listingType: listingType.name,
+                          pricing1Day,
+                          pricing10Days,
+                          pricing15Days,
+                          pricing30Days,
+                          baseClickPrice: listingType.clickPricing.basePrice,
+                          minClickPrice:
+                            listingType.clickPricing.minClicks.toString(),
+                          maxClickPrice:
+                            listingType.clickPricing.maxClicks.toString(),
+                        })
+                        setPricingModalOpen(true)
+                      }}
+                    >
+                      <Pencil className='h-4 w-4 mr-2' />
+                      {t('listingTypes.editPricing')}
+                    </Button>
+                  </Card>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           {/* Tab 5: Post Boosts */}
