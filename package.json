@@ -38,11 +38,11 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.539.0",
     "motion": "^12.23.22",
-    "next": "15.4.5",
+    "next": "15.4.8",
     "next-intl": "^4.3.5",
     "next-themes": "^0.4.6",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "19.1.2",
+    "react-dom": "19.1.2",
     "react-hook-form": "^7.62.0",
     "react-slugify": "^5.0.0",
     "sass": "^1.90.0",
@@ -57,6 +57,7 @@
     "@eslint/eslintrc": "^3",
     "@iconify/react": "^6.0.0",
     "@next/bundle-analyzer": "^15.5.0",
+    "@next/eslint-plugin-next": "^16.1.1",
     "@tailwindcss/postcss": "^4",
     "@types/cookies": "^0.9.1",
     "@types/lodash": "^4.17.20",
@@ -66,6 +67,7 @@
     "cross-env": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.4.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.5",
     "prettier": "^3.6.2",
@@ -79,5 +81,5 @@
       "npm run format"
     ]
   },
-  "packageManager": "yarn@4.5.1+sha512.341db9396b6e289fecc30cd7ab3af65060e05ebff4b3b47547b278b9e67b08f485ecd8c79006b405446262142c7a38154445ef7f17c1d5d1de7d90bf9ce7054d"
+  "packageManager": "yarn@4.12.0"
 }
