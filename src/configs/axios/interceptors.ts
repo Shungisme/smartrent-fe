@@ -118,7 +118,7 @@ export function createAuthRequestInterceptor(cookies?: any) {
     }
 
     if (!config.timeout) {
-      config.timeout = 30000
+      config.timeout = ENV.API_TIMEOUT
     }
 
     return config

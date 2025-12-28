@@ -13,7 +13,7 @@ function createClientAxiosInstance(
 ): AxiosInstance {
   const {
     baseURL = ENV.URL_API_BASE,
-    timeout = 30000,
+    timeout = ENV.API_TIMEOUT,
     withCredentials = true,
     errorHandler,
   } = config

@@ -150,17 +150,21 @@ class CookieManager {
    * Set authentication tokens
    */
   setAuthTokens(tokens: AuthTokens): void {
-    this.set('access_token', tokens.accessToken, {
-      expires: 7, // 7 days
-      secure: true,
-      sameSite: 'strict',
+    const { ENV } = require('@/constants')
+
+    this.set(ENV.ACCESS_TOKEN_COOKIE, tokens.accessToken, {
+      expires: ENV.ACCESS_TOKEN_EXPIRES,
+      secure: ENV.COOKIE_SECURE,
+      sameSite: ENV.COOKIE_SAME_SITE,
+      ...(ENV.COOKIE_DOMAIN && { domain: ENV.COOKIE_DOMAIN }),
     })
 
     if (tokens.refreshToken) {
-      this.set('refresh_token', tokens.refreshToken, {
-        expires: 30, // 30 days
-        secure: true,
-        sameSite: 'strict',
+      this.set(ENV.REFRESH_TOKEN_COOKIE, tokens.refreshToken, {
+        expires: ENV.REFRESH_TOKEN_EXPIRES,
+        secure: ENV.COOKIE_SECURE,
+        sameSite: ENV.COOKIE_SAME_SITE,
+        ...(ENV.COOKIE_DOMAIN && { domain: ENV.COOKIE_DOMAIN }),
       })
     }
   }

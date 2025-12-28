@@ -6,7 +6,7 @@ import { setupInterceptors } from './interceptors'
 function createServerAxiosInstance(cookies?: any): AxiosInstance {
   const config: Partial<AxiosInstanceConfig> = {
     baseURL: ENV.URL_API_BASE,
-    timeout: 30000,
+    timeout: ENV.API_TIMEOUT,
     withCredentials: false,
   }
 
