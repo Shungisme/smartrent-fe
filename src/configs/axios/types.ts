@@ -6,7 +6,7 @@ export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
   _retry?: boolean
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data: T
   message: string | null
   code: string
@@ -20,12 +20,12 @@ export interface AuthTokens {
 
 export interface InterceptorContext {
   isServer: boolean
-  cookies?: any
+  cookies?: Record<string, unknown>
 }
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 
-export type ErrorHandler = (error: any) => void
+export type ErrorHandler = (error: unknown) => void
 
 export interface AxiosInstanceConfig {
   baseURL: string

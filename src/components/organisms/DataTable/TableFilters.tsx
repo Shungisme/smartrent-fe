@@ -18,6 +18,7 @@ export function TableFilters({
 
   const renderFilter = (filter: FilterConfig) => {
     const value = values[filter.id] || filter.defaultValue || ''
+    const stringValue = typeof value === 'string' ? value : String(value || '')
 
     // Custom render function
     if (filter.render) {
@@ -36,7 +37,7 @@ export function TableFilters({
           <Input
             type='text'
             placeholder={filter.placeholder || filter.label}
-            value={value}
+            value={stringValue}
             onChange={(e) => onChange(filter.id, e.target.value)}
             className={`w-full pl-10 ${filter.className || ''}`}
           />
@@ -49,7 +50,7 @@ export function TableFilters({
       return (
         <select
           key={filter.id}
-          value={value}
+          value={stringValue}
           onChange={(e) => onChange(filter.id, e.target.value)}
           className={`rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 ${filter.className || ''}`}
         >
@@ -98,7 +99,7 @@ export function TableFilters({
           key={filter.id}
           type='text'
           placeholder={filter.placeholder || filter.label}
-          value={value}
+          value={stringValue}
           onChange={(e) => onChange(filter.id, e.target.value)}
           className={`${filter.className || ''}`}
         />

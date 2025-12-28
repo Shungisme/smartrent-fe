@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 
 // Column configuration for the table
-export interface Column<T = any> {
+export interface Column<T = Record<string, unknown>> {
   id: string
   header: string
-  accessor: keyof T | ((row: T) => any)
-  render?: (value: any, row: T) => ReactNode
+  accessor: keyof T | ((row: T) => unknown)
+  render?: (value: unknown, row: T) => ReactNode
   sortable?: boolean
   mobileLabel?: string // Label hiển thị trên mobile card
   hideOnMobile?: boolean // Ẩn column này trên mobile
@@ -31,14 +31,14 @@ export interface FilterConfig {
   label: string
   placeholder?: string
   options?: FilterOption[]
-  defaultValue?: any
+  defaultValue?: unknown
   render?: (props: FilterRenderProps) => ReactNode
   className?: string
 }
 
 export interface FilterRenderProps {
-  value: any
-  onChange: (value: any) => void
+  value: unknown
+  onChange: (value: unknown) => void
   filter: FilterConfig
 }
 
@@ -46,7 +46,7 @@ export interface FilterRenderProps {
 export type FilterMode = 'frontend' | 'api'
 
 // Sort configuration
-export interface SortConfig<T = any> {
+export interface SortConfig<T = Record<string, unknown>> {
   key: keyof T | null
   direction: 'asc' | 'desc' | null
 }
@@ -60,7 +60,7 @@ export interface PaginationConfig {
 }
 
 // Main DataTable props
-export interface DataTableProps<T = any> {
+export interface DataTableProps<T = Record<string, unknown>> {
   // Required props
   data: T[]
   columns: Column<T>[]
@@ -68,8 +68,8 @@ export interface DataTableProps<T = any> {
   // Filter configuration
   filters?: FilterConfig[]
   filterMode?: FilterMode // Default: 'frontend'
-  filterValues?: Record<string, any> // External filter values for controlled mode
-  onFilterChange?: (filters: Record<string, any>) => void
+  filterValues?: Record<string, unknown> // External filter values for controlled mode
+  onFilterChange?: (filters: Record<string, unknown>) => void
 
   // Pagination
   pagination?: boolean
@@ -108,15 +108,15 @@ export interface DataTableProps<T = any> {
 }
 
 // Context state type
-export interface DataTableContextValue<T = any> {
+export interface DataTableContextValue<T = Record<string, unknown>> {
   // Data
   data: T[]
   filteredData: T[]
   paginatedData: T[]
 
   // Filters
-  filters: Record<string, any>
-  setFilter: (key: string, value: any) => void
+  filters: Record<string, unknown>
+  setFilter: (key: string, value: unknown) => void
   clearFilters: () => void
 
   // Sorting
@@ -139,7 +139,7 @@ export interface DataTableContextValue<T = any> {
 }
 
 // Props for sub-components
-export interface TableDesktopProps<T = any> {
+export interface TableDesktopProps<T = Record<string, unknown>> {
   columns: Column<T>[]
   data: T[]
   sortConfig: SortConfig<T>
@@ -153,7 +153,7 @@ export interface TableDesktopProps<T = any> {
   onSelectAll?: () => void
 }
 
-export interface TableMobileProps<T = any> {
+export interface TableMobileProps<T = Record<string, unknown>> {
   data: T[]
   columns: Column<T>[]
   actions?: (row: T, index: number) => ReactNode
@@ -164,8 +164,8 @@ export interface TableMobileProps<T = any> {
 
 export interface TableFiltersProps {
   filters: FilterConfig[]
-  values: Record<string, any>
-  onChange: (key: string, value: any) => void
+  values: Record<string, unknown>
+  onChange: (key: string, value: unknown) => void
   onClear?: () => void
   mode?: FilterMode
 }

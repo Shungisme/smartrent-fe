@@ -61,10 +61,14 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
           const result = await validToken(tokens.accessToken)
           if (result.success && 'data' in result && result.data?.valid) {
             // Decode refreshToken instead of accessToken because it contains user data
-            const { user: rawUser } = decodeToken(tokens.refreshToken)
-            // Normalize admin data to user format
-            const normalizedUser = normalizeAdminToUser(rawUser as AdminApi)
-            login(normalizedUser, tokens)
+            if (tokens.refreshToken) {
+              const { user: rawUser } = decodeToken(tokens.refreshToken)
+              // Normalize admin data to user format
+              const normalizedUser = normalizeAdminToUser(rawUser as AdminApi)
+              login(normalizedUser, tokens)
+            } else {
+              logout()
+            }
           } else {
             logout()
           }

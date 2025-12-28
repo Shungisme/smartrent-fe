@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { UserService } from '@/api/services/user.service'
+import { UserUpdateRequest } from '@/api/types/user.type'
 import { useAuth } from './index'
 
 interface UpdateProfileResult {
@@ -25,7 +26,7 @@ export const useUpdateProfile = () => {
    */
   const updateProfile = async (
     userId: string,
-    data: Partial<any>,
+    data: Partial<UserUpdateRequest>,
   ): Promise<UpdateProfileResult> => {
     setIsLoading(true)
     setError(null)

@@ -25,12 +25,8 @@ type RoleRow = {
 }
 
 const RoleManagement = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // const t = useTranslations('admin.roles')
   const [roles, setRoles] = useState<Role[]>([])
   const [loading, setLoading] = useState(true)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [error, setError] = useState<string | null>(null)
   const [showCreate, setShowCreate] = useState(false)
   const [showEdit, setShowEdit] = useState<Role | null>(null)
   const [showDelete, setShowDelete] = useState<Role | null>(null)
@@ -41,16 +37,13 @@ const RoleManagement = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       setLoading(true)
-      setError(null)
       try {
         const resp = await getRoles()
         if (resp.success && resp.data) {
           setRoles(resp.data.data || resp.data)
-        } else {
-          setError(resp.message || 'Failed to load roles')
         }
-      } catch (err: any) {
-        setError(err.message || 'Error loading roles')
+      } catch (err: unknown) {
+        console.error('Error loading roles:', err)
       } finally {
         setLoading(false)
       }
@@ -63,13 +56,15 @@ const RoleManagement = () => {
       id: 'id',
       header: 'Role ID',
       accessor: 'id',
-      render: (value) => <span className='font-mono'>{value}</span>,
+      render: (value) => (
+        <span className='font-mono'>{value as React.ReactNode}</span>
+      ),
     },
     {
       id: 'name',
       header: 'Role Name',
       accessor: 'name',
-      render: (value) => <span>{value}</span>,
+      render: (value) => <span>{value as React.ReactNode}</span>,
     },
     {
       id: 'actions',
@@ -162,8 +157,9 @@ const RoleManagement = () => {
                   } else {
                     setFormError(resp.message || 'Failed to create role')
                   }
-                } catch (err: any) {
-                  setFormError(err.message || 'Error creating role')
+                } catch (err: unknown) {
+                  const error = err as { message?: string }
+                  setFormError(error.message || 'Error creating role')
                 } finally {
                   setFormLoading(false)
                 }
@@ -246,8 +242,9 @@ const RoleManagement = () => {
                   } else {
                     setFormError(resp.message || 'Failed to update role')
                   }
-                } catch (err: any) {
-                  setFormError(err.message || 'Error updating role')
+                } catch (err: unknown) {
+                  const error = err as { message?: string }
+                  setFormError(error.message || 'Error updating role')
                 } finally {
                   setFormLoading(false)
                 }
@@ -337,8 +334,9 @@ const RoleManagement = () => {
                       } else {
                         setFormError(resp.message || 'Failed to delete role')
                       }
-                    } catch (err: any) {
-                      setFormError(err.message || 'Error deleting role')
+                    } catch (err: unknown) {
+                      const error = err as { message?: string }
+                      setFormError(error.message || 'Error deleting role')
                     } finally {
                       setFormLoading(false)
                     }

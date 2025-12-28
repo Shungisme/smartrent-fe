@@ -21,20 +21,26 @@ export function getCookieFromDocument(name: string): string | null {
 }
 
 export function getCookieFromCookiesObject(
-  cookies: any,
+  cookies: Record<string, unknown>,
   name: string,
 ): string | null {
   if (!cookies) return null
 
-  if (cookies.get) {
-    const cookie = cookies.get(name)
+  if (
+    typeof cookies === 'object' &&
+    'get' in cookies &&
+    typeof cookies.get === 'function'
+  ) {
+    const cookie = (cookies.get as (name: string) => { value?: string })(name)
     return cookie?.value || null
   }
 
-  return cookies[name] || null
+  return (cookies[name] as string) || null
 }
 
-export function getAccessToken(cookies?: any): string | null {
+export function getAccessToken(
+  cookies?: Record<string, unknown>,
+): string | null {
   if (isServer && cookies) {
     return getCookieFromCookiesObject(cookies, BEARER_ACCESS_TOKEN_COOKIE)
   }
@@ -46,7 +52,9 @@ export function getAccessToken(cookies?: any): string | null {
   return null
 }
 
-export function getRefreshToken(cookies?: any): string | null {
+export function getRefreshToken(
+  cookies?: Record<string, unknown>,
+): string | null {
   if (isServer && cookies) {
     return getCookieFromCookiesObject(cookies, BEARER_REFRESH_TOKEN_COOKIE)
   }
@@ -58,7 +66,9 @@ export function getRefreshToken(cookies?: any): string | null {
   return null
 }
 
-export function getAuthTokens(cookies?: any): AuthTokens | null {
+export function getAuthTokens(
+  cookies?: Record<string, unknown>,
+): AuthTokens | null {
   if (isServer && cookies) {
     const accessToken = getCookieFromCookiesObject(
       cookies,
@@ -84,12 +94,20 @@ export function getAuthTokens(cookies?: any): AuthTokens | null {
   return null
 }
 
-export function formatApiError(error: any): string {
-  if (!error.response) {
-    return error.message || 'Đã xảy ra lỗi không xác định'
+export function formatApiError(error: unknown): string {
+  const err = error as {
+    response?: {
+      data?: { message?: string; errors?: string[] }
+      status?: number
+      statusText?: string
+    }
+    message?: string
+  }
+  if (!err.response) {
+    return err.message || 'Đã xảy ra lỗi không xác định'
   }
 
-  const data = error.response.data
+  const data = err.response.data
 
   if (data?.message) {
     return data.message
@@ -99,19 +117,21 @@ export function formatApiError(error: any): string {
     return data.errors.join(', ')
   }
 
-  return `Lỗi HTTP ${error.response.status}: ${error.response.statusText}`
+  return `Lỗi HTTP ${err.response.status}: ${err.response.statusText}`
 }
 
-export function isUnauthorizedError(error: any): boolean {
-  return error.response?.status === 401
+export function isUnauthorizedError(error: unknown): boolean {
+  const err = error as { response?: { status?: number } }
+  return err.response?.status === 401
 }
 
-export function isServerError(error: any): boolean {
-  const status = error.response?.status
-  return status >= 500 && status < 600
+export function isServerError(error: unknown): boolean {
+  const err = error as { response?: { status?: number } }
+  const status = err.response?.status
+  return status !== undefined && status >= 500 && status < 600
 }
 
-export function logError(error: any, context?: string): void {
+export function logError(error: unknown, context?: string): void {
   if (process.env.NODE_ENV === 'development') {
     console.log(`[AxiosServer${context ? ` - ${context}` : ''}]:`, error)
   }

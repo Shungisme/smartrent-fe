@@ -48,7 +48,7 @@ export const instanceClientAxios = createClientAxiosInstance({
   withCredentials: true,
 })
 
-export async function apiRequest<T = any>(
+export async function apiRequest<T = unknown>(
   config: CustomAxiosRequestConfig,
 ): Promise<ApiResponse<T>> {
   try {
@@ -57,31 +57,38 @@ export async function apiRequest<T = any>(
       ...response.data,
       success: true,
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     logError(error, 'API Request')
+    const axiosError = error as { response?: { data?: unknown } }
     return {
-      ...error?.response?.data,
+      ...(axiosError?.response?.data as object),
       success: false,
-    }
+    } as ApiResponse<T>
   }
 }
 
 export const api = {
-  get: <T = any>(url: string, config?: CustomAxiosRequestConfig) =>
+  get: <T = unknown>(url: string, config?: CustomAxiosRequestConfig) =>
     apiRequest<T>({ ...config, method: 'GET', url }),
 
-  post: <T = any>(url: string, data?: any, config?: CustomAxiosRequestConfig) =>
-    apiRequest<T>({ ...config, method: 'POST', url, data }),
-
-  put: <T = any>(url: string, data?: any, config?: CustomAxiosRequestConfig) =>
-    apiRequest<T>({ ...config, method: 'PUT', url, data }),
-
-  patch: <T = any>(
+  post: <T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
+    config?: CustomAxiosRequestConfig,
+  ) => apiRequest<T>({ ...config, method: 'POST', url, data }),
+
+  put: <T = unknown>(
+    url: string,
+    data?: unknown,
+    config?: CustomAxiosRequestConfig,
+  ) => apiRequest<T>({ ...config, method: 'PUT', url, data }),
+
+  patch: <T = unknown>(
+    url: string,
+    data?: unknown,
     config?: CustomAxiosRequestConfig,
   ) => apiRequest<T>({ ...config, method: 'PATCH', url, data }),
 
-  delete: <T = any>(url: string, config?: CustomAxiosRequestConfig) =>
+  delete: <T = unknown>(url: string, config?: CustomAxiosRequestConfig) =>
     apiRequest<T>({ ...config, method: 'DELETE', url }),
 }

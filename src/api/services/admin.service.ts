@@ -6,6 +6,7 @@ import {
   CreateAdminRequest,
   CreateAdminResponse,
 } from '@/api/types/admin.type'
+import { PaginatedResponse } from '@/api/types/pagination.type'
 
 /**
  * Admin Service
@@ -85,8 +86,8 @@ export class AdminService {
   static async getAdminList(params?: {
     page?: number
     size?: number
-  }): Promise<ApiResponse<any>> {
-    return apiRequest<any>({
+  }): Promise<ApiResponse<PaginatedResponse<AdminProfile>>> {
+    return apiRequest<PaginatedResponse<AdminProfile>>({
       method: 'GET',
       url: ENV.API.ADMIN.LIST,
       params,

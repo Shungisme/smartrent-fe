@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
@@ -79,7 +80,6 @@ const ViolationReportManagement = () => {
       ).length
       setStats(statObj)
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(e)
     } finally {
       setLoading(false)
@@ -110,7 +110,6 @@ const ViolationReportManagement = () => {
       setActionReason('')
       fetchReports()
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(e)
     }
   }
@@ -128,7 +127,6 @@ const ViolationReportManagement = () => {
       setActionReason('')
       fetchReports()
     } catch (e) {
-      // eslint-disable-next-line no-console
       console.error(e)
     }
   }
@@ -159,7 +157,7 @@ const ViolationReportManagement = () => {
       id: 'status',
       accessor: 'status' as keyof ListingReport,
       header: t('review.currentStatus'),
-      cell: ({ row }: any) => (
+      cell: ({ row }: { row: { original: ListingReport } }) => (
         <Badge className={cn('text-xs', getStatusColor(row.original.status))}>
           {t(
             `statuses.${statusMap[row.original.status as keyof typeof statusMap]}`,
@@ -174,9 +172,9 @@ const ViolationReportManagement = () => {
     },
     {
       id: 'actions',
-      accessor: () => undefined as any,
+      accessor: () => undefined as unknown,
       header: t('review.actions'),
-      cell: ({ row }: any) => (
+      cell: ({ row }: { row: { original: ListingReport } }) => (
         <Button size='sm' onClick={() => handleOpenReview(row.original)}>
           {t('review.review')}
         </Button>
@@ -281,9 +279,11 @@ const ViolationReportManagement = () => {
                 </h3>
                 <div className='rounded-lg border border-gray-200 p-3 md:p-4'>
                   <div className='flex flex-col sm:flex-row gap-3 md:gap-4'>
-                    <img
+                    <Image
                       src={'/images/default-image.jpg'}
                       alt={selectedReport.listingId + ''}
+                      width={96}
+                      height={128}
                       className='h-32 w-full sm:h-24 sm:w-24 flex-shrink-0 rounded-lg object-cover'
                     />
                     <div className='flex-1 min-w-0'>

@@ -307,8 +307,9 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
             response.message || 'Failed to load membership packages',
           )
         }
-      } catch (err: any) {
-        setMembershipsError(err.message || 'An error occurred')
+      } catch (err: unknown) {
+        const error = err as { message?: string }
+        setMembershipsError(error.message || 'An error occurred')
         console.error('Error fetching memberships:', err)
       } finally {
         setMembershipsLoading(false)
@@ -326,8 +327,9 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
       try {
         const tiers = await VIPTierService.getAllVIPTiers()
         setApiVIPTiers(tiers)
-      } catch (err: any) {
-        setVIPTiersError(err.message || 'Failed to load VIP tiers')
+      } catch (err: unknown) {
+        const error = err as { message?: string }
+        setVIPTiersError(error.message || 'Failed to load VIP tiers')
         console.error('Error fetching VIP tiers:', err)
       } finally {
         setVIPTiersLoading(false)

@@ -127,7 +127,7 @@ export function TableDesktop<T = any>({
                         key={column.id}
                         className={`px-4 py-4 text-sm text-gray-900 ${column.className || ''}`}
                       >
-                        {cellContent}
+                        {cellContent as React.ReactNode}
                       </td>
                     )
                   })}

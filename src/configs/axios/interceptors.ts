@@ -1,4 +1,4 @@
-import { InternalAxiosRequestConfig } from 'axios'
+import { InternalAxiosRequestConfig, AxiosInstance } from 'axios'
 import { ENV } from '@/constants'
 import { CustomAxiosRequestConfig } from './types'
 import { getAccessToken, getRefreshToken } from './utils'
@@ -62,7 +62,9 @@ const getAdminIdFromToken = (token: string): string | null => {
   }
 }
 
-export function createAuthRequestInterceptor(cookies?: any) {
+export function createAuthRequestInterceptor(
+  cookies?: Record<string, unknown>,
+) {
   return async (
     config: InternalAxiosRequestConfig,
   ): Promise<InternalAxiosRequestConfig> => {
@@ -125,7 +127,10 @@ export function createAuthRequestInterceptor(cookies?: any) {
   }
 }
 
-export function setupInterceptors(axiosInstance: any, cookies?: any) {
+export function setupInterceptors(
+  axiosInstance: AxiosInstance,
+  cookies?: Record<string, unknown>,
+) {
   axiosInstance.interceptors.request.use(createAuthRequestInterceptor(cookies))
 
   return axiosInstance

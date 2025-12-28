@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { useDebounce } from '@/hooks/useDebounce'
 import AdminLayout from '@/components/layouts/AdminLayout'
@@ -34,6 +35,7 @@ import {
   ListingStatisticsSummary,
   VipType,
   ListingFilterRequest,
+  ProductType,
 } from '@/api/types/listing.type'
 
 // UI Display Types
@@ -126,7 +128,7 @@ const formatDateTime = (isoString: string): { date: string; time: string } => {
 
 // Helper function to map UI filters to API filter format
 const mapUIFiltersToAPI = (
-  uiFilters: Record<string, any>,
+  uiFilters: Record<string, unknown>,
 ): Partial<ListingFilterRequest> => {
   const apiFilters: Partial<ListingFilterRequest> = {
     page: 0, // Backend uses 0-based pagination
@@ -136,12 +138,12 @@ const mapUIFiltersToAPI = (
 
   // Search keyword
   if (uiFilters.search) {
-    apiFilters.keyword = uiFilters.search
+    apiFilters.keyword = String(uiFilters.search)
   }
 
   // Status mapping
   if (uiFilters.status) {
-    switch (uiFilters.status) {
+    switch (String(uiFilters.status)) {
       case 'pending':
         apiFilters.isVerify = false
         apiFilters.verified = undefined
@@ -165,13 +167,15 @@ const mapUIFiltersToAPI = (
 
   // Property type (productType in API)
   if (uiFilters['propertyInfo.type']) {
-    apiFilters.productType = uiFilters['propertyInfo.type']
+    apiFilters.productType = String(
+      uiFilters['propertyInfo.type'],
+    ) as ProductType
   }
 
   // Listing type mapping
   if (uiFilters.listingType) {
     apiFilters.listingType =
-      uiFilters.listingType === 'for_rent' ? 'FOR_RENT' : 'FOR_SALE'
+      String(uiFilters.listingType) === 'for_rent' ? 'FOR_RENT' : 'FOR_SALE'
   }
 
   return apiFilters
@@ -267,7 +271,7 @@ const PostVerification: NextPageWithLayout = () => {
     goldListings: 0,
     diamondListings: 0,
   })
-  const [filterValues, setFilterValues] = useState<Record<string, any>>({})
+  const [filterValues, setFilterValues] = useState<Record<string, unknown>>({})
   const debouncedSearchTerm = useDebounce(filterValues.search || '', 500)
 
   // Update filterValues with actual search term for DataTable to maintain input state
@@ -318,7 +322,7 @@ const PostVerification: NextPageWithLayout = () => {
   }
 
   // Handle filter changes from DataTable
-  const handleFilterChange = (newFilters: Record<string, any>) => {
+  const handleFilterChange = (newFilters: Record<string, unknown>) => {
     setFilterValues(newFilters)
   }
 
@@ -396,9 +400,11 @@ const PostVerification: NextPageWithLayout = () => {
       render: (_, row) => (
         <div className='flex gap-3'>
           <div className='relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg'>
-            <img
+            <Image
               src={row.images[0]}
               alt={row.title}
+              width={64}
+              height={64}
               className='h-full w-full object-cover'
             />
             {row.images.length > 1 && (
@@ -480,7 +486,9 @@ const PostVerification: NextPageWithLayout = () => {
       header: t('table.price'),
       accessor: 'price',
       render: (value) => (
-        <div className='text-sm font-semibold text-gray-900'>{value}</div>
+        <div className='text-sm font-semibold text-gray-900'>
+          {value as React.ReactNode}
+        </div>
       ),
     },
     {
@@ -502,9 +510,12 @@ const PostVerification: NextPageWithLayout = () => {
       render: (value) => (
         <Badge
           variant='outline'
-          className={cn('text-xs font-medium', getStatusColor(value))}
+          className={cn(
+            'text-xs font-medium',
+            getStatusColor(value as PostStatus),
+          )}
         >
-          {getStatusLabel(value)}
+          {getStatusLabel(value as PostStatus)}
         </Badge>
       ),
     },
@@ -663,10 +674,12 @@ const PostVerification: NextPageWithLayout = () => {
               {/* Images */}
               <div className='flex gap-2 overflow-x-auto'>
                 {selectedPost.images.map((img, idx) => (
-                  <img
+                  <Image
                     key={idx}
                     src={img}
                     alt={`${selectedPost.title} ${idx + 1}`}
+                    width={192}
+                    height={128}
                     className='h-24 w-32 md:h-32 md:w-48 flex-shrink-0 rounded-lg object-cover'
                   />
                 ))}
@@ -724,12 +737,14 @@ const PostVerification: NextPageWithLayout = () => {
                   </div>
                   <div className='mt-2 flex items-center gap-2'>
                     <Avatar className='h-8 w-8 md:h-10 md:w-10'>
-                      <img
+                      <Image
                         src={
                           selectedPost.poster.avatar ||
                           '/images/default-image.jpg'
                         }
                         alt={selectedPost.poster.name}
+                        width={40}
+                        height={40}
                         className='h-full w-full object-cover'
                       />
                     </Avatar>

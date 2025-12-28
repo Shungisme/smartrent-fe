@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Breadcrumb from '@/components/molecules/breadcrumb'
 import {
@@ -81,8 +82,9 @@ const UserManagement: NextPageWithLayout = () => {
         } else {
           setError(response.message || 'Failed to load users')
         }
-      } catch (err: any) {
-        setError(err.message || 'An error occurred while loading users')
+      } catch (err: unknown) {
+        const error = err as { message?: string }
+        setError(error.message || 'An error occurred while loading users')
         console.error('Error fetching users:', err)
       } finally {
         setLoading(false)
@@ -116,7 +118,9 @@ const UserManagement: NextPageWithLayout = () => {
       header: t('table.headers.userId'),
       accessor: 'id',
       render: (value) => (
-        <div className='text-sm font-medium text-gray-900'>{value}</div>
+        <div className='text-sm font-medium text-gray-900'>
+          {value as React.ReactNode}
+        </div>
       ),
     },
     {
@@ -127,9 +131,11 @@ const UserManagement: NextPageWithLayout = () => {
       render: (_, row) => (
         <div className='flex items-center gap-3'>
           <Avatar className='w-10 h-10'>
-            <img
+            <Image
               src={row.avatar || '/images/default-image.jpg'}
               alt={row.name}
+              width={40}
+              height={40}
               className='w-full h-full object-cover'
             />
           </Avatar>
@@ -143,15 +149,15 @@ const UserManagement: NextPageWithLayout = () => {
       accessor: 'type',
       render: (value) => (
         <Badge
-          variant={value === 'landlord' ? 'default' : 'secondary'}
+          variant={(value as string) === 'landlord' ? 'default' : 'secondary'}
           className={cn(
             'px-3 py-1',
-            value === 'landlord'
+            (value as string) === 'landlord'
               ? 'bg-blue-100 text-blue-800'
               : 'bg-gray-100 text-gray-800',
           )}
         >
-          {t(`table.userTypes.${value}`)}
+          {t(`table.userTypes.${value as string}`)}
         </Badge>
       ),
     },
@@ -160,14 +166,18 @@ const UserManagement: NextPageWithLayout = () => {
       header: t('table.headers.joinDate'),
       accessor: 'joinDate',
       sortable: true,
-      render: (value) => <div className='text-sm text-gray-900'>{value}</div>,
+      render: (value) => (
+        <div className='text-sm text-gray-900'>{value as React.ReactNode}</div>
+      ),
     },
     {
       id: 'lastOnline',
       header: t('table.headers.lastOnline'),
       accessor: 'lastOnline',
       sortable: true,
-      render: (value) => <div className='text-sm text-gray-900'>{value}</div>,
+      render: (value) => (
+        <div className='text-sm text-gray-900'>{value as React.ReactNode}</div>
+      ),
     },
     {
       id: 'posts',
@@ -179,7 +189,7 @@ const UserManagement: NextPageWithLayout = () => {
             variant='outline'
             className='bg-green-50 text-green-800 border-green-200'
           >
-            {value} {t('table.postsBadge')}
+            {value as React.ReactNode} {t('table.postsBadge')}
           </Badge>
         ) : (
           <Badge
@@ -198,12 +208,12 @@ const UserManagement: NextPageWithLayout = () => {
         <Badge
           className={cn(
             'px-3 py-1',
-            value === 'normal'
+            (value as string) === 'normal'
               ? 'bg-black text-white'
               : 'bg-red-600 text-white',
           )}
         >
-          {t(`table.statuses.${value}`)}
+          {t(`table.statuses.${value as string}`)}
         </Badge>
       ),
     },
@@ -226,7 +236,9 @@ const UserManagement: NextPageWithLayout = () => {
                   idDocument: user.idDocument,
                   taxNumber: user.taxNumber,
                   contactPhoneNumber: user.contactPhoneNumber,
-                  isVerified: (user as any).isVerified ?? false,
+                  isVerified:
+                    (user as UserProfile & { isVerified?: boolean })
+                      .isVerified ?? false,
                 })
                 setEditError(null)
               }
@@ -355,8 +367,9 @@ const UserManagement: NextPageWithLayout = () => {
                   } else {
                     setCreateError(resp.message || 'Failed to create user')
                   }
-                } catch (err: any) {
-                  setCreateError(err.message || 'Error creating user')
+                } catch (err: unknown) {
+                  const error = err as { message?: string }
+                  setCreateError(error.message || 'Error creating user')
                 } finally {
                   setCreateLoading(false)
                 }
@@ -491,8 +504,9 @@ const UserManagement: NextPageWithLayout = () => {
                   } else {
                     setEditError(resp.message || 'Failed to update user')
                   }
-                } catch (err: any) {
-                  setEditError(err.message || 'Error updating user')
+                } catch (err: unknown) {
+                  const error = err as { message?: string }
+                  setEditError(error.message || 'Error updating user')
                 } finally {
                   setEditLoading(false)
                 }
@@ -635,8 +649,9 @@ const UserManagement: NextPageWithLayout = () => {
                     } else {
                       setDeleteError(resp.message || 'Failed to delete user')
                     }
-                  } catch (err: any) {
-                    setDeleteError(err.message || 'Error deleting user')
+                  } catch (err: unknown) {
+                    const error = err as { message?: string }
+                    setDeleteError(error.message || 'Error deleting user')
                   } finally {
                     setDeleteLoading(false)
                   }

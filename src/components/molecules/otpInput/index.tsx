@@ -150,10 +150,13 @@ const OtpInput: React.FC<OtpInputProps> = ({
         const code = otpValues.join('')
         result = await verifyOtpResetPassword({
           verificationCode: code,
+          email,
         })
       }
       if (result?.success) {
-        onSuccess?.(result?.data?.resetPasswordToken)
+        const token =
+          'data' in result ? result.data?.resetPasswordToken : undefined
+        onSuccess?.(token)
         toast.success(t('homePage.auth.otp.verificationSuccess'))
       } else {
         toast.error(result?.message || t('homePage.auth.otp.verificationError'))

@@ -1,7 +1,7 @@
 import { apiRequest } from '@/configs/axios/axiosClient'
 import { ENV } from '@/constants/env'
 import { ApiResponse } from '@/configs/axios/types'
-import { Role } from '@/api/types/role.type'
+import { Role, RoleListResponse } from '@/api/types/role.type'
 
 /**
  * Role Service
@@ -21,8 +21,8 @@ export class RoleService {
   static async getRoles(params?: {
     page?: number
     size?: number
-  }): Promise<ApiResponse<any>> {
-    const response = await apiRequest<any>({
+  }): Promise<ApiResponse<RoleListResponse>> {
+    const response = await apiRequest<RoleListResponse>({
       method: 'GET',
       url: ENV.API.ROLE.LIST,
       params,

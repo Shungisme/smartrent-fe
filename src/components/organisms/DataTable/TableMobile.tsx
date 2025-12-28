@@ -85,7 +85,7 @@ export function TableMobile<T = any>({
 
                   {/* Column value */}
                   <div className='text-sm text-gray-900 flex flex-col items-end flex-1'>
-                    {cellContent}
+                    {cellContent as React.ReactNode}
                   </div>
                 </div>
               )
