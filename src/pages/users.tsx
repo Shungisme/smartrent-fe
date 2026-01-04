@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import Breadcrumb from '@/components/molecules/breadcrumb'
 import {
   DataTable,
   Column,
@@ -9,6 +8,15 @@ import {
 } from '@/components/organisms/DataTable'
 import { Avatar } from '@/components/atoms/avatar'
 import { Badge } from '@/components/atoms/badge'
+import { Button } from '@/components/atoms/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/atoms/dialog'
+import { Input } from '@/components/atoms/input'
+import { Label } from '@/components/atoms/label'
 import { cn } from '@/lib/utils'
 import type { NextPageWithLayout } from '@/types/next-page'
 import { useTranslations } from 'next-intl'
@@ -93,11 +101,6 @@ const UserManagement: NextPageWithLayout = () => {
 
     fetchUsers()
   }, [currentPage, pageSize])
-
-  const breadcrumbItems = [
-    { label: 'Admin Dashboard', href: '/admin' },
-    { label: t('breadcrumb.dashboard') }, // Current page
-  ]
 
   // Transform API data to match UI format
   const transformedUsers: UserData[] = users.map((user) => ({
@@ -283,7 +286,6 @@ const UserManagement: NextPageWithLayout = () => {
   if (loading && users.length === 0) {
     return (
       <div>
-        <Breadcrumb items={breadcrumbItems} />
         <div className='flex items-center justify-center py-12'>
           <div className='text-center'>
             <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto'></div>
@@ -298,7 +300,6 @@ const UserManagement: NextPageWithLayout = () => {
   if (error) {
     return (
       <div>
-        <Breadcrumb items={breadcrumbItems} />
         <div className='flex items-center justify-center py-12'>
           <div className='text-center'>
             <p className='text-red-600 mb-4'>{error}</p>
@@ -316,12 +317,22 @@ const UserManagement: NextPageWithLayout = () => {
 
   return (
     <div>
-      <Breadcrumb items={breadcrumbItems} />
-
       <div className='space-y-6'>
+        {/* Header Section */}
+        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4'>
+          <div>
+            <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
+              {t('title')}
+            </h1>
+            <p className='mt-1 text-sm text-gray-600'>
+              {t('breadcrumb.dashboard')}
+            </p>
+          </div>
+        </div>
+
         <div className='flex justify-end'>
-          <button
-            className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 mb-2'
+          <Button
+            className='bg-blue-600 hover:bg-blue-700 text-white'
             onClick={() => {
               setShowCreate(true)
               setCreateForm({})
@@ -329,7 +340,7 @@ const UserManagement: NextPageWithLayout = () => {
             }}
           >
             + {t('create.button') || 'Create User'}
-          </button>
+          </Button>
         </div>
         {/* DataTable Component */}
         <DataTable
@@ -348,46 +359,86 @@ const UserManagement: NextPageWithLayout = () => {
       </div>
 
       {/* Create User Modal */}
-      {showCreate && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center'>
-          <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-md'>
-            <h2 className='text-lg font-semibold mb-4'>
-              {t('create.title') || 'Create User'}
-            </h2>
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault()
-                setCreateLoading(true)
-                setCreateError(null)
-                try {
-                  const resp = await createUser(createForm as CreateUserRequest)
-                  if (resp.success && resp.data) {
-                    setShowCreate(false)
-                    setUsers((prev) => [resp.data, ...prev])
-                  } else {
-                    setCreateError(resp.message || 'Failed to create user')
-                  }
-                } catch (err: unknown) {
-                  const error = err as { message?: string }
-                  setCreateError(error.message || 'Error creating user')
-                } finally {
-                  setCreateLoading(false)
+      <Dialog open={showCreate} onOpenChange={setShowCreate}>
+        <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
+          <DialogHeader>
+            <DialogTitle>{t('create.title') || 'Create User'}</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault()
+              setCreateLoading(true)
+              setCreateError(null)
+              try {
+                const resp = await createUser(createForm as CreateUserRequest)
+                if (resp.success && resp.data) {
+                  setShowCreate(false)
+                  setUsers((prev) => [resp.data, ...prev])
+                } else {
+                  setCreateError(resp.message || 'Failed to create user')
                 }
-              }}
-            >
-              <div className='space-y-3'>
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Phone Code'
+              } catch (err: unknown) {
+                const error = err as { message?: string }
+                setCreateError(error.message || 'Error creating user')
+              } finally {
+                setCreateLoading(false)
+              }
+            }}
+            className='space-y-4'
+          >
+            <div>
+              <Label htmlFor='firstName'>First Name *</Label>
+              <Input
+                id='firstName'
+                value={createForm.firstName || ''}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, firstName: e.target.value }))
+                }
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor='lastName'>Last Name *</Label>
+              <Input
+                id='lastName'
+                value={createForm.lastName || ''}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, lastName: e.target.value }))
+                }
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor='email'>Email *</Label>
+              <Input
+                id='email'
+                type='email'
+                value={createForm.email || ''}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, email: e.target.value }))
+                }
+                required
+              />
+            </div>
+
+            <div className='grid grid-cols-3 gap-2'>
+              <div>
+                <Label htmlFor='phoneCode'>Code *</Label>
+                <Input
+                  id='phoneCode'
                   value={createForm.phoneCode || ''}
                   onChange={(e) =>
                     setCreateForm((f) => ({ ...f, phoneCode: e.target.value }))
                   }
                   required
                 />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Phone Number'
+              </div>
+              <div className='col-span-2'>
+                <Label htmlFor='phoneNumber'>Phone Number *</Label>
+                <Input
+                  id='phoneNumber'
                   value={createForm.phoneNumber || ''}
                   onChange={(e) =>
                     setCreateForm((f) => ({
@@ -397,87 +448,71 @@ const UserManagement: NextPageWithLayout = () => {
                   }
                   required
                 />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Email'
-                  value={createForm.email || ''}
-                  onChange={(e) =>
-                    setCreateForm((f) => ({ ...f, email: e.target.value }))
-                  }
-                  required
-                  type='email'
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Password'
-                  value={createForm.password || ''}
-                  onChange={(e) =>
-                    setCreateForm((f) => ({ ...f, password: e.target.value }))
-                  }
-                  required
-                  type='password'
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='First Name'
-                  value={createForm.firstName || ''}
-                  onChange={(e) =>
-                    setCreateForm((f) => ({ ...f, firstName: e.target.value }))
-                  }
-                  required
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Last Name'
-                  value={createForm.lastName || ''}
-                  onChange={(e) =>
-                    setCreateForm((f) => ({ ...f, lastName: e.target.value }))
-                  }
-                  required
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='ID Document'
-                  value={createForm.idDocument || ''}
-                  onChange={(e) =>
-                    setCreateForm((f) => ({ ...f, idDocument: e.target.value }))
-                  }
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Tax Number'
-                  value={createForm.taxNumber || ''}
-                  onChange={(e) =>
-                    setCreateForm((f) => ({ ...f, taxNumber: e.target.value }))
-                  }
-                />
-                {createError && (
-                  <div className='text-red-600 text-sm'>{createError}</div>
-                )}
               </div>
-              <div className='flex justify-end gap-2 mt-6'>
-                <button
-                  type='button'
-                  className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
-                  onClick={() => setShowCreate(false)}
-                  disabled={createLoading}
-                >
-                  {t('create.cancel') || 'Cancel'}
-                </button>
-                <button
-                  type='submit'
-                  className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700'
-                  disabled={createLoading}
-                >
-                  {createLoading
-                    ? t('create.creating') || 'Creating...'
-                    : t('create.create') || 'Create'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            </div>
+
+            <div>
+              <Label htmlFor='password'>Password *</Label>
+              <Input
+                id='password'
+                type='password'
+                value={createForm.password || ''}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, password: e.target.value }))
+                }
+                required
+                minLength={8}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor='idDocument'>ID Document</Label>
+              <Input
+                id='idDocument'
+                value={createForm.idDocument || ''}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, idDocument: e.target.value }))
+                }
+              />
+            </div>
+
+            <div>
+              <Label htmlFor='taxNumber'>Tax Number</Label>
+              <Input
+                id='taxNumber'
+                value={createForm.taxNumber || ''}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, taxNumber: e.target.value }))
+                }
+              />
+            </div>
+
+            {createError && (
+              <div className='text-red-600 text-sm'>{createError}</div>
+            )}
+
+            <div className='flex justify-end gap-2 pt-4'>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={() => setShowCreate(false)}
+                disabled={createLoading}
+              >
+                {t('create.cancel') || 'Cancel'}
+              </Button>
+              <Button
+                type='submit'
+                className='bg-blue-600 hover:bg-blue-700'
+                disabled={createLoading}
+              >
+                {createLoading
+                  ? t('create.creating') || 'Creating...'
+                  : t('create.create') || 'Create'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit User Modal */}
       {editingUser && (

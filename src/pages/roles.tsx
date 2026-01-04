@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import Breadcrumb from '@/components/molecules/breadcrumb'
 import { DataTable, Column } from '@/components/organisms/DataTable'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
@@ -18,13 +17,16 @@ import {
   deleteRole,
 } from '@/api/services/role.service'
 import { Role } from '@/api/types/role.type'
+import { useTranslations } from 'next-intl'
+import type { NextPageWithLayout } from '@/types/next-page'
 
 type RoleRow = {
   id: string
   name: string
 }
 
-const RoleManagement = () => {
+const RoleManagement: NextPageWithLayout = () => {
+  const t = useTranslations('admin.roles')
   const [roles, setRoles] = useState<Role[]>([])
   const [loading, setLoading] = useState(true)
   const [showCreate, setShowCreate] = useState(false)
@@ -54,7 +56,7 @@ const RoleManagement = () => {
   const columns: Column<RoleRow>[] = [
     {
       id: 'id',
-      header: 'Role ID',
+      header: t('table.headers.roleId'),
       accessor: 'id',
       render: (value) => (
         <span className='font-mono'>{value as React.ReactNode}</span>
@@ -62,13 +64,13 @@ const RoleManagement = () => {
     },
     {
       id: 'name',
-      header: 'Role Name',
+      header: t('table.headers.roleName'),
       accessor: 'name',
       render: (value) => <span>{value as React.ReactNode}</span>,
     },
     {
       id: 'actions',
-      header: 'Actions',
+      header: t('table.headers.actions'),
       accessor: () => '',
       render: (_, row) => (
         <div className='flex gap-2'>
@@ -83,7 +85,7 @@ const RoleManagement = () => {
               }
             }}
           >
-            Edit
+            {t('table.actions.edit')}
           </button>
           <button
             className='px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200'
@@ -92,7 +94,7 @@ const RoleManagement = () => {
               if (role) setShowDelete(role)
             }}
           >
-            Delete
+            {t('table.actions.delete')}
           </button>
         </div>
       ),
@@ -106,13 +108,17 @@ const RoleManagement = () => {
 
   return (
     <div>
-      <Breadcrumb
-        items={[
-          { label: 'Admin Dashboard', href: '/admin' },
-          { label: 'Role Management' },
-        ]}
-      />
       <div className='space-y-6'>
+        {/* Header Section */}
+        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4'>
+          <div>
+            <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
+              {t('title')}
+            </h1>
+            <p className='mt-1 text-sm text-gray-600'>{t('subtitle')}</p>
+          </div>
+        </div>
+
         <div className='flex items-center justify-end'>
           <Button
             className='bg-blue-600 hover:bg-blue-700 text-white'
@@ -122,7 +128,7 @@ const RoleManagement = () => {
               setFormError(null)
             }}
           >
-            + Create Role
+            + {t('createNewRole')}
           </Button>
         </div>
         <DataTable
@@ -142,7 +148,7 @@ const RoleManagement = () => {
         <Dialog open={showCreate} onOpenChange={setShowCreate}>
           <DialogContent className='max-w-md'>
             <DialogHeader>
-              <DialogTitle>Create Role</DialogTitle>
+              <DialogTitle>{t('create.title')}</DialogTitle>
             </DialogHeader>
             <form
               onSubmit={async (e) => {
@@ -167,10 +173,10 @@ const RoleManagement = () => {
               className='space-y-4'
             >
               <div>
-                <Label htmlFor='roleId'>Role ID *</Label>
+                <Label htmlFor='roleId'>{t('create.roleId')} *</Label>
                 <Input
                   id='roleId'
-                  placeholder='Role ID'
+                  placeholder={t('create.roleId')}
                   value={form.roleId}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, roleId: e.target.value }))
@@ -179,10 +185,10 @@ const RoleManagement = () => {
                 />
               </div>
               <div>
-                <Label htmlFor='roleName'>Role Name *</Label>
+                <Label htmlFor='roleName'>{t('create.roleName')} *</Label>
                 <Input
                   id='roleName'
-                  placeholder='Role Name'
+                  placeholder={t('create.roleName')}
                   value={form.roleName}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, roleName: e.target.value }))
@@ -201,14 +207,14 @@ const RoleManagement = () => {
                   disabled={formLoading}
                   className='flex-1'
                 >
-                  Cancel
+                  {t('create.cancel')}
                 </Button>
                 <Button
                   type='submit'
                   disabled={formLoading}
                   className='flex-1 bg-blue-600 hover:bg-blue-700'
                 >
-                  {formLoading ? 'Creating...' : 'Create'}
+                  {formLoading ? t('create.creating') : t('create.create')}
                 </Button>
               </div>
             </form>
@@ -221,7 +227,7 @@ const RoleManagement = () => {
         >
           <DialogContent className='max-w-md'>
             <DialogHeader>
-              <DialogTitle>Edit Role</DialogTitle>
+              <DialogTitle>{t('edit.title')}</DialogTitle>
             </DialogHeader>
             <form
               onSubmit={async (e) => {
@@ -252,14 +258,14 @@ const RoleManagement = () => {
               className='space-y-4'
             >
               <div>
-                <Label htmlFor='editRoleId'>Role ID</Label>
+                <Label htmlFor='editRoleId'>{t('create.roleId')}</Label>
                 <Input id='editRoleId' value={form.roleId} disabled />
               </div>
               <div>
-                <Label htmlFor='editRoleName'>Role Name *</Label>
+                <Label htmlFor='editRoleName'>{t('create.roleName')} *</Label>
                 <Input
                   id='editRoleName'
-                  placeholder='Role Name'
+                  placeholder={t('create.roleName')}
                   value={form.roleName}
                   onChange={(e) =>
                     setForm((f) => ({ ...f, roleName: e.target.value }))
@@ -278,14 +284,14 @@ const RoleManagement = () => {
                   disabled={formLoading}
                   className='flex-1'
                 >
-                  Cancel
+                  {t('edit.cancel')}
                 </Button>
                 <Button
                   type='submit'
                   disabled={formLoading}
                   className='flex-1 bg-blue-600 hover:bg-blue-700'
                 >
-                  {formLoading ? 'Saving...' : 'Save'}
+                  {formLoading ? t('edit.saving') : t('edit.save')}
                 </Button>
               </div>
             </form>
@@ -298,11 +304,11 @@ const RoleManagement = () => {
         >
           <DialogContent className='max-w-sm'>
             <DialogHeader>
-              <DialogTitle>Delete Role</DialogTitle>
+              <DialogTitle>{t('delete.title')}</DialogTitle>
             </DialogHeader>
             <div className='space-y-4'>
               <p>
-                Are you sure you want to delete this role?
+                {t('delete.confirm')}
                 <br />
                 <span className='font-semibold'>{showDelete?.roleName}</span>
               </p>
@@ -317,7 +323,7 @@ const RoleManagement = () => {
                   disabled={formLoading}
                   className='flex-1'
                 >
-                  Cancel
+                  {t('delete.cancel')}
                 </Button>
                 <Button
                   disabled={formLoading}
@@ -343,7 +349,7 @@ const RoleManagement = () => {
                   }}
                   className='flex-1 bg-red-600 hover:bg-red-700'
                 >
-                  {formLoading ? 'Deleting...' : 'Delete'}
+                  {formLoading ? t('delete.deleting') : t('delete.delete')}
                 </Button>
               </div>
             </div>

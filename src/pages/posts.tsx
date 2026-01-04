@@ -3,7 +3,6 @@ import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { useDebounce } from '@/hooks/useDebounce'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import Breadcrumb from '@/components/molecules/breadcrumb'
 import {
   DataTable,
   Column,
@@ -326,11 +325,6 @@ const PostVerification: NextPageWithLayout = () => {
     setFilterValues(newFilters)
   }
 
-  const breadcrumbItems = [
-    { label: 'Admin Dashboard', href: '/admin' },
-    { label: t('breadcrumb.title') }, // Current page
-  ]
-
   const handleReview = (post: UIPostData) => {
     setSelectedPost(post)
     setReviewModalOpen(true)
@@ -563,20 +557,20 @@ const PostVerification: NextPageWithLayout = () => {
 
   return (
     <div>
-      <Breadcrumb items={breadcrumbItems} />
-
       {initialLoading ? (
         <div className='flex items-center justify-center h-64'>
           <Loader2 className='h-8 w-8 animate-spin text-blue-600' />
         </div>
       ) : (
         <div className='space-y-6'>
-          {/* Header */}
-          <div>
-            <h1 className='text-3xl font-semibold text-gray-900'>
-              {t('title')}
-            </h1>
-            <p className='mt-1 text-sm text-gray-500'>{t('description')}</p>
+          {/* Header Section */}
+          <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4'>
+            <div>
+              <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
+                {t('title')}
+              </h1>
+              <p className='mt-1 text-sm text-gray-600'>{t('description')}</p>
+            </div>
           </div>
 
           {/* Stats Cards */}

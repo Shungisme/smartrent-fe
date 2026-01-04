@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import Breadcrumb from '@/components/molecules/breadcrumb'
 import AddMembershipModal, {
   type MembershipFormData,
 } from '@/components/molecules/addMembershipModal'
@@ -423,11 +422,6 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
     // TODO: API call here
   }
 
-  const breadcrumbItems = [
-    { label: 'Admin Dashboard', href: '/admin' },
-    { label: t('breadcrumb.title') }, // Current page
-  ]
-
   // Calculate overview stats
   const stats = {
     activeMemberships: `${displayMemberships.filter((m) => m.status === 'active').length}/${displayMemberships.length}`,
@@ -446,13 +440,15 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
 
   return (
     <div>
-      <Breadcrumb items={breadcrumbItems} />
-
       <div className='space-y-6'>
-        {/* Header */}
-        <div>
-          <h1 className='text-3xl font-semibold text-gray-900'>{t('title')}</h1>
-          <p className='mt-1 text-sm text-gray-500'>{t('description')}</p>
+        {/* Header Section */}
+        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4'>
+          <div>
+            <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
+              {t('title')}
+            </h1>
+            <p className='mt-1 text-sm text-gray-600'>{t('description')}</p>
+          </div>
         </div>
 
         {/* Tabs */}

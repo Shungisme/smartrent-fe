@@ -85,16 +85,16 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
 
   // Route mapping for navigation
   const routeMap: Record<string, string> = {
-    dashboard: '/admin',
-    users: '/admin/users',
-    admin: '/admin/admins',
-    posts: '/admin/posts',
-    roles: '/admin/roles',
-    reports: '/admin/reports',
-    finance: '/admin/finance',
-    properties: '/admin/listings',
-    premium: '/admin/premium',
-    analytics: '/admin/analytics',
+    dashboard: '/users',
+    users: '/users',
+    admin: '/admins',
+    posts: '/posts',
+    roles: '/roles',
+    reports: '/reports',
+    finance: '/finance',
+    properties: '/listings',
+    premium: '/premium',
+    analytics: '/analytics',
     // Add more routes as we implement them
   }
 
@@ -168,7 +168,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
       <div className='p-6 border-b border-gray-200'>
         <div
           className='flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity'
-          onClick={() => router.push('/admin')}
+          onClick={() => router.push('/users')}
         >
           <span className='font-bold text-xl text-gray-900'>{t('title')}</span>
         </div>

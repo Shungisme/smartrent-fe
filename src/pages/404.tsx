@@ -1,25 +1,26 @@
 import React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/atoms/button'
+import { useTranslations } from 'next-intl'
 
 export default function Custom404() {
+  const t = useTranslations('notFound')
+
   return (
     <div className='min-h-screen bg-gray-50 flex flex-col justify-center items-center px-6'>
       <div className='text-center'>
-        <h1 className='text-6xl font-bold text-gray-900 mb-4'>404</h1>
+        <h1 className='text-6xl font-bold text-gray-900 mb-4'>{t('title')}</h1>
         <h2 className='text-2xl font-semibold text-gray-700 mb-4'>
-          Trang không tìm thấy
+          {t('heading')}
         </h2>
-        <p className='text-gray-600 mb-8 max-w-md'>
-          Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển.
-        </p>
+        <p className='text-gray-600 mb-8 max-w-md'>{t('description')}</p>
         <div className='space-y-4'>
           <Button asChild>
-            <Link href='/admin'>Về Trang Quản Trị</Link>
+            <Link href='/users'>{t('backToAdmin')}</Link>
           </Button>
           <div>
             <Button variant='outline' asChild>
-              <Link href='/admin/users'>Quản Lý Người Dùng</Link>
+              <Link href='/analytics'>{t('viewAnalytics')}</Link>
             </Button>
           </div>
         </div>

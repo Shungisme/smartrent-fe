@@ -2,6 +2,13 @@
   "common": {
     "or": "Hoặc"
   },
+  "notFound": {
+    "title": "404",
+    "heading": "Trang không tìm thấy",
+    "description": "Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển.",
+    "backToAdmin": "Về Trang Quản Trị",
+    "viewAnalytics": "Phân Tích Hệ Thống"
+  },
   "pagination": {
     "showing": "Hiển thị",
     "of": "trong tổng số",
@@ -822,6 +829,7 @@
     },
     "users": {
       "title": "Quản Lý Người Dùng",
+      "subtitle": "Quản lý và theo dõi tất cả người dùng, vai trò và hoạt động của họ trên nền tảng",
       "breadcrumb": {
         "menu": "Thực Đơn Điều Hướng",
         "dashboard": "Bảng Điều Khiển Quản Lý Người Dùng",
@@ -1016,6 +1024,7 @@
     },
     "admins": {
       "title": "Quản Lý Admin",
+      "subtitle": "Quản lý tài khoản admin, phân quyền và kiểm soát quyền truy cập hệ thống",
       "breadcrumb": {
         "menu": "Thực Đơn Điều Hướng",
         "dashboard": "Bảng Điều Khiển Quản Lý Admin",
@@ -1070,6 +1079,43 @@
       "delete": {
         "title": "Xóa Admin",
         "confirm": "Bạn có chắc chắn muốn xóa admin này không?",
+        "delete": "Xóa",
+        "deleting": "Đang xóa...",
+        "cancel": "Hủy"
+      }
+    },
+    "roles": {
+      "title": "Quản Lý Vai Trò",
+      "subtitle": "Định nghĩa và quản lý các vai trò hệ thống với quyền hạn và cấp độ truy cập cụ thể",
+      "createNewRole": "Tạo Vai Trò Mới",
+      "table": {
+        "headers": {
+          "roleId": "ID Vai Trò",
+          "roleName": "Tên Vai Trò",
+          "actions": "Thao Tác"
+        },
+        "actions": {
+          "edit": "Chỉnh sửa",
+          "delete": "Xóa"
+        }
+      },
+      "create": {
+        "title": "Tạo Vai Trò",
+        "roleId": "ID Vai Trò",
+        "roleName": "Tên Vai Trò",
+        "create": "Tạo",
+        "creating": "Đang tạo...",
+        "cancel": "Hủy"
+      },
+      "edit": {
+        "title": "Chỉnh sửa Vai Trò",
+        "save": "Lưu Thay Đổi",
+        "saving": "Đang lưu...",
+        "cancel": "Hủy"
+      },
+      "delete": {
+        "title": "Xóa Vai Trò",
+        "confirm": "Bạn có chắc chắn muốn xóa vai trò này không?",
         "delete": "Xóa",
         "deleting": "Đang xóa...",
         "cancel": "Hủy"

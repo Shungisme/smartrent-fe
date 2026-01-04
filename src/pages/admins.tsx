@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import Breadcrumb from '@/components/molecules/breadcrumb'
 import {
   DataTable,
   Column,
@@ -187,11 +186,6 @@ const AdminManagement: NextPageWithLayout = () => {
     }
   }
 
-  const breadcrumbItems = [
-    { label: 'Admin Dashboard', href: '/admin' },
-    { label: t('breadcrumb.dashboard') }, // Current page
-  ]
-
   // Transform API data to match UI format
   const transformedAdmins: AdminRow[] = admins.map((admin) => ({
     id: admin.adminId,
@@ -364,9 +358,17 @@ const AdminManagement: NextPageWithLayout = () => {
 
   return (
     <div>
-      <Breadcrumb items={breadcrumbItems} />
-
       <div className='space-y-6'>
+        {/* Header Section */}
+        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4'>
+          <div>
+            <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
+              {t('title')}
+            </h1>
+            <p className='mt-1 text-sm text-gray-600'>{t('subtitle')}</p>
+          </div>
+        </div>
+
         {/* Header with Create Button */}
         <div className='flex items-center justify-end'>
           <Button
