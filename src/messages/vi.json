@@ -2,6 +2,13 @@
   "common": {
     "or": "Hoặc"
   },
+  "notFound": {
+    "title": "404",
+    "heading": "Trang không tìm thấy",
+    "description": "Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển.",
+    "backToAdmin": "Về Trang Quản Trị",
+    "viewAnalytics": "Phân Tích Hệ Thống"
+  },
   "pagination": {
     "showing": "Hiển thị",
     "of": "trong tổng số",
@@ -798,7 +805,13 @@
   "admin": {
     "header": {
       "title": "Quản Lý Người Dùng",
-      "searchPlaceholder": "Tìm kiếm nhanh..."
+      "searchPlaceholder": "Tìm kiếm nhanh...",
+      "defaultRole": "Quản trị viên",
+      "profile": "Thông tin tài khoản",
+      "settings": "Cài đặt",
+      "logout": "Đăng xuất",
+      "logoutSuccess": "Đăng xuất thành công",
+      "featureInDevelopment": "Chức năng đang phát triển"
     },
     "sidebar": {
       "title": "SmartRent Admin",
@@ -822,6 +835,7 @@
     },
     "users": {
       "title": "Quản Lý Người Dùng",
+      "subtitle": "Quản lý và theo dõi tất cả người dùng, vai trò và hoạt động của họ trên nền tảng",
       "breadcrumb": {
         "menu": "Thực Đơn Điều Hướng",
         "dashboard": "Bảng Điều Khiển Quản Lý Người Dùng",
@@ -871,13 +885,29 @@
       },
       "edit": {
         "title": "Chỉnh sửa Người Dùng",
+        "email": "Email",
+        "firstName": "Tên",
+        "lastName": "Họ",
+        "phoneCode": "Mã vùng",
+        "phoneNumber": "Số điện thoại",
+        "idDocument": "Giấy tờ tùy thân",
+        "taxNumber": "Mã số thuế",
+        "contactPhone": "Số điện thoại liên hệ",
+        "verified": "Đã Xác Minh",
         "save": "Lưu Thay Đổi",
         "saving": "Đang Lưu...",
-        "verified": "Đã Xác Minh",
         "cancel": "Hủy"
       },
       "create": {
         "title": "Tạo Người Dùng Mới",
+        "firstName": "Tên",
+        "lastName": "Họ",
+        "email": "Email",
+        "phoneCode": "Mã vùng",
+        "phoneNumber": "Số điện thoại",
+        "password": "Mật khẩu",
+        "idDocument": "Giấy tờ tùy thân",
+        "taxNumber": "Mã số thuế",
         "create": "Tạo",
         "creating": "Đang Tạo...",
         "cancel": "Hủy",
@@ -1016,6 +1046,7 @@
     },
     "admins": {
       "title": "Quản Lý Admin",
+      "subtitle": "Quản lý tài khoản admin, phân quyền và kiểm soát quyền truy cập hệ thống",
       "breadcrumb": {
         "menu": "Thực Đơn Điều Hướng",
         "dashboard": "Bảng Điều Khiển Quản Lý Admin",
@@ -1063,6 +1094,12 @@
       },
       "edit": {
         "title": "Chỉnh sửa Admin",
+        "email": "Email",
+        "firstName": "Tên",
+        "lastName": "Họ",
+        "phoneCode": "Mã vùng",
+        "phoneNumber": "Số điện thoại",
+        "roles": "Vai trò",
         "save": "Lưu thay đổi",
         "saving": "Đang lưu...",
         "cancel": "Hủy"
@@ -1070,6 +1107,57 @@
       "delete": {
         "title": "Xóa Admin",
         "confirm": "Bạn có chắc chắn muốn xóa admin này không?",
+        "delete": "Xóa",
+        "deleting": "Đang xóa...",
+        "cancel": "Hủy"
+      },
+      "create": {
+        "title": "Tạo Admin Mới",
+        "firstName": "Tên",
+        "lastName": "Họ",
+        "email": "Email",
+        "phoneCode": "Mã vùng",
+        "phoneNumber": "Số điện thoại",
+        "password": "Mật khẩu",
+        "roles": "Vai trò",
+        "selectRoles": "Chọn ít nhất một vai trò",
+        "create": "Tạo Admin",
+        "creating": "Đang tạo...",
+        "cancel": "Hủy"
+      }
+    },
+    "roles": {
+      "title": "Quản Lý Vai Trò",
+      "subtitle": "Định nghĩa và quản lý các vai trò hệ thống với quyền hạn và cấp độ truy cập cụ thể",
+      "createNewRole": "Tạo Vai Trò Mới",
+      "table": {
+        "headers": {
+          "roleId": "ID Vai Trò",
+          "roleName": "Tên Vai Trò",
+          "actions": "Thao Tác"
+        },
+        "actions": {
+          "edit": "Chỉnh sửa",
+          "delete": "Xóa"
+        }
+      },
+      "create": {
+        "title": "Tạo Vai Trò",
+        "roleId": "ID Vai Trò",
+        "roleName": "Tên Vai Trò",
+        "create": "Tạo",
+        "creating": "Đang tạo...",
+        "cancel": "Hủy"
+      },
+      "edit": {
+        "title": "Chỉnh sửa Vai Trò",
+        "save": "Lưu Thay Đổi",
+        "saving": "Đang lưu...",
+        "cancel": "Hủy"
+      },
+      "delete": {
+        "title": "Xóa Vai Trò",
+        "confirm": "Bạn có chắc chắn muốn xóa vai trò này không?",
         "delete": "Xóa",
         "deleting": "Đang xóa...",
         "cancel": "Hủy"

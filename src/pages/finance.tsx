@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import Breadcrumb from '@/components/molecules/breadcrumb'
 import StatsCard from '@/components/molecules/statsCard'
 import RevenueChart from '@/components/molecules/revenueChart'
 import DonutChart from '@/components/molecules/donutChart'
@@ -65,11 +64,6 @@ const FinancialManagement: NextPageWithLayout = () => {
   const t = useTranslations('admin.finance')
   const [dateRange, setDateRange] = useState('01/10/2025 - 31/10/2025')
 
-  const breadcrumbItems = [
-    { label: 'Admin Dashboard', href: '/admin' },
-    { label: t('breadcrumb.title') },
-  ]
-
   const quickAccessButtons = [
     { icon: <FileText className='h-5 w-5' />, label: t('buttons.invoiceList') },
     {
@@ -88,8 +82,6 @@ const FinancialManagement: NextPageWithLayout = () => {
 
   return (
     <div>
-      <Breadcrumb items={breadcrumbItems} />
-
       <div className='space-y-6'>
         {/* Header Section */}
         <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4'>

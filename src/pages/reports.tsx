@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import Breadcrumb from '@/components/molecules/breadcrumb'
 import { DataTable } from '@/components/organisms/DataTable'
 import { Dialog, DialogContent } from '@/components/atoms/dialog'
 import { Button } from '@/components/atoms/button'
@@ -38,11 +37,6 @@ const statusMap = {
   RESOLVED: 'resolved',
   REJECTED: 'dismissed',
 }
-
-const breadcrumbItems = [
-  { label: 'Admin', href: '/admin' },
-  { label: 'Reports', href: '/admin/reports' },
-]
 
 const ViolationReportManagement = () => {
   const t = useTranslations('reports')
@@ -184,12 +178,15 @@ const ViolationReportManagement = () => {
 
   return (
     <div>
-      <Breadcrumb items={breadcrumbItems} />
       <div className='space-y-6'>
-        {/* Header */}
-        <div>
-          <h1 className='text-3xl font-semibold text-gray-900'>{t('title')}</h1>
-          <p className='mt-1 text-sm text-gray-500'>{t('description')}</p>
+        {/* Header Section */}
+        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4'>
+          <div>
+            <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
+              {t('title')}
+            </h1>
+            <p className='mt-1 text-sm text-gray-600'>{t('description')}</p>
+          </div>
         </div>
 
         {/* Stats Cards */}

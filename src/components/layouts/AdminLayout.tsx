@@ -53,16 +53,20 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeItem }) => {
   }
 
   return (
-    <div className='min-h-screen bg-gray-50 flex'>
-      {/* Fixed Sidebar */}
-      <div className='fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200'>
-        <AdminSidebar activeItem={activeItem} />
-      </div>
+    <div className='min-h-screen h-screen bg-gray-50 flex flex-col'>
+      {/* Headers  */}
+      <AdminHeader />
 
-      {/* Main Content Area */}
-      <div className='flex-1 ml-64'>
-        <AdminHeader />
-        <main className='p-6'>{children}</main>
+      <div className='flex flex-1 overflow-hidden'>
+        {/* Sidebar */}
+        <div className='w-64 bg-white border-r border-gray-200'>
+          <AdminSidebar activeItem={activeItem} />
+        </div>
+
+        {/* Main Content Area */}
+        <div className='flex-1 overflow-hidden'>
+          <main className='h-full w-full overflow-y-auto p-6'>{children}</main>
+        </div>
       </div>
     </div>
   )

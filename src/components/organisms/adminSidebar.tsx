@@ -29,6 +29,7 @@ type SidebarItemProps = {
   href?: string
   isActive?: boolean
   onClick?: () => void
+  disabled?: boolean
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({
@@ -36,15 +37,20 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   label,
   isActive,
   onClick,
+  disabled = false,
 }) => {
   return (
     <div
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
       className={cn(
-        'flex items-center gap-2 px-4 py-2 mx-2 rounded-lg cursor-pointer transition-colors',
-        isActive
-          ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-600'
-          : 'text-gray-700 hover:bg-gray-100',
+        'flex items-center gap-2 px-4 py-2 mx-2 rounded-lg transition-colors',
+        disabled
+          ? 'cursor-not-allowed opacity-50 text-gray-400'
+          : 'cursor-pointer',
+        !disabled &&
+          (isActive
+            ? 'bg-blue-50 text-blue-600 border-l-4 border-blue-600'
+            : 'text-gray-700 hover:bg-gray-100'),
       )}
     >
       {icon && <span className='w-5 h-5'>{icon}</span>}
@@ -85,16 +91,16 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
 
   // Route mapping for navigation
   const routeMap: Record<string, string> = {
-    dashboard: '/admin',
-    users: '/admin/users',
-    admin: '/admin/admins',
-    posts: '/admin/posts',
-    roles: '/admin/roles',
-    reports: '/admin/reports',
-    finance: '/admin/finance',
-    properties: '/admin/listings',
-    premium: '/admin/premium',
-    analytics: '/admin/analytics',
+    dashboard: '/users',
+    users: '/users',
+    admin: '/admins',
+    posts: '/posts',
+    roles: '/roles',
+    reports: '/reports',
+    finance: '/finance',
+    properties: '/listings',
+    premium: '/premium',
+    analytics: '/analytics',
     // Add more routes as we implement them
   }
 
@@ -164,16 +170,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
 
   return (
     <div className='h-full bg-white border-r border-gray-200 overflow-y-auto flex flex-col'>
-      {/* Logo */}
-      <div className='p-6 border-b border-gray-200'>
-        <div
-          className='flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity'
-          onClick={() => router.push('/admin')}
-        >
-          <span className='font-bold text-xl text-gray-900'>{t('title')}</span>
-        </div>
-      </div>
-
       {/* Navigation */}
       <div className='p-2 flex-1'>
         <SidebarSection title={t('sections.management')}>
@@ -195,13 +191,14 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
               icon={item.icon}
               label={item.label}
               isActive={false}
+              disabled={true}
             />
           ))}
         </SidebarSection>
       </div>
 
       {/* Language Switcher */}
-      <div className='p-4 border-t border-gray-200'>
+      <div className='border-t border-gray-200'>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button

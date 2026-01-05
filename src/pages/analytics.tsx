@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import Breadcrumb from '@/components/molecules/breadcrumb'
 import {
   Tabs,
   TabsList,
@@ -28,23 +27,17 @@ const AnalyticsPage: NextPageWithLayout = () => {
   const [timeRange, setTimeRange] = useState<TimeRange>('month')
   const [chartType, setChartType] = useState<ChartType>('line')
 
-  const breadcrumbItems = [
-    { label: 'Admin Dashboard', href: '/admin' },
-    { label: t('breadcrumb.title') },
-  ]
-
   return (
     <div>
-      {/* Breadcrumb */}
-      <Breadcrumb items={breadcrumbItems} />
-
       <div className='space-y-6'>
-        {/* Header */}
-        <div className='space-y-2'>
-          <h1 className='text-xl md:text-2xl font-semibold text-gray-900'>
-            {t('title')}
-          </h1>
-          <p className='text-sm md:text-base text-gray-600'>{t('subtitle')}</p>
+        {/* Header Section */}
+        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4'>
+          <div>
+            <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
+              {t('title')}
+            </h1>
+            <p className='mt-1 text-sm text-gray-600'>{t('subtitle')}</p>
+          </div>
         </div>
 
         {/* Tabs with Filters */}

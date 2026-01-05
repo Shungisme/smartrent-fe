@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import Breadcrumb from '@/components/molecules/breadcrumb'
 import {
   DataTable,
   Column,
@@ -9,6 +8,15 @@ import {
 } from '@/components/organisms/DataTable'
 import { Avatar } from '@/components/atoms/avatar'
 import { Badge } from '@/components/atoms/badge'
+import { Button } from '@/components/atoms/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/atoms/dialog'
+import { Input } from '@/components/atoms/input'
+import { Label } from '@/components/atoms/label'
 import { cn } from '@/lib/utils'
 import type { NextPageWithLayout } from '@/types/next-page'
 import { useTranslations } from 'next-intl'
@@ -93,11 +101,6 @@ const UserManagement: NextPageWithLayout = () => {
 
     fetchUsers()
   }, [currentPage, pageSize])
-
-  const breadcrumbItems = [
-    { label: 'Admin Dashboard', href: '/admin' },
-    { label: t('breadcrumb.dashboard') }, // Current page
-  ]
 
   // Transform API data to match UI format
   const transformedUsers: UserData[] = users.map((user) => ({
@@ -283,7 +286,6 @@ const UserManagement: NextPageWithLayout = () => {
   if (loading && users.length === 0) {
     return (
       <div>
-        <Breadcrumb items={breadcrumbItems} />
         <div className='flex items-center justify-center py-12'>
           <div className='text-center'>
             <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto'></div>
@@ -298,7 +300,6 @@ const UserManagement: NextPageWithLayout = () => {
   if (error) {
     return (
       <div>
-        <Breadcrumb items={breadcrumbItems} />
         <div className='flex items-center justify-center py-12'>
           <div className='text-center'>
             <p className='text-red-600 mb-4'>{error}</p>
@@ -316,12 +317,22 @@ const UserManagement: NextPageWithLayout = () => {
 
   return (
     <div>
-      <Breadcrumb items={breadcrumbItems} />
-
       <div className='space-y-6'>
+        {/* Header Section */}
+        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4'>
+          <div>
+            <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
+              {t('title')}
+            </h1>
+            <p className='mt-1 text-sm text-gray-600'>
+              {t('breadcrumb.dashboard')}
+            </p>
+          </div>
+        </div>
+
         <div className='flex justify-end'>
-          <button
-            className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 mb-2'
+          <Button
+            className='bg-blue-600 hover:bg-blue-700 text-white'
             onClick={() => {
               setShowCreate(true)
               setCreateForm({})
@@ -329,7 +340,7 @@ const UserManagement: NextPageWithLayout = () => {
             }}
           >
             + {t('create.button') || 'Create User'}
-          </button>
+          </Button>
         </div>
         {/* DataTable Component */}
         <DataTable
@@ -348,46 +359,86 @@ const UserManagement: NextPageWithLayout = () => {
       </div>
 
       {/* Create User Modal */}
-      {showCreate && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center'>
-          <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-md'>
-            <h2 className='text-lg font-semibold mb-4'>
-              {t('create.title') || 'Create User'}
-            </h2>
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault()
-                setCreateLoading(true)
-                setCreateError(null)
-                try {
-                  const resp = await createUser(createForm as CreateUserRequest)
-                  if (resp.success && resp.data) {
-                    setShowCreate(false)
-                    setUsers((prev) => [resp.data, ...prev])
-                  } else {
-                    setCreateError(resp.message || 'Failed to create user')
-                  }
-                } catch (err: unknown) {
-                  const error = err as { message?: string }
-                  setCreateError(error.message || 'Error creating user')
-                } finally {
-                  setCreateLoading(false)
+      <Dialog open={showCreate} onOpenChange={setShowCreate}>
+        <DialogContent className='min-w-[40vw] max-w-md max-h-[80vh] overflow-y-auto'>
+          <DialogHeader>
+            <DialogTitle>{t('create.title') || 'Create User'}</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault()
+              setCreateLoading(true)
+              setCreateError(null)
+              try {
+                const resp = await createUser(createForm as CreateUserRequest)
+                if (resp.success && resp.data) {
+                  setShowCreate(false)
+                  setUsers((prev) => [resp.data, ...prev])
+                } else {
+                  setCreateError(resp.message || 'Failed to create user')
                 }
-              }}
-            >
-              <div className='space-y-3'>
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Phone Code'
+              } catch (err: unknown) {
+                const error = err as { message?: string }
+                setCreateError(error.message || 'Error creating user')
+              } finally {
+                setCreateLoading(false)
+              }
+            }}
+            className='space-y-2'
+          >
+            <div className='space-y-2'>
+              <Label htmlFor='firstName'>{t('create.firstName')} *</Label>
+              <Input
+                id='firstName'
+                value={createForm.firstName || ''}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, firstName: e.target.value }))
+                }
+                required
+              />
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='lastName'>{t('create.lastName')} *</Label>
+              <Input
+                id='lastName'
+                value={createForm.lastName || ''}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, lastName: e.target.value }))
+                }
+                required
+              />
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='email'>{t('create.email')} *</Label>
+              <Input
+                id='email'
+                type='email'
+                value={createForm.email || ''}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, email: e.target.value }))
+                }
+                required
+              />
+            </div>
+
+            <div className='grid grid-cols-3 gap-2'>
+              <div className='space-y-2'>
+                <Label htmlFor='phoneCode'>{t('create.phoneCode')} *</Label>
+                <Input
+                  id='phoneCode'
                   value={createForm.phoneCode || ''}
                   onChange={(e) =>
                     setCreateForm((f) => ({ ...f, phoneCode: e.target.value }))
                   }
                   required
                 />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Phone Number'
+              </div>
+              <div className='col-span-2 space-y-2'>
+                <Label htmlFor='phoneNumber'>{t('create.phoneNumber')} *</Label>
+                <Input
+                  id='phoneNumber'
                   value={createForm.phoneNumber || ''}
                   onChange={(e) =>
                     setCreateForm((f) => ({
@@ -397,254 +448,273 @@ const UserManagement: NextPageWithLayout = () => {
                   }
                   required
                 />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Email'
-                  value={createForm.email || ''}
-                  onChange={(e) =>
-                    setCreateForm((f) => ({ ...f, email: e.target.value }))
-                  }
-                  required
-                  type='email'
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Password'
-                  value={createForm.password || ''}
-                  onChange={(e) =>
-                    setCreateForm((f) => ({ ...f, password: e.target.value }))
-                  }
-                  required
-                  type='password'
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='First Name'
-                  value={createForm.firstName || ''}
-                  onChange={(e) =>
-                    setCreateForm((f) => ({ ...f, firstName: e.target.value }))
-                  }
-                  required
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Last Name'
-                  value={createForm.lastName || ''}
-                  onChange={(e) =>
-                    setCreateForm((f) => ({ ...f, lastName: e.target.value }))
-                  }
-                  required
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='ID Document'
-                  value={createForm.idDocument || ''}
-                  onChange={(e) =>
-                    setCreateForm((f) => ({ ...f, idDocument: e.target.value }))
-                  }
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Tax Number'
-                  value={createForm.taxNumber || ''}
-                  onChange={(e) =>
-                    setCreateForm((f) => ({ ...f, taxNumber: e.target.value }))
-                  }
-                />
-                {createError && (
-                  <div className='text-red-600 text-sm'>{createError}</div>
-                )}
               </div>
-              <div className='flex justify-end gap-2 mt-6'>
-                <button
-                  type='button'
-                  className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
-                  onClick={() => setShowCreate(false)}
-                  disabled={createLoading}
-                >
-                  {t('create.cancel') || 'Cancel'}
-                </button>
-                <button
-                  type='submit'
-                  className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700'
-                  disabled={createLoading}
-                >
-                  {createLoading
-                    ? t('create.creating') || 'Creating...'
-                    : t('create.create') || 'Create'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='password'>{t('create.password')} *</Label>
+              <Input
+                id='password'
+                type='password'
+                value={createForm.password || ''}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, password: e.target.value }))
+                }
+                required
+                minLength={8}
+              />
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='idDocument'>{t('create.idDocument')}</Label>
+              <Input
+                id='idDocument'
+                value={createForm.idDocument || ''}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, idDocument: e.target.value }))
+                }
+              />
+            </div>
+
+            <div className='space-y-2'>
+              <Label htmlFor='taxNumber'>{t('create.taxNumber')}</Label>
+              <Input
+                id='taxNumber'
+                value={createForm.taxNumber || ''}
+                onChange={(e) =>
+                  setCreateForm((f) => ({ ...f, taxNumber: e.target.value }))
+                }
+              />
+            </div>
+
+            {createError && (
+              <div className='text-red-600 text-sm'>{createError}</div>
+            )}
+
+            <div className='flex justify-end gap-2'>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={() => setShowCreate(false)}
+                disabled={createLoading}
+              >
+                {t('create.cancel') || 'Cancel'}
+              </Button>
+              <Button
+                type='submit'
+                className='bg-blue-600 hover:bg-blue-700'
+                disabled={createLoading}
+              >
+                {createLoading
+                  ? t('create.creating') || 'Creating...'
+                  : t('create.create') || 'Create'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Edit User Modal */}
-      {editingUser && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center'>
-          <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-md'>
-            <h2 className='text-lg font-semibold mb-4'>
-              {t('edit.title') || 'Edit User'}
-            </h2>
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault()
-                setEditLoading(true)
-                setEditError(null)
-                try {
-                  const resp = await updateUser(editingUser.userId, editForm)
-                  if (resp.success && resp.data) {
-                    setEditingUser(null)
-                    // Refresh user list
-                    setUsers((prev) =>
-                      prev.map((u) =>
-                        u.userId === resp.data.userId ? resp.data : u,
-                      ),
-                    )
-                  } else {
-                    setEditError(resp.message || 'Failed to update user')
-                  }
-                } catch (err: unknown) {
-                  const error = err as { message?: string }
-                  setEditError(error.message || 'Error updating user')
-                } finally {
-                  setEditLoading(false)
+      <Dialog
+        open={!!editingUser}
+        onOpenChange={(open) => !open && setEditingUser(null)}
+      >
+        <DialogContent className='min-w-[40vw] max-w-md max-h-[80vh] overflow-y-auto'>
+          <DialogHeader>
+            <DialogTitle>{t('edit.title') || 'Edit User'}</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault()
+              setEditLoading(true)
+              setEditError(null)
+              try {
+                const resp = await updateUser(editingUser!.userId, editForm)
+                if (resp.success && resp.data) {
+                  setEditingUser(null)
+                  // Refresh user list
+                  setUsers((prev) =>
+                    prev.map((u) =>
+                      u.userId === resp.data.userId ? resp.data : u,
+                    ),
+                  )
+                } else {
+                  setEditError(resp.message || 'Failed to update user')
                 }
-              }}
-            >
-              <div className='space-y-3'>
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Email'
-                  value={editForm.email || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, email: e.target.value }))
-                  }
-                  required
-                  type='email'
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='First Name'
-                  value={editForm.firstName || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, firstName: e.target.value }))
-                  }
-                  required
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Last Name'
-                  value={editForm.lastName || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, lastName: e.target.value }))
-                  }
-                  required
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='ID Document'
-                  value={editForm.idDocument || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, idDocument: e.target.value }))
-                  }
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Tax Number'
-                  value={editForm.taxNumber || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, taxNumber: e.target.value }))
-                  }
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Contact Phone'
-                  value={editForm.contactPhoneNumber || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({
-                      ...f,
-                      contactPhoneNumber: e.target.value,
-                    }))
-                  }
-                />
-                <label className='flex items-center gap-2'>
-                  <input
-                    type='checkbox'
-                    checked={!!editForm.isVerified}
-                    onChange={(e) =>
-                      setEditForm((f) => ({
-                        ...f,
-                        isVerified: e.target.checked,
-                      }))
-                    }
-                  />
-                  {t('edit.verified') || 'Verified'}
-                </label>
-                {editError && (
-                  <div className='text-red-600 text-sm'>{editError}</div>
-                )}
-              </div>
-              <div className='flex justify-end gap-2 mt-6'>
-                <button
-                  type='button'
-                  className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
-                  onClick={() => setEditingUser(null)}
-                  disabled={editLoading}
-                >
-                  {t('edit.cancel') || 'Cancel'}
-                </button>
-                <button
-                  type='submit'
-                  className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
-                  disabled={editLoading}
-                >
-                  {editLoading
-                    ? t('edit.saving') || 'Saving...'
-                    : t('edit.save') || 'Save'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+              } catch (err: unknown) {
+                const error = err as { message?: string }
+                setEditError(error.message || 'Error updating user')
+              } finally {
+                setEditLoading(false)
+              }
+            }}
+            className='space-y-2'
+          >
+            <div className='space-y-2'>
+              <Label htmlFor='editEmail'>{t('edit.email') || 'Email'} *</Label>
+              <Input
+                id='editEmail'
+                type='email'
+                placeholder='Email'
+                value={editForm.email || ''}
+                onChange={(e) =>
+                  setEditForm((f) => ({ ...f, email: e.target.value }))
+                }
+                required
+              />
+            </div>
+            <div className='space-y-2'>
+              <Label htmlFor='editFirstName'>
+                {t('edit.firstName') || 'First Name'} *
+              </Label>
+              <Input
+                id='editFirstName'
+                placeholder='First Name'
+                value={editForm.firstName || ''}
+                onChange={(e) =>
+                  setEditForm((f) => ({ ...f, firstName: e.target.value }))
+                }
+                required
+              />
+            </div>
+            <div className='space-y-2'>
+              <Label htmlFor='editLastName'>
+                {t('edit.lastName') || 'Last Name'} *
+              </Label>
+              <Input
+                id='editLastName'
+                placeholder='Last Name'
+                value={editForm.lastName || ''}
+                onChange={(e) =>
+                  setEditForm((f) => ({ ...f, lastName: e.target.value }))
+                }
+                required
+              />
+            </div>
+            <div className='space-y-2'>
+              <Label htmlFor='editIdDocument'>
+                {t('edit.idDocument') || 'ID Document'}
+              </Label>
+              <Input
+                id='editIdDocument'
+                placeholder='ID Document'
+                value={editForm.idDocument || ''}
+                onChange={(e) =>
+                  setEditForm((f) => ({ ...f, idDocument: e.target.value }))
+                }
+              />
+            </div>
+            <div className='space-y-2'>
+              <Label htmlFor='editTaxNumber'>
+                {t('edit.taxNumber') || 'Tax Number'}
+              </Label>
+              <Input
+                id='editTaxNumber'
+                placeholder='Tax Number'
+                value={editForm.taxNumber || ''}
+                onChange={(e) =>
+                  setEditForm((f) => ({ ...f, taxNumber: e.target.value }))
+                }
+              />
+            </div>
+            <div className='space-y-2'>
+              <Label htmlFor='editContactPhone'>
+                {t('edit.contactPhone') || 'Contact Phone'}
+              </Label>
+              <Input
+                id='editContactPhone'
+                placeholder='Contact Phone'
+                value={editForm.contactPhoneNumber || ''}
+                onChange={(e) =>
+                  setEditForm((f) => ({
+                    ...f,
+                    contactPhoneNumber: e.target.value,
+                  }))
+                }
+              />
+            </div>
+            <label className='flex items-center gap-2'>
+              <input
+                type='checkbox'
+                checked={!!editForm.isVerified}
+                onChange={(e) =>
+                  setEditForm((f) => ({
+                    ...f,
+                    isVerified: e.target.checked,
+                  }))
+                }
+                className='rounded border-gray-300'
+              />
+              <span className='text-sm'>
+                {t('edit.verified') || 'Verified'}
+              </span>
+            </label>
+            {editError && (
+              <div className='text-red-600 text-sm'>{editError}</div>
+            )}
+            <div className='flex justify-end gap-2 pt-4'>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={() => setEditingUser(null)}
+                disabled={editLoading}
+              >
+                {t('edit.cancel') || 'Cancel'}
+              </Button>
+              <Button
+                type='submit'
+                disabled={editLoading}
+                className='bg-blue-600 hover:bg-blue-700'
+              >
+                {editLoading
+                  ? t('edit.saving') || 'Saving...'
+                  : t('edit.save') || 'Save'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete User Modal */}
-      {showDelete && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center'>
-          <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-sm'>
-            <h2 className='text-lg font-semibold mb-4'>
-              {t('delete.title') || 'Delete User'}
-            </h2>
-            <p className='mb-4'>
+      <Dialog
+        open={!!showDelete}
+        onOpenChange={(open) => !open && setShowDelete(null)}
+      >
+        <DialogContent className='max-w-sm'>
+          <DialogHeader>
+            <DialogTitle>{t('delete.title') || 'Delete User'}</DialogTitle>
+          </DialogHeader>
+          <div className='space-y-2'>
+            <p>
               {t('delete.confirm') ||
                 'Are you sure you want to delete this user?'}
               <br />
-              <span className='font-semibold'>{showDelete.email}</span>
+              <span className='font-semibold'>{showDelete?.email}</span>
             </p>
             {deleteError && (
-              <div className='text-red-600 text-sm mb-2'>{deleteError}</div>
+              <div className='text-red-600 text-sm'>{deleteError}</div>
             )}
-            <div className='flex justify-end gap-2'>
-              <button
-                className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
+            <div className='flex gap-3 pt-4'>
+              <Button
+                type='button'
+                variant='outline'
                 onClick={() => setShowDelete(null)}
                 disabled={deleteLoading}
+                className='flex-1'
               >
                 {t('delete.cancel') || 'Cancel'}
-              </button>
-              <button
-                className='px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700'
+              </Button>
+              <Button
                 disabled={deleteLoading}
                 onClick={async () => {
                   setDeleteLoading(true)
                   setDeleteError(null)
                   try {
-                    const resp = await deleteUser(showDelete.userId)
+                    const resp = await deleteUser(showDelete!.userId)
                     if (resp.success) {
                       setShowDelete(null)
                       setUsers((prev) =>
-                        prev.filter((u) => u.userId !== showDelete.userId),
+                        prev.filter((u) => u.userId !== showDelete!.userId),
                       )
                     } else {
                       setDeleteError(resp.message || 'Failed to delete user')
@@ -656,15 +726,16 @@ const UserManagement: NextPageWithLayout = () => {
                     setDeleteLoading(false)
                   }
                 }}
+                className='flex-1 bg-red-600 hover:bg-red-700'
               >
                 {deleteLoading
                   ? t('delete.deleting') || 'Deleting...'
                   : t('delete.delete') || 'Delete'}
-              </button>
+              </Button>
             </div>
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

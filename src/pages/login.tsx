@@ -8,10 +8,10 @@ const LoginPage = () => {
   const router = useRouter()
   const { isAuthenticated, isLoading } = useAuth()
 
-  // Redirect to admin dashboard if already authenticated
+  // Redirect to users page if already authenticated
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push('/admin/analytics')
+      router.push('/users')
     }
   }, [isAuthenticated, isLoading, router])
 

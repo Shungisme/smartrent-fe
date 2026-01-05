@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import Breadcrumb from '@/components/molecules/breadcrumb'
 import {
   DataTable,
   Column,
@@ -187,11 +186,6 @@ const AdminManagement: NextPageWithLayout = () => {
     }
   }
 
-  const breadcrumbItems = [
-    { label: 'Admin Dashboard', href: '/admin' },
-    { label: t('breadcrumb.dashboard') }, // Current page
-  ]
-
   // Transform API data to match UI format
   const transformedAdmins: AdminRow[] = admins.map((admin) => ({
     id: admin.adminId,
@@ -364,9 +358,17 @@ const AdminManagement: NextPageWithLayout = () => {
 
   return (
     <div>
-      <Breadcrumb items={breadcrumbItems} />
-
       <div className='space-y-6'>
+        {/* Header Section */}
+        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4'>
+          <div>
+            <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
+              {t('title')}
+            </h1>
+            <p className='mt-1 text-sm text-gray-600'>{t('subtitle')}</p>
+          </div>
+        </div>
+
         {/* Header with Create Button */}
         <div className='flex items-center justify-end'>
           <Button
@@ -392,80 +394,107 @@ const AdminManagement: NextPageWithLayout = () => {
           getRowKey={(row) => row.id}
         />
         {/* Edit Admin Modal */}
-        {editingAdmin && (
-          <div className='fixed inset-0 z-50 flex items-center justify-center'>
-            <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-md'>
-              <h2 className='text-lg font-semibold mb-4'>
-                {t('edit.title') || 'Edit Admin'}
-              </h2>
-              <form
-                onSubmit={async (e) => {
-                  e.preventDefault()
-                  setEditLoading(true)
-                  setEditError(null)
-                  try {
-                    const resp = await updateAdmin(
-                      editingAdmin.adminId,
-                      editForm,
+        <Dialog
+          open={!!editingAdmin}
+          onOpenChange={(open) => !open && setEditingAdmin(null)}
+        >
+          <DialogContent className='min-w-[20vw] max-w-md max-h-[80vh] overflow-y-auto'>
+            <DialogHeader>
+              <DialogTitle>{t('edit.title') || 'Edit Admin'}</DialogTitle>
+            </DialogHeader>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault()
+                setEditLoading(true)
+                setEditError(null)
+                try {
+                  const resp = await updateAdmin(
+                    editingAdmin!.adminId,
+                    editForm,
+                  )
+                  if (resp.success && resp.data) {
+                    setEditingAdmin(null)
+                    setAdmins((prev) =>
+                      prev.map((a) =>
+                        a.adminId === resp.data.adminId ? resp.data : a,
+                      ),
                     )
-                    if (resp.success && resp.data) {
-                      setEditingAdmin(null)
-                      setAdmins((prev) =>
-                        prev.map((a) =>
-                          a.adminId === resp.data.adminId ? resp.data : a,
-                        ),
-                      )
-                    } else {
-                      setEditError(resp.message || 'Failed to update admin')
-                    }
-                  } catch (err: unknown) {
-                    const error = err as { message?: string }
-                    setEditError(error.message || 'Error updating admin')
-                  } finally {
-                    setEditLoading(false)
+                  } else {
+                    setEditError(resp.message || 'Failed to update admin')
                   }
-                }}
-              >
-                <div className='space-y-3'>
-                  <input
-                    className='w-full border rounded px-3 py-2'
-                    placeholder='Email'
-                    value={editForm.email || ''}
-                    onChange={(e) =>
-                      setEditForm((f) => ({ ...f, email: e.target.value }))
-                    }
-                    required
-                    type='email'
-                  />
-                  <input
-                    className='w-full border rounded px-3 py-2'
-                    placeholder='First Name'
-                    value={editForm.firstName || ''}
-                    onChange={(e) =>
-                      setEditForm((f) => ({ ...f, firstName: e.target.value }))
-                    }
-                    required
-                  />
-                  <input
-                    className='w-full border rounded px-3 py-2'
-                    placeholder='Last Name'
-                    value={editForm.lastName || ''}
-                    onChange={(e) =>
-                      setEditForm((f) => ({ ...f, lastName: e.target.value }))
-                    }
-                    required
-                  />
-                  <input
-                    className='w-full border rounded px-3 py-2'
-                    placeholder='Phone Code'
+                } catch (err: unknown) {
+                  const error = err as { message?: string }
+                  setEditError(error.message || 'Error updating admin')
+                } finally {
+                  setEditLoading(false)
+                }
+              }}
+              className='space-y-2'
+            >
+              <div className='space-y-2'>
+                <Label htmlFor='editEmail'>
+                  {t('edit.email') || 'Email'} *
+                </Label>
+                <Input
+                  id='editEmail'
+                  type='email'
+                  placeholder='Email'
+                  value={editForm.email || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, email: e.target.value }))
+                  }
+                  required
+                />
+              </div>
+              <div className='space-y-2'>
+                <Label htmlFor='editFirstName'>
+                  {t('edit.firstName') || 'First Name'} *
+                </Label>
+                <Input
+                  id='editFirstName'
+                  placeholder='First Name'
+                  value={editForm.firstName || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, firstName: e.target.value }))
+                  }
+                  required
+                />
+              </div>
+              <div className='space-y-2'>
+                <Label htmlFor='editLastName'>
+                  {t('edit.lastName') || 'Last Name'} *
+                </Label>
+                <Input
+                  id='editLastName'
+                  placeholder='Last Name'
+                  value={editForm.lastName || ''}
+                  onChange={(e) =>
+                    setEditForm((f) => ({ ...f, lastName: e.target.value }))
+                  }
+                  required
+                />
+              </div>
+              <div className='grid grid-cols-3 gap-2'>
+                <div className='space-y-2'>
+                  <Label htmlFor='editPhoneCode'>
+                    {t('edit.phoneCode') || 'Code'} *
+                  </Label>
+                  <Input
+                    id='editPhoneCode'
+                    placeholder='Code'
                     value={editForm.phoneCode || ''}
                     onChange={(e) =>
                       setEditForm((f) => ({ ...f, phoneCode: e.target.value }))
                     }
                     required
                   />
-                  <input
-                    className='w-full border rounded px-3 py-2'
+                </div>
+                <div className='col-span-2 space-y-2'>
+                  <Label htmlFor='editPhoneNumber'>
+                    {t('edit.phoneNumber') || 'Phone Number'} *
+                  </Label>
+                  <Input
+                    id='editPhoneNumber'
                     placeholder='Phone Number'
                     value={editForm.phoneNumber || ''}
                     onChange={(e) =>
@@ -476,109 +505,113 @@ const AdminManagement: NextPageWithLayout = () => {
                     }
                     required
                   />
-                  <div>
-                    <label className='block mb-1'>Roles</label>
-                    {rolesLoading ? (
-                      <p className='text-sm text-gray-500'>Loading roles...</p>
-                    ) : (
-                      <div className='space-y-2 mt-2'>
-                        {roles.map((role) => (
-                          <label
-                            key={role.roleId}
-                            className='flex items-center gap-2'
-                          >
-                            <input
-                              type='checkbox'
-                              checked={
-                                editForm.roles?.includes(role.roleId) || false
-                              }
-                              onChange={(e) => {
-                                if (e.target.checked) {
-                                  setEditForm((f) => ({
-                                    ...f,
-                                    roles: [...(f.roles || []), role.roleId],
-                                  }))
-                                } else {
-                                  setEditForm((f) => ({
-                                    ...f,
-                                    roles: (f.roles || []).filter(
-                                      (r) => r !== role.roleId,
-                                    ),
-                                  }))
-                                }
-                              }}
-                              className='rounded border-gray-300'
-                            />
-                            <span className='text-sm'>{role.roleName}</span>
-                          </label>
-                        ))}
-                      </div>
-                    )}
+                </div>
+              </div>
+              <div className='space-y-2'>
+                <Label>{t('edit.roles') || 'Roles'}</Label>
+                {rolesLoading ? (
+                  <p className='text-sm text-gray-500'>Loading roles...</p>
+                ) : (
+                  <div className='space-y-2 mt-2'>
+                    {roles.map((role) => (
+                      <label
+                        key={role.roleId}
+                        className='flex items-center gap-2'
+                      >
+                        <input
+                          type='checkbox'
+                          checked={
+                            editForm.roles?.includes(role.roleId) || false
+                          }
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setEditForm((f) => ({
+                                ...f,
+                                roles: [...(f.roles || []), role.roleId],
+                              }))
+                            } else {
+                              setEditForm((f) => ({
+                                ...f,
+                                roles: (f.roles || []).filter(
+                                  (r) => r !== role.roleId,
+                                ),
+                              }))
+                            }
+                          }}
+                          className='rounded border-gray-300'
+                        />
+                        <span className='text-sm'>{role.roleName}</span>
+                      </label>
+                    ))}
                   </div>
-                  {editError && (
-                    <div className='text-red-600 text-sm'>{editError}</div>
-                  )}
-                </div>
-                <div className='flex justify-end gap-2 mt-6'>
-                  <button
-                    type='button'
-                    className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
-                    onClick={() => setEditingAdmin(null)}
-                    disabled={editLoading}
-                  >
-                    {t('edit.cancel') || 'Cancel'}
-                  </button>
-                  <button
-                    type='submit'
-                    className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
-                    disabled={editLoading}
-                  >
-                    {editLoading
-                      ? t('edit.saving') || 'Saving...'
-                      : t('edit.save') || 'Save'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
+                )}
+              </div>
+              {editError && (
+                <div className='text-red-600 text-sm'>{editError}</div>
+              )}
+              <div className='flex justify-end gap-2'>
+                <Button
+                  type='button'
+                  variant='outline'
+                  onClick={() => setEditingAdmin(null)}
+                  disabled={editLoading}
+                >
+                  {t('edit.cancel') || 'Cancel'}
+                </Button>
+                <Button
+                  type='submit'
+                  disabled={editLoading}
+                  className='bg-blue-600 hover:bg-blue-700'
+                >
+                  {editLoading
+                    ? t('edit.saving') || 'Saving...'
+                    : t('edit.save') || 'Save'}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
 
         {/* Delete Admin Modal */}
-        {showDelete && (
-          <div className='fixed inset-0 z-50 flex items-center justify-center'>
-            <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-sm'>
-              <h2 className='text-lg font-semibold mb-4'>
-                {t('delete.title') || 'Delete Admin'}
-              </h2>
-              <p className='mb-4'>
+        <Dialog
+          open={!!showDelete}
+          onOpenChange={(open) => !open && setShowDelete(null)}
+        >
+          <DialogContent className='max-w-sm'>
+            <DialogHeader>
+              <DialogTitle>{t('delete.title') || 'Delete Admin'}</DialogTitle>
+            </DialogHeader>
+            <div className='space-y-2'>
+              <p>
                 {t('delete.confirm') ||
                   'Are you sure you want to delete this admin?'}
                 <br />
-                <span className='font-semibold'>{showDelete.email}</span>
+                <span className='font-semibold'>{showDelete?.email}</span>
               </p>
               {deleteError && (
-                <div className='text-red-600 text-sm mb-2'>{deleteError}</div>
+                <div className='text-red-600 text-sm'>{deleteError}</div>
               )}
-              <div className='flex justify-end gap-2'>
-                <button
-                  className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
+              <div className='flex gap-3 pt-4'>
+                <Button
+                  type='button'
+                  variant='outline'
                   onClick={() => setShowDelete(null)}
                   disabled={deleteLoading}
+                  className='flex-1'
                 >
                   {t('delete.cancel') || 'Cancel'}
-                </button>
-                <button
-                  className='px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700'
+                </Button>
+                <Button
                   disabled={deleteLoading}
                   onClick={async () => {
                     setDeleteLoading(true)
                     setDeleteError(null)
                     try {
-                      const resp = await deleteAdmin(showDelete.adminId)
+                      const resp = await deleteAdmin(showDelete!.adminId)
                       if (resp.success) {
                         setShowDelete(null)
                         setAdmins((prev) =>
-                          prev.filter((a) => a.adminId !== showDelete.adminId),
+                          prev.filter((a) => a.adminId !== showDelete!.adminId),
                         )
                       } else {
                         setDeleteError(resp.message || 'Failed to delete admin')
@@ -590,25 +623,26 @@ const AdminManagement: NextPageWithLayout = () => {
                       setDeleteLoading(false)
                     }
                   }}
+                  className='flex-1 bg-red-600 hover:bg-red-700'
                 >
                   {deleteLoading
                     ? t('delete.deleting') || 'Deleting...'
                     : t('delete.delete') || 'Delete'}
-                </button>
+                </Button>
               </div>
             </div>
-          </div>
-        )}
+          </DialogContent>
+        </Dialog>
 
         {/* Create Admin Dialog */}
         <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-          <DialogContent className='max-w-md max-h-[50vh] overflow-y-auto'>
+          <DialogContent className='min-w-[20vw] max-w-md max-h-[80vh] overflow-y-auto'>
             <DialogHeader>
-              <DialogTitle>Create New Admin</DialogTitle>
+              <DialogTitle>{t('create.title')}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleCreateAdmin} className='space-y-4'>
-              <div>
-                <Label htmlFor='firstName'>First Name *</Label>
+            <form onSubmit={handleCreateAdmin} className='space-y-2'>
+              <div className='space-y-2'>
+                <Label htmlFor='firstName'>{t('create.firstName')} *</Label>
                 <Input
                   id='firstName'
                   value={formData.firstName}
@@ -619,8 +653,8 @@ const AdminManagement: NextPageWithLayout = () => {
                 />
               </div>
 
-              <div>
-                <Label htmlFor='lastName'>Last Name *</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='lastName'>{t('create.lastName')} *</Label>
                 <Input
                   id='lastName'
                   value={formData.lastName}
@@ -631,8 +665,8 @@ const AdminManagement: NextPageWithLayout = () => {
                 />
               </div>
 
-              <div>
-                <Label htmlFor='email'>Email *</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='email'>{t('create.email')} *</Label>
                 <Input
                   id='email'
                   type='email'
@@ -645,8 +679,8 @@ const AdminManagement: NextPageWithLayout = () => {
               </div>
 
               <div className='grid grid-cols-3 gap-2'>
-                <div>
-                  <Label htmlFor='phoneCode'>Code *</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='phoneCode'>{t('create.phoneCode')} *</Label>
                   <Input
                     id='phoneCode'
                     value={formData.phoneCode}
@@ -656,8 +690,10 @@ const AdminManagement: NextPageWithLayout = () => {
                     required
                   />
                 </div>
-                <div className='col-span-2'>
-                  <Label htmlFor='phoneNumber'>Phone Number *</Label>
+                <div className='col-span-2 space-y-2'>
+                  <Label htmlFor='phoneNumber'>
+                    {t('create.phoneNumber')} *
+                  </Label>
                   <Input
                     id='phoneNumber'
                     value={formData.phoneNumber}
@@ -669,8 +705,8 @@ const AdminManagement: NextPageWithLayout = () => {
                 </div>
               </div>
 
-              <div>
-                <Label htmlFor='password'>Password *</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='password'>{t('create.password')} *</Label>
                 <Input
                   id='password'
                   type='password'
@@ -683,8 +719,10 @@ const AdminManagement: NextPageWithLayout = () => {
                 />
               </div>
 
-              <div>
-                <Label>Roles * (Select at least one)</Label>
+              <div className='space-y-2'>
+                <Label>
+                  {t('create.roles')} * ({t('create.selectRoles')})
+                </Label>
                 {rolesLoading ? (
                   <p className='text-sm text-gray-500'>Loading roles...</p>
                 ) : (
@@ -721,7 +759,7 @@ const AdminManagement: NextPageWithLayout = () => {
                 )}
               </div>
 
-              <div className='flex gap-3 pt-4'>
+              <div className='flex gap-3'>
                 <Button
                   type='button'
                   variant='outline'
@@ -729,14 +767,14 @@ const AdminManagement: NextPageWithLayout = () => {
                   disabled={creating}
                   className='flex-1'
                 >
-                  Cancel
+                  {t('create.cancel')}
                 </Button>
                 <Button
                   type='submit'
                   disabled={creating || formData.roles.length === 0}
                   className='flex-1 bg-blue-600 hover:bg-blue-700'
                 >
-                  {creating ? 'Creating...' : 'Create Admin'}
+                  {creating ? t('create.creating') : t('create.create')}
                 </Button>
               </div>
             </form>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import { useDebounce } from '@/hooks/useDebounce'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import Breadcrumb from '@/components/molecules/breadcrumb'
 import {
   DataTable,
   Column,
@@ -36,6 +36,7 @@ import {
   VipType,
   ListingFilterRequest,
   ProductType,
+  Amenity,
 } from '@/api/types/listing.type'
 
 // UI Display Types
@@ -69,6 +70,12 @@ type UIPostData = {
   isVerify: boolean
   rejectionReason?: string | null
   verificationNotes?: string | null
+  amenities?: Amenity[]
+  description?: string
+  bedrooms?: number | null
+  bathrooms?: number | null
+  direction?: string | null
+  furnishing?: string | null
 }
 
 // Helper functions
@@ -185,13 +192,24 @@ const mapApiDataToUI = (item: AdminListingItem): UIPostData => {
   const { date, time } = formatDateTime(item.postDate)
   const { date: expiryDate } = formatDateTime(item.expiryDate)
 
+  // Determine status from adminVerification.verificationStatus
   let status: PostStatus = 'pending'
   if (item.expired) {
     status = 'expired'
-  } else if (item.verified && item.isVerify) {
-    status = 'approved'
-  } else if (!item.verified && item.isVerify) {
-    status = 'rejected'
+  } else if (item.adminVerification?.verificationStatus) {
+    const verificationStatus = item.adminVerification.verificationStatus
+    switch (verificationStatus) {
+      case 'VERIFIED':
+        status = 'approved'
+        break
+      case 'REJECTED':
+        status = 'rejected'
+        break
+      case 'PENDING':
+      default:
+        status = 'pending'
+        break
+    }
   } else {
     status = 'pending'
   }
@@ -207,7 +225,7 @@ const mapApiDataToUI = (item: AdminListingItem): UIPostData => {
       name: item.user
         ? `${item.user.firstName} ${item.user.lastName}`
         : 'Unknown User',
-      avatar: undefined,
+      avatar: item.user?.avatarUrl || undefined,
       userId: item.user?.userId || item.userId,
       phone: item.user?.contactPhoneNumber || '',
     },
@@ -227,6 +245,12 @@ const mapApiDataToUI = (item: AdminListingItem): UIPostData => {
     isVerify: item.isVerify,
     rejectionReason: item.adminVerification?.rejectionReason,
     verificationNotes: item.adminVerification?.verificationNotes,
+    amenities: item.amenities,
+    description: item.description,
+    bedrooms: item.bedrooms,
+    bathrooms: item.bathrooms,
+    direction: item.direction,
+    furnishing: item.furnishing,
   }
 }
 
@@ -314,7 +338,7 @@ const PostVerification: NextPageWithLayout = () => {
       }
     } catch (error) {
       console.error('Error fetching listings:', error)
-      alert('Failed to load listings. Please try again.')
+      toast.error('Failed to load listings. Please try again.')
     } finally {
       setInitialLoading(false)
       setTableLoading(false)
@@ -325,11 +349,6 @@ const PostVerification: NextPageWithLayout = () => {
   const handleFilterChange = (newFilters: Record<string, unknown>) => {
     setFilterValues(newFilters)
   }
-
-  const breadcrumbItems = [
-    { label: 'Admin Dashboard', href: '/admin' },
-    { label: t('breadcrumb.title') }, // Current page
-  ]
 
   const handleReview = (post: UIPostData) => {
     setSelectedPost(post)
@@ -348,7 +367,7 @@ const PostVerification: NextPageWithLayout = () => {
         verificationNotes || 'Listing approved',
       )
 
-      alert('Listing has been approved successfully.')
+      toast.success('Listing has been approved successfully.')
 
       // Refresh listings
       await fetchListings()
@@ -357,7 +376,7 @@ const PostVerification: NextPageWithLayout = () => {
       setVerificationNotes('')
     } catch (error) {
       console.error('Error approving listing:', error)
-      alert('Failed to approve listing. Please try again.')
+      toast.error('Failed to approve listing. Please try again.')
     } finally {
       setActionLoading(false)
     }
@@ -367,7 +386,7 @@ const PostVerification: NextPageWithLayout = () => {
     if (!selectedPost) return
 
     if (!rejectionReason.trim()) {
-      alert('Please provide a reason for rejection.')
+      toast.warning('Please provide a reason for rejection.')
       return
     }
 
@@ -375,7 +394,7 @@ const PostVerification: NextPageWithLayout = () => {
       setActionLoading(true)
       await ListingService.rejectListing(selectedPost.id, rejectionReason)
 
-      alert('Listing has been rejected.')
+      toast.success('Listing has been rejected.')
 
       // Refresh listings
       await fetchListings()
@@ -563,20 +582,20 @@ const PostVerification: NextPageWithLayout = () => {
 
   return (
     <div>
-      <Breadcrumb items={breadcrumbItems} />
-
       {initialLoading ? (
         <div className='flex items-center justify-center h-64'>
           <Loader2 className='h-8 w-8 animate-spin text-blue-600' />
         </div>
       ) : (
         <div className='space-y-6'>
-          {/* Header */}
-          <div>
-            <h1 className='text-3xl font-semibold text-gray-900'>
-              {t('title')}
-            </h1>
-            <p className='mt-1 text-sm text-gray-500'>{t('description')}</p>
+          {/* Header Section */}
+          <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-4'>
+            <div>
+              <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
+                {t('title')}
+              </h1>
+              <p className='mt-1 text-sm text-gray-600'>{t('description')}</p>
+            </div>
           </div>
 
           {/* Stats Cards */}
@@ -696,6 +715,18 @@ const PostVerification: NextPageWithLayout = () => {
                   </p>
                 </div>
 
+                {/* Description */}
+                {selectedPost.description && (
+                  <div>
+                    <div className='text-xs md:text-sm font-medium text-gray-700'>
+                      Description
+                    </div>
+                    <div className='mt-1 text-sm text-gray-600 whitespace-pre-wrap'>
+                      {selectedPost.description}
+                    </div>
+                  </div>
+                )}
+
                 <div className='grid grid-cols-2 gap-3 md:gap-4'>
                   <div>
                     <div className='text-xs md:text-sm font-medium text-gray-700'>
@@ -713,6 +744,48 @@ const PostVerification: NextPageWithLayout = () => {
                       {selectedPost.propertyInfo.area}m²
                     </div>
                   </div>
+                  {selectedPost.bedrooms !== null &&
+                    selectedPost.bedrooms !== undefined && (
+                      <div>
+                        <div className='text-xs md:text-sm font-medium text-gray-700'>
+                          Bedrooms
+                        </div>
+                        <div className='text-sm md:text-base text-gray-900'>
+                          {selectedPost.bedrooms}
+                        </div>
+                      </div>
+                    )}
+                  {selectedPost.bathrooms !== null &&
+                    selectedPost.bathrooms !== undefined && (
+                      <div>
+                        <div className='text-xs md:text-sm font-medium text-gray-700'>
+                          Bathrooms
+                        </div>
+                        <div className='text-sm md:text-base text-gray-900'>
+                          {selectedPost.bathrooms}
+                        </div>
+                      </div>
+                    )}
+                  {selectedPost.direction && (
+                    <div>
+                      <div className='text-xs md:text-sm font-medium text-gray-700'>
+                        Direction
+                      </div>
+                      <div className='text-sm md:text-base text-gray-900'>
+                        {selectedPost.direction}
+                      </div>
+                    </div>
+                  )}
+                  {selectedPost.furnishing && (
+                    <div>
+                      <div className='text-xs md:text-sm font-medium text-gray-700'>
+                        Furnishing
+                      </div>
+                      <div className='text-sm md:text-base text-gray-900'>
+                        {selectedPost.furnishing}
+                      </div>
+                    </div>
+                  )}
                   <div>
                     <div className='text-xs md:text-sm font-medium text-gray-700'>
                       Location
@@ -730,6 +803,40 @@ const PostVerification: NextPageWithLayout = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Full Address */}
+                <div>
+                  <div className='text-xs md:text-sm font-medium text-gray-700'>
+                    Full Address
+                  </div>
+                  <div className='mt-1 text-sm text-gray-600'>
+                    {selectedPost.propertyInfo.fullAddress}
+                  </div>
+                </div>
+
+                {/* Amenities */}
+                {selectedPost.amenities &&
+                  selectedPost.amenities.length > 0 && (
+                    <div>
+                      <div className='text-xs md:text-sm font-medium text-gray-700 mb-2'>
+                        Amenities
+                      </div>
+                      <div className='flex flex-wrap gap-2'>
+                        {selectedPost.amenities.map((amenity) => (
+                          <Badge
+                            key={amenity.amenityId}
+                            variant='outline'
+                            className='bg-blue-50 text-blue-700 border-blue-200'
+                          >
+                            {amenity.icon && (
+                              <span className='mr-1'>{amenity.icon}</span>
+                            )}
+                            {amenity.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                 <div>
                   <div className='text-xs md:text-sm font-medium text-gray-700'>

@@ -189,11 +189,71 @@
     0% {
       transform: translateX(-100%) rotate(45deg);
     }
+
     50% {
       transform: translateX(0%) rotate(45deg);
     }
+
     100% {
       transform: translateX(100%) rotate(45deg);
     }
+  }
+
+  /* Custom Scrollbar Styles */
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: oklch(0.556 0 0 / 0.3) oklch(0.97 0 0 / 0.5);
+  }
+
+  .dark * {
+    scrollbar-color: oklch(0.708 0 0 / 0.4) oklch(0.269 0 0 / 0.5);
+  }
+
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: oklch(0.97 0 0 / 0.5);
+    border-radius: 4px;
+  }
+
+  .dark *::-webkit-scrollbar-track {
+    background: oklch(0.269 0 0 / 0.5);
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: oklch(0.556 0 0 / 0.3);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+  }
+
+  .dark *::-webkit-scrollbar-thumb {
+    background: oklch(0.708 0 0 / 0.4);
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.556 0 0 / 0.5);
+  }
+
+  .dark *::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.708 0 0 / 0.6);
+  }
+
+  /* Fix scrollbar appearance in rounded containers (modals, dialogs) */
+  [data-radix-scroll-area-viewport],
+  .overflow-y-auto,
+  .overflow-auto {
+    border-radius: inherit;
+  }
+
+  /* Ensure scrollbar stays within rounded corners */
+  [data-radix-scroll-area-viewport]::-webkit-scrollbar-track,
+  .overflow-y-auto::-webkit-scrollbar-track,
+  .overflow-auto::-webkit-scrollbar-track {
+    margin: 8px 0;
   }
 }

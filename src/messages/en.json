@@ -2,6 +2,13 @@
   "common": {
     "or": "Or"
   },
+  "notFound": {
+    "title": "404",
+    "heading": "Page Not Found",
+    "description": "The page you are looking for does not exist or has been moved.",
+    "backToAdmin": "Back to Admin",
+    "viewAnalytics": "View Analytics"
+  },
   "pagination": {
     "showing": "Showing",
     "of": "of",
@@ -833,7 +840,13 @@
   "admin": {
     "header": {
       "title": "User Management",
-      "searchPlaceholder": "Quick search..."
+      "searchPlaceholder": "Quick search...",
+      "defaultRole": "Administrator",
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Logout",
+      "logoutSuccess": "Logged out successfully",
+      "featureInDevelopment": "Feature under development"
     },
     "sidebar": {
       "title": "SmartRent Admin",
@@ -857,6 +870,7 @@
     },
     "users": {
       "title": "User Management",
+      "subtitle": "Manage and monitor all users, their roles, and activity on the platform",
       "breadcrumb": {
         "menu": "Navigation Menu",
         "dashboard": "User Management Dashboard",
@@ -906,13 +920,29 @@
       },
       "edit": {
         "title": "Edit User",
+        "email": "Email",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "phoneCode": "Phone Code",
+        "phoneNumber": "Phone Number",
+        "idDocument": "ID Document",
+        "taxNumber": "Tax Number",
+        "contactPhone": "Contact Phone",
+        "verified": "Verified",
         "save": "Save Changes",
         "saving": "Saving...",
-        "verified": "Verified",
         "cancel": "Cancel"
       },
       "create": {
         "title": "Create New User",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phoneCode": "Code",
+        "phoneNumber": "Phone Number",
+        "password": "Password",
+        "idDocument": "ID Document",
+        "taxNumber": "Tax Number",
         "create": "Create",
         "creating": "Creating...",
         "cancel": "Cancel",
@@ -1051,6 +1081,7 @@
     },
     "admins": {
       "title": "Admin Management",
+      "subtitle": "Manage admin accounts, assign roles, and control system access",
       "breadcrumb": {
         "menu": "Navigation Menu",
         "dashboard": "Admin Management Dashboard",
@@ -1098,6 +1129,12 @@
       },
       "edit": {
         "title": "Edit Admin",
+        "email": "Email",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "phoneCode": "Phone Code",
+        "phoneNumber": "Phone Number",
+        "roles": "Roles",
         "save": "Save Changes",
         "saving": "Saving...",
         "cancel": "Cancel"
@@ -1105,6 +1142,57 @@
       "delete": {
         "title": "Delete Admin",
         "confirm": "Are you sure you want to delete this admin?",
+        "delete": "Delete",
+        "deleting": "Deleting...",
+        "cancel": "Cancel"
+      },
+      "create": {
+        "title": "Create New Admin",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phoneCode": "Code",
+        "phoneNumber": "Phone Number",
+        "password": "Password",
+        "roles": "Roles",
+        "selectRoles": "Select at least one",
+        "create": "Create Admin",
+        "creating": "Creating...",
+        "cancel": "Cancel"
+      }
+    },
+    "roles": {
+      "title": "Role Management",
+      "subtitle": "Define and manage system roles with specific permissions and access levels",
+      "createNewRole": "Create New Role",
+      "table": {
+        "headers": {
+          "roleId": "Role ID",
+          "roleName": "Role Name",
+          "actions": "Actions"
+        },
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete"
+        }
+      },
+      "create": {
+        "title": "Create Role",
+        "roleId": "Role ID",
+        "roleName": "Role Name",
+        "create": "Create",
+        "creating": "Creating...",
+        "cancel": "Cancel"
+      },
+      "edit": {
+        "title": "Edit Role",
+        "save": "Save Changes",
+        "saving": "Saving...",
+        "cancel": "Cancel"
+      },
+      "delete": {
+        "title": "Delete Role",
+        "confirm": "Are you sure you want to delete this role?",
         "delete": "Delete",
         "deleting": "Deleting...",
         "cancel": "Cancel"
