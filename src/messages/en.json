@@ -840,7 +840,13 @@
   "admin": {
     "header": {
       "title": "User Management",
-      "searchPlaceholder": "Quick search..."
+      "searchPlaceholder": "Quick search...",
+      "defaultRole": "Administrator",
+      "profile": "Profile",
+      "settings": "Settings",
+      "logout": "Logout",
+      "logoutSuccess": "Logged out successfully",
+      "featureInDevelopment": "Feature under development"
     },
     "sidebar": {
       "title": "SmartRent Admin",
@@ -914,9 +920,15 @@
       },
       "edit": {
         "title": "Edit User",
+        "email": "Email",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "idDocument": "ID Document",
+        "taxNumber": "Tax Number",
+        "contactPhone": "Contact Phone",
+        "verified": "Verified",
         "save": "Save Changes",
         "saving": "Saving...",
-        "verified": "Verified",
         "cancel": "Cancel"
       },
       "create": {
@@ -1107,6 +1119,12 @@
       },
       "edit": {
         "title": "Edit Admin",
+        "email": "Email",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "phoneCode": "Phone Code",
+        "phoneNumber": "Phone Number",
+        "roles": "Roles",
         "save": "Save Changes",
         "saving": "Saving...",
         "cancel": "Cancel"

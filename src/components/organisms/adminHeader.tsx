@@ -1,9 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import { Input } from '@/components/atoms/input'
-import { Button } from '@/components/atoms/button'
 import { Avatar } from '@/components/atoms/avatar'
-import { Badge } from '@/components/atoms/badge'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -24,62 +21,34 @@ const AdminHeader: React.FC = () => {
 
   const handleLogout = () => {
     logout()
-    toast.success('Đăng xuất thành công')
+    toast.success(t('logoutSuccess'))
     router.push('/login')
   }
 
   const handleProfile = () => {
-    toast.info('Chức năng đang phát triển')
-    // router.push('/admin/profile')
+    toast.info(t('featureInDevelopment'))
+    // router.push('/profile')
   }
 
   const handleSettings = () => {
-    toast.info('Chức năng đang phát triển')
-    // router.push('/admin/settings')
+    toast.info(t('featureInDevelopment'))
+    // router.push('/settings')
   }
 
   return (
-    <header className='bg-white border-b border-gray-200 px-6 py-4'>
+    <header className='bg-white border-b border-gray-200 px-6 py-2'>
       <div className='flex items-center justify-between'>
-        {/* Left - Page Title */}
-        <h1 className='text-2xl font-bold text-gray-900'>{t('title')}</h1>
-
-        {/* Center - Search Bar */}
-        <div className='flex-1 max-w-lg mx-8'>
-          <Input
-            type='text'
-            placeholder={t('searchPlaceholder')}
-            className='w-full'
-          />
+        <div
+          className='flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity'
+          onClick={() => router.push('/users')}
+        >
+          <span className='font-bold text-xl text-gray-900'>
+            SmartRent Admin
+          </span>
         </div>
 
         {/* Right - Notifications & Profile */}
         <div className='flex items-center gap-4'>
-          {/* Notification Bell */}
-          <div className='relative'>
-            <Button variant='ghost' size='icon' className='relative'>
-              <svg
-                className='w-5 h-5'
-                fill='none'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth={2}
-                  d='M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9'
-                />
-              </svg>
-              <Badge
-                variant='destructive'
-                className='absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center p-0 text-xs'
-              >
-                3
-              </Badge>
-            </Button>
-          </div>
-
           {/* Profile Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -96,7 +65,7 @@ const AdminHeader: React.FC = () => {
                       : user?.email?.split('@')[0] || 'Admin'}
                   </span>
                   <span className='text-xs text-gray-500'>
-                    {user?.roles?.[0] || 'Administrator'}
+                    {user?.roles?.[0] || t('defaultRole')}
                   </span>
                 </div>
                 <ChevronDown className='w-4 h-4 text-gray-500' />
@@ -119,16 +88,16 @@ const AdminHeader: React.FC = () => {
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleProfile}>
                 <User className='mr-2 h-4 w-4' />
-                <span>Thông tin tài khoản</span>
+                <span>{t('profile')}</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleSettings}>
                 <Settings className='mr-2 h-4 w-4' />
-                <span>Cài đặt</span>
+                <span>{t('settings')}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant='destructive' onClick={handleLogout}>
                 <LogOut className='mr-2 h-4 w-4' />
-                <span>Đăng xuất</span>
+                <span>{t('logout')}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

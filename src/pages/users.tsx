@@ -515,171 +515,207 @@ const UserManagement: NextPageWithLayout = () => {
       </Dialog>
 
       {/* Edit User Modal */}
-      {editingUser && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center'>
-          <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-md'>
-            <h2 className='text-lg font-semibold mb-4'>
-              {t('edit.title') || 'Edit User'}
-            </h2>
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault()
-                setEditLoading(true)
-                setEditError(null)
-                try {
-                  const resp = await updateUser(editingUser.userId, editForm)
-                  if (resp.success && resp.data) {
-                    setEditingUser(null)
-                    // Refresh user list
-                    setUsers((prev) =>
-                      prev.map((u) =>
-                        u.userId === resp.data.userId ? resp.data : u,
-                      ),
-                    )
-                  } else {
-                    setEditError(resp.message || 'Failed to update user')
-                  }
-                } catch (err: unknown) {
-                  const error = err as { message?: string }
-                  setEditError(error.message || 'Error updating user')
-                } finally {
-                  setEditLoading(false)
+      <Dialog
+        open={!!editingUser}
+        onOpenChange={(open) => !open && setEditingUser(null)}
+      >
+        <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
+          <DialogHeader>
+            <DialogTitle>{t('edit.title') || 'Edit User'}</DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault()
+              setEditLoading(true)
+              setEditError(null)
+              try {
+                const resp = await updateUser(editingUser!.userId, editForm)
+                if (resp.success && resp.data) {
+                  setEditingUser(null)
+                  // Refresh user list
+                  setUsers((prev) =>
+                    prev.map((u) =>
+                      u.userId === resp.data.userId ? resp.data : u,
+                    ),
+                  )
+                } else {
+                  setEditError(resp.message || 'Failed to update user')
                 }
-              }}
-            >
-              <div className='space-y-3'>
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Email'
-                  value={editForm.email || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, email: e.target.value }))
-                  }
-                  required
-                  type='email'
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='First Name'
-                  value={editForm.firstName || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, firstName: e.target.value }))
-                  }
-                  required
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Last Name'
-                  value={editForm.lastName || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, lastName: e.target.value }))
-                  }
-                  required
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='ID Document'
-                  value={editForm.idDocument || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, idDocument: e.target.value }))
-                  }
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Tax Number'
-                  value={editForm.taxNumber || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, taxNumber: e.target.value }))
-                  }
-                />
-                <input
-                  className='w-full border rounded px-3 py-2'
-                  placeholder='Contact Phone'
-                  value={editForm.contactPhoneNumber || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({
-                      ...f,
-                      contactPhoneNumber: e.target.value,
-                    }))
-                  }
-                />
-                <label className='flex items-center gap-2'>
-                  <input
-                    type='checkbox'
-                    checked={!!editForm.isVerified}
-                    onChange={(e) =>
-                      setEditForm((f) => ({
-                        ...f,
-                        isVerified: e.target.checked,
-                      }))
-                    }
-                  />
-                  {t('edit.verified') || 'Verified'}
-                </label>
-                {editError && (
-                  <div className='text-red-600 text-sm'>{editError}</div>
-                )}
-              </div>
-              <div className='flex justify-end gap-2 mt-6'>
-                <button
-                  type='button'
-                  className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
-                  onClick={() => setEditingUser(null)}
-                  disabled={editLoading}
-                >
-                  {t('edit.cancel') || 'Cancel'}
-                </button>
-                <button
-                  type='submit'
-                  className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
-                  disabled={editLoading}
-                >
-                  {editLoading
-                    ? t('edit.saving') || 'Saving...'
-                    : t('edit.save') || 'Save'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+              } catch (err: unknown) {
+                const error = err as { message?: string }
+                setEditError(error.message || 'Error updating user')
+              } finally {
+                setEditLoading(false)
+              }
+            }}
+            className='space-y-4'
+          >
+            <div>
+              <Label htmlFor='editEmail'>{t('edit.email') || 'Email'} *</Label>
+              <Input
+                id='editEmail'
+                type='email'
+                placeholder='Email'
+                value={editForm.email || ''}
+                onChange={(e) =>
+                  setEditForm((f) => ({ ...f, email: e.target.value }))
+                }
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor='editFirstName'>
+                {t('edit.firstName') || 'First Name'} *
+              </Label>
+              <Input
+                id='editFirstName'
+                placeholder='First Name'
+                value={editForm.firstName || ''}
+                onChange={(e) =>
+                  setEditForm((f) => ({ ...f, firstName: e.target.value }))
+                }
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor='editLastName'>
+                {t('edit.lastName') || 'Last Name'} *
+              </Label>
+              <Input
+                id='editLastName'
+                placeholder='Last Name'
+                value={editForm.lastName || ''}
+                onChange={(e) =>
+                  setEditForm((f) => ({ ...f, lastName: e.target.value }))
+                }
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor='editIdDocument'>
+                {t('edit.idDocument') || 'ID Document'}
+              </Label>
+              <Input
+                id='editIdDocument'
+                placeholder='ID Document'
+                value={editForm.idDocument || ''}
+                onChange={(e) =>
+                  setEditForm((f) => ({ ...f, idDocument: e.target.value }))
+                }
+              />
+            </div>
+            <div>
+              <Label htmlFor='editTaxNumber'>
+                {t('edit.taxNumber') || 'Tax Number'}
+              </Label>
+              <Input
+                id='editTaxNumber'
+                placeholder='Tax Number'
+                value={editForm.taxNumber || ''}
+                onChange={(e) =>
+                  setEditForm((f) => ({ ...f, taxNumber: e.target.value }))
+                }
+              />
+            </div>
+            <div>
+              <Label htmlFor='editContactPhone'>
+                {t('edit.contactPhone') || 'Contact Phone'}
+              </Label>
+              <Input
+                id='editContactPhone'
+                placeholder='Contact Phone'
+                value={editForm.contactPhoneNumber || ''}
+                onChange={(e) =>
+                  setEditForm((f) => ({
+                    ...f,
+                    contactPhoneNumber: e.target.value,
+                  }))
+                }
+              />
+            </div>
+            <label className='flex items-center gap-2'>
+              <input
+                type='checkbox'
+                checked={!!editForm.isVerified}
+                onChange={(e) =>
+                  setEditForm((f) => ({
+                    ...f,
+                    isVerified: e.target.checked,
+                  }))
+                }
+                className='rounded border-gray-300'
+              />
+              <span className='text-sm'>
+                {t('edit.verified') || 'Verified'}
+              </span>
+            </label>
+            {editError && (
+              <div className='text-red-600 text-sm'>{editError}</div>
+            )}
+            <div className='flex gap-3 pt-4'>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={() => setEditingUser(null)}
+                disabled={editLoading}
+                className='flex-1'
+              >
+                {t('edit.cancel') || 'Cancel'}
+              </Button>
+              <Button
+                type='submit'
+                disabled={editLoading}
+                className='flex-1 bg-blue-600 hover:bg-blue-700'
+              >
+                {editLoading
+                  ? t('edit.saving') || 'Saving...'
+                  : t('edit.save') || 'Save'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Delete User Modal */}
-      {showDelete && (
-        <div className='fixed inset-0 z-50 flex items-center justify-center'>
-          <div className='bg-white rounded-lg shadow-lg p-6 w-full max-w-sm'>
-            <h2 className='text-lg font-semibold mb-4'>
-              {t('delete.title') || 'Delete User'}
-            </h2>
-            <p className='mb-4'>
+      <Dialog
+        open={!!showDelete}
+        onOpenChange={(open) => !open && setShowDelete(null)}
+      >
+        <DialogContent className='max-w-sm'>
+          <DialogHeader>
+            <DialogTitle>{t('delete.title') || 'Delete User'}</DialogTitle>
+          </DialogHeader>
+          <div className='space-y-4'>
+            <p>
               {t('delete.confirm') ||
                 'Are you sure you want to delete this user?'}
               <br />
-              <span className='font-semibold'>{showDelete.email}</span>
+              <span className='font-semibold'>{showDelete?.email}</span>
             </p>
             {deleteError && (
-              <div className='text-red-600 text-sm mb-2'>{deleteError}</div>
+              <div className='text-red-600 text-sm'>{deleteError}</div>
             )}
-            <div className='flex justify-end gap-2'>
-              <button
-                className='px-4 py-2 bg-gray-200 rounded hover:bg-gray-300'
+            <div className='flex gap-3 pt-4'>
+              <Button
+                type='button'
+                variant='outline'
                 onClick={() => setShowDelete(null)}
                 disabled={deleteLoading}
+                className='flex-1'
               >
                 {t('delete.cancel') || 'Cancel'}
-              </button>
-              <button
-                className='px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700'
+              </Button>
+              <Button
                 disabled={deleteLoading}
                 onClick={async () => {
                   setDeleteLoading(true)
                   setDeleteError(null)
                   try {
-                    const resp = await deleteUser(showDelete.userId)
+                    const resp = await deleteUser(showDelete!.userId)
                     if (resp.success) {
                       setShowDelete(null)
                       setUsers((prev) =>
-                        prev.filter((u) => u.userId !== showDelete.userId),
+                        prev.filter((u) => u.userId !== showDelete!.userId),
                       )
                     } else {
                       setDeleteError(resp.message || 'Failed to delete user')
@@ -691,15 +727,16 @@ const UserManagement: NextPageWithLayout = () => {
                     setDeleteLoading(false)
                   }
                 }}
+                className='flex-1 bg-red-600 hover:bg-red-700'
               >
                 {deleteLoading
                   ? t('delete.deleting') || 'Deleting...'
                   : t('delete.delete') || 'Delete'}
-              </button>
+              </Button>
             </div>
           </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

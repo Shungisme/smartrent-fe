@@ -805,7 +805,13 @@
   "admin": {
     "header": {
       "title": "Quản Lý Người Dùng",
-      "searchPlaceholder": "Tìm kiếm nhanh..."
+      "searchPlaceholder": "Tìm kiếm nhanh...",
+      "defaultRole": "Quản trị viên",
+      "profile": "Thông tin tài khoản",
+      "settings": "Cài đặt",
+      "logout": "Đăng xuất",
+      "logoutSuccess": "Đăng xuất thành công",
+      "featureInDevelopment": "Chức năng đang phát triển"
     },
     "sidebar": {
       "title": "SmartRent Admin",
@@ -879,9 +885,15 @@
       },
       "edit": {
         "title": "Chỉnh sửa Người Dùng",
+        "email": "Email",
+        "firstName": "Tên",
+        "lastName": "Họ",
+        "idDocument": "Giấy tờ tùy thân",
+        "taxNumber": "Mã số thuế",
+        "contactPhone": "Số điện thoại liên hệ",
+        "verified": "Đã Xác Minh",
         "save": "Lưu Thay Đổi",
         "saving": "Đang Lưu...",
-        "verified": "Đã Xác Minh",
         "cancel": "Hủy"
       },
       "create": {
@@ -1072,6 +1084,12 @@
       },
       "edit": {
         "title": "Chỉnh sửa Admin",
+        "email": "Email",
+        "firstName": "Tên",
+        "lastName": "Họ",
+        "phoneCode": "Mã vùng",
+        "phoneNumber": "Số điện thoại",
+        "roles": "Vai trò",
         "save": "Lưu thay đổi",
         "saving": "Đang lưu...",
         "cancel": "Hủy"
