@@ -360,7 +360,7 @@ const UserManagement: NextPageWithLayout = () => {
 
       {/* Create User Modal */}
       <Dialog open={showCreate} onOpenChange={setShowCreate}>
-        <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
+        <DialogContent className='min-w-[40vw] max-w-md max-h-[80vh] overflow-y-auto'>
           <DialogHeader>
             <DialogTitle>{t('create.title') || 'Create User'}</DialogTitle>
           </DialogHeader>
@@ -384,10 +384,10 @@ const UserManagement: NextPageWithLayout = () => {
                 setCreateLoading(false)
               }
             }}
-            className='space-y-4'
+            className='space-y-2'
           >
-            <div>
-              <Label htmlFor='firstName'>First Name *</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='firstName'>{t('create.firstName')} *</Label>
               <Input
                 id='firstName'
                 value={createForm.firstName || ''}
@@ -398,8 +398,8 @@ const UserManagement: NextPageWithLayout = () => {
               />
             </div>
 
-            <div>
-              <Label htmlFor='lastName'>Last Name *</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='lastName'>{t('create.lastName')} *</Label>
               <Input
                 id='lastName'
                 value={createForm.lastName || ''}
@@ -410,8 +410,8 @@ const UserManagement: NextPageWithLayout = () => {
               />
             </div>
 
-            <div>
-              <Label htmlFor='email'>Email *</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='email'>{t('create.email')} *</Label>
               <Input
                 id='email'
                 type='email'
@@ -424,8 +424,8 @@ const UserManagement: NextPageWithLayout = () => {
             </div>
 
             <div className='grid grid-cols-3 gap-2'>
-              <div>
-                <Label htmlFor='phoneCode'>Code *</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='phoneCode'>{t('create.phoneCode')} *</Label>
                 <Input
                   id='phoneCode'
                   value={createForm.phoneCode || ''}
@@ -435,8 +435,8 @@ const UserManagement: NextPageWithLayout = () => {
                   required
                 />
               </div>
-              <div className='col-span-2'>
-                <Label htmlFor='phoneNumber'>Phone Number *</Label>
+              <div className='col-span-2 space-y-2'>
+                <Label htmlFor='phoneNumber'>{t('create.phoneNumber')} *</Label>
                 <Input
                   id='phoneNumber'
                   value={createForm.phoneNumber || ''}
@@ -451,8 +451,8 @@ const UserManagement: NextPageWithLayout = () => {
               </div>
             </div>
 
-            <div>
-              <Label htmlFor='password'>Password *</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='password'>{t('create.password')} *</Label>
               <Input
                 id='password'
                 type='password'
@@ -465,8 +465,8 @@ const UserManagement: NextPageWithLayout = () => {
               />
             </div>
 
-            <div>
-              <Label htmlFor='idDocument'>ID Document</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='idDocument'>{t('create.idDocument')}</Label>
               <Input
                 id='idDocument'
                 value={createForm.idDocument || ''}
@@ -476,8 +476,8 @@ const UserManagement: NextPageWithLayout = () => {
               />
             </div>
 
-            <div>
-              <Label htmlFor='taxNumber'>Tax Number</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='taxNumber'>{t('create.taxNumber')}</Label>
               <Input
                 id='taxNumber'
                 value={createForm.taxNumber || ''}
@@ -491,7 +491,7 @@ const UserManagement: NextPageWithLayout = () => {
               <div className='text-red-600 text-sm'>{createError}</div>
             )}
 
-            <div className='flex justify-end gap-2 pt-4'>
+            <div className='flex justify-end gap-2'>
               <Button
                 type='button'
                 variant='outline'
@@ -519,7 +519,7 @@ const UserManagement: NextPageWithLayout = () => {
         open={!!editingUser}
         onOpenChange={(open) => !open && setEditingUser(null)}
       >
-        <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
+        <DialogContent className='min-w-[40vw] max-w-md max-h-[80vh] overflow-y-auto'>
           <DialogHeader>
             <DialogTitle>{t('edit.title') || 'Edit User'}</DialogTitle>
           </DialogHeader>
@@ -548,9 +548,9 @@ const UserManagement: NextPageWithLayout = () => {
                 setEditLoading(false)
               }
             }}
-            className='space-y-4'
+            className='space-y-2'
           >
-            <div>
+            <div className='space-y-2'>
               <Label htmlFor='editEmail'>{t('edit.email') || 'Email'} *</Label>
               <Input
                 id='editEmail'
@@ -563,7 +563,7 @@ const UserManagement: NextPageWithLayout = () => {
                 required
               />
             </div>
-            <div>
+            <div className='space-y-2'>
               <Label htmlFor='editFirstName'>
                 {t('edit.firstName') || 'First Name'} *
               </Label>
@@ -577,7 +577,7 @@ const UserManagement: NextPageWithLayout = () => {
                 required
               />
             </div>
-            <div>
+            <div className='space-y-2'>
               <Label htmlFor='editLastName'>
                 {t('edit.lastName') || 'Last Name'} *
               </Label>
@@ -591,7 +591,7 @@ const UserManagement: NextPageWithLayout = () => {
                 required
               />
             </div>
-            <div>
+            <div className='space-y-2'>
               <Label htmlFor='editIdDocument'>
                 {t('edit.idDocument') || 'ID Document'}
               </Label>
@@ -604,7 +604,7 @@ const UserManagement: NextPageWithLayout = () => {
                 }
               />
             </div>
-            <div>
+            <div className='space-y-2'>
               <Label htmlFor='editTaxNumber'>
                 {t('edit.taxNumber') || 'Tax Number'}
               </Label>
@@ -617,7 +617,7 @@ const UserManagement: NextPageWithLayout = () => {
                 }
               />
             </div>
-            <div>
+            <div className='space-y-2'>
               <Label htmlFor='editContactPhone'>
                 {t('edit.contactPhone') || 'Contact Phone'}
               </Label>
@@ -684,7 +684,7 @@ const UserManagement: NextPageWithLayout = () => {
           <DialogHeader>
             <DialogTitle>{t('delete.title') || 'Delete User'}</DialogTitle>
           </DialogHeader>
-          <div className='space-y-4'>
+          <div className='space-y-2'>
             <p>
               {t('delete.confirm') ||
                 'Are you sure you want to delete this user?'}

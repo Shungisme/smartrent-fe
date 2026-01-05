@@ -900,6 +900,14 @@
       },
       "create": {
         "title": "Tạo Người Dùng Mới",
+        "firstName": "Tên",
+        "lastName": "Họ",
+        "email": "Email",
+        "phoneCode": "Mã vùng",
+        "phoneNumber": "Số điện thoại",
+        "password": "Mật khẩu",
+        "idDocument": "Giấy tờ tùy thân",
+        "taxNumber": "Mã số thuế",
         "create": "Tạo",
         "creating": "Đang Tạo...",
         "cancel": "Hủy",
@@ -1101,6 +1109,20 @@
         "confirm": "Bạn có chắc chắn muốn xóa admin này không?",
         "delete": "Xóa",
         "deleting": "Đang xóa...",
+        "cancel": "Hủy"
+      },
+      "create": {
+        "title": "Tạo Admin Mới",
+        "firstName": "Tên",
+        "lastName": "Họ",
+        "email": "Email",
+        "phoneCode": "Mã vùng",
+        "phoneNumber": "Số điện thoại",
+        "password": "Mật khẩu",
+        "roles": "Vai trò",
+        "selectRoles": "Chọn ít nhất một vai trò",
+        "create": "Tạo Admin",
+        "creating": "Đang tạo...",
         "cancel": "Hủy"
       }
     },

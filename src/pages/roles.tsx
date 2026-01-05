@@ -172,7 +172,7 @@ const RoleManagement: NextPageWithLayout = () => {
               }}
               className='space-y-4'
             >
-              <div>
+              <div className='space-y-2'>
                 <Label htmlFor='roleId'>{t('create.roleId')} *</Label>
                 <Input
                   id='roleId'
@@ -184,7 +184,7 @@ const RoleManagement: NextPageWithLayout = () => {
                   required
                 />
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label htmlFor='roleName'>{t('create.roleName')} *</Label>
                 <Input
                   id='roleName'
@@ -199,7 +199,7 @@ const RoleManagement: NextPageWithLayout = () => {
               {formError && (
                 <div className='text-red-600 text-sm'>{formError}</div>
               )}
-              <div className='flex gap-3 pt-4'>
+              <div className='flex gap-3'>
                 <Button
                   type='button'
                   variant='outline'
@@ -257,11 +257,11 @@ const RoleManagement: NextPageWithLayout = () => {
               }}
               className='space-y-4'
             >
-              <div>
+              <div className='space-y-2'>
                 <Label htmlFor='editRoleId'>{t('create.roleId')}</Label>
                 <Input id='editRoleId' value={form.roleId} disabled />
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label htmlFor='editRoleName'>{t('create.roleName')} *</Label>
                 <Input
                   id='editRoleName'
@@ -276,7 +276,7 @@ const RoleManagement: NextPageWithLayout = () => {
               {formError && (
                 <div className='text-red-600 text-sm'>{formError}</div>
               )}
-              <div className='flex gap-3 pt-4'>
+              <div className='flex gap-3'>
                 <Button
                   type='button'
                   variant='outline'

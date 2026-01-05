@@ -242,4 +242,18 @@
   .dark *::-webkit-scrollbar-thumb:hover {
     background: oklch(0.708 0 0 / 0.6);
   }
+
+  /* Fix scrollbar appearance in rounded containers (modals, dialogs) */
+  [data-radix-scroll-area-viewport],
+  .overflow-y-auto,
+  .overflow-auto {
+    border-radius: inherit;
+  }
+
+  /* Ensure scrollbar stays within rounded corners */
+  [data-radix-scroll-area-viewport]::-webkit-scrollbar-track,
+  .overflow-y-auto::-webkit-scrollbar-track,
+  .overflow-auto::-webkit-scrollbar-track {
+    margin: 8px 0;
+  }
 }

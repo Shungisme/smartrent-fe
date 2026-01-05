@@ -935,6 +935,14 @@
       },
       "create": {
         "title": "Create New User",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phoneCode": "Code",
+        "phoneNumber": "Phone Number",
+        "password": "Password",
+        "idDocument": "ID Document",
+        "taxNumber": "Tax Number",
         "create": "Create",
         "creating": "Creating...",
         "cancel": "Cancel",
@@ -1136,6 +1144,20 @@
         "confirm": "Are you sure you want to delete this admin?",
         "delete": "Delete",
         "deleting": "Deleting...",
+        "cancel": "Cancel"
+      },
+      "create": {
+        "title": "Create New Admin",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "phoneCode": "Code",
+        "phoneNumber": "Phone Number",
+        "password": "Password",
+        "roles": "Roles",
+        "selectRoles": "Select at least one",
+        "create": "Create Admin",
+        "creating": "Creating...",
         "cancel": "Cancel"
       }
     },

@@ -398,7 +398,7 @@ const AdminManagement: NextPageWithLayout = () => {
           open={!!editingAdmin}
           onOpenChange={(open) => !open && setEditingAdmin(null)}
         >
-          <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
+          <DialogContent className='min-w-[20vw] max-w-md max-h-[80vh] overflow-y-auto'>
             <DialogHeader>
               <DialogTitle>{t('edit.title') || 'Edit Admin'}</DialogTitle>
             </DialogHeader>
@@ -429,9 +429,9 @@ const AdminManagement: NextPageWithLayout = () => {
                   setEditLoading(false)
                 }
               }}
-              className='space-y-4'
+              className='space-y-2'
             >
-              <div>
+              <div className='space-y-2'>
                 <Label htmlFor='editEmail'>
                   {t('edit.email') || 'Email'} *
                 </Label>
@@ -446,7 +446,7 @@ const AdminManagement: NextPageWithLayout = () => {
                   required
                 />
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label htmlFor='editFirstName'>
                   {t('edit.firstName') || 'First Name'} *
                 </Label>
@@ -460,7 +460,7 @@ const AdminManagement: NextPageWithLayout = () => {
                   required
                 />
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label htmlFor='editLastName'>
                   {t('edit.lastName') || 'Last Name'} *
                 </Label>
@@ -475,7 +475,7 @@ const AdminManagement: NextPageWithLayout = () => {
                 />
               </div>
               <div className='grid grid-cols-3 gap-2'>
-                <div>
+                <div className='space-y-2'>
                   <Label htmlFor='editPhoneCode'>
                     {t('edit.phoneCode') || 'Code'} *
                   </Label>
@@ -489,7 +489,7 @@ const AdminManagement: NextPageWithLayout = () => {
                     required
                   />
                 </div>
-                <div className='col-span-2'>
+                <div className='col-span-2 space-y-2'>
                   <Label htmlFor='editPhoneNumber'>
                     {t('edit.phoneNumber') || 'Phone Number'} *
                   </Label>
@@ -507,7 +507,7 @@ const AdminManagement: NextPageWithLayout = () => {
                   />
                 </div>
               </div>
-              <div>
+              <div className='space-y-2'>
                 <Label>{t('edit.roles') || 'Roles'}</Label>
                 {rolesLoading ? (
                   <p className='text-sm text-gray-500'>Loading roles...</p>
@@ -549,7 +549,7 @@ const AdminManagement: NextPageWithLayout = () => {
               {editError && (
                 <div className='text-red-600 text-sm'>{editError}</div>
               )}
-              <div className='flex justify-end gap-2 pt-4'>
+              <div className='flex justify-end gap-2'>
                 <Button
                   type='button'
                   variant='outline'
@@ -581,7 +581,7 @@ const AdminManagement: NextPageWithLayout = () => {
             <DialogHeader>
               <DialogTitle>{t('delete.title') || 'Delete Admin'}</DialogTitle>
             </DialogHeader>
-            <div className='space-y-4'>
+            <div className='space-y-2'>
               <p>
                 {t('delete.confirm') ||
                   'Are you sure you want to delete this admin?'}
@@ -636,13 +636,13 @@ const AdminManagement: NextPageWithLayout = () => {
 
         {/* Create Admin Dialog */}
         <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-          <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
+          <DialogContent className='min-w-[20vw] max-w-md max-h-[80vh] overflow-y-auto'>
             <DialogHeader>
-              <DialogTitle>Create New Admin</DialogTitle>
+              <DialogTitle>{t('create.title')}</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleCreateAdmin} className='space-y-4'>
-              <div>
-                <Label htmlFor='firstName'>First Name *</Label>
+            <form onSubmit={handleCreateAdmin} className='space-y-2'>
+              <div className='space-y-2'>
+                <Label htmlFor='firstName'>{t('create.firstName')} *</Label>
                 <Input
                   id='firstName'
                   value={formData.firstName}
@@ -653,8 +653,8 @@ const AdminManagement: NextPageWithLayout = () => {
                 />
               </div>
 
-              <div>
-                <Label htmlFor='lastName'>Last Name *</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='lastName'>{t('create.lastName')} *</Label>
                 <Input
                   id='lastName'
                   value={formData.lastName}
@@ -665,8 +665,8 @@ const AdminManagement: NextPageWithLayout = () => {
                 />
               </div>
 
-              <div>
-                <Label htmlFor='email'>Email *</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='email'>{t('create.email')} *</Label>
                 <Input
                   id='email'
                   type='email'
@@ -679,8 +679,8 @@ const AdminManagement: NextPageWithLayout = () => {
               </div>
 
               <div className='grid grid-cols-3 gap-2'>
-                <div>
-                  <Label htmlFor='phoneCode'>Code *</Label>
+                <div className='space-y-2'>
+                  <Label htmlFor='phoneCode'>{t('create.phoneCode')} *</Label>
                   <Input
                     id='phoneCode'
                     value={formData.phoneCode}
@@ -690,8 +690,10 @@ const AdminManagement: NextPageWithLayout = () => {
                     required
                   />
                 </div>
-                <div className='col-span-2'>
-                  <Label htmlFor='phoneNumber'>Phone Number *</Label>
+                <div className='col-span-2 space-y-2'>
+                  <Label htmlFor='phoneNumber'>
+                    {t('create.phoneNumber')} *
+                  </Label>
                   <Input
                     id='phoneNumber'
                     value={formData.phoneNumber}
@@ -703,8 +705,8 @@ const AdminManagement: NextPageWithLayout = () => {
                 </div>
               </div>
 
-              <div>
-                <Label htmlFor='password'>Password *</Label>
+              <div className='space-y-2'>
+                <Label htmlFor='password'>{t('create.password')} *</Label>
                 <Input
                   id='password'
                   type='password'
@@ -717,8 +719,10 @@ const AdminManagement: NextPageWithLayout = () => {
                 />
               </div>
 
-              <div>
-                <Label>Roles * (Select at least one)</Label>
+              <div className='space-y-2'>
+                <Label>
+                  {t('create.roles')} * ({t('create.selectRoles')})
+                </Label>
                 {rolesLoading ? (
                   <p className='text-sm text-gray-500'>Loading roles...</p>
                 ) : (
@@ -755,7 +759,7 @@ const AdminManagement: NextPageWithLayout = () => {
                 )}
               </div>
 
-              <div className='flex gap-3 pt-4'>
+              <div className='flex gap-3'>
                 <Button
                   type='button'
                   variant='outline'
@@ -763,14 +767,14 @@ const AdminManagement: NextPageWithLayout = () => {
                   disabled={creating}
                   className='flex-1'
                 >
-                  Cancel
+                  {t('create.cancel')}
                 </Button>
                 <Button
                   type='submit'
                   disabled={creating || formData.roles.length === 0}
                   className='flex-1 bg-blue-600 hover:bg-blue-700'
                 >
-                  {creating ? 'Creating...' : 'Create Admin'}
+                  {creating ? t('create.creating') : t('create.create')}
                 </Button>
               </div>
             </form>
