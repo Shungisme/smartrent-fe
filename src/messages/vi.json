@@ -888,6 +888,8 @@
         "email": "Email",
         "firstName": "Tên",
         "lastName": "Họ",
+        "phoneCode": "Mã vùng",
+        "phoneNumber": "Số điện thoại",
         "idDocument": "Giấy tờ tùy thân",
         "taxNumber": "Mã số thuế",
         "contactPhone": "Số điện thoại liên hệ",

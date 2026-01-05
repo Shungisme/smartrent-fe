@@ -474,36 +474,38 @@ const AdminManagement: NextPageWithLayout = () => {
                   required
                 />
               </div>
-              <div>
-                <Label htmlFor='editPhoneCode'>
-                  {t('edit.phoneCode') || 'Phone Code'} *
-                </Label>
-                <Input
-                  id='editPhoneCode'
-                  placeholder='Phone Code'
-                  value={editForm.phoneCode || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({ ...f, phoneCode: e.target.value }))
-                  }
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor='editPhoneNumber'>
-                  {t('edit.phoneNumber') || 'Phone Number'} *
-                </Label>
-                <Input
-                  id='editPhoneNumber'
-                  placeholder='Phone Number'
-                  value={editForm.phoneNumber || ''}
-                  onChange={(e) =>
-                    setEditForm((f) => ({
-                      ...f,
-                      phoneNumber: e.target.value,
-                    }))
-                  }
-                  required
-                />
+              <div className='grid grid-cols-3 gap-2'>
+                <div>
+                  <Label htmlFor='editPhoneCode'>
+                    {t('edit.phoneCode') || 'Code'} *
+                  </Label>
+                  <Input
+                    id='editPhoneCode'
+                    placeholder='Code'
+                    value={editForm.phoneCode || ''}
+                    onChange={(e) =>
+                      setEditForm((f) => ({ ...f, phoneCode: e.target.value }))
+                    }
+                    required
+                  />
+                </div>
+                <div className='col-span-2'>
+                  <Label htmlFor='editPhoneNumber'>
+                    {t('edit.phoneNumber') || 'Phone Number'} *
+                  </Label>
+                  <Input
+                    id='editPhoneNumber'
+                    placeholder='Phone Number'
+                    value={editForm.phoneNumber || ''}
+                    onChange={(e) =>
+                      setEditForm((f) => ({
+                        ...f,
+                        phoneNumber: e.target.value,
+                      }))
+                    }
+                    required
+                  />
+                </div>
               </div>
               <div>
                 <Label>{t('edit.roles') || 'Roles'}</Label>
@@ -547,20 +549,19 @@ const AdminManagement: NextPageWithLayout = () => {
               {editError && (
                 <div className='text-red-600 text-sm'>{editError}</div>
               )}
-              <div className='flex gap-3 pt-4'>
+              <div className='flex justify-end gap-2 pt-4'>
                 <Button
                   type='button'
                   variant='outline'
                   onClick={() => setEditingAdmin(null)}
                   disabled={editLoading}
-                  className='flex-1'
                 >
                   {t('edit.cancel') || 'Cancel'}
                 </Button>
                 <Button
                   type='submit'
                   disabled={editLoading}
-                  className='flex-1 bg-blue-600 hover:bg-blue-700'
+                  className='bg-blue-600 hover:bg-blue-700'
                 >
                   {editLoading
                     ? t('edit.saving') || 'Saving...'
@@ -635,7 +636,7 @@ const AdminManagement: NextPageWithLayout = () => {
 
         {/* Create Admin Dialog */}
         <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-          <DialogContent className='max-w-md max-h-[50vh] overflow-y-auto'>
+          <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
             <DialogHeader>
               <DialogTitle>Create New Admin</DialogTitle>
             </DialogHeader>

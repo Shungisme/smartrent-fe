@@ -923,6 +923,8 @@
         "email": "Email",
         "firstName": "First Name",
         "lastName": "Last Name",
+        "phoneCode": "Phone Code",
+        "phoneNumber": "Phone Number",
         "idDocument": "ID Document",
         "taxNumber": "Tax Number",
         "contactPhone": "Contact Phone",

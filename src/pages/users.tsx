@@ -652,20 +652,19 @@ const UserManagement: NextPageWithLayout = () => {
             {editError && (
               <div className='text-red-600 text-sm'>{editError}</div>
             )}
-            <div className='flex gap-3 pt-4'>
+            <div className='flex justify-end gap-2 pt-4'>
               <Button
                 type='button'
                 variant='outline'
                 onClick={() => setEditingUser(null)}
                 disabled={editLoading}
-                className='flex-1'
               >
                 {t('edit.cancel') || 'Cancel'}
               </Button>
               <Button
                 type='submit'
                 disabled={editLoading}
-                className='flex-1 bg-blue-600 hover:bg-blue-700'
+                className='bg-blue-600 hover:bg-blue-700'
               >
                 {editLoading
                   ? t('edit.saving') || 'Saving...'
