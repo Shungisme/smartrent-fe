@@ -159,6 +159,7 @@ export interface ListingResponseWithAdmin {
 export interface AdminListingItem {
   listingId: number
   title: string
+  description: string
   userId: string
   verified: boolean
   isVerify: boolean
@@ -169,12 +170,17 @@ export interface AdminListingItem {
   priceUnit: PriceUnit
   addressId: number
   area: number
+  bedrooms: number | null
+  bathrooms: number | null
+  direction: string | null
+  furnishing: string | null
   address?: {
     fullAddress: string
     legacyProvinceName?: string
     legacyDistrictName?: string
   }
   media: ListingMedia[] | null
+  amenities: Amenity[]
   postDate: string
   expiryDate: string
   expired: boolean
@@ -186,6 +192,7 @@ export interface AdminListingItem {
     lastName: string
     email: string
     contactPhoneNumber: string
+    avatarUrl?: string | null
   }
 }
 
