@@ -68,7 +68,7 @@ const UserManagement: NextPageWithLayout = () => {
   const [error, setError] = useState<string | null>(null)
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [currentPage, setCurrentPage] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [totalPages, setTotalPages] = useState(0)
@@ -82,8 +82,8 @@ const UserManagement: NextPageWithLayout = () => {
       setLoading(true)
       setError(null)
       try {
-        // API uses 1-indexed pages, frontend uses 0-indexed
-        const response = await getUserList(currentPage + 1, pageSize)
+        // Both API and frontend now use 1-indexed pages
+        const response = await getUserList(currentPage, pageSize)
         if (response.success && response.data) {
           setUsers(response.data.data)
           setTotalPages(response.data.totalPages)

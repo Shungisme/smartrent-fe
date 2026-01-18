@@ -11,6 +11,7 @@
   },
   "pagination": {
     "showing": "Showing",
+    "to": "to",
     "of": "of",
     "results": "results",
     "show": "Show",
@@ -18,7 +19,13 @@
     "first": "First",
     "last": "Last",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "goToPage": "Go to page",
+    "go": "Go",
+    "page": "Page"
+  },
+  "dataTable": {
+    "clearFilters": "Clear Filters"
   },
   "homePage": {
     "title": "Find Your Dream Home",
@@ -1410,6 +1417,7 @@
       "pickDateRange": "Pick a date range"
     },
     "table": {
+      "title": "Title",
       "postDetails": "Post Details",
       "poster": "Poster",
       "propertyInfo": "Property Info",
@@ -1420,7 +1428,8 @@
       "noPostsFound": "No posts found matching your criteria",
       "viewDetails": "View Details",
       "posts": "posts",
-      "month": "month"
+      "month": "month",
+      "reviewButton": "Review"
     },
     "review": {
       "title": "Review Post",
@@ -1440,7 +1449,23 @@
       "rejectionReason": "Rejection Reason",
       "rejectionPlaceholder": "Enter reason for rejecting this post...",
       "approve": "Approve Post",
-      "reject": "Reject Post"
+      "reject": "Reject Post",
+      "description": "Description",
+      "propertyType": "Property Type",
+      "bedrooms": "Bedrooms",
+      "bathrooms": "Bathrooms",
+      "direction": "Direction",
+      "furnishing": "Furnishing",
+      "location": "Location",
+      "fullAddress": "Full Address",
+      "amenities": "Amenities",
+      "postedBy": "Posted by",
+      "verificationNotes": "Verification Notes (optional)",
+      "verificationNotesPlaceholder": "Enter notes for approval...",
+      "rejectionReasonRequired": "Rejection Reason (required for rejection)",
+      "rejectionReasonPlaceholder": "Enter reason for rejection...",
+      "approveButton": "Approve Post",
+      "rejectButton": "Reject Post"
     },
     "listingTypes": {
       "for_sale": "For Sale",
@@ -1450,12 +1475,30 @@
       "house": "House",
       "apartment": "Apartment",
       "office": "Office",
-      "land": "Land"
+      "land": "Land",
+      "room": "Room",
+      "other": "Other"
+    },
+    "directions": {
+      "east": "East",
+      "west": "West",
+      "north": "North",
+      "south": "South",
+      "northeast": "Northeast",
+      "northwest": "Northwest",
+      "southeast": "Southeast",
+      "southwest": "Southwest"
+    },
+    "furnishing": {
+      "fully_furnished": "Fully Furnished",
+      "semi_furnished": "Semi Furnished",
+      "unfurnished": "Unfurnished"
     },
     "statuses": {
       "pending": "Pending",
       "approved": "Approved",
-      "rejected": "Rejected"
+      "rejected": "Rejected",
+      "expired": "Expired"
     }
   },
   "reports": {

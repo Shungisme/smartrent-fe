@@ -29,7 +29,7 @@ export interface AdminVerification {
   adminId: string
   adminName: string
   adminEmail: string
-  verificationStatus: 'PENDING' | 'VERIFIED' | 'REJECTED'
+  verificationStatus: 'PENDING' | 'APPROVED' | 'REJECTED'
   verificationNotes: string | null
   verifiedAt: string | null
   rejectionReason: string | null

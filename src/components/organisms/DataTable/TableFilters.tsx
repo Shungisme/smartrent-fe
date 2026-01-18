@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import { Input } from '@/components/atoms/input'
 import { Button } from '@/components/atoms/button'
 import { Search, X } from 'lucide-react'
@@ -10,6 +11,8 @@ export function TableFilters({
   onChange,
   onClear,
 }: TableFiltersProps) {
+  const t = useTranslations('dataTable')
+
   if (!filters || filters.length === 0) return null
 
   const hasActiveFilters = Object.values(values).some(
@@ -124,7 +127,7 @@ export function TableFilters({
             className='flex items-center gap-2'
           >
             <X className='h-4 w-4' />
-            Clear Filters
+            {t('clearFilters')}
           </Button>
         )}
       </div>
