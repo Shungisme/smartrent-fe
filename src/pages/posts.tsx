@@ -30,6 +30,21 @@ import {
   Loader2,
   ChevronLeft,
   ChevronRight,
+  Refrigerator,
+  ShirtIcon,
+  Armchair,
+  Wifi,
+  Car,
+  Waves,
+  Dumbbell,
+  Shield,
+  Wind,
+  ShowerHead,
+  Tv,
+  UtensilsCrossed,
+  WashingMachine,
+  Bed,
+  Circle,
 } from 'lucide-react'
 import { ListingService } from '@/api/services/listing.service'
 import {
@@ -100,6 +115,33 @@ const getPropertyIcon = (type: string) => {
     ROOM: <Building2 className='h-4 w-4' />,
   }
   return iconMap[type] || <Home className='h-4 w-4' />
+}
+
+const getAmenityIcon = (iconName: string) => {
+  const iconMap: Record<string, React.ReactElement> = {
+    fridge: <Refrigerator className='h-4 w-4' />,
+    refrigerator: <Refrigerator className='h-4 w-4' />,
+    wardrobe: <ShirtIcon className='h-4 w-4' />,
+    'table-chair': <Armchair className='h-4 w-4' />,
+    chair: <Armchair className='h-4 w-4' />,
+    wifi: <Wifi className='h-4 w-4' />,
+    parking: <Car className='h-4 w-4' />,
+    pool: <Waves className='h-4 w-4' />,
+    'swimming-pool': <Waves className='h-4 w-4' />,
+    gym: <Dumbbell className='h-4 w-4' />,
+    security: <Shield className='h-4 w-4' />,
+    'air-conditioner': <Wind className='h-4 w-4' />,
+    ac: <Wind className='h-4 w-4' />,
+    'water-heater': <ShowerHead className='h-4 w-4' />,
+    tv: <Tv className='h-4 w-4' />,
+    television: <Tv className='h-4 w-4' />,
+    kitchen: <UtensilsCrossed className='h-4 w-4' />,
+    'washing-machine': <WashingMachine className='h-4 w-4' />,
+    washer: <WashingMachine className='h-4 w-4' />,
+    bed: <Bed className='h-4 w-4' />,
+    bedroom: <Bed className='h-4 w-4' />,
+  }
+  return iconMap[iconName.toLowerCase()] || <Circle className='h-4 w-4' />
 }
 
 const formatPrice = (price: number, priceUnit: string): string => {
@@ -933,7 +975,9 @@ const PostVerification: NextPageWithLayout = () => {
                             className='bg-blue-50 text-blue-700 border-blue-200'
                           >
                             {amenity.icon && (
-                              <span className='mr-1'>{amenity.icon}</span>
+                              <span className='mr-1'>
+                                {getAmenityIcon(amenity.icon)}
+                              </span>
                             )}
                             {amenity.name}
                           </Badge>
