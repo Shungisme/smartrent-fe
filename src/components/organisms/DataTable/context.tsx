@@ -198,11 +198,18 @@ export function DataTableProvider<T = any>({
     (page: number) => {
       setCurrentPage(page)
 
-      if (filterMode === 'api' && onPageChange) {
-        onPageChange(page)
+      if (filterMode === 'api') {
+        if (onPageChange) {
+          onPageChange(page)
+        }
+        // Also update filters with new page
+        if (onFilterChange) {
+          const updated = { ...filters, page }
+          onFilterChange(updated)
+        }
       }
     },
-    [filterMode, onPageChange],
+    [filterMode, onPageChange, onFilterChange, filters],
   )
 
   const handleSetItemsPerPage = useCallback(
@@ -210,11 +217,18 @@ export function DataTableProvider<T = any>({
       setItemsPerPage(perPage)
       setCurrentPage(1) // Reset to first page
 
-      if (filterMode === 'api' && onPageChange) {
-        onPageChange(1)
+      if (filterMode === 'api') {
+        if (onPageChange) {
+          onPageChange(1)
+        }
+        // Also update filters with new pageSize and reset page
+        if (onFilterChange) {
+          const updated = { ...filters, page: 1, pageSize: perPage }
+          onFilterChange(updated)
+        }
       }
     },
-    [filterMode, onPageChange],
+    [filterMode, onPageChange, onFilterChange, filters],
   )
 
   // Selection handlers
@@ -241,6 +255,20 @@ export function DataTableProvider<T = any>({
   useEffect(() => {
     if (externalFilterValues) {
       setFilters(externalFilterValues)
+      // Sync page if provided
+      if (
+        externalFilterValues.page &&
+        typeof externalFilterValues.page === 'number'
+      ) {
+        setCurrentPage(externalFilterValues.page)
+      }
+      // Sync pageSize if provided
+      if (
+        externalFilterValues.pageSize &&
+        typeof externalFilterValues.pageSize === 'number'
+      ) {
+        setItemsPerPage(externalFilterValues.pageSize)
+      }
     }
   }, [externalFilterValues])
 

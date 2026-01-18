@@ -68,7 +68,7 @@ const AdminManagement: NextPageWithLayout = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [currentPage, setCurrentPage] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [totalPages, setTotalPages] = useState(0)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -120,7 +120,7 @@ const AdminManagement: NextPageWithLayout = () => {
       setError(null)
       try {
         const response = await getAdminList({
-          page: currentPage + 1,
+          page: currentPage,
           size: pageSize,
         })
         if (response.success && response.data) {

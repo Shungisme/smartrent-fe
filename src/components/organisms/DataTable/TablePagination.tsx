@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/atoms/button'
 import type { PaginationConfig } from './types'
@@ -16,13 +17,29 @@ export function TablePagination({
   onItemsPerPageChange,
   itemsPerPageOptions = [5, 10, 20, 50],
 }: TablePaginationProps) {
+  const t = useTranslations('pagination')
   const { currentPage, totalPages, totalItems, itemsPerPage } = pagination
+  const [goToPage, setGoToPage] = useState('')
 
   const startItem = (currentPage - 1) * itemsPerPage + 1
   const endItem = Math.min(currentPage * itemsPerPage, totalItems)
 
   const canGoPrevious = currentPage > 1
   const canGoNext = currentPage < totalPages
+
+  const handleGoToPage = () => {
+    const pageNum = parseInt(goToPage, 10)
+    if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
+      onPageChange(pageNum)
+      setGoToPage('')
+    }
+  }
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleGoToPage()
+    }
+  }
 
   // Generate page numbers to show
   const getPageNumbers = () => {
@@ -73,11 +90,12 @@ export function TablePagination({
       {/* Items info & per page selector */}
       <div className='flex flex-col sm:flex-row items-center gap-3 text-sm text-gray-700'>
         <span>
-          Showing {startItem} to {endItem} of {totalItems} results
+          {t('showing')} {startItem} {t('to')} {endItem} {t('of')} {totalItems}{' '}
+          {t('results')}
         </span>
 
         <div className='flex items-center gap-2'>
-          <span className='text-gray-500'>Show</span>
+          <span className='text-gray-500'>{t('show')}</span>
           <select
             value={itemsPerPage}
             onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
@@ -89,7 +107,7 @@ export function TablePagination({
               </option>
             ))}
           </select>
-          <span className='text-gray-500'>per page</span>
+          <span className='text-gray-500'>{t('perPage')}</span>
         </div>
       </div>
 
@@ -126,7 +144,7 @@ export function TablePagination({
                 variant={isActive ? 'default' : 'outline'}
                 size='sm'
                 onClick={() => onPageChange(pageNum)}
-                className={`h-8 w-8 p-0 ${
+                className={` ${
                   isActive
                     ? 'bg-blue-600 text-white hover:bg-blue-700'
                     : 'hover:bg-gray-100'
@@ -148,6 +166,29 @@ export function TablePagination({
         >
           <ChevronRight className='h-4 w-4' />
         </Button>
+
+        {/* Go to page input */}
+        <div className='flex items-center gap-2 ml-2 border-l border-gray-300 pl-2'>
+          <span className='text-sm text-gray-500'>{t('goToPage')}</span>
+          <input
+            type='number'
+            min='1'
+            max={totalPages}
+            value={goToPage}
+            onChange={(e) => setGoToPage(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder={t('page')}
+            className='w-18 rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+          />
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={handleGoToPage}
+            className='h-8 px-3 text-sm'
+          >
+            {t('go')}
+          </Button>
+        </div>
       </div>
     </div>
   )

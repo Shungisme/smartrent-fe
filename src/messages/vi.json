@@ -11,6 +11,7 @@
   },
   "pagination": {
     "showing": "Hiển thị",
+    "to": "đến",
     "of": "trong tổng số",
     "results": "kết quả",
     "show": "Hiển thị",
@@ -18,7 +19,13 @@
     "first": "Đầu",
     "last": "Cuối",
     "previous": "Trước",
-    "next": "Tiếp"
+    "next": "Tiếp",
+    "goToPage": "Đến trang",
+    "go": "Đi",
+    "page": "Trang"
+  },
+  "dataTable": {
+    "clearFilters": "Xóa Bộ Lọc"
   },
   "homePage": {
     "title": "Tìm Ngôi Nhà Mơ Ước",
@@ -1375,6 +1382,7 @@
       "pickDateRange": "Chọn khoảng thời gian"
     },
     "table": {
+      "title": "Tiêu đề",
       "postDetails": "Chi Tiết Bài Đăng",
       "poster": "Người Đăng",
       "propertyInfo": "Thông Tin BĐS",
@@ -1385,7 +1393,8 @@
       "noPostsFound": "Không tìm thấy bài đăng phù hợp",
       "viewDetails": "Xem Chi Tiết",
       "posts": "bài đăng",
-      "month": "tháng"
+      "month": "tháng",
+      "reviewButton": "Xem Xét"
     },
     "review": {
       "title": "Xem Xét Bài Đăng",
@@ -1405,7 +1414,23 @@
       "rejectionReason": "Lý Do Từ Chối",
       "rejectionPlaceholder": "Nhập lý do từ chối bài đăng này...",
       "approve": "Duyệt Bài",
-      "reject": "Từ Chối"
+      "reject": "Từ Chối",
+      "description": "Mô tả",
+      "propertyType": "Loại Bất Động Sản",
+      "bedrooms": "Phòng ngủ",
+      "bathrooms": "Phòng tắm",
+      "direction": "Hướng",
+      "furnishing": "Nội thất",
+      "location": "Vị trí",
+      "fullAddress": "Địa chỉ đầy đủ",
+      "amenities": "Tiện nghi",
+      "postedBy": "Đăng bởi",
+      "verificationNotes": "Ghi chú xác minh (tùy chọn)",
+      "verificationNotesPlaceholder": "Nhập ghi chú khi duyệt...",
+      "rejectionReasonRequired": "Lý do từ chối (bắt buộc khi từ chối)",
+      "rejectionReasonPlaceholder": "Nhập lý do từ chối...",
+      "approveButton": "Duyệt Bài Đăng",
+      "rejectButton": "Từ Chối Bài Đăng"
     },
     "listingTypes": {
       "for_sale": "Bán",
@@ -1415,12 +1440,30 @@
       "house": "Nhà",
       "apartment": "Căn hộ",
       "office": "Văn phòng",
-      "land": "Đất"
+      "land": "Đất",
+      "room": "Phòng trọ",
+      "other": "Khác"
+    },
+    "directions": {
+      "east": "Đông",
+      "west": "Tây",
+      "north": "Bắc",
+      "south": "Nam",
+      "northeast": "Đông Bắc",
+      "northwest": "Tây Bắc",
+      "southeast": "Đông Nam",
+      "southwest": "Tây Nam"
+    },
+    "furnishing": {
+      "fully_furnished": "Đầy đủ nội thất",
+      "semi_furnished": "Nội thất cơ bản",
+      "unfurnished": "Chưa có nội thất"
     },
     "statuses": {
       "pending": "Chờ Duyệt",
       "approved": "Đã Duyệt",
-      "rejected": "Từ Chối"
+      "rejected": "Từ Chối",
+      "expired": "Hết Hạn"
     }
   },
   "reports": {

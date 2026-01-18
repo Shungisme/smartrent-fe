@@ -28,6 +28,8 @@ import {
   CheckCircle,
   XCircle,
   Loader2,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react'
 import { ListingService } from '@/api/services/listing.service'
 import {
@@ -100,18 +102,6 @@ const getPropertyIcon = (type: string) => {
   return iconMap[type] || <Home className='h-4 w-4' />
 }
 
-const getPropertyTypeLabel = (type: string): string => {
-  const labels: Record<string, string> = {
-    HOUSE: 'Nhà',
-    APARTMENT: 'Căn hộ',
-    OFFICE: 'Văn phòng',
-    LAND: 'Đất',
-    ROOM: 'Phòng trọ',
-    OTHER: 'Khác',
-  }
-  return labels[type] || type
-}
-
 const formatPrice = (price: number, priceUnit: string): string => {
   const formatted = new Intl.NumberFormat('vi-VN').format(price)
   const unitMap: Record<string, string> = {
@@ -138,8 +128,8 @@ const mapUIFiltersToAPI = (
   uiFilters: Record<string, unknown>,
 ): Partial<ListingFilterRequest> => {
   const apiFilters: Partial<ListingFilterRequest> = {
-    page: 0, // Backend uses 0-based pagination
-    size: 20,
+    page: uiFilters.page ? Number(uiFilters.page) - 1 : 0,
+    size: uiFilters.pageSize ? Number(uiFilters.pageSize) : 20,
     sortBy: 'NEWEST',
   }
 
@@ -152,18 +142,15 @@ const mapUIFiltersToAPI = (
   if (uiFilters.status) {
     switch (String(uiFilters.status)) {
       case 'pending':
-        apiFilters.isVerify = false
-        apiFilters.verified = undefined
+        apiFilters.verified = false
         apiFilters.expired = false
         break
       case 'approved':
         apiFilters.verified = true
-        apiFilters.isVerify = true
         apiFilters.expired = false
         break
       case 'rejected':
         apiFilters.verified = false
-        apiFilters.isVerify = true
         apiFilters.expired = false
         break
       case 'expired':
@@ -199,7 +186,7 @@ const mapApiDataToUI = (item: AdminListingItem): UIPostData => {
   } else if (item.adminVerification?.verificationStatus) {
     const verificationStatus = item.adminVerification.verificationStatus
     switch (verificationStatus) {
-      case 'VERIFIED':
+      case 'APPROVED':
         status = 'approved'
         break
       case 'REJECTED':
@@ -218,7 +205,10 @@ const mapApiDataToUI = (item: AdminListingItem): UIPostData => {
     id: item.listingId.toString(),
     title: item.title,
     postCode: `POST-${item.listingId}`,
-    images: item.media?.map((m) => m.url) || [],
+    images:
+      item.media && item.media.length > 0
+        ? item.media.map((m) => m.url)
+        : ['/images/no-image.png'],
     listingType: item.listingType === 'FOR_RENT' ? 'for_rent' : 'for_sale',
     vipLevel: getVipLevel(item.vipType),
     poster: {
@@ -264,18 +254,56 @@ const getStatusColor = (status: PostStatus): string => {
   return colors[status]
 }
 
-const getStatusLabel = (status: PostStatus): string => {
-  const labels = {
-    pending: 'Pending',
-    approved: 'Approved',
-    rejected: 'Rejected',
-    expired: 'Expired',
-  }
-  return labels[status]
-}
-
 const PostVerification: NextPageWithLayout = () => {
   const t = useTranslations('posts')
+
+  const getPropertyTypeLabel = (type: string): string => {
+    const typeMap: Record<string, string> = {
+      HOUSE: 'house',
+      APARTMENT: 'apartment',
+      OFFICE: 'office',
+      LAND: 'land',
+      ROOM: 'room',
+      OTHER: 'other',
+    }
+    const key = typeMap[type]
+    return key ? t(`propertyTypes.${key}`) : type
+  }
+
+  const getDirectionLabel = (direction: string): string => {
+    const directionMap: Record<string, string> = {
+      EAST: 'east',
+      WEST: 'west',
+      SOUTH: 'south',
+      NORTH: 'north',
+      NORTHEAST: 'northeast',
+      NORTHWEST: 'northwest',
+      SOUTHEAST: 'southeast',
+      SOUTHWEST: 'southwest',
+    }
+    const key = directionMap[direction]
+    return key ? t(`directions.${key}`) : direction
+  }
+
+  const getFurnishingLabel = (furnishing: string): string => {
+    const furnishingMap: Record<string, string> = {
+      FULLY_FURNISHED: 'fully_furnished',
+      SEMI_FURNISHED: 'semi_furnished',
+      UNFURNISHED: 'unfurnished',
+    }
+    const key = furnishingMap[furnishing]
+    return key ? t(`furnishing.${key}`) : furnishing
+  }
+
+  const getStatusLabel = (status: PostStatus): string => {
+    const labels = {
+      pending: t('statuses.pending'),
+      approved: t('statuses.approved'),
+      rejected: t('statuses.rejected'),
+      expired: t('statuses.expired'),
+    }
+    return labels[status]
+  }
   const [posts, setPosts] = useState<UIPostData[]>([])
   const [initialLoading, setInitialLoading] = useState(true)
   const [tableLoading, setTableLoading] = useState(false)
@@ -284,6 +312,8 @@ const PostVerification: NextPageWithLayout = () => {
   const [rejectionReason, setRejectionReason] = useState('')
   const [verificationNotes, setVerificationNotes] = useState('')
   const [actionLoading, setActionLoading] = useState(false)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [stats, setStats] = useState<ListingStatisticsSummary>({
     pendingVerification: 0,
     verified: 0,
@@ -295,7 +325,12 @@ const PostVerification: NextPageWithLayout = () => {
     goldListings: 0,
     diamondListings: 0,
   })
-  const [filterValues, setFilterValues] = useState<Record<string, unknown>>({})
+  const [filterValues, setFilterValues] = useState<Record<string, unknown>>({
+    status: 'pending',
+    page: 1,
+    pageSize: 20,
+  })
+  const [totalCount, setTotalCount] = useState(0)
   const debouncedSearchTerm = useDebounce(filterValues.search || '', 500)
 
   // Update filterValues with actual search term for DataTable to maintain input state
@@ -312,6 +347,8 @@ const PostVerification: NextPageWithLayout = () => {
     filterValues.status,
     filterValues['propertyInfo.type'],
     filterValues.listingType,
+    filterValues.page,
+    filterValues.pageSize,
   ])
 
   const fetchListings = async () => {
@@ -335,6 +372,7 @@ const PostVerification: NextPageWithLayout = () => {
         const uiData = response.data.listings.map(mapApiDataToUI)
         setPosts(uiData)
         setStats(response.data.statistics)
+        setTotalCount(response.data.totalCount || 0)
       }
     } catch (error) {
       console.error('Error fetching listings:', error)
@@ -355,6 +393,33 @@ const PostVerification: NextPageWithLayout = () => {
     setReviewModalOpen(true)
     setRejectionReason(post.rejectionReason || '')
     setVerificationNotes(post.verificationNotes || '')
+    setCurrentImageIndex(0)
+    setLightboxOpen(false)
+  }
+
+  const openLightbox = (index: number) => {
+    setCurrentImageIndex(index)
+    setLightboxOpen(true)
+  }
+
+  const closeLightbox = () => {
+    setLightboxOpen(false)
+  }
+
+  const goToNextImage = () => {
+    if (selectedPost) {
+      setCurrentImageIndex((prev) =>
+        prev === selectedPost.images.length - 1 ? 0 : prev + 1,
+      )
+    }
+  }
+
+  const goToPreviousImage = () => {
+    if (selectedPost) {
+      setCurrentImageIndex((prev) =>
+        prev === 0 ? selectedPost.images.length - 1 : prev - 1,
+      )
+    }
   }
 
   const handleApprove = async () => {
@@ -362,18 +427,26 @@ const PostVerification: NextPageWithLayout = () => {
 
     try {
       setActionLoading(true)
-      await ListingService.verifyListing(
+      const response = await ListingService.verifyListing(
         selectedPost.id,
         verificationNotes || 'Listing approved',
       )
 
-      toast.success('Listing has been approved successfully.')
+      // Check if request was successful
+      if (response && response.code !== '9999') {
+        toast.success('Listing has been approved successfully.')
 
-      // Refresh listings
-      await fetchListings()
-      setReviewModalOpen(false)
-      setSelectedPost(null)
-      setVerificationNotes('')
+        // Refresh listings
+        await fetchListings()
+        setReviewModalOpen(false)
+        setSelectedPost(null)
+        setVerificationNotes('')
+      } else {
+        // Handle error response
+        const errorMessage =
+          response.message || 'Failed to approve listing. Please try again.'
+        toast.error(errorMessage)
+      }
     } catch (error) {
       console.error('Error approving listing:', error)
       toast.error('Failed to approve listing. Please try again.')
@@ -392,18 +465,29 @@ const PostVerification: NextPageWithLayout = () => {
 
     try {
       setActionLoading(true)
-      await ListingService.rejectListing(selectedPost.id, rejectionReason)
+      const response = await ListingService.rejectListing(
+        selectedPost.id,
+        rejectionReason,
+      )
 
-      toast.success('Listing has been rejected.')
+      // Check if request was successful
+      if (response && response.code !== '9999') {
+        toast.success('Listing has been rejected.')
 
-      // Refresh listings
-      await fetchListings()
-      setReviewModalOpen(false)
-      setSelectedPost(null)
-      setRejectionReason('')
+        // Refresh listings
+        await fetchListings()
+        setReviewModalOpen(false)
+        setSelectedPost(null)
+        setRejectionReason('')
+      } else {
+        // Handle error response
+        const errorMessage =
+          response.message || 'Failed to reject listing. Please try again.'
+        toast.error(errorMessage)
+      }
     } catch (error) {
       console.error('Error rejecting listing:', error)
-      alert('Failed to reject listing. Please try again.')
+      toast.error('Failed to reject listing. Please try again.')
     } finally {
       setActionLoading(false)
     }
@@ -434,7 +518,9 @@ const PostVerification: NextPageWithLayout = () => {
           </div>
           <div className='flex-1 min-w-0'>
             <div className='font-medium text-gray-900 truncate'>
-              {row.title}
+              {row.title.length > 50
+                ? `${row.title.substring(0, 50)}...`
+                : row.title}
             </div>
             <div className='mt-0.5 text-xs text-gray-400'>{row.postCode}</div>
             <div className='mt-1 flex flex-wrap gap-1'>
@@ -451,7 +537,9 @@ const PostVerification: NextPageWithLayout = () => {
                     : 'bg-purple-100 text-purple-800',
                 )}
               >
-                {row.listingType === 'for_sale' ? 'For Sale' : 'For Rent'}
+                {row.listingType === 'for_sale'
+                  ? t('listingTypes.for_sale')
+                  : t('listingTypes.for_rent')}
               </Badge>
             </div>
           </div>
@@ -538,6 +626,21 @@ const PostVerification: NextPageWithLayout = () => {
         </Badge>
       ),
     },
+    {
+      id: 'actions',
+      header: t('table.actions'),
+      accessor: () => '',
+      render: (_, row) => (
+        <Button
+          variant='outline'
+          size='sm'
+          onClick={() => handleReview(row)}
+          className='rounded-lg border-gray-300 px-3 py-1 text-sm hover:border-blue-500 hover:text-blue-600'
+        >
+          {t('table.reviewButton')}
+        </Button>
+      ),
+    },
   ]
 
   // Define filters for DataTable
@@ -599,7 +702,7 @@ const PostVerification: NextPageWithLayout = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
+          {/* <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
             <div className='rounded-xl border border-gray-100 bg-white p-6'>
               <div className='text-2xl font-bold text-gray-900'>
                 {posts.length}
@@ -647,7 +750,7 @@ const PostVerification: NextPageWithLayout = () => {
                 {t('stats.notApproved')}
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* DataTable Component */}
           <DataTable
@@ -659,20 +762,11 @@ const PostVerification: NextPageWithLayout = () => {
             onFilterChange={handleFilterChange}
             loading={tableLoading}
             pagination
-            itemsPerPage={10}
+            totalItems={totalCount}
+            itemsPerPage={20}
             itemsPerPageOptions={[5, 10, 20, 50]}
             sortable
             defaultSort={{ key: 'postedDate', direction: 'desc' }}
-            actions={(row) => (
-              <Button
-                variant='outline'
-                size='sm'
-                onClick={() => handleReview(row)}
-                className='rounded-lg border-gray-300 px-3 py-1 text-sm hover:border-blue-500 hover:text-blue-600'
-              >
-                Review
-              </Button>
-            )}
             emptyMessage={t('table.noPostsFound')}
             getRowKey={(row) => row.id}
           />
@@ -684,23 +778,33 @@ const PostVerification: NextPageWithLayout = () => {
         <DialogContent className='max-w-3xl max-h-[90vh] overflow-y-auto w-[calc(100%-2rem)] mx-auto'>
           <DialogHeader>
             <DialogTitle className='text-xl md:text-2xl font-semibold'>
-              Review Post
+              {t('review.title')}
             </DialogTitle>
           </DialogHeader>
 
           {selectedPost && (
             <div className='space-y-4 md:space-y-6'>
-              {/* Images */}
+              {/* Images Gallery */}
               <div className='flex gap-2 overflow-x-auto'>
                 {selectedPost.images.map((img, idx) => (
-                  <Image
+                  <div
                     key={idx}
-                    src={img}
-                    alt={`${selectedPost.title} ${idx + 1}`}
-                    width={192}
-                    height={128}
-                    className='h-24 w-32 md:h-32 md:w-48 flex-shrink-0 rounded-lg object-cover'
-                  />
+                    onClick={() => openLightbox(idx)}
+                    className='relative h-24 w-32 md:h-32 md:w-48 flex-shrink-0 rounded-lg overflow-hidden cursor-pointer group'
+                  >
+                    <Image
+                      src={img}
+                      alt={`${selectedPost.title} ${idx + 1}`}
+                      width={192}
+                      height={128}
+                      className='h-full w-full object-cover transition-transform group-hover:scale-110'
+                    />
+                    <div className='absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center'>
+                      <span className='text-white opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium'>
+                        Click to view
+                      </span>
+                    </div>
+                  </div>
                 ))}
               </div>
 
@@ -719,7 +823,7 @@ const PostVerification: NextPageWithLayout = () => {
                 {selectedPost.description && (
                   <div>
                     <div className='text-xs md:text-sm font-medium text-gray-700'>
-                      Description
+                      {t('review.description')}
                     </div>
                     <div className='mt-1 text-sm text-gray-600 whitespace-pre-wrap'>
                       {selectedPost.description}
@@ -730,7 +834,7 @@ const PostVerification: NextPageWithLayout = () => {
                 <div className='grid grid-cols-2 gap-3 md:gap-4'>
                   <div>
                     <div className='text-xs md:text-sm font-medium text-gray-700'>
-                      Property Type
+                      {t('review.propertyType')}
                     </div>
                     <div className='text-sm md:text-base text-gray-900'>
                       {getPropertyTypeLabel(selectedPost.propertyInfo.type)}
@@ -738,7 +842,7 @@ const PostVerification: NextPageWithLayout = () => {
                   </div>
                   <div>
                     <div className='text-xs md:text-sm font-medium text-gray-700'>
-                      Area
+                      {t('review.area')}
                     </div>
                     <div className='text-sm md:text-base text-gray-900'>
                       {selectedPost.propertyInfo.area}m²
@@ -748,7 +852,7 @@ const PostVerification: NextPageWithLayout = () => {
                     selectedPost.bedrooms !== undefined && (
                       <div>
                         <div className='text-xs md:text-sm font-medium text-gray-700'>
-                          Bedrooms
+                          {t('review.bedrooms')}
                         </div>
                         <div className='text-sm md:text-base text-gray-900'>
                           {selectedPost.bedrooms}
@@ -759,7 +863,7 @@ const PostVerification: NextPageWithLayout = () => {
                     selectedPost.bathrooms !== undefined && (
                       <div>
                         <div className='text-xs md:text-sm font-medium text-gray-700'>
-                          Bathrooms
+                          {t('review.bathrooms')}
                         </div>
                         <div className='text-sm md:text-base text-gray-900'>
                           {selectedPost.bathrooms}
@@ -769,26 +873,26 @@ const PostVerification: NextPageWithLayout = () => {
                   {selectedPost.direction && (
                     <div>
                       <div className='text-xs md:text-sm font-medium text-gray-700'>
-                        Direction
+                        {t('review.direction')}
                       </div>
                       <div className='text-sm md:text-base text-gray-900'>
-                        {selectedPost.direction}
+                        {getDirectionLabel(selectedPost.direction)}
                       </div>
                     </div>
                   )}
                   {selectedPost.furnishing && (
                     <div>
                       <div className='text-xs md:text-sm font-medium text-gray-700'>
-                        Furnishing
+                        {t('review.furnishing')}
                       </div>
                       <div className='text-sm md:text-base text-gray-900'>
-                        {selectedPost.furnishing}
+                        {getFurnishingLabel(selectedPost.furnishing)}
                       </div>
                     </div>
                   )}
                   <div>
                     <div className='text-xs md:text-sm font-medium text-gray-700'>
-                      Location
+                      {t('review.location')}
                     </div>
                     <div className='text-sm md:text-base text-gray-900'>
                       {selectedPost.propertyInfo.district}
@@ -796,7 +900,7 @@ const PostVerification: NextPageWithLayout = () => {
                   </div>
                   <div>
                     <div className='text-xs md:text-sm font-medium text-gray-700'>
-                      Price
+                      {t('review.price')}
                     </div>
                     <div className='text-sm md:text-base text-gray-900'>
                       {selectedPost.price}
@@ -807,7 +911,7 @@ const PostVerification: NextPageWithLayout = () => {
                 {/* Full Address */}
                 <div>
                   <div className='text-xs md:text-sm font-medium text-gray-700'>
-                    Full Address
+                    {t('review.fullAddress')}
                   </div>
                   <div className='mt-1 text-sm text-gray-600'>
                     {selectedPost.propertyInfo.fullAddress}
@@ -819,7 +923,7 @@ const PostVerification: NextPageWithLayout = () => {
                   selectedPost.amenities.length > 0 && (
                     <div>
                       <div className='text-xs md:text-sm font-medium text-gray-700 mb-2'>
-                        Amenities
+                        {t('review.amenities')}
                       </div>
                       <div className='flex flex-wrap gap-2'>
                         {selectedPost.amenities.map((amenity) => (
@@ -840,7 +944,7 @@ const PostVerification: NextPageWithLayout = () => {
 
                 <div>
                   <div className='text-xs md:text-sm font-medium text-gray-700'>
-                    Posted by
+                    {t('review.postedBy')}
                   </div>
                   <div className='mt-2 flex items-center gap-2'>
                     <Avatar className='h-8 w-8 md:h-10 md:w-10'>
@@ -869,7 +973,7 @@ const PostVerification: NextPageWithLayout = () => {
                 {/* Current Status */}
                 <div>
                   <div className='text-xs md:text-sm font-medium text-gray-700'>
-                    Current Status
+                    {t('review.currentStatus')}
                   </div>
                   <Badge
                     variant='outline'
@@ -887,13 +991,13 @@ const PostVerification: NextPageWithLayout = () => {
                         htmlFor='verification-notes'
                         className='text-xs md:text-sm font-medium text-gray-700'
                       >
-                        Verification Notes (optional)
+                        {t('review.verificationNotes')}
                       </label>
                       <textarea
                         id='verification-notes'
                         value={verificationNotes}
                         onChange={(e) => setVerificationNotes(e.target.value)}
-                        placeholder='Enter notes for approval...'
+                        placeholder={t('review.verificationNotesPlaceholder')}
                         className='mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-xs md:text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100'
                         rows={2}
                       />
@@ -903,13 +1007,13 @@ const PostVerification: NextPageWithLayout = () => {
                         htmlFor='rejection-reason'
                         className='text-xs md:text-sm font-medium text-gray-700'
                       >
-                        Rejection Reason (required for rejection)
+                        {t('review.rejectionReasonRequired')}
                       </label>
                       <textarea
                         id='rejection-reason'
                         value={rejectionReason}
                         onChange={(e) => setRejectionReason(e.target.value)}
-                        placeholder='Enter reason for rejection...'
+                        placeholder={t('review.rejectionReasonPlaceholder')}
                         className='mt-2 w-full rounded-lg border border-gray-300 px-3 py-2 text-xs md:text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100'
                         rows={3}
                       />
@@ -923,7 +1027,7 @@ const PostVerification: NextPageWithLayout = () => {
                     {selectedPost.verificationNotes && (
                       <div>
                         <div className='text-xs md:text-sm font-medium text-gray-700'>
-                          Verification Notes
+                          {t('review.verificationNotes')}
                         </div>
                         <div className='mt-1 text-sm text-gray-600'>
                           {selectedPost.verificationNotes}
@@ -933,7 +1037,7 @@ const PostVerification: NextPageWithLayout = () => {
                     {selectedPost.rejectionReason && (
                       <div>
                         <div className='text-xs md:text-sm font-medium text-gray-700'>
-                          Rejection Reason
+                          {t('review.rejectionReason')}
                         </div>
                         <div className='mt-1 text-sm text-red-600'>
                           {selectedPost.rejectionReason}
@@ -957,7 +1061,7 @@ const PostVerification: NextPageWithLayout = () => {
                     ) : (
                       <CheckCircle className='mr-2 h-4 w-4' />
                     )}
-                    Approve Post
+                    {t('review.approveButton')}
                   </Button>
                   <Button
                     onClick={handleReject}
@@ -970,7 +1074,7 @@ const PostVerification: NextPageWithLayout = () => {
                     ) : (
                       <XCircle className='mr-2 h-4 w-4' />
                     )}
-                    Reject Post
+                    {t('review.rejectButton')}
                   </Button>
                 </div>
               )}
@@ -978,6 +1082,67 @@ const PostVerification: NextPageWithLayout = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Image Lightbox */}
+      {lightboxOpen && selectedPost && (
+        <div
+          className='fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center'
+          onClick={closeLightbox}
+        >
+          {/* Close button */}
+          <button
+            onClick={closeLightbox}
+            className='absolute top-4 right-4 text-white hover:text-gray-300 z-10'
+          >
+            <XCircle className='h-8 w-8' />
+          </button>
+
+          {/* Previous button */}
+          {selectedPost.images.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                goToPreviousImage()
+              }}
+              className='absolute left-4 text-white hover:text-gray-300 z-10'
+            >
+              <ChevronLeft className='h-12 w-12' />
+            </button>
+          )}
+
+          {/* Image */}
+          <div
+            className='relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center p-4'
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={selectedPost.images[currentImageIndex]}
+              alt={`${selectedPost.title} ${currentImageIndex + 1}`}
+              width={1920}
+              height={1080}
+              className='max-w-full max-h-full object-contain'
+            />
+          </div>
+
+          {/* Next button */}
+          {selectedPost.images.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                goToNextImage()
+              }}
+              className='absolute right-4 text-white hover:text-gray-300 z-10'
+            >
+              <ChevronRight className='h-12 w-12' />
+            </button>
+          )}
+
+          {/* Image counter */}
+          <div className='absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white text-sm bg-black/50 px-4 py-2 rounded-full'>
+            {currentImageIndex + 1} / {selectedPost.images.length}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
