@@ -7,10 +7,15 @@ import {
   ListingStatusChangeRequest,
   ApiResponse,
 } from '@/api/types/listing.type'
+import {
+  ListingReport,
+  ListingReportListResponse,
+  ResolveReportRequest,
+} from '@/api/types/listing-report.type'
 
 /**
  * Listing Service for Admin Portal
- * Handles all admin listing-related API operations
+ * Handles all admin listing-related and report API operations
  */
 export class ListingService {
   /**
@@ -142,6 +147,44 @@ export class ListingService {
     return this.changeListingStatus(listingId, {
       verified: false,
       reason,
+    })
+  }
+
+  /**
+   * Get all listing reports
+   * GET /v1/admin/reports
+   *
+   * @param params - Query parameters (status, page, size)
+   * @returns Paginated list of reports
+   */
+  static async getReports(params: {
+    status?: string
+    page?: number
+    size?: number
+  }): Promise<ApiResponse<ListingReportListResponse>> {
+    return apiRequest<ListingReportListResponse>({
+      method: 'GET',
+      url: '/v1/admin/reports',
+      params,
+    })
+  }
+
+  /**
+   * Resolve or reject a listing report
+   * PUT /v1/admin/reports/{reportId}/resolve
+   *
+   * @param reportId - Report ID
+   * @param data - Resolution data (status and admin notes)
+   * @returns Updated report
+   */
+  static async resolveReport(
+    reportId: number,
+    data: ResolveReportRequest,
+  ): Promise<ApiResponse<ListingReport>> {
+    return apiRequest<ListingReport>({
+      method: 'PUT',
+      url: `/v1/admin/reports/${reportId}/resolve`,
+      data,
     })
   }
 }
