@@ -15,6 +15,7 @@ import {
   Shield,
   UserCogIcon,
   Users,
+  Newspaper,
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -101,6 +102,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
     properties: '/listings',
     premium: '/premium',
     analytics: '/analytics',
+    news: '/news',
     // Add more routes as we implement them
   }
 
@@ -144,9 +146,13 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
       icon: <Shield width={20} />,
     },
     {
-      key: 'analytics',
       label: t('menuItems.analytics'),
       icon: <ChartColumn width={20} />,
+    },
+    {
+      key: 'news',
+      label: t('menuItems.news'),
+      icon: <Newspaper width={20} />,
     },
   ]
 

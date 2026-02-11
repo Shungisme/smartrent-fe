@@ -872,7 +872,8 @@
         "properties": "Property Listings",
         "settings": "Settings",
         "search": "Advanced Search",
-        "roles": "Role Management"
+        "roles": "Roles Management",
+        "news": "News Management"
       }
     },
     "users": {

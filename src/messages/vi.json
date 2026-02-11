@@ -837,7 +837,8 @@
         "properties": "Danh Sách Bất Động Sản",
         "settings": "Cài Đặt",
         "search": "Tìm Kiếm Nâng Cao",
-        "roles": "Quản Lý Vai Trò"
+        "roles": "Quản Lý Vai Trò",
+        "news": "Quản Lý Tin Tức"
       }
     },
     "users": {
