@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 import {
   DataTable,
   Column,
@@ -55,10 +56,12 @@ export const NewsTable: React.FC<NewsTableProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const t = useTranslations('news')
+
   const columns: Column<News>[] = [
     {
       id: 'news',
-      header: 'Bài viết',
+      header: t('table.columns.news'),
       accessor: (row) => row.title,
       sortable: true,
       render: (_, row) => (
@@ -93,17 +96,13 @@ export const NewsTable: React.FC<NewsTableProps> = ({
                   getCategoryColor(row.category),
                 )}
               >
-                {row.category === 'NEWS' ? 'Tin tức' : 'Blog'}
+                {t(`category.${row.category}`)}
               </Badge>
               <Badge
                 variant='outline'
                 className={cn('text-xs px-2 py-0', getStatusColor(row.status))}
               >
-                {row.status === 'DRAFT'
-                  ? 'Bản nháp'
-                  : row.status === 'PUBLISHED'
-                    ? 'Đã xuất bản'
-                    : 'Lưu trữ'}
+                {t(`status.${row.status}`)}
               </Badge>
             </div>
           </div>
@@ -112,13 +111,13 @@ export const NewsTable: React.FC<NewsTableProps> = ({
     },
     {
       id: 'author',
-      header: 'Tác giả',
-      accessor: (row) => row.author_name || 'N/A',
+      header: t('table.columns.author'),
+      accessor: (row) => row.author_name || t('notAvailable'),
       render: (_, row) => (
         <div className='flex items-center gap-2'>
           <User className='h-4 w-4 text-gray-400' />
           <span className='text-sm text-gray-700'>
-            {row.author_name || 'N/A'}
+            {row.author_name || t('notAvailable')}
           </span>
         </div>
       ),
@@ -126,19 +125,21 @@ export const NewsTable: React.FC<NewsTableProps> = ({
     },
     {
       id: 'stats',
-      header: 'Thống kê',
+      header: t('table.columns.stats'),
       accessor: () => '',
       render: (_, row) => (
         <div className='flex flex-col gap-1 text-sm'>
           <div className='flex items-center gap-1 text-gray-600'>
             <Eye className='h-3.5 w-3.5' />
-            <span>{row.view_count.toLocaleString()} lượt xem</span>
+            <span>
+              {row.view_count.toLocaleString()} {t('table.views')}
+            </span>
           </div>
           {row.tags && (
             <div className='flex items-center gap-1 text-gray-500'>
               <Tag className='h-3.5 w-3.5' />
               <span className='text-xs truncate'>
-                {row.tags.split(',').length} tags
+                {row.tags.split(',').length} {t('table.tags')}
               </span>
             </div>
           )}
@@ -148,7 +149,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
     },
     {
       id: 'dates',
-      header: 'Ngày tạo',
+      header: t('table.columns.dates'),
       accessor: 'created_at',
       sortable: true,
       render: (_, row) => (
@@ -156,7 +157,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
           <div className='text-gray-900'>{formatDate(row.created_at)}</div>
           {row.published_at && (
             <div className='text-xs text-gray-500'>
-              Xuất bản: {formatDate(row.published_at)}
+              {t('table.published')}: {formatDate(row.published_at)}
             </div>
           )}
         </div>
@@ -164,7 +165,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
     },
     {
       id: 'actions',
-      header: 'Thao tác',
+      header: t('table.columns.actions'),
       accessor: () => '',
       render: (_, row) => (
         <div className='flex items-center gap-2'>
@@ -173,7 +174,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
             size='sm'
             onClick={() => onPreview(row)}
             className='h-8 w-8 p-0'
-            title='Xem trước'
+            title={t('actions.preview')}
           >
             <Eye className='h-4 w-4' />
           </Button>
@@ -182,7 +183,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
             size='sm'
             onClick={() => onEdit(row)}
             className='h-8 w-8 p-0'
-            title='Chỉnh sửa'
+            title={t('actions.edit')}
           >
             <Edit className='h-4 w-4' />
           </Button>
@@ -191,7 +192,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
             size='sm'
             onClick={() => onDelete(row)}
             className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
-            title='Xóa'
+            title={t('actions.delete')}
           >
             <Trash2 className='h-4 w-4' />
           </Button>
@@ -204,26 +205,26 @@ export const NewsTable: React.FC<NewsTableProps> = ({
     {
       id: 'search',
       type: 'search',
-      label: 'Tìm kiếm',
-      placeholder: 'Tìm kiếm theo tiêu đề, nội dung...',
+      label: t('filters.search'),
+      placeholder: t('filters.searchPlaceholder'),
     },
     {
       id: 'status',
       type: 'select',
-      label: 'Tất cả trạng thái',
+      label: t('filters.allStatus'),
       options: [
-        { value: 'DRAFT', label: 'Bản nháp' },
-        { value: 'PUBLISHED', label: 'Đã xuất bản' },
-        { value: 'ARCHIVED', label: 'Lưu trữ' },
+        { value: 'DRAFT', label: t('status.DRAFT') },
+        { value: 'PUBLISHED', label: t('status.PUBLISHED') },
+        { value: 'ARCHIVED', label: t('status.ARCHIVED') },
       ],
     },
     {
       id: 'category',
       type: 'select',
-      label: 'Tất cả danh mục',
+      label: t('filters.allCategory'),
       options: [
-        { value: 'NEWS', label: 'Tin tức' },
-        { value: 'BLOG', label: 'Blog' },
+        { value: 'NEWS', label: t('category.NEWS') },
+        { value: 'BLOG', label: t('category.BLOG') },
       ],
     },
   ]

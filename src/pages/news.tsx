@@ -92,7 +92,7 @@ const NewsManagement: NextPageWithLayout = () => {
       }
     } catch (error) {
       console.error('Error fetching news:', error)
-      toast.error('Không thể tải danh sách tin tức. Vui lòng thử lại.')
+      toast.error(t('messages.fetchError'))
     } finally {
       setInitialLoading(false)
       setTableLoading(false)
@@ -129,16 +129,16 @@ const NewsManagement: NextPageWithLayout = () => {
       const response = await NewsService.deleteNews(selectedNews.news_id)
 
       if (response.code === '1000') {
-        toast.success('Xóa tin tức thành công')
+        toast.success(t('messages.deleteSuccess'))
         setDeleteModalOpen(false)
         setSelectedNews(null)
         await fetchNews()
       } else {
-        toast.error(response.message || 'Không thể xóa tin tức')
+        toast.error(response.message || t('messages.deleteError'))
       }
     } catch (error) {
       console.error('Error deleting news:', error)
-      toast.error('Không thể xóa tin tức. Vui lòng thử lại.')
+      toast.error(t('messages.deleteError'))
     } finally {
       setDeleteLoading(false)
     }
@@ -156,15 +156,13 @@ const NewsManagement: NextPageWithLayout = () => {
           <div className='flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4'>
             <div>
               <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
-                Quản lý Tin tức
+                {t('title')}
               </h1>
-              <p className='mt-1 text-sm text-gray-600'>
-                Tạo, chỉnh sửa và quản lý các bài viết tin tức và blog
-              </p>
+              <p className='mt-1 text-sm text-gray-600'>{t('subtitle')}</p>
             </div>
             <Button onClick={handleCreate} className='flex items-center gap-2'>
               <Plus className='h-4 w-4' />
-              Tạo tin tức mới
+              {t('createButton')}
             </Button>
           </div>
 
@@ -205,7 +203,7 @@ const NewsManagement: NextPageWithLayout = () => {
 }
 
 NewsManagement.getLayout = (page: React.ReactNode) => (
-  <AdminLayout>{page}</AdminLayout>
+  <AdminLayout activeItem='news'>{page}</AdminLayout>
 )
 
 export default NewsManagement

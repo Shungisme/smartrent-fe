@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/atoms/button'
 import { Loader2, ArrowLeft, Eye, Save } from 'lucide-react'
 import { useRouter } from 'next/router'
@@ -25,49 +26,65 @@ export const NewsEditorHeader: React.FC<NewsEditorHeaderProps> = ({
   loading,
 }) => {
   const router = useRouter()
+  const t = useTranslations('news.editor.header')
 
   return (
-    <div className='bg-white border-b border-gray-200 sticky top-0 z-20'>
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-        <div className='flex items-center justify-between h-16'>
+    <div className=''>
+      <div className=''>
+        <div className='flex items-center justify-between h-20'>
           <div className='flex items-center gap-4'>
             <Button
               variant='ghost'
               size='sm'
               onClick={() => router.push('/news')}
+              className='hover:bg-blue-100 transition-colors'
             >
               <ArrowLeft className='h-4 w-4 mr-2' />
-              Quay lại
+              {t('backButton')}
             </Button>
-            <h1 className='text-xl font-semibold text-gray-900'>
-              {isEditMode ? 'Chỉnh sửa tin tức' : 'Tạo tin tức mới'}
+            <div className='h-8 w-px bg-gray-300' />
+            <h1 className='text-2xl font-bold text-gray-900'>
+              {isEditMode ? t('titleEdit') : t('titleCreate')}
             </h1>
           </div>
-          <div className='flex items-center gap-3'>
-            <div className='text-sm text-gray-500'>
-              {wordCount} từ • {characterCount} ký tự
+          <div className='flex items-center gap-4'>
+            <div className='px-3 py-1.5 bg-white rounded-full shadow-sm border border-gray-200'>
+              <span className='text-sm font-medium text-gray-600'>
+                {t('wordCount', { count: wordCount })}
+              </span>
+              <span className='mx-2 text-gray-400'>•</span>
+              <span className='text-sm font-medium text-gray-600'>
+                {t('characterCount', { count: characterCount })}
+              </span>
             </div>
             <Button
               variant='outline'
               size='sm'
               onClick={() => setPreviewMode(!previewMode)}
+              className='shadow-sm hover:shadow-md transition-shadow'
             >
               <Eye className='h-4 w-4 mr-2' />
-              {previewMode ? 'Chỉnh sửa' : 'Xem trước'}
+              {previewMode ? t('editButton') : t('previewButton')}
             </Button>
             <Button
               variant='outline'
               size='sm'
               onClick={onSave}
               disabled={loading}
+              className='shadow-sm hover:shadow-md transition-shadow hover:bg-blue-50'
             >
               {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
               <Save className='h-4 w-4 mr-2' />
-              Lưu nháp
+              {t('saveDraftButton')}
             </Button>
-            <Button size='sm' onClick={onPublish} disabled={loading}>
+            <Button
+              size='sm'
+              onClick={onPublish}
+              disabled={loading}
+              className='hover:from-blue-700 hover:to-purple-700 shadow-md hover:shadow-lg transition-all'
+            >
               {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-              Xuất bản
+              {t('publishButton')}
             </Button>
           </div>
         </div>
