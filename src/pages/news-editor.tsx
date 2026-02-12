@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { useTranslations } from 'next-intl'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
@@ -24,6 +25,7 @@ import { NewsMetaForm } from '@/components/organisms/news/NewsMetaForm'
 
 const NewsEditor: NextPageWithLayout = () => {
   const router = useRouter()
+  const t = useTranslations('news.editor')
   const { id } = router.query
   const isEditMode = !!id
 
@@ -33,6 +35,8 @@ const NewsEditor: NextPageWithLayout = () => {
   const [autoSaveTimer, setAutoSaveTimer] = useState<NodeJS.Timeout | null>(
     null,
   )
+  const [wordCount, setWordCount] = useState(0)
+  const [characterCount, setCharacterCount] = useState(0)
 
   const {
     register,
@@ -76,7 +80,7 @@ const NewsEditor: NextPageWithLayout = () => {
         nested: true,
       }),
       Placeholder.configure({
-        placeholder: 'Bắt đầu viết nội dung của bạn...',
+        placeholder: t('form.contentPlaceholder'),
       }),
       CharacterCount,
     ],
@@ -101,7 +105,29 @@ const NewsEditor: NextPageWithLayout = () => {
     }
   }, [title, isEditMode, setValue])
 
-  // Auto-save functionality
+  // Update word and character counts when editor content changes
+  useEffect(() => {
+    if (!editor) return
+
+    const updateCounts = () => {
+      setWordCount(editor.storage.characterCount.words())
+      setCharacterCount(editor.storage.characterCount.characters())
+    }
+
+    // Set initial counts
+    updateCounts()
+
+    // Listen to content changes
+    editor.on('update', updateCounts)
+
+    return () => {
+      editor.off('update', updateCounts)
+    }
+  }, [editor])
+
+  // Auto-save functionality - Disabled to prevent infinite loop
+  // TODO: Implement proper auto-save with debounce and stable dependencies
+  /*
   useEffect(() => {
     if (!isEditMode || !editor) return
 
@@ -119,6 +145,7 @@ const NewsEditor: NextPageWithLayout = () => {
       if (timer) clearTimeout(timer)
     }
   }, [editor?.getHTML(), watch()])
+  */
 
   const fetchNews = async (newsId: number) => {
     try {
@@ -144,12 +171,12 @@ const NewsEditor: NextPageWithLayout = () => {
           editor.commands.setContent(news.content)
         }
       } else {
-        toast.error('Không tìm thấy tin tức')
+        toast.error(t('messages.notFound'))
         router.push('/news')
       }
     } catch (error) {
       console.error('Error fetching news:', error)
-      toast.error('Không thể tải tin tức')
+      toast.error(t('messages.fetchError'))
     } finally {
       setLoading(false)
     }
@@ -183,7 +210,7 @@ const NewsEditor: NextPageWithLayout = () => {
 
     const content = editor.getHTML()
     if (!content.trim() || content === '<p></p>') {
-      toast.error('Nội dung không được để trống')
+      toast.error(t('messages.contentRequired'))
       return
     }
 
@@ -205,10 +232,10 @@ const NewsEditor: NextPageWithLayout = () => {
         const response = await NewsService.updateNews(Number(id), updateData)
 
         if (response.code === '1000') {
-          toast.success('Cập nhật tin tức thành công')
+          toast.success(t('messages.updateSuccess'))
           router.push('/news')
         } else {
-          toast.error(response.message || 'Không thể cập nhật tin tức')
+          toast.error(response.message || t('messages.updateError'))
         }
       } else {
         const createData: CreateNewsRequest = {
@@ -225,15 +252,15 @@ const NewsEditor: NextPageWithLayout = () => {
         const response = await NewsService.createNews(createData)
 
         if (response.code === '1000') {
-          toast.success('Tạo tin tức thành công')
+          toast.success(t('messages.createSuccess'))
           router.push('/news')
         } else {
-          toast.error(response.message || 'Không thể tạo tin tức')
+          toast.error(response.message || t('messages.createError'))
         }
       }
     } catch (error) {
       console.error('Error saving news:', error)
-      toast.error('Có lỗi xảy ra khi lưu tin tức')
+      toast.error(t('messages.saveError'))
     } finally {
       setSaveLoading(false)
     }
@@ -244,9 +271,6 @@ const NewsEditor: NextPageWithLayout = () => {
     setValue('published_at', new Date().toISOString())
     handleSubmit(onSubmit)()
   }
-
-  const wordCount = editor?.storage.characterCount.words() || 0
-  const characterCount = editor?.storage.characterCount.characters() || 0
 
   if (loading) {
     return (
@@ -270,39 +294,41 @@ const NewsEditor: NextPageWithLayout = () => {
       />
 
       {/* Main Content */}
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+      <div className='py-10'>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
             {/* Editor Section */}
-            <div className='lg:col-span-2 space-y-4'>
+            <div className='lg:col-span-2 space-y-6'>
               {/* Title */}
-              <div className='bg-white rounded-lg shadow-sm p-6'>
+              <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 p-8 border border-gray-100'>
                 <input
                   {...register('title', { required: true })}
                   type='text'
-                  placeholder='Tiêu đề tin tức...'
-                  className='w-full text-3xl font-bold border-none focus:outline-none focus:ring-0 placeholder-gray-400'
+                  placeholder={t('form.titlePlaceholder')}
+                  className='w-full text-4xl font-bold border-none focus:outline-none focus:ring-0 placeholder-gray-300 text-gray-900'
                 />
               </div>
 
               {/* Editor */}
-              <div className='bg-white rounded-lg shadow-sm overflow-hidden'>
+              <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-gray-100'>
                 {!previewMode ? (
                   <>
                     <NewsEditorMenuBar editor={editor} />
                     <EditorContent editor={editor} />
                   </>
                 ) : (
-                  <div className='p-6'>
-                    <h2 className='text-3xl font-bold mb-4'>
-                      {watch('title')}
-                    </h2>
-                    <div
-                      className='prose prose-sm max-w-none'
-                      dangerouslySetInnerHTML={{
-                        __html: editor?.getHTML() || '',
-                      }}
-                    />
+                  <div className='p-10 bg-gradient-to-br from-gray-50 to-white'>
+                    <div className='max-w-4xl mx-auto bg-white p-12 rounded-lg shadow-xl'>
+                      <h2 className='text-4xl font-bold mb-6 text-gray-900 border-b-4 border-blue-500 pb-4 inline-block'>
+                        {watch('title')}
+                      </h2>
+                      <div
+                        className='prose prose-lg max-w-none mt-8'
+                        dangerouslySetInnerHTML={{
+                          __html: editor?.getHTML() || '',
+                        }}
+                      />
+                    </div>
                   </div>
                 )}
               </div>
@@ -325,7 +351,7 @@ const NewsEditor: NextPageWithLayout = () => {
 }
 
 NewsEditor.getLayout = (page: React.ReactNode) => (
-  <AdminLayout>{page}</AdminLayout>
+  <AdminLayout activeItem='news'>{page}</AdminLayout>
 )
 
 export default NewsEditor

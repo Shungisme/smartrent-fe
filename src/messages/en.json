@@ -1599,5 +1599,111 @@
       "resolved": "Resolved",
       "dismissed": "Dismissed"
     }
+  },
+  "news": {
+    "title": "News Management",
+    "subtitle": "Create, edit, and manage news articles and blog posts",
+    "createButton": "Create new article",
+    "stats": {
+      "totalNews": "Total news",
+      "totalPublished": "Published",
+      "totalDrafts": "Drafts",
+      "totalArchived": "Archived",
+      "totalBlogs": "Blogs"
+    },
+    "table": {
+      "columns": {
+        "news": "Article",
+        "author": "Author",
+        "stats": "Statistics",
+        "dates": "Created at",
+        "actions": "Actions"
+      },
+      "views": "views",
+      "tags": "tags",
+      "published": "Published",
+      "createdAt": "Created at",
+      "publishedAt": "Published"
+    },
+    "status": {
+      "DRAFT": "Draft",
+      "PUBLISHED": "Published",
+      "ARCHIVED": "Archived"
+    },
+    "category": {
+      "NEWS": "News",
+      "BLOG": "Blog"
+    },
+    "actions": {
+      "preview": "Preview",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "filters": {
+      "search": "Search",
+      "searchPlaceholder": "Search by title, content...",
+      "allStatus": "All statuses",
+      "allCategory": "All categories"
+    },
+    "messages": {
+      "fetchError": "Unable to load news list. Please try again.",
+      "deleteSuccess": "News deleted successfully",
+      "deleteError": "Unable to delete news. Please try again."
+    },
+    "notAvailable": "N/A",
+    "editor": {
+      "header": {
+        "backButton": "Back",
+        "titleEdit": "Edit news",
+        "titleCreate": "Create new article",
+        "wordCount": "{count} words",
+        "characterCount": "{count} characters",
+        "previewButton": "Preview",
+        "editButton": "Edit",
+        "saveDraftButton": "Save draft",
+        "publishButton": "Publish"
+      },
+      "form": {
+        "titlePlaceholder": "Article title...",
+        "contentPlaceholder": "Start writing your content..."
+      },
+      "meta": {
+        "tabs": {
+          "settings": "Settings",
+          "seo": "SEO"
+        },
+        "slug": "Slug (URL)",
+        "category": "Category",
+        "status": "Status",
+        "summary": "Summary",
+        "summaryPlaceholder": "Brief summary...",
+        "tags": "Tags (comma separated)",
+        "tagsPlaceholder": "tag1, tag2, tag3",
+        "thumbnail": "Thumbnail URL",
+        "thumbnailPlaceholder": "https://...",
+        "author": "Author name",
+        "authorPlaceholder": "Author name...",
+        "metaTitle": "Meta Title",
+        "metaTitlePlaceholder": "SEO title...",
+        "metaDescription": "Meta Description",
+        "metaDescriptionPlaceholder": "SEO description...",
+        "metaKeywords": "Meta Keywords",
+        "metaKeywordsPlaceholder": "keyword1, keyword2, keyword3"
+      },
+      "messages": {
+        "fetchError": "Unable to load news",
+        "notFound": "News not found",
+        "autoSaveSuccess": "Auto-saved",
+        "contentRequired": "Content cannot be empty",
+        "updateSuccess": "News updated successfully",
+        "updateError": "Unable to update news",
+        "createSuccess": "News created successfully",
+        "createError": "Unable to create news",
+        "saveError": "An error occurred while saving news"
+      },
+      "menuBar": {
+        "enterUrl": "Enter URL:"
+      }
+    }
   }
 }

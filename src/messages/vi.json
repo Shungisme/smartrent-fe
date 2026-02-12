@@ -1564,5 +1564,111 @@
       "resolved": "Đã Xử Lý",
       "dismissed": "Đã Bỏ Qua"
     }
+  },
+  "news": {
+    "title": "Quản lý Tin tức",
+    "subtitle": "Tạo, chỉnh sửa và quản lý các bài viết tin tức và blog",
+    "createButton": "Tạo tin tức mới",
+    "stats": {
+      "totalNews": "Tổng tin tức",
+      "totalPublished": "Đã xuất bản",
+      "totalDrafts": "Bản nháp",
+      "totalArchived": "Lưu trữ",
+      "totalBlogs": "Blog"
+    },
+    "table": {
+      "columns": {
+        "news": "Bài viết",
+        "author": "Tác giả",
+        "stats": "Thống kê",
+        "dates": "Ngày tạo",
+        "actions": "Thao tác"
+      },
+      "views": "lượt xem",
+      "tags": "tags",
+      "published": "Xuất bản",
+      "createdAt": "Ngày tạo",
+      "publishedAt": "Xuất bản"
+    },
+    "status": {
+      "DRAFT": "Bản nháp",
+      "PUBLISHED": "Đã xuất bản",
+      "ARCHIVED": "Lưu trữ"
+    },
+    "category": {
+      "NEWS": "Tin tức",
+      "BLOG": "Blog"
+    },
+    "actions": {
+      "preview": "Xem trước",
+      "edit": "Chỉnh sửa",
+      "delete": "Xóa"
+    },
+    "filters": {
+      "search": "Tìm kiếm",
+      "searchPlaceholder": "Tìm kiếm theo tiêu đề, nội dung...",
+      "allStatus": "Tất cả trạng thái",
+      "allCategory": "Tất cả danh mục"
+    },
+    "messages": {
+      "fetchError": "Không thể tải danh sách tin tức. Vui lòng thử lại.",
+      "deleteSuccess": "Xóa tin tức thành công",
+      "deleteError": "Không thể xóa tin tức. Vui lòng thử lại."
+    },
+    "notAvailable": "N/A",
+    "editor": {
+      "header": {
+        "backButton": "Quay lại",
+        "titleEdit": "Chỉnh sửa tin tức",
+        "titleCreate": "Tạo tin tức mới",
+        "wordCount": "{count} từ",
+        "characterCount": "{count} ký tự",
+        "previewButton": "Xem trước",
+        "editButton": "Chỉnh sửa",
+        "saveDraftButton": "Lưu nháp",
+        "publishButton": "Xuất bản"
+      },
+      "form": {
+        "titlePlaceholder": "Tiêu đề tin tức...",
+        "contentPlaceholder": "Bắt đầu viết nội dung của bạn..."
+      },
+      "meta": {
+        "tabs": {
+          "settings": "Cài đặt",
+          "seo": "SEO"
+        },
+        "slug": "Slug (URL)",
+        "category": "Danh mục",
+        "status": "Trạng thái",
+        "summary": "Tóm tắt",
+        "summaryPlaceholder": "Tóm tắt ngắn gọn...",
+        "tags": "Tags (phân cách bằng dấu phẩy)",
+        "tagsPlaceholder": "tag1, tag2, tag3",
+        "thumbnail": "URL Ảnh đại diện",
+        "thumbnailPlaceholder": "https://...",
+        "author": "Tên tác giả",
+        "authorPlaceholder": "Tên tác giả...",
+        "metaTitle": "Meta Title",
+        "metaTitlePlaceholder": "SEO title...",
+        "metaDescription": "Meta Description",
+        "metaDescriptionPlaceholder": "SEO description...",
+        "metaKeywords": "Meta Keywords",
+        "metaKeywordsPlaceholder": "keyword1, keyword2, keyword3"
+      },
+      "messages": {
+        "fetchError": "Không thể tải tin tức",
+        "notFound": "Không tìm thấy tin tức",
+        "autoSaveSuccess": "Đã tự động lưu",
+        "contentRequired": "Nội dung không được để trống",
+        "updateSuccess": "Cập nhật tin tức thành công",
+        "updateError": "Không thể cập nhật tin tức",
+        "createSuccess": "Tạo tin tức thành công",
+        "createError": "Không thể tạo tin tức",
+        "saveError": "Có lỗi xảy ra khi lưu tin tức"
+      },
+      "menuBar": {
+        "enterUrl": "Nhập URL:"
+      }
+    }
   }
 }

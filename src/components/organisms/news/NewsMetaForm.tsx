@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import {
   UseFormRegister,
   UseFormWatch,
@@ -34,33 +35,53 @@ export const NewsMetaForm: React.FC<NewsMetaFormProps> = ({
   watch,
   setValue,
 }) => {
+  const t = useTranslations('news.editor.meta')
+  const tStatus = useTranslations('news.status')
+  const tCategory = useTranslations('news.category')
+
   return (
-    <div className='space-y-4'>
+    <div className='sticky top-6 space-y-4'>
       <Tabs defaultValue='settings' className='w-full'>
-        <TabsList className='w-full'>
-          <TabsTrigger value='settings' className='flex-1'>
-            Cài đặt
+        <TabsList className='w-full p-1'>
+          <TabsTrigger
+            value='settings'
+            className='flex-1 data-[state=active]:bg-white data-[state=active]:shadow-md transition-all'
+          >
+            {t('tabs.settings')}
           </TabsTrigger>
-          <TabsTrigger value='seo' className='flex-1'>
-            SEO
+          <TabsTrigger
+            value='seo'
+            className='flex-1 data-[state=active]:bg-white data-[state=active]:shadow-md transition-all'
+          >
+            {t('tabs.seo')}
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value='settings' className='space-y-4'>
           {/* Slug */}
-          <div className='bg-white rounded-lg shadow-sm p-4'>
-            <Label htmlFor='slug'>Slug (URL)</Label>
+          <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
+            <Label
+              htmlFor='slug'
+              className='text-sm font-semibold text-gray-700'
+            >
+              {t('slug')}
+            </Label>
             <input
               {...register('slug', { required: true })}
               id='slug'
               type='text'
-              className='mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
             />
           </div>
 
           {/* Category */}
-          <div className='bg-white rounded-lg shadow-sm p-4'>
-            <Label htmlFor='category'>Danh mục</Label>
+          <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
+            <Label
+              htmlFor='category'
+              className='text-sm font-semibold text-gray-700'
+            >
+              {t('category')}
+            </Label>
             <Select
               value={watch('category')}
               onValueChange={(value) =>
@@ -71,15 +92,20 @@ export const NewsMetaForm: React.FC<NewsMetaFormProps> = ({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='NEWS'>Tin tức</SelectItem>
-                <SelectItem value='BLOG'>Blog</SelectItem>
+                <SelectItem value='NEWS'>{tCategory('NEWS')}</SelectItem>
+                <SelectItem value='BLOG'>{tCategory('BLOG')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Status */}
-          <div className='bg-white rounded-lg shadow-sm p-4'>
-            <Label htmlFor='status'>Trạng thái</Label>
+          <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
+            <Label
+              htmlFor='status'
+              className='text-sm font-semibold text-gray-700'
+            >
+              {t('status')}
+            </Label>
             <Select
               value={watch('status')}
               onValueChange={(value) => setValue('status', value as NewsStatus)}
@@ -88,105 +114,133 @@ export const NewsMetaForm: React.FC<NewsMetaFormProps> = ({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='DRAFT'>Bản nháp</SelectItem>
-                <SelectItem value='PUBLISHED'>Đã xuất bản</SelectItem>
-                <SelectItem value='ARCHIVED'>Lưu trữ</SelectItem>
+                <SelectItem value='DRAFT'>{tStatus('DRAFT')}</SelectItem>
+                <SelectItem value='PUBLISHED'>
+                  {tStatus('PUBLISHED')}
+                </SelectItem>
+                <SelectItem value='ARCHIVED'>{tStatus('ARCHIVED')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Summary */}
-          <div className='bg-white rounded-lg shadow-sm p-4'>
-            <Label htmlFor='summary'>Tóm tắt</Label>
+          <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
+            <Label
+              htmlFor='summary'
+              className='text-sm font-semibold text-gray-700'
+            >
+              {t('summary')}
+            </Label>
             <textarea
               {...register('summary')}
               id='summary'
               rows={3}
-              className='mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              placeholder='Tóm tắt ngắn gọn...'
+              className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none'
+              placeholder={t('summaryPlaceholder')}
             />
           </div>
 
           {/* Tags */}
-          <div className='bg-white rounded-lg shadow-sm p-4'>
-            <Label htmlFor='tags'>Tags (phân cách bằng dấu phẩy)</Label>
+          <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
+            <Label
+              htmlFor='tags'
+              className='text-sm font-semibold text-gray-700'
+            >
+              {t('tags')}
+            </Label>
             <input
               {...register('tags')}
               id='tags'
               type='text'
-              className='mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              placeholder='tag1, tag2, tag3'
+              className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+              placeholder={t('tagsPlaceholder')}
             />
           </div>
 
           {/* Thumbnail */}
-          <div className='bg-white rounded-lg shadow-sm p-4'>
-            <Label htmlFor='thumbnail_url'>URL Ảnh đại diện</Label>
+          <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
+            <Label
+              htmlFor='thumbnail_url'
+              className='text-sm font-semibold text-gray-700'
+            >
+              {t('thumbnail')}
+            </Label>
             <input
               {...register('thumbnail_url')}
               id='thumbnail_url'
               type='text'
-              className='mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              placeholder='https://...'
+              className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+              placeholder={t('thumbnailPlaceholder')}
             />
           </div>
 
           {/* Author */}
-          <div className='bg-white rounded-lg shadow-sm p-4'>
-            <Label htmlFor='author_name'>Tên tác giả</Label>
+          <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
+            <Label
+              htmlFor='author_name'
+              className='text-sm font-semibold text-gray-700'
+            >
+              {t('author')}
+            </Label>
             <input
               {...register('author_name')}
               id='author_name'
               type='text'
-              className='mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              placeholder='Tên tác giả...'
+              className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+              placeholder={t('authorPlaceholder')}
             />
           </div>
         </TabsContent>
 
         <TabsContent value='seo' className='space-y-4'>
           {/* Meta Title */}
-          <div className='bg-white rounded-lg shadow-sm p-4'>
-            <Label htmlFor='meta_title'>Meta Title</Label>
+          <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
+            <Label
+              htmlFor='meta_title'
+              className='text-sm font-semibold text-gray-700'
+            >
+              {t('metaTitle')}
+            </Label>
             <input
               {...register('meta_title')}
               id='meta_title'
               type='text'
-              className='mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              placeholder='SEO title...'
+              className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+              placeholder={t('metaTitlePlaceholder')}
             />
           </div>
 
           {/* Meta Description */}
-          <div className='bg-white rounded-lg shadow-sm p-4'>
-            <Label htmlFor='meta_description'>Meta Description</Label>
+          <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
+            <Label
+              htmlFor='meta_description'
+              className='text-sm font-semibold text-gray-700'
+            >
+              {t('metaDescription')}
+            </Label>
             <textarea
               {...register('meta_description')}
               id='meta_description'
               rows={3}
-              className='mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              placeholder='SEO description...'
+              className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none'
+              placeholder={t('metaDescriptionPlaceholder')}
             />
           </div>
 
           {/* Meta Keywords */}
-          {/* Note: In original code, meta_keywords was used in logic but not clearly in the form. Added here if needed or reused existing field logic if it was there. Checking original file... it was at line 454/515 but not in JSX?
-          Wait, I need to check the original file again. Line 454: setValue('meta_keywords', news.meta_keywords || '').
-          Lines 777-800 show SEO tab. It has meta_title and meta_description. It does not seem to have meta_keywords in the JSX in the original snippet I viewed (up to line 800).
-          However, line 81 maps to meta_keywords.
-          I'll assume it might be missing or down below line 800. I'll add it if it's in the data structure.
-          Actually, I viewed up to line 800. Let's check if there is more content.
-          The file size was 27412 bytes. 800 lines shown.
-          Let's view the end of the file to be sure.
-          */}
-          <div className='bg-white rounded-lg shadow-sm p-4'>
-            <Label htmlFor='meta_keywords'>Meta Keywords</Label>
+          <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
+            <Label
+              htmlFor='meta_keywords'
+              className='text-sm font-semibold text-gray-700'
+            >
+              {t('metaKeywords')}
+            </Label>
             <input
               {...register('meta_keywords')}
               id='meta_keywords'
               type='text'
-              className='mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500'
-              placeholder='keyword1, keyword2, keyword3'
+              className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
+              placeholder={t('metaKeywordsPlaceholder')}
             />
           </div>
         </TabsContent>
