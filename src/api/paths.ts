@@ -75,4 +75,14 @@ export const PATHS = {
     ADMIN_DETAIL: '/v1/listings/:id/admin', // GET listing detail with admin info
     ADMIN_VERIFY: '/v1/admin/listings/:listingId/status', // PUT verify/reject listing
   },
+
+  // News endpoints (Admin)
+  NEWS: {
+    LIST: '/v1/news/list', // POST get paginated news list
+    DETAIL: '/v1/news/:id', // GET news detail
+    CREATE: '/v1/news', // POST create news
+    UPDATE: '/v1/news/:id', // PUT update news
+    DELETE: '/v1/news/:id', // DELETE news
+    PUBLISH: '/v1/news/:id/publish', // PUT publish news
+  },
 }
