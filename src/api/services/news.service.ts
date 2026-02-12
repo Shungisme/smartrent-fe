@@ -226,6 +226,7 @@ export class NewsService {
     return {
       code: '1000',
       message: 'Success',
+      success: true,
       data: {
         news: paginatedNews,
         totalCount,
@@ -251,6 +252,7 @@ export class NewsService {
       return {
         code: '9999',
         message: 'News not found',
+        success: false,
         data: null,
       }
     }
@@ -258,6 +260,7 @@ export class NewsService {
     return {
       code: '1000',
       message: 'Success',
+      success: true,
       data: news,
     }
   }
@@ -279,6 +282,7 @@ export class NewsService {
       return {
         code: '9999',
         message: 'Slug already exists',
+        success: false,
         data: null,
       }
     }
@@ -311,6 +315,7 @@ export class NewsService {
     return {
       code: '1000',
       message: 'News created successfully',
+      success: true,
       data: newNews,
     }
   }
@@ -332,6 +337,7 @@ export class NewsService {
       return {
         code: '9999',
         message: 'News not found',
+        success: false,
         data: null,
       }
     }
@@ -343,6 +349,7 @@ export class NewsService {
         return {
           code: '9999',
           message: 'Slug already exists',
+          success: false,
           data: null,
         }
       }
@@ -360,6 +367,7 @@ export class NewsService {
     return {
       code: '1000',
       message: 'News updated successfully',
+      success: true,
       data: updatedNews,
     }
   }
@@ -378,6 +386,7 @@ export class NewsService {
       return {
         code: '9999',
         message: 'News not found',
+        success: false,
         data: null,
       }
     }
@@ -389,6 +398,7 @@ export class NewsService {
     return {
       code: '1000',
       message: 'News deleted successfully',
+      success: true,
       data: deletedNews,
     }
   }
@@ -407,6 +417,7 @@ export class NewsService {
       return {
         code: '9999',
         message: 'News not found',
+        success: false,
         data: null,
       }
     }
@@ -424,6 +435,7 @@ export class NewsService {
     return {
       code: '1000',
       message: 'News published successfully',
+      success: true,
       data: allNews[newsIndex],
     }
   }

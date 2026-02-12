@@ -254,8 +254,6 @@ export interface ListingStatusChangeRequest {
 }
 
 // API Response wrapper
-export interface ApiResponse<T> {
-  code: string
-  message: string | null
-  data: T
-}
+// API Response wrapper
+import { ApiResponse } from '@/configs/axios/types'
+export type { ApiResponse }

@@ -7,7 +7,7 @@ export interface CustomAxiosRequestConfig extends AxiosRequestConfig {
 }
 
 export interface ApiResponse<T = unknown> {
-  data: T
+  data: T | null
   message: string | null
   code: string
   success: boolean

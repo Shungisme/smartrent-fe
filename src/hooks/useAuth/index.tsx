@@ -33,7 +33,7 @@ export const useLogin = () => {
 
         setLoading(false)
 
-        if (!success) {
+        if (!success || !tokens) {
           setError(message)
           return result
         }
@@ -73,7 +73,7 @@ export const useAdminLogin = () => {
 
         setLoading(false)
 
-        if (!success) {
+        if (!success || !tokens) {
           setError(message)
           return result
         }
@@ -186,7 +186,7 @@ export const useTokenRefresh = () => {
       const result = await AuthService.refreshToken(currentTokens.refreshToken)
       const { success, message, data: newTokens } = result
 
-      if (!success) {
+      if (!success || !newTokens) {
         setError(message)
         logout()
         return result

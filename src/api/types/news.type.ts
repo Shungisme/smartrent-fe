@@ -1,4 +1,4 @@
-import { ApiResponse } from './api.type'
+import { ApiResponse } from '@/configs/axios/types'
 
 /**
  * News Status Enum
