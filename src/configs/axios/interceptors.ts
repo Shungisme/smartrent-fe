@@ -15,7 +15,7 @@ const refreshToken = async (): Promise<string | null> => {
 
     const { data, success } = result
 
-    if (!success) return null
+    if (!success || !data) return null
 
     if (typeof document !== 'undefined') {
       cookieManager.setAuthTokens(data)

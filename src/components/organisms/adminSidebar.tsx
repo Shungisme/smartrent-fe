@@ -146,6 +146,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ activeItem }) => {
       icon: <Shield width={20} />,
     },
     {
+      key: 'analytics',
       label: t('menuItems.analytics'),
       icon: <ChartColumn width={20} />,
     },

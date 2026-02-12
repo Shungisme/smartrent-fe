@@ -159,7 +159,7 @@ const RoleManagement: NextPageWithLayout = () => {
                   const resp = await createRole(form)
                   if (resp.success && resp.data) {
                     setShowCreate(false)
-                    setRoles((prev) => [resp.data, ...prev])
+                    setRoles((prev) => [resp.data!, ...prev])
                   } else {
                     setFormError(resp.message || 'Failed to create role')
                   }
@@ -242,7 +242,7 @@ const RoleManagement: NextPageWithLayout = () => {
                     setShowEdit(null)
                     setRoles((prev) =>
                       prev.map((r) =>
-                        r.roleId === resp.data.roleId ? resp.data : r,
+                        r.roleId === resp.data!.roleId ? resp.data! : r,
                       ),
                     )
                   } else {
