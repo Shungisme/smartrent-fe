@@ -2,6 +2,7 @@ import '@/styles/globals.css'
 import '@/styles/reset.scss'
 import ThemeDataProvider from '@/contexts/theme'
 import AuthProvider from '@/contexts/auth'
+import NotificationProvider from '@/contexts/notification'
 import React from 'react'
 import type { AppPropsWithLayout } from '@/types/next-page'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
@@ -36,10 +37,12 @@ function AppContent({ Component, pageProps }: AppPropsWithLayout) {
       >
         <ThemeDataProvider>
           <AuthProvider>
-            <AuthDialogProvider>
-              {getLayout(<Component {...pageProps} />)}
-              <Toaster />
-            </AuthDialogProvider>
+            <NotificationProvider>
+              <AuthDialogProvider>
+                {getLayout(<Component {...pageProps} />)}
+                <Toaster />
+              </AuthDialogProvider>
+            </NotificationProvider>
           </AuthProvider>
         </ThemeDataProvider>
       </NextThemesProvider>

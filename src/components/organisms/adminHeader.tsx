@@ -13,6 +13,7 @@ import { useTranslations } from 'next-intl'
 import { useAuth } from '@/hooks/useAuth'
 import { toast } from 'sonner'
 import { User, LogOut, Settings, ChevronDown } from 'lucide-react'
+import { NotificationBell } from './NotificationBell'
 
 const AdminHeader: React.FC = () => {
   const t = useTranslations('admin.header')
@@ -49,6 +50,9 @@ const AdminHeader: React.FC = () => {
 
         {/* Right - Notifications & Profile */}
         <div className='flex items-center gap-4'>
+          {/* Notification Bell */}
+          <NotificationBell />
+
           {/* Profile Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

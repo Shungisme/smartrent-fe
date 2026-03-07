@@ -1670,5 +1670,19 @@
         "enterUrl": "Nhập URL:"
       }
     }
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "markAllRead": "Đánh dấu tất cả đã đọc",
+    "empty": "Chưa có thông báo",
+    "viewAll": "Xem tất cả thông báo",
+    "types": {
+      "NEW_REPORT": "Báo cáo mới",
+      "LISTING_RESUBMITTED": "Tin đăng gửi lại"
+    },
+    "messages": {
+      "newReport": "Có báo cáo mới được gửi",
+      "listingResubmitted": "Tin đăng đã được gửi lại để duyệt"
+    }
   }
 }

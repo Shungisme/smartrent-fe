@@ -1705,5 +1705,19 @@
         "enterUrl": "Enter URL:"
       }
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "empty": "No notifications yet",
+    "viewAll": "View all notifications",
+    "types": {
+      "NEW_REPORT": "New Report",
+      "LISTING_RESUBMITTED": "Listing Resubmitted"
+    },
+    "messages": {
+      "newReport": "A new report has been submitted",
+      "listingResubmitted": "A listing has been resubmitted for review"
+    }
   }
 }
