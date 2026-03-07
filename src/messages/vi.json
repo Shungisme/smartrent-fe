@@ -1354,6 +1354,13 @@
       "title": "Kiểm Duyệt Bài Đăng",
       "overview": "Tổng Quan"
     },
+    "tabs": {
+      "pendingReview": "Chờ Duyệt",
+      "approved": "Đã Duyệt",
+      "rejected": "Đã Từ Chối",
+      "revisionRequired": "Cần Sửa",
+      "suspended": "Tạm Ngưng"
+    },
     "stats": {
       "total": "Tổng Bài Đăng",
       "allSubmitted": "Tất cả bài đã gửi",
@@ -1431,7 +1438,8 @@
       "rejectionReasonRequired": "Lý do từ chối (bắt buộc khi từ chối)",
       "rejectionReasonPlaceholder": "Nhập lý do từ chối...",
       "approveButton": "Duyệt Bài Đăng",
-      "rejectButton": "Từ Chối Bài Đăng"
+      "rejectButton": "Từ Chối Bài Đăng",
+      "requestRevisionButton": "Yêu Cầu Sửa Đổi"
     },
     "listingTypes": {
       "for_sale": "Bán",

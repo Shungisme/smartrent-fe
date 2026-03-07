@@ -34,6 +34,7 @@ interface PostReviewModalProps {
   selectedPost: UIPostData | null
   onApprove: (notes: string) => void
   onReject: (reason: string) => void
+  onRequestRevision: (reason: string) => void
   actionLoading: boolean
 }
 
@@ -43,6 +44,7 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   selectedPost,
   onApprove,
   onReject,
+  onRequestRevision,
   actionLoading,
 }) => {
   const t = useTranslations('posts')
@@ -416,31 +418,44 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
 
             {/* Action Buttons */}
             {selectedPost.status === 'pending' && (
-              <div className='flex flex-col sm:flex-row gap-2 md:gap-3'>
+              <div className='flex flex-col gap-2 md:gap-3'>
+                <div className='flex flex-col sm:flex-row gap-2'>
+                  <Button
+                    onClick={() => onApprove(verificationNotes)}
+                    disabled={actionLoading}
+                    className='flex-1 bg-green-600 hover:bg-green-700 text-sm'
+                  >
+                    {actionLoading ? (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    ) : (
+                      <CheckCircle className='mr-2 h-4 w-4' />
+                    )}
+                    {t('review.approveButton')}
+                  </Button>
+                  <Button
+                    onClick={() => onReject(rejectionReason)}
+                    disabled={actionLoading}
+                    variant='outline'
+                    className='flex-1 border-red-300 text-red-600 hover:bg-red-50 text-sm'
+                  >
+                    {actionLoading ? (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    ) : (
+                      <XCircle className='mr-2 h-4 w-4' />
+                    )}
+                    {t('review.rejectButton')}
+                  </Button>
+                </div>
                 <Button
-                  onClick={() => onApprove(verificationNotes)}
-                  disabled={actionLoading}
-                  className='flex-1 bg-green-600 hover:bg-green-700 text-sm'
-                >
-                  {actionLoading ? (
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  ) : (
-                    <CheckCircle className='mr-2 h-4 w-4' />
-                  )}
-                  {t('review.approveButton')}
-                </Button>
-                <Button
-                  onClick={() => onReject(rejectionReason)}
+                  onClick={() => onRequestRevision(rejectionReason)}
                   disabled={actionLoading}
                   variant='outline'
-                  className='flex-1 border-red-300 text-red-600 hover:bg-red-50 text-sm'
+                  className='w-full border-yellow-300 text-yellow-600 hover:bg-yellow-50 text-sm'
                 >
                   {actionLoading ? (
                     <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  ) : (
-                    <XCircle className='mr-2 h-4 w-4' />
-                  )}
-                  {t('review.rejectButton')}
+                  ) : null}
+                  {t('review.requestRevisionButton')}
                 </Button>
               </div>
             )}

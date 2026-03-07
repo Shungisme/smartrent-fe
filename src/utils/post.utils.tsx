@@ -123,8 +123,12 @@ export const mapUIFiltersToAPI = (
     apiFilters.keyword = String(uiFilters.search)
   }
 
-  // Status mapping
-  if (uiFilters.status) {
+  // New: moderationStatus filter (primary)
+  if (uiFilters.moderationStatus) {
+    apiFilters.moderationStatus = String(uiFilters.moderationStatus) as any
+  }
+  // Legacy: Status mapping (backward compatible)
+  else if (uiFilters.status) {
     switch (String(uiFilters.status)) {
       case 'pending':
         apiFilters.verified = false

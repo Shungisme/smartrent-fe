@@ -1389,6 +1389,13 @@
       "title": "Post Verification",
       "overview": "Overview"
     },
+    "tabs": {
+      "pendingReview": "Pending Review",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "revisionRequired": "Revision Required",
+      "suspended": "Suspended"
+    },
     "stats": {
       "total": "Total Posts",
       "allSubmitted": "All submitted posts",
@@ -1466,7 +1473,8 @@
       "rejectionReasonRequired": "Rejection Reason (required for rejection)",
       "rejectionReasonPlaceholder": "Enter reason for rejection...",
       "approveButton": "Approve Post",
-      "rejectButton": "Reject Post"
+      "rejectButton": "Reject Post",
+      "requestRevisionButton": "Request Revision"
     },
     "listingTypes": {
       "for_sale": "For Sale",
