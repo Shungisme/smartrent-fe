@@ -104,7 +104,7 @@ const ViolationReportManagement = () => {
 }
 
 ViolationReportManagement.getLayout = (page: React.ReactElement) => (
-  <AdminLayout>{page}</AdminLayout>
+  <AdminLayout activeItem='reports'>{page}</AdminLayout>
 )
 
 export default ViolationReportManagement

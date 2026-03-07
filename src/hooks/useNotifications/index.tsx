@@ -52,6 +52,12 @@ export function useNotifications(
 
   const clientRef = useRef<Client | null>(null)
   const isInitialMount = useRef(true)
+  const onNotificationReceivedRef = useRef(onNotificationReceived)
+
+  // Update callback ref when it changes
+  useEffect(() => {
+    onNotificationReceivedRef.current = onNotificationReceived
+  }, [onNotificationReceived])
 
   /**
    * Fetch initial notifications from REST API
@@ -128,8 +134,14 @@ export function useNotifications(
       return
     }
 
+    console.log(
+      '[Notifications] Creating WebSocket connection for admin:',
+      adminId,
+    )
+
     // Clean up any existing connection
     if (clientRef.current) {
+      console.log('[Notifications] Cleaning up existing connection')
       clientRef.current.deactivate()
     }
 
@@ -163,8 +175,8 @@ export function useNotifications(
             })
 
             // Call custom callback if provided
-            if (onNotificationReceived) {
-              onNotificationReceived(notification)
+            if (onNotificationReceivedRef.current) {
+              onNotificationReceivedRef.current(notification)
             }
           } catch (err) {
             console.error('[Notifications] Error parsing message:', err)
@@ -195,11 +207,12 @@ export function useNotifications(
 
     // Cleanup on unmount
     return () => {
+      console.log('[Notifications] Cleaning up WebSocket connection')
       client.deactivate()
       clientRef.current = null
       setIsConnected(false)
     }
-  }, [enabled, adminId, onNotificationReceived])
+  }, [enabled, adminId]) // Removed onNotificationReceived from deps
 
   /**
    * Fetch initial data on mount
