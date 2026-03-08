@@ -35,4 +35,9 @@ export interface ListingReportListResponse {
 export interface ResolveReportRequest {
   status: 'RESOLVED' | 'REJECTED'
   adminNotes?: string
+  // Extended fields for owner action workflow
+  ownerActionRequired?: boolean
+  ownerActionType?: 'UPDATE_LISTING' | 'REMOVE_LISTING' | 'CONTACT_ADMIN'
+  ownerActionDeadlineAt?: string // ISO 8601 datetime
+  listingVisibilityAction?: 'KEEP_VISIBLE' | 'HIDE_UNTIL_REVIEW' | 'SUSPEND'
 }

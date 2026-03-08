@@ -85,4 +85,13 @@ export const PATHS = {
     DELETE: '/v1/news/:id', // DELETE news
     PUBLISH: '/v1/news/:id/publish', // PUT publish news
   },
+
+  // Notification endpoints (Admin)
+  NOTIFICATION: {
+    LIST: '/v1/notifications', // GET paginated notifications
+    UNREAD_COUNT: '/v1/notifications/unread-count', // GET unread count
+    MARK_AS_READ: '/v1/notifications/:id/read', // PATCH mark as read
+    MARK_ALL_AS_READ: '/v1/notifications/read-all', // PATCH mark all as read
+    WS_ENDPOINT: '/ws', // WebSocket endpoint
+  },
 }

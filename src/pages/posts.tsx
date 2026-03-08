@@ -5,7 +5,10 @@ import { useDebounce } from '@/hooks/useDebounce'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import { NextPageWithLayout } from '@/types/next-page'
 import { ListingService } from '@/api/services/listing.service'
-import { ListingStatisticsSummary } from '@/api/types/listing.type'
+import {
+  ListingStatisticsSummary,
+  ModerationStatus,
+} from '@/api/types/listing.type'
 import { Loader2 } from 'lucide-react'
 import { UIPostData } from '@/types/posts.type'
 import { mapApiDataToUI, mapUIFiltersToAPI } from '@/utils/post.utils'
@@ -34,7 +37,7 @@ const PostVerification: NextPageWithLayout = () => {
     diamondListings: 0,
   })
   const [filterValues, setFilterValues] = useState<Record<string, unknown>>({
-    status: 'pending',
+    moderationStatus: 'PENDING_REVIEW', // New moderation workflow
     page: 1,
     pageSize: 20,
   })
@@ -54,7 +57,7 @@ const PostVerification: NextPageWithLayout = () => {
     fetchListings()
   }, [
     debouncedSearchTerm,
-    filterValues.status,
+    filterValues.moderationStatus,
     filterValues['propertyInfo.type'],
     filterValues.listingType,
     filterValues.page,
@@ -108,10 +111,7 @@ const PostVerification: NextPageWithLayout = () => {
 
     try {
       setActionLoading(true)
-      const response = await ListingService.verifyListing(
-        selectedPost.id,
-        notes || 'Listing approved',
-      )
+      const response = await ListingService.approveListing(selectedPost.id)
 
       // Check if request was successful
       if (response && response.code !== '9999') {
@@ -145,14 +145,22 @@ const PostVerification: NextPageWithLayout = () => {
 
     try {
       setActionLoading(true)
-      const response = await ListingService.rejectListing(
+      // Calculate deadline: 7 days from now
+      const deadline = new Date()
+      deadline.setDate(deadline.getDate() + 7)
+
+      const response = await ListingService.rejectListingWithReason(
         selectedPost.id,
         reason,
+        true, // ownerActionRequired
+        deadline.toISOString(),
       )
 
       // Check if request was successful
       if (response && response.code !== '9999') {
-        toast.success('Listing has been rejected.')
+        toast.success(
+          'Listing has been rejected. Owner will be notified to fix and resubmit.',
+        )
 
         // Refresh listings
         await fetchListings()
@@ -167,6 +175,46 @@ const PostVerification: NextPageWithLayout = () => {
     } catch (error) {
       console.error('Error rejecting listing:', error)
       toast.error('Failed to reject listing. Please try again.')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleRequestRevision = async (reason: string) => {
+    if (!selectedPost) return
+
+    if (!reason.trim()) {
+      toast.warning('Please provide details on what needs to be revised.')
+      return
+    }
+
+    try {
+      setActionLoading(true)
+      const response = await ListingService.requestListingRevision(
+        selectedPost.id,
+        reason,
+        true, // ownerActionRequired
+      )
+
+      // Check if request was successful
+      if (response && response.code !== '9999') {
+        toast.success(
+          'Revision requested. Owner will be notified to update the listing.',
+        )
+
+        // Refresh listings
+        await fetchListings()
+        setReviewModalOpen(false)
+        setSelectedPost(null)
+      } else {
+        // Handle error response
+        const errorMessage =
+          response.message || 'Failed to request revision. Please try again.'
+        toast.error(errorMessage)
+      }
+    } catch (error) {
+      console.error('Error requesting revision:', error)
+      toast.error('Failed to request revision. Please try again.')
     } finally {
       setActionLoading(false)
     }
@@ -212,6 +260,7 @@ const PostVerification: NextPageWithLayout = () => {
         selectedPost={selectedPost}
         onApprove={handleApprove}
         onReject={handleReject}
+        onRequestRevision={handleRequestRevision}
         actionLoading={actionLoading}
       />
     </div>

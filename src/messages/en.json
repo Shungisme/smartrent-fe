@@ -1389,6 +1389,14 @@
       "title": "Post Verification",
       "overview": "Overview"
     },
+    "tabs": {
+      "pendingReview": "Pending Review",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "revisionRequired": "Revision Required",
+      "suspended": "Suspended",
+      "resubmitted": "Resubmitted"
+    },
     "stats": {
       "total": "Total Posts",
       "allSubmitted": "All submitted posts",
@@ -1466,7 +1474,8 @@
       "rejectionReasonRequired": "Rejection Reason (required for rejection)",
       "rejectionReasonPlaceholder": "Enter reason for rejection...",
       "approveButton": "Approve Post",
-      "rejectButton": "Reject Post"
+      "rejectButton": "Reject Post",
+      "requestRevisionButton": "Request Revision"
     },
     "listingTypes": {
       "for_sale": "For Sale",
@@ -1566,6 +1575,7 @@
       "actionPlaceholder": "Enter reason for your decision...",
       "viewPost": "View Post",
       "resolve": "Resolve Report",
+      "requestRevision": "Request Revision",
       "dismiss": "Dismiss Report",
       "actions": "Actions",
       "description": "Description",
@@ -1704,6 +1714,20 @@
       "menuBar": {
         "enterUrl": "Enter URL:"
       }
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "empty": "No notifications yet",
+    "viewAll": "View all notifications",
+    "types": {
+      "NEW_REPORT": "New Report",
+      "LISTING_RESUBMITTED": "Listing Resubmitted"
+    },
+    "messages": {
+      "newReport": "A new report has been submitted",
+      "listingResubmitted": "A listing has been resubmitted for review"
     }
   }
 }

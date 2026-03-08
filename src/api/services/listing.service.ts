@@ -151,6 +151,94 @@ export class ListingService {
   }
 
   /**
+   * Approve a listing (new moderation workflow)
+   * PUT /v1/admin/listings/{listingId}/status with decision=APPROVE
+   *
+   * @param listingId - Listing ID
+   * @returns Updated listing response
+   */
+  static async approveListing(listingId: number | string): Promise<
+    ApiResponse<{
+      listingId: number
+      title: string
+      verified: boolean
+      isVerify: boolean
+      userId: string
+      price: number
+      listingType: string
+    }>
+  > {
+    return this.changeListingStatus(listingId, {
+      decision: 'APPROVE',
+    })
+  }
+
+  /**
+   * Reject a listing with reason (new moderation workflow)
+   * PUT /v1/admin/listings/{listingId}/status with decision=REJECT
+   *
+   * @param listingId - Listing ID
+   * @param reasonText - Rejection reason
+   * @param ownerActionRequired - Whether owner must fix and resubmit
+   * @param ownerActionDeadlineAt - Deadline for owner to fix (ISO 8601)
+   * @returns Updated listing response
+   */
+  static async rejectListingWithReason(
+    listingId: number | string,
+    reasonText: string,
+    ownerActionRequired: boolean = true,
+    ownerActionDeadlineAt?: string,
+  ): Promise<
+    ApiResponse<{
+      listingId: number
+      title: string
+      verified: boolean
+      isVerify: boolean
+      userId: string
+      price: number
+      listingType: string
+    }>
+  > {
+    return this.changeListingStatus(listingId, {
+      decision: 'REJECT',
+      reasonText,
+      ownerActionRequired,
+      ownerActionDeadlineAt,
+    })
+  }
+
+  /**
+   * Request revision for a listing (new moderation workflow)
+   * PUT /v1/admin/listings/{listingId}/status with decision=REQUEST_REVISION
+   *
+   * @param listingId - Listing ID
+   * @param reasonText - What needs to be revised
+   * @param ownerActionRequired - Whether owner must fix (default true)
+   * @returns Updated listing response
+   */
+  static async requestListingRevision(
+    listingId: number | string,
+    reasonText: string,
+    ownerActionRequired: boolean = true,
+  ): Promise<
+    ApiResponse<{
+      listingId: number
+      title: string
+      verified: boolean
+      isVerify: boolean
+      userId: string
+      price: number
+      listingType: string
+    }>
+  > {
+    return this.changeListingStatus(listingId, {
+      decision: 'REQUEST_REVISION',
+      reasonText,
+      ownerActionRequired,
+    })
+  }
+
+  /**
    * Get all listing reports
    * GET /v1/admin/reports
    *

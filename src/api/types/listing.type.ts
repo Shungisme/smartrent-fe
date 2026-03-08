@@ -24,6 +24,18 @@ export type PostSource =
 export type MediaType = 'IMAGE' | 'VIDEO'
 export type AddressType = 'OLD' | 'NEW'
 
+// Moderation Status for Admin Review Queue
+export type ModerationStatus =
+  | 'PENDING_REVIEW'
+  | 'APPROVED'
+  | 'REJECTED'
+  | 'REVISION_REQUIRED'
+  | 'SUSPENDED'
+  | 'RESUBMITTED'
+
+// Decision for moderation action
+export type ModerationDecision = 'APPROVE' | 'REJECT' | 'REQUEST_REVISION'
+
 // Admin Verification Info
 export interface AdminVerification {
   adminId: string
@@ -163,6 +175,7 @@ export interface AdminListingItem {
   userId: string
   verified: boolean
   isVerify: boolean
+  moderationStatus: ModerationStatus // New field for moderation workflow
   vipType: VipType
   listingType: ListingType
   productType: ProductType
@@ -226,6 +239,7 @@ export interface ListingFilterRequest {
   sortBy?: 'DEFAULT' | 'PRICE_ASC' | 'PRICE_DESC' | 'NEWEST' | 'OLDEST'
   sortDirection?: 'ASC' | 'DESC'
   keyword?: string // Search in title and description
+  moderationStatus?: ModerationStatus // Filter by moderation status
   listingStatus?: ListingStatus
   verified?: boolean
   isVerify?: boolean
@@ -247,10 +261,15 @@ export interface ListingFilterRequest {
   maxBedrooms?: number
 }
 
-// Status Change Request
+// Status Change Request (old format - backward compatible)
 export interface ListingStatusChangeRequest {
-  verified: boolean
+  verified?: boolean
   reason?: string
+  // New moderation workflow fields
+  decision?: ModerationDecision
+  reasonText?: string
+  ownerActionRequired?: boolean
+  ownerActionDeadlineAt?: string // ISO 8601 datetime
 }
 
 // API Response wrapper

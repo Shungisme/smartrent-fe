@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import { ListingReport } from '@/api/types/listing-report.type'
 import { ListingService } from '@/api/services/listing.service'
@@ -68,6 +69,42 @@ const ViolationReportManagement = () => {
     fetchReports()
   }
 
+  const handleRequestRevision = async (reason: string) => {
+    if (!selectedReport) return
+
+    if (!reason.trim()) {
+      toast.warning('Please provide details on what needs to be revised.')
+      return
+    }
+
+    try {
+      const response = await ListingService.requestListingRevision(
+        selectedReport.listingId,
+        reason,
+        true, // ownerActionRequired
+      )
+
+      // Check if request was successful
+      if (response && response.code !== '9999') {
+        toast.success(
+          'Revision requested. Listing owner will be notified to update the listing.',
+        )
+
+        // Refresh reports
+        setReviewModalOpen(false)
+        fetchReports()
+      } else {
+        // Handle error response
+        const errorMessage =
+          response.message || 'Failed to request revision. Please try again.'
+        toast.error(errorMessage)
+      }
+    } catch (error) {
+      console.error('Error requesting revision:', error)
+      toast.error('Failed to request revision. Please try again.')
+    }
+  }
+
   return (
     <div>
       <div className='space-y-6'>
@@ -98,13 +135,14 @@ const ViolationReportManagement = () => {
         onOpenChange={setReviewModalOpen}
         report={selectedReport}
         onActionComplete={handleActionComplete}
+        onRequestRevision={handleRequestRevision}
       />
     </div>
   )
 }
 
 ViolationReportManagement.getLayout = (page: React.ReactElement) => (
-  <AdminLayout>{page}</AdminLayout>
+  <AdminLayout activeItem='reports'>{page}</AdminLayout>
 )
 
 export default ViolationReportManagement

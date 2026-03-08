@@ -1354,6 +1354,14 @@
       "title": "Kiểm Duyệt Bài Đăng",
       "overview": "Tổng Quan"
     },
+    "tabs": {
+      "pendingReview": "Chờ Duyệt",
+      "approved": "Đã Duyệt",
+      "rejected": "Đã Từ Chối",
+      "revisionRequired": "Cần Sửa",
+      "suspended": "Tạm Ngưng",
+      "resubmitted": "Đã Gửi Lại"
+    },
     "stats": {
       "total": "Tổng Bài Đăng",
       "allSubmitted": "Tất cả bài đã gửi",
@@ -1431,7 +1439,8 @@
       "rejectionReasonRequired": "Lý do từ chối (bắt buộc khi từ chối)",
       "rejectionReasonPlaceholder": "Nhập lý do từ chối...",
       "approveButton": "Duyệt Bài Đăng",
-      "rejectButton": "Từ Chối Bài Đăng"
+      "rejectButton": "Từ Chối Bài Đăng",
+      "requestRevisionButton": "Yêu Cầu Sửa Đổi"
     },
     "listingTypes": {
       "for_sale": "Bán",
@@ -1531,6 +1540,7 @@
       "actionPlaceholder": "Nhập lý do quyết định của bạn...",
       "viewPost": "Xem Bài Đăng",
       "resolve": "Xử Lý",
+      "requestRevision": "Yêu Cầu Sửa Đổi",
       "dismiss": "Bỏ Qua",
       "actions": "Thao Tác",
       "description": "Mô tả",
@@ -1669,6 +1679,20 @@
       "menuBar": {
         "enterUrl": "Nhập URL:"
       }
+    }
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "markAllRead": "Đánh dấu tất cả đã đọc",
+    "empty": "Chưa có thông báo",
+    "viewAll": "Xem tất cả thông báo",
+    "types": {
+      "NEW_REPORT": "Báo cáo mới",
+      "LISTING_RESUBMITTED": "Tin đăng gửi lại"
+    },
+    "messages": {
+      "newReport": "Có báo cáo mới được gửi",
+      "listingResubmitted": "Tin đăng đã được gửi lại để duyệt"
     }
   }
 }

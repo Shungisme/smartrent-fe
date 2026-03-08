@@ -144,7 +144,7 @@ export function DataTableProvider<T = any>({
   const setFilter = useCallback(
     (key: string, value: any) => {
       setFilters((prev) => {
-        const updated = { ...prev, [key]: value }
+        const updated = { ...prev, [key]: value, page: 1 }
 
         // Notify parent if in API mode
         if (filterMode === 'api' && onFilterChange) {
@@ -161,13 +161,17 @@ export function DataTableProvider<T = any>({
   )
 
   const clearFilters = useCallback(() => {
-    setFilters({})
+    const clearedFilters: Record<string, any> = {
+      page: 1,
+      pageSize: itemsPerPage,
+    }
+    setFilters(clearedFilters)
     setCurrentPage(1)
 
     if (filterMode === 'api' && onFilterChange) {
-      onFilterChange({})
+      onFilterChange(clearedFilters)
     }
-  }, [filterMode, onFilterChange])
+  }, [filterMode, onFilterChange, itemsPerPage])
 
   // Sort handler
   const handleSort = useCallback(
