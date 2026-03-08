@@ -23,6 +23,7 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  Edit,
 } from 'lucide-react'
 import cn from 'classnames'
 import { ListingReport } from '@/api/types/listing-report.type'
@@ -35,6 +36,7 @@ interface ReportReviewModalProps {
   onOpenChange: (open: boolean) => void
   report: ListingReport | null
   onActionComplete: () => void
+  onRequestRevision?: (reason: string) => void | Promise<void>
 }
 
 const getInitials = (name: string) =>
@@ -100,6 +102,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
   onOpenChange,
   report,
   onActionComplete,
+  onRequestRevision,
 }) => {
   const t = useTranslations('reports')
   const [listingDetails, setListingDetails] =
@@ -182,6 +185,22 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
     } catch (e) {
       console.error(e)
       toast.error('Failed to dismiss report. Please try again.')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleRequestRevision = async () => {
+    if (!report || !onRequestRevision) return
+
+    if (!actionReason.trim()) {
+      toast.warning('Please provide details on what needs to be revised.')
+      return
+    }
+
+    setActionLoading(true)
+    try {
+      await onRequestRevision(actionReason)
     } finally {
       setActionLoading(false)
     }
@@ -560,6 +579,20 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                       )}
                       {t('review.resolve')}
                     </Button>
+                    {onRequestRevision && (
+                      <Button
+                        onClick={handleRequestRevision}
+                        disabled={actionLoading}
+                        className='flex-1 bg-orange-600 hover:bg-orange-700 text-white text-sm'
+                      >
+                        {actionLoading ? (
+                          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                        ) : (
+                          <Edit className='mr-2 h-4 w-4' />
+                        )}
+                        {t('review.requestRevision')}
+                      </Button>
+                    )}
                     <Button
                       onClick={handleDismiss}
                       disabled={actionLoading}

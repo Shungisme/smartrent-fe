@@ -223,13 +223,16 @@ export const PostTable: React.FC<PostTableProps> = ({
       placeholder: t('search.placeholder'),
     },
     {
-      id: 'status',
+      id: 'moderationStatus',
       type: 'select',
       label: t('filters.allStatus'),
       options: [
-        { value: 'pending', label: t('filters.pending') },
-        { value: 'approved', label: t('filters.approved') },
-        { value: 'rejected', label: t('filters.rejected') },
+        { value: 'PENDING_REVIEW', label: t('tabs.pendingReview') },
+        { value: 'APPROVED', label: t('tabs.approved') },
+        { value: 'REJECTED', label: t('tabs.rejected') },
+        { value: 'REVISION_REQUIRED', label: t('tabs.revisionRequired') },
+        { value: 'SUSPENDED', label: t('tabs.suspended') },
+        { value: 'RESUBMITTED', label: t('tabs.resubmitted') },
       ],
     },
     {

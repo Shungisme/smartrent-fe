@@ -15,7 +15,6 @@ import { mapApiDataToUI, mapUIFiltersToAPI } from '@/utils/post.utils'
 import { PostStats } from '@/components/molecules/posts/PostStats'
 import { PostTable } from '@/components/organisms/posts/PostTable'
 import { PostReviewModal } from '@/components/organisms/posts/PostReviewModal'
-import { Tabs, TabsList, TabsTrigger } from '@/components/atoms/tabs'
 
 const PostVerification: NextPageWithLayout = () => {
   const t = useTranslations('posts')
@@ -100,15 +99,6 @@ const PostVerification: NextPageWithLayout = () => {
   // Handle filter changes from DataTable
   const handleFilterChange = (newFilters: Record<string, unknown>) => {
     setFilterValues(newFilters)
-  }
-
-  // Handle tab change for moderation status
-  const handleModerationTabChange = (value: string) => {
-    setFilterValues({
-      ...filterValues,
-      moderationStatus: value,
-      page: 1, // Reset to first page when changing tabs
-    })
   }
 
   const handleReview = (post: UIPostData) => {

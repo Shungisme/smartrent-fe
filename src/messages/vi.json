@@ -1359,7 +1359,8 @@
       "approved": "Đã Duyệt",
       "rejected": "Đã Từ Chối",
       "revisionRequired": "Cần Sửa",
-      "suspended": "Tạm Ngưng"
+      "suspended": "Tạm Ngưng",
+      "resubmitted": "Đã Gửi Lại"
     },
     "stats": {
       "total": "Tổng Bài Đăng",
@@ -1539,6 +1540,7 @@
       "actionPlaceholder": "Nhập lý do quyết định của bạn...",
       "viewPost": "Xem Bài Đăng",
       "resolve": "Xử Lý",
+      "requestRevision": "Yêu Cầu Sửa Đổi",
       "dismiss": "Bỏ Qua",
       "actions": "Thao Tác",
       "description": "Mô tả",

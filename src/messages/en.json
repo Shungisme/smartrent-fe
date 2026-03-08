@@ -1394,7 +1394,8 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "revisionRequired": "Revision Required",
-      "suspended": "Suspended"
+      "suspended": "Suspended",
+      "resubmitted": "Resubmitted"
     },
     "stats": {
       "total": "Total Posts",
@@ -1574,6 +1575,7 @@
       "actionPlaceholder": "Enter reason for your decision...",
       "viewPost": "View Post",
       "resolve": "Resolve Report",
+      "requestRevision": "Request Revision",
       "dismiss": "Dismiss Report",
       "actions": "Actions",
       "description": "Description",
