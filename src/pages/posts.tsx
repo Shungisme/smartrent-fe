@@ -248,24 +248,6 @@ const PostVerification: NextPageWithLayout = () => {
             </div>
           </div>
 
-          {/* Moderation Status Tabs */}
-          <Tabs
-            value={String(filterValues.moderationStatus || 'PENDING_REVIEW')}
-            onValueChange={handleModerationTabChange}
-          >
-            <TabsList className='grid w-full grid-cols-5 lg:w-auto'>
-              <TabsTrigger value='PENDING_REVIEW'>
-                {t('tabs.pendingReview')}
-              </TabsTrigger>
-              <TabsTrigger value='APPROVED'>{t('tabs.approved')}</TabsTrigger>
-              <TabsTrigger value='REJECTED'>{t('tabs.rejected')}</TabsTrigger>
-              <TabsTrigger value='REVISION_REQUIRED'>
-                {t('tabs.revisionRequired')}
-              </TabsTrigger>
-              <TabsTrigger value='SUSPENDED'>{t('tabs.suspended')}</TabsTrigger>
-            </TabsList>
-          </Tabs>
-
           {/* Stats Cards */}
           <PostStats stats={stats} totalPosts={posts.length} />
 
