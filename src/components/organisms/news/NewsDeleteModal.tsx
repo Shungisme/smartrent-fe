@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslations } from 'next-intl'
 import {
   Dialog,
   DialogContent,
@@ -7,12 +8,12 @@ import {
 } from '@/components/atoms/dialog'
 import { Button } from '@/components/atoms/button'
 import { Loader2 } from 'lucide-react'
-import { News } from '@/api/types/news.type'
+import { NewsSummaryResponse } from '@/api/types/news.type'
 
 interface NewsDeleteModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  news: News | null
+  news: NewsSummaryResponse | null
   loading: boolean
   onConfirm: () => void
 }
@@ -24,16 +25,17 @@ export const NewsDeleteModal: React.FC<NewsDeleteModalProps> = ({
   loading,
   onConfirm,
 }) => {
+  const t = useTranslations('news')
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Xác nhận xóa</DialogTitle>
+          <DialogTitle>{t('deleteModal.title')}</DialogTitle>
         </DialogHeader>
         <div className='space-y-4'>
           <p className='text-sm text-gray-600'>
-            Bạn có chắc chắn muốn xóa tin tức "{news?.title}"? Hành động này
-            không thể hoàn tác.
+            {t('deleteModal.description', { title: news?.title || '' })}
           </p>
           <div className='flex justify-end gap-3'>
             <Button
@@ -41,7 +43,7 @@ export const NewsDeleteModal: React.FC<NewsDeleteModalProps> = ({
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >
-              Hủy
+              {t('deleteModal.cancelButton')}
             </Button>
             <Button
               variant='destructive'
@@ -49,7 +51,7 @@ export const NewsDeleteModal: React.FC<NewsDeleteModalProps> = ({
               disabled={loading}
             >
               {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-              Xóa
+              {t('deleteModal.confirmButton')}
             </Button>
           </div>
         </div>

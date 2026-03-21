@@ -17,11 +17,13 @@ import AdminLayout from '@/components/layouts/AdminLayout'
 import { NextPageWithLayout } from '@/types/next-page'
 import { Loader2 } from 'lucide-react'
 import { NewsService } from '@/api/services/news.service'
-import { CreateNewsRequest, UpdateNewsRequest } from '@/api/types/news.type'
+import { NewsCreateRequest, NewsUpdateRequest } from '@/api/types/news.type'
 import { EditorFormData } from '@/types/news-editor.type'
 import { NewsEditorMenuBar } from '@/components/molecules/editor/NewsEditorMenuBar'
 import { NewsEditorHeader } from '@/components/organisms/news/NewsEditorHeader'
 import { NewsMetaForm } from '@/components/organisms/news/NewsMetaForm'
+
+const SUCCESS_CODE = '999999'
 
 const NewsEditor: NextPageWithLayout = () => {
   const router = useRouter()
@@ -32,17 +34,14 @@ const NewsEditor: NextPageWithLayout = () => {
   const [loading, setLoading] = useState(false)
   const [saveLoading, setSaveLoading] = useState(false)
   const [previewMode, setPreviewMode] = useState(false)
-  const [autoSaveTimer, setAutoSaveTimer] = useState<NodeJS.Timeout | null>(
-    null,
-  )
   const [wordCount, setWordCount] = useState(0)
   const [characterCount, setCharacterCount] = useState(0)
+  const [pendingContent, setPendingContent] = useState<string | null>(null)
 
   const {
     register,
     watch,
     setValue,
-    getValues,
     handleSubmit,
     formState: { errors },
   } = useForm<EditorFormData>({
@@ -52,13 +51,11 @@ const NewsEditor: NextPageWithLayout = () => {
       summary: '',
       category: 'NEWS',
       tags: '',
-      thumbnail_url: '',
+      thumbnailUrl: '',
       status: 'DRAFT',
-      published_at: '',
-      author_name: '',
-      meta_title: '',
-      meta_description: '',
-      meta_keywords: '',
+      metaTitle: '',
+      metaDescription: '',
+      metaKeywords: '',
     },
   })
 
@@ -100,12 +97,10 @@ const NewsEditor: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (title && !isEditMode) {
-      const generatedSlug = slugify(title)
-      setValue('slug', generatedSlug)
+      setValue('slug', slugify(title))
     }
   }, [title, isEditMode, setValue])
 
-  // Update word and character counts when editor content changes
   useEffect(() => {
     if (!editor) return
 
@@ -114,10 +109,7 @@ const NewsEditor: NextPageWithLayout = () => {
       setCharacterCount(editor.storage.characterCount.characters())
     }
 
-    // Set initial counts
     updateCounts()
-
-    // Listen to content changes
     editor.on('update', updateCounts)
 
     return () => {
@@ -125,27 +117,11 @@ const NewsEditor: NextPageWithLayout = () => {
     }
   }, [editor])
 
-  // Auto-save functionality - Disabled to prevent infinite loop
-  // TODO: Implement proper auto-save with debounce and stable dependencies
-  /*
   useEffect(() => {
-    if (!isEditMode || !editor) return
-
-    if (autoSaveTimer) {
-      clearTimeout(autoSaveTimer)
-    }
-
-    const timer = setTimeout(() => {
-      handleAutoSave()
-    }, 30000) // Auto-save every 30 seconds
-
-    setAutoSaveTimer(timer)
-
-    return () => {
-      if (timer) clearTimeout(timer)
-    }
-  }, [editor?.getHTML(), watch()])
-  */
+    if (!editor || pendingContent === null) return
+    editor.commands.setContent(pendingContent)
+    setPendingContent(null)
+  }, [editor, pendingContent])
 
   const fetchNews = async (newsId: number) => {
     try {
@@ -158,14 +134,13 @@ const NewsEditor: NextPageWithLayout = () => {
         setValue('slug', news.slug)
         setValue('summary', news.summary || '')
         setValue('category', news.category)
-        setValue('tags', news.tags || '')
-        setValue('thumbnail_url', news.thumbnail_url || '')
+        setValue('tags', news.tags.join(', '))
+        setValue('thumbnailUrl', news.thumbnailUrl || '')
         setValue('status', news.status)
-        setValue('published_at', news.published_at || '')
-        setValue('author_name', news.author_name || '')
-        setValue('meta_title', news.meta_title || '')
-        setValue('meta_description', news.meta_description || '')
-        setValue('meta_keywords', news.meta_keywords || '')
+        setValue('metaTitle', news.metaTitle || '')
+        setValue('metaDescription', news.metaDescription || '')
+        setValue('metaKeywords', news.metaKeywords || '')
+        setPendingContent(news.content)
 
         if (editor) {
           editor.commands.setContent(news.content)
@@ -182,30 +157,22 @@ const NewsEditor: NextPageWithLayout = () => {
     }
   }
 
-  const handleAutoSave = async () => {
-    if (!isEditMode || !editor) return
+  const buildPayload = (
+    data: EditorFormData,
+    content: string,
+  ): NewsCreateRequest | NewsUpdateRequest => ({
+    title: data.title,
+    summary: data.summary || undefined,
+    content,
+    category: data.category,
+    tags: data.tags || undefined,
+    thumbnailUrl: data.thumbnailUrl || undefined,
+    metaTitle: data.metaTitle || undefined,
+    metaDescription: data.metaDescription || undefined,
+    metaKeywords: data.metaKeywords || undefined,
+  })
 
-    try {
-      const formData = getValues()
-      const updateData: UpdateNewsRequest = {
-        ...formData,
-        content: editor.getHTML(),
-        summary: formData.summary || undefined,
-        tags: formData.tags || undefined,
-        thumbnail_url: formData.thumbnail_url || undefined,
-        meta_title: formData.meta_title || undefined,
-        meta_description: formData.meta_description || undefined,
-        meta_keywords: formData.meta_keywords || undefined,
-      }
-
-      await NewsService.updateNews(Number(id), updateData)
-      toast.success('Đã tự động lưu', { duration: 2000 })
-    } catch (error) {
-      console.error('Auto-save error:', error)
-    }
-  }
-
-  const onSubmit = async (data: EditorFormData) => {
+  const onSubmit = async (data: EditorFormData, publish = false) => {
     if (!editor) return
 
     const content = editor.getHTML()
@@ -218,45 +185,52 @@ const NewsEditor: NextPageWithLayout = () => {
       setSaveLoading(true)
 
       if (isEditMode) {
-        const updateData: UpdateNewsRequest = {
-          ...data,
-          content,
-          summary: data.summary || undefined,
-          tags: data.tags || undefined,
-          thumbnail_url: data.thumbnail_url || undefined,
-          meta_title: data.meta_title || undefined,
-          meta_description: data.meta_description || undefined,
-          meta_keywords: data.meta_keywords || undefined,
+        const updateData = buildPayload(data, content) as NewsUpdateRequest
+        const updateResponse = await NewsService.updateNews(
+          Number(id),
+          updateData,
+        )
+
+        if (updateResponse.code !== SUCCESS_CODE) {
+          toast.error(updateResponse.message || t('messages.updateError'))
+          return
         }
 
-        const response = await NewsService.updateNews(Number(id), updateData)
-
-        if (response.code === '1000') {
-          toast.success(t('messages.updateSuccess'))
-          router.push('/news')
-        } else {
-          toast.error(response.message || t('messages.updateError'))
+        if (publish && updateResponse.data) {
+          const publishResponse = await NewsService.publishNews(
+            updateResponse.data.newsId,
+          )
+          if (publishResponse.code !== SUCCESS_CODE) {
+            toast.error(publishResponse.message || t('messages.updateError'))
+            return
+          }
         }
+
+        toast.success(
+          publish ? t('messages.updateSuccess') : t('messages.updateSuccess'),
+        )
+        router.push('/news')
       } else {
-        const createData: CreateNewsRequest = {
-          ...data,
-          content,
-          summary: data.summary || undefined,
-          tags: data.tags || undefined,
-          thumbnail_url: data.thumbnail_url || undefined,
-          meta_title: data.meta_title || undefined,
-          meta_description: data.meta_description || undefined,
-          meta_keywords: data.meta_keywords || undefined,
+        const createData = buildPayload(data, content) as NewsCreateRequest
+        const createResponse = await NewsService.createNews(createData)
+
+        if (createResponse.code !== SUCCESS_CODE || !createResponse.data) {
+          toast.error(createResponse.message || t('messages.createError'))
+          return
         }
 
-        const response = await NewsService.createNews(createData)
-
-        if (response.code === '1000') {
-          toast.success(t('messages.createSuccess'))
-          router.push('/news')
-        } else {
-          toast.error(response.message || t('messages.createError'))
+        if (publish) {
+          const publishResponse = await NewsService.publishNews(
+            createResponse.data.newsId,
+          )
+          if (publishResponse.code !== SUCCESS_CODE) {
+            toast.error(publishResponse.message || t('messages.createError'))
+            return
+          }
         }
+
+        toast.success(t('messages.createSuccess'))
+        router.push('/news')
       }
     } catch (error) {
       console.error('Error saving news:', error)
@@ -267,9 +241,7 @@ const NewsEditor: NextPageWithLayout = () => {
   }
 
   const handlePublish = () => {
-    setValue('status', 'PUBLISHED')
-    setValue('published_at', new Date().toISOString())
-    handleSubmit(onSubmit)()
+    handleSubmit((data) => onSubmit(data, true))()
   }
 
   if (loading) {
@@ -288,18 +260,15 @@ const NewsEditor: NextPageWithLayout = () => {
         characterCount={characterCount}
         previewMode={previewMode}
         setPreviewMode={setPreviewMode}
-        onSave={handleSubmit(onSubmit)}
+        onSave={handleSubmit((data) => onSubmit(data, false))}
         onPublish={handlePublish}
         loading={saveLoading}
       />
 
-      {/* Main Content */}
       <div className='py-10'>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit((data) => onSubmit(data, false))}>
           <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-            {/* Editor Section */}
             <div className='lg:col-span-2 space-y-6'>
-              {/* Title */}
               <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 p-8 border border-gray-100'>
                 <input
                   {...register('title', { required: true })}
@@ -309,7 +278,6 @@ const NewsEditor: NextPageWithLayout = () => {
                 />
               </div>
 
-              {/* Editor */}
               <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-gray-100'>
                 {!previewMode ? (
                   <>
@@ -334,7 +302,6 @@ const NewsEditor: NextPageWithLayout = () => {
               </div>
             </div>
 
-            {/* Sidebar */}
             <div className='space-y-4'>
               <NewsMetaForm
                 register={register}

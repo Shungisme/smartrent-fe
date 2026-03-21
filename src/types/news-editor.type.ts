@@ -1,4 +1,5 @@
-import { NewsCategory, NewsStatus } from '@/api/types/news.type'
+import { NewsStatus } from '@/api/types/news.type'
+import { NewsCategory } from '@/api/types/news.type'
 
 export interface EditorFormData {
   title: string
@@ -6,11 +7,9 @@ export interface EditorFormData {
   summary: string
   category: NewsCategory
   tags: string
-  thumbnail_url: string
+  thumbnailUrl: string
   status: NewsStatus
-  published_at: string
-  author_name: string
-  meta_title: string
-  meta_description: string
-  meta_keywords: string
+  metaTitle: string
+  metaDescription: string
+  metaKeywords: string
 }

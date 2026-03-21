@@ -8,11 +8,12 @@ import { Button } from '@/components/atoms/button'
 import { Plus, Loader2 } from 'lucide-react'
 import { NewsService } from '@/api/services/news.service'
 import {
-  News,
   NewsStatus,
   NewsCategory,
   NewsFilterRequest,
   NewsStatistics,
+  NewsSummaryResponse,
+  NewsResponse,
 } from '@/api/types/news.type'
 import { NewsStats } from '@/components/organisms/news/NewsStats'
 import { NewsTable } from '@/components/organisms/news/NewsTable'
@@ -20,14 +21,19 @@ import { NewsPreviewModal } from '@/components/organisms/news/NewsPreviewModal'
 import { NewsDeleteModal } from '@/components/organisms/news/NewsDeleteModal'
 import { NextPageWithLayout } from '@/types/next-page'
 
+const SUCCESS_CODE = '999999'
+
 const NewsManagement: NextPageWithLayout = () => {
   const router = useRouter()
   const t = useTranslations('news')
 
-  const [newsList, setNewsList] = useState<News[]>([])
+  const [newsList, setNewsList] = useState<NewsSummaryResponse[]>([])
   const [initialLoading, setInitialLoading] = useState(true)
   const [tableLoading, setTableLoading] = useState(false)
-  const [selectedNews, setSelectedNews] = useState<News | null>(null)
+  const [selectedNews, setSelectedNews] = useState<NewsSummaryResponse | null>(
+    null,
+  )
+  const [previewNews, setPreviewNews] = useState<NewsResponse | null>(null)
   const [previewModalOpen, setPreviewModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
@@ -45,7 +51,6 @@ const NewsManagement: NextPageWithLayout = () => {
   const [totalCount, setTotalCount] = useState(0)
   const debouncedSearchTerm = useDebounce(filterValues.search || '', 500)
 
-  // Fetch news on mount and when filters change
   useEffect(() => {
     fetchNews()
   }, [
@@ -56,6 +61,32 @@ const NewsManagement: NextPageWithLayout = () => {
     filterValues.pageSize,
   ])
 
+  useEffect(() => {
+    fetchStatistics()
+  }, [])
+
+  const fetchStatistics = async () => {
+    try {
+      const [all, published, drafts, archived, blogs] = await Promise.all([
+        NewsService.getNewsList({ page: 1, size: 1 }),
+        NewsService.getNewsList({ page: 1, size: 1, status: 'PUBLISHED' }),
+        NewsService.getNewsList({ page: 1, size: 1, status: 'DRAFT' }),
+        NewsService.getNewsList({ page: 1, size: 1, status: 'ARCHIVED' }),
+        NewsService.getNewsList({ page: 1, size: 1, category: 'BLOG' }),
+      ])
+
+      setStats({
+        totalNews: all.data?.totalItems || 0,
+        totalPublished: published.data?.totalItems || 0,
+        totalDrafts: drafts.data?.totalItems || 0,
+        totalArchived: archived.data?.totalItems || 0,
+        totalBlogs: blogs.data?.totalItems || 0,
+      })
+    } catch (error) {
+      console.error('Error fetching news statistics:', error)
+    }
+  }
+
   const fetchNews = async () => {
     try {
       if (initialLoading) {
@@ -64,11 +95,9 @@ const NewsManagement: NextPageWithLayout = () => {
         setTableLoading(true)
       }
 
-      // Map UI filters to API format
       const apiFilters: NewsFilterRequest = {
-        page: filterValues.page ? Number(filterValues.page) - 1 : 0,
+        page: filterValues.page ? Number(filterValues.page) : 1,
         size: filterValues.pageSize ? Number(filterValues.pageSize) : 20,
-        sortBy: 'NEWEST',
       }
 
       if (debouncedSearchTerm) {
@@ -87,8 +116,7 @@ const NewsManagement: NextPageWithLayout = () => {
 
       if (response.data) {
         setNewsList(response.data.news)
-        setStats(response.data.statistics)
-        setTotalCount(response.data.totalCount)
+        setTotalCount(response.data.totalItems)
       }
     } catch (error) {
       console.error('Error fetching news:', error)
@@ -103,20 +131,29 @@ const NewsManagement: NextPageWithLayout = () => {
     setFilterValues(newFilters)
   }
 
-  const handlePreview = (news: News) => {
-    setSelectedNews(news)
-    setPreviewModalOpen(true)
+  const handlePreview = async (news: NewsSummaryResponse) => {
+    try {
+      const response = await NewsService.getNewsById(news.newsId)
+
+      if (response.data) {
+        setPreviewNews(response.data)
+        setPreviewModalOpen(true)
+      }
+    } catch (error) {
+      console.error('Error fetching news detail:', error)
+      toast.error(t('messages.fetchError'))
+    }
   }
 
-  const handleEdit = (news: News) => {
-    router.push(`/news-editor?id=${news.news_id}`)
+  const handleEdit = (news: NewsSummaryResponse) => {
+    router.push(`/news-editor?id=${news.newsId}`)
   }
 
   const handleCreate = () => {
     router.push('/news-editor')
   }
 
-  const handleDeleteClick = (news: News) => {
+  const handleDeleteClick = (news: NewsSummaryResponse) => {
     setSelectedNews(news)
     setDeleteModalOpen(true)
   }
@@ -126,13 +163,13 @@ const NewsManagement: NextPageWithLayout = () => {
 
     try {
       setDeleteLoading(true)
-      const response = await NewsService.deleteNews(selectedNews.news_id)
+      const response = await NewsService.deleteNews(selectedNews.newsId)
 
-      if (response.code === '1000') {
+      if (response.code === SUCCESS_CODE) {
         toast.success(t('messages.deleteSuccess'))
         setDeleteModalOpen(false)
         setSelectedNews(null)
-        await fetchNews()
+        await Promise.all([fetchNews(), fetchStatistics()])
       } else {
         toast.error(response.message || t('messages.deleteError'))
       }
@@ -152,7 +189,6 @@ const NewsManagement: NextPageWithLayout = () => {
         </div>
       ) : (
         <div className='space-y-6'>
-          {/* Header */}
           <div className='flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4'>
             <div>
               <h1 className='text-2xl md:text-3xl font-bold text-gray-900'>
@@ -166,10 +202,8 @@ const NewsManagement: NextPageWithLayout = () => {
             </Button>
           </div>
 
-          {/* Stats Cards */}
           <NewsStats stats={stats} />
 
-          {/* DataTable */}
           <NewsTable
             data={newsList}
             totalItems={totalCount}
@@ -181,14 +215,12 @@ const NewsManagement: NextPageWithLayout = () => {
             onDelete={handleDeleteClick}
           />
 
-          {/* Preview Modal */}
           <NewsPreviewModal
             open={previewModalOpen}
             onOpenChange={setPreviewModalOpen}
-            news={selectedNews}
+            news={previewNews}
           />
 
-          {/* Delete Confirmation Modal */}
           <NewsDeleteModal
             open={deleteModalOpen}
             onOpenChange={setDeleteModalOpen}

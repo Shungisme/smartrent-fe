@@ -76,14 +76,20 @@ export const PATHS = {
     ADMIN_VERIFY: '/v1/admin/listings/:listingId/status', // PUT verify/reject listing
   },
 
-  // News endpoints (Admin)
+  // News endpoints
   NEWS: {
-    LIST: '/v1/news/list', // POST get paginated news list
-    DETAIL: '/v1/news/:id', // GET news detail
-    CREATE: '/v1/news', // POST create news
-    UPDATE: '/v1/news/:id', // PUT update news
-    DELETE: '/v1/news/:id', // DELETE news
-    PUBLISH: '/v1/news/:id/publish', // PUT publish news
+    PUBLIC_LIST: '/v1/news', // GET published news list
+    PUBLIC_DETAIL: '/v1/news/:slug', // GET published news detail by slug
+    NEWEST: '/v1/news/newest', // GET newest published news
+
+    ADMIN_LIST: '/v1/admin/news', // GET admin news list
+    ADMIN_DETAIL: '/v1/admin/news/:id', // GET admin news detail by ID
+    ADMIN_CREATE: '/v1/admin/news', // POST create news (draft)
+    ADMIN_UPDATE: '/v1/admin/news/:id', // PUT update news
+    ADMIN_DELETE: '/v1/admin/news/:id', // DELETE news
+    ADMIN_PUBLISH: '/v1/admin/news/:id/publish', // POST publish news
+    ADMIN_UNPUBLISH: '/v1/admin/news/:id/unpublish', // POST unpublish news
+    ADMIN_ARCHIVE: '/v1/admin/news/:id/archive', // POST archive news
   },
 
   // Notification endpoints (Admin)
