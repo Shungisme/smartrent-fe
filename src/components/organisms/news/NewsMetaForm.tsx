@@ -20,8 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/atoms/select'
-import { NewsCategory, NewsStatus } from '@/api/types/news.type'
 import { EditorFormData } from '@/types/news-editor.type'
+import { NewsCategory, NewsStatus } from '@/api/types/news.type'
 
 interface NewsMetaFormProps {
   register: UseFormRegister<EditorFormData>
@@ -94,6 +94,13 @@ export const NewsMetaForm: React.FC<NewsMetaFormProps> = ({
               <SelectContent>
                 <SelectItem value='NEWS'>{tCategory('NEWS')}</SelectItem>
                 <SelectItem value='BLOG'>{tCategory('BLOG')}</SelectItem>
+                <SelectItem value='POLICY'>{tCategory('POLICY')}</SelectItem>
+                <SelectItem value='MARKET'>{tCategory('MARKET')}</SelectItem>
+                <SelectItem value='PROJECT'>{tCategory('PROJECT')}</SelectItem>
+                <SelectItem value='INVESTMENT'>
+                  {tCategory('INVESTMENT')}
+                </SelectItem>
+                <SelectItem value='GUIDE'>{tCategory('GUIDE')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -160,34 +167,17 @@ export const NewsMetaForm: React.FC<NewsMetaFormProps> = ({
           {/* Thumbnail */}
           <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
             <Label
-              htmlFor='thumbnail_url'
+              htmlFor='thumbnailUrl'
               className='text-sm font-semibold text-gray-700'
             >
               {t('thumbnail')}
             </Label>
             <input
-              {...register('thumbnail_url')}
-              id='thumbnail_url'
+              {...register('thumbnailUrl')}
+              id='thumbnailUrl'
               type='text'
               className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
               placeholder={t('thumbnailPlaceholder')}
-            />
-          </div>
-
-          {/* Author */}
-          <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
-            <Label
-              htmlFor='author_name'
-              className='text-sm font-semibold text-gray-700'
-            >
-              {t('author')}
-            </Label>
-            <input
-              {...register('author_name')}
-              id='author_name'
-              type='text'
-              className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
-              placeholder={t('authorPlaceholder')}
             />
           </div>
         </TabsContent>
@@ -196,14 +186,14 @@ export const NewsMetaForm: React.FC<NewsMetaFormProps> = ({
           {/* Meta Title */}
           <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
             <Label
-              htmlFor='meta_title'
+              htmlFor='metaTitle'
               className='text-sm font-semibold text-gray-700'
             >
               {t('metaTitle')}
             </Label>
             <input
-              {...register('meta_title')}
-              id='meta_title'
+              {...register('metaTitle')}
+              id='metaTitle'
               type='text'
               className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
               placeholder={t('metaTitlePlaceholder')}
@@ -213,14 +203,14 @@ export const NewsMetaForm: React.FC<NewsMetaFormProps> = ({
           {/* Meta Description */}
           <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
             <Label
-              htmlFor='meta_description'
+              htmlFor='metaDescription'
               className='text-sm font-semibold text-gray-700'
             >
               {t('metaDescription')}
             </Label>
             <textarea
-              {...register('meta_description')}
-              id='meta_description'
+              {...register('metaDescription')}
+              id='metaDescription'
               rows={3}
               className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none'
               placeholder={t('metaDescriptionPlaceholder')}
@@ -230,14 +220,14 @@ export const NewsMetaForm: React.FC<NewsMetaFormProps> = ({
           {/* Meta Keywords */}
           <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-5 border border-gray-100'>
             <Label
-              htmlFor='meta_keywords'
+              htmlFor='metaKeywords'
               className='text-sm font-semibold text-gray-700'
             >
               {t('metaKeywords')}
             </Label>
             <input
-              {...register('meta_keywords')}
-              id='meta_keywords'
+              {...register('metaKeywords')}
+              id='metaKeywords'
               type='text'
               className='mt-2 w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
               placeholder={t('metaKeywordsPlaceholder')}

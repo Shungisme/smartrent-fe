@@ -1607,7 +1607,12 @@
     },
     "category": {
       "NEWS": "Tin tức",
-      "BLOG": "Blog"
+      "BLOG": "Blog",
+      "POLICY": "Chính sách",
+      "MARKET": "Thị trường",
+      "PROJECT": "Dự án",
+      "INVESTMENT": "Đầu tư",
+      "GUIDE": "Hướng dẫn"
     },
     "actions": {
       "preview": "Xem trước",
@@ -1624,6 +1629,19 @@
       "fetchError": "Không thể tải danh sách tin tức. Vui lòng thử lại.",
       "deleteSuccess": "Xóa tin tức thành công",
       "deleteError": "Không thể xóa tin tức. Vui lòng thử lại."
+    },
+    "previewModal": {
+      "title": "Xem trước tin tức",
+      "seoTitle": "SEO Metadata",
+      "metaTitleLabel": "Meta Title",
+      "metaDescriptionLabel": "Meta Description",
+      "metaKeywordsLabel": "Meta Keywords"
+    },
+    "deleteModal": {
+      "title": "Xác nhận xóa",
+      "description": "Bạn có chắc chắn muốn xóa tin tức \"{title}\"? Hành động này không thể hoàn tác.",
+      "cancelButton": "Hủy",
+      "confirmButton": "Xóa"
     },
     "notAvailable": "N/A",
     "editor": {

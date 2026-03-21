@@ -1642,7 +1642,12 @@
     },
     "category": {
       "NEWS": "News",
-      "BLOG": "Blog"
+      "BLOG": "Blog",
+      "POLICY": "Policy",
+      "MARKET": "Market",
+      "PROJECT": "Project",
+      "INVESTMENT": "Investment",
+      "GUIDE": "Guide"
     },
     "actions": {
       "preview": "Preview",
@@ -1659,6 +1664,19 @@
       "fetchError": "Unable to load news list. Please try again.",
       "deleteSuccess": "News deleted successfully",
       "deleteError": "Unable to delete news. Please try again."
+    },
+    "previewModal": {
+      "title": "Preview article",
+      "seoTitle": "SEO Metadata",
+      "metaTitleLabel": "Meta Title",
+      "metaDescriptionLabel": "Meta Description",
+      "metaKeywordsLabel": "Meta Keywords"
+    },
+    "deleteModal": {
+      "title": "Confirm deletion",
+      "description": "Are you sure you want to delete article \"{title}\"? This action cannot be undone.",
+      "cancelButton": "Cancel",
+      "confirmButton": "Delete"
     },
     "notAvailable": "N/A",
     "editor": {

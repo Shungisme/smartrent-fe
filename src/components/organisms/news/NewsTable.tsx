@@ -10,21 +10,25 @@ import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { cn } from '@/lib/utils'
 import { Eye, Edit, Trash2, FileText, User, Tag } from 'lucide-react'
-import { News, NewsStatus, NewsCategory } from '@/api/types/news.type'
+import {
+  NewsCategory,
+  NewsStatus,
+  NewsSummaryResponse,
+} from '@/api/types/news.type'
 
 interface NewsTableProps {
-  data: News[]
+  data: NewsSummaryResponse[]
   totalItems: number
   loading: boolean
   filterValues: Record<string, unknown>
   onFilterChange: (newFilters: Record<string, unknown>) => void
-  onPreview: (news: News) => void
-  onEdit: (news: News) => void
-  onDelete: (news: News) => void
+  onPreview: (news: NewsSummaryResponse) => void
+  onEdit: (news: NewsSummaryResponse) => void
+  onDelete: (news: NewsSummaryResponse) => void
 }
 
 const getStatusColor = (status: NewsStatus): string => {
-  const colors = {
+  const colors: Record<NewsStatus, string> = {
     DRAFT: 'bg-yellow-50 text-yellow-800 border-yellow-200',
     PUBLISHED: 'bg-green-50 text-green-700 border-green-200',
     ARCHIVED: 'bg-gray-50 text-gray-700 border-gray-200',
@@ -33,9 +37,14 @@ const getStatusColor = (status: NewsStatus): string => {
 }
 
 const getCategoryColor = (category: NewsCategory): string => {
-  const colors = {
+  const colors: Record<NewsCategory, string> = {
     NEWS: 'bg-blue-50 text-blue-700 border-blue-200',
     BLOG: 'bg-purple-50 text-purple-700 border-purple-200',
+    POLICY: 'bg-orange-50 text-orange-700 border-orange-200',
+    MARKET: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    PROJECT: 'bg-cyan-50 text-cyan-700 border-cyan-200',
+    INVESTMENT: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+    GUIDE: 'bg-pink-50 text-pink-700 border-pink-200',
   }
   return colors[category]
 }
@@ -44,6 +53,12 @@ const formatDate = (dateString: string | null): string => {
   if (!dateString) return 'N/A'
   const date = new Date(dateString)
   return date.toLocaleDateString('vi-VN')
+}
+
+const isValidImageSrc = (src: unknown): src is string => {
+  if (typeof src !== 'string') return false
+  const normalized = src.trim()
+  return normalized.startsWith('/') || /^https?:\/\//i.test(normalized)
 }
 
 export const NewsTable: React.FC<NewsTableProps> = ({
@@ -58,66 +73,75 @@ export const NewsTable: React.FC<NewsTableProps> = ({
 }) => {
   const t = useTranslations('news')
 
-  const columns: Column<News>[] = [
+  const columns: Column<NewsSummaryResponse>[] = [
     {
       id: 'news',
       header: t('table.columns.news'),
       accessor: (row) => row.title,
       sortable: true,
-      render: (_, row) => (
-        <div className='flex gap-3'>
-          <div className='relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100'>
-            {row.thumbnail_url ? (
-              <Image
-                src={row.thumbnail_url}
-                alt={row.title}
-                width={96}
-                height={64}
-                className='h-full w-full object-cover'
-              />
-            ) : (
-              <div className='flex h-full w-full items-center justify-center'>
-                <FileText className='h-6 w-6 text-gray-400' />
+      render: (_, row) => {
+        const safeThumbnailSrc = isValidImageSrc(row.thumbnailUrl)
+          ? row.thumbnailUrl
+          : null
+
+        return (
+          <div className='flex gap-3'>
+            <div className='relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100'>
+              {safeThumbnailSrc ? (
+                <Image
+                  src={safeThumbnailSrc}
+                  alt={row.title}
+                  width={96}
+                  height={64}
+                  className='h-full w-full object-cover'
+                />
+              ) : (
+                <div className='flex h-full w-full items-center justify-center'>
+                  <FileText className='h-6 w-6 text-gray-400' />
+                </div>
+              )}
+            </div>
+            <div className='flex-1 min-w-0'>
+              <div className='font-medium text-gray-900 line-clamp-2'>
+                {row.title}
               </div>
-            )}
-          </div>
-          <div className='flex-1 min-w-0'>
-            <div className='font-medium text-gray-900 line-clamp-2'>
-              {row.title}
-            </div>
-            <div className='mt-1 text-xs text-gray-500 line-clamp-1'>
-              {row.slug}
-            </div>
-            <div className='mt-1 flex flex-wrap gap-1'>
-              <Badge
-                variant='outline'
-                className={cn(
-                  'text-xs px-2 py-0',
-                  getCategoryColor(row.category),
-                )}
-              >
-                {t(`category.${row.category}`)}
-              </Badge>
-              <Badge
-                variant='outline'
-                className={cn('text-xs px-2 py-0', getStatusColor(row.status))}
-              >
-                {t(`status.${row.status}`)}
-              </Badge>
+              <div className='mt-1 text-xs text-gray-500 line-clamp-1'>
+                {row.slug}
+              </div>
+              <div className='mt-1 flex flex-wrap gap-1'>
+                <Badge
+                  variant='outline'
+                  className={cn(
+                    'text-xs px-2 py-0',
+                    getCategoryColor(row.category),
+                  )}
+                >
+                  {t(`category.${row.category}`)}
+                </Badge>
+                <Badge
+                  variant='outline'
+                  className={cn(
+                    'text-xs px-2 py-0',
+                    getStatusColor(row.status || 'DRAFT'),
+                  )}
+                >
+                  {t(`status.${row.status || 'DRAFT'}`)}
+                </Badge>
+              </div>
             </div>
           </div>
-        </div>
-      ),
+        )
+      },
     },
     {
       id: 'author',
       header: t('table.columns.author'),
-      accessor: (row) => row.author_name || t('notAvailable'),
+      accessor: (row) => row.authorName || t('notAvailable'),
       render: (_, row) => (
         <div className='flex items-center gap-2'>
           <User className='h-4 w-4 text-gray-400' />
           <span className='text-sm text-gray-700'>
-            {row.author_name || t('notAvailable')}
+            {row.authorName || t('notAvailable')}
           </span>
         </div>
       ),
@@ -132,14 +156,14 @@ export const NewsTable: React.FC<NewsTableProps> = ({
           <div className='flex items-center gap-1 text-gray-600'>
             <Eye className='h-3.5 w-3.5' />
             <span>
-              {row.view_count.toLocaleString()} {t('table.views')}
+              {row.viewCount.toLocaleString()} {t('table.views')}
             </span>
           </div>
-          {row.tags && (
+          {row.tags.length > 0 && (
             <div className='flex items-center gap-1 text-gray-500'>
               <Tag className='h-3.5 w-3.5' />
               <span className='text-xs truncate'>
-                {row.tags.split(',').length} {t('table.tags')}
+                {row.tags.length} {t('table.tags')}
               </span>
             </div>
           )}
@@ -150,14 +174,14 @@ export const NewsTable: React.FC<NewsTableProps> = ({
     {
       id: 'dates',
       header: t('table.columns.dates'),
-      accessor: 'created_at',
+      accessor: 'createdAt',
       sortable: true,
       render: (_, row) => (
         <div className='text-sm'>
-          <div className='text-gray-900'>{formatDate(row.created_at)}</div>
-          {row.published_at && (
+          <div className='text-gray-900'>{formatDate(row.createdAt)}</div>
+          {row.publishedAt && (
             <div className='text-xs text-gray-500'>
-              {t('table.published')}: {formatDate(row.published_at)}
+              {t('table.published')}: {formatDate(row.publishedAt)}
             </div>
           )}
         </div>
@@ -225,12 +249,18 @@ export const NewsTable: React.FC<NewsTableProps> = ({
       options: [
         { value: 'NEWS', label: t('category.NEWS') },
         { value: 'BLOG', label: t('category.BLOG') },
+        { value: 'POLICY', label: t('category.POLICY') },
+        { value: 'MARKET', label: t('category.MARKET') },
+        { value: 'PROJECT', label: t('category.PROJECT') },
+        { value: 'INVESTMENT', label: t('category.INVESTMENT') },
+        { value: 'GUIDE', label: t('category.GUIDE') },
       ],
     },
   ]
 
   return (
     <DataTable
+      filterMode='api'
       data={data}
       columns={columns}
       filters={filters}
@@ -238,6 +268,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
       onFilterChange={onFilterChange}
       totalItems={totalItems}
       loading={loading}
+      getRowKey={(row) => row.newsId}
     />
   )
 }
