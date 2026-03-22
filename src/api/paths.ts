@@ -43,6 +43,12 @@ export const PATHS = {
     LIST: '/v1/admins/list', // GET all admins (paginated)
   },
 
+  // Admin dashboard endpoints
+  ADMIN_DASHBOARD: {
+    REVENUE: '/v1/admin/dashboard/revenue',
+    MEMBERSHIP_DISTRIBUTION: '/v1/admin/dashboard/memberships/distribution',
+  },
+
   // Role endpoints
   ROLE: {
     LIST: '/v1/roles', // GET all roles (paginated)

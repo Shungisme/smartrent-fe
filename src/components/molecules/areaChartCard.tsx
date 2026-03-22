@@ -22,14 +22,18 @@ const AreaChartCard: React.FC<AreaChartCardProps> = ({
   showGrid = true,
   unit,
 }) => {
-  const maxValue = Math.max(...data)
-  const minValue = Math.min(...data, 0)
+  const normalizedData = data.length > 0 ? data : [0]
+  const normalizedLabels = labels.length > 0 ? labels : ['-']
+  const isSinglePoint = normalizedData.length === 1
+
+  const maxValue = Math.max(...normalizedData)
+  const minValue = Math.min(...normalizedData, 0)
   const valueRange = maxValue - minValue
 
-  const points = data
+  const points = normalizedData
     .map((value, index) => {
-      const x = (index / (data.length - 1)) * 100
-      const y = 100 - ((value - minValue) / valueRange) * 80
+      const x = isSinglePoint ? 50 : (index / (normalizedData.length - 1)) * 100
+      const y = 100 - ((value - minValue) / (valueRange || 1)) * 80
       return `${x},${y}`
     })
     .join(' ')
@@ -82,9 +86,11 @@ const AreaChartCard: React.FC<AreaChartCardProps> = ({
           />
 
           {/* Dots */}
-          {data.map((value, index) => {
-            const x = (index / (data.length - 1)) * 100
-            const y = 100 - ((value - minValue) / valueRange) * 80
+          {normalizedData.map((value, index) => {
+            const x = isSinglePoint
+              ? 50
+              : (index / (normalizedData.length - 1)) * 100
+            const y = 100 - ((value - minValue) / (valueRange || 1)) * 80
 
             return (
               <circle key={`dot-${index}`} cx={x} cy={y} r='0.8' fill={color} />
@@ -94,10 +100,13 @@ const AreaChartCard: React.FC<AreaChartCardProps> = ({
 
         {/* X-axis labels */}
         <div className='mt-2 flex justify-between px-1'>
-          {labels.map((label, index) => {
+          {normalizedLabels.map((label, index) => {
             // Show every nth label to avoid crowding
-            const showEvery = Math.ceil(labels.length / 8)
-            if (index % showEvery !== 0 && index !== labels.length - 1) {
+            const showEvery = Math.ceil(normalizedLabels.length / 8)
+            if (
+              index % showEvery !== 0 &&
+              index !== normalizedLabels.length - 1
+            ) {
               return (
                 <span key={index} className='text-xs text-transparent'>
                   .
