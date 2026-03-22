@@ -10,7 +10,7 @@ import * as yup from 'yup'
 import { useAdminLogin } from '@/hooks/useAuth'
 import { toast } from 'sonner'
 import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 type AdminLoginFormProps = {
   onSuccess?: () => void

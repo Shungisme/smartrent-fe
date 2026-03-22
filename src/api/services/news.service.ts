@@ -28,6 +28,23 @@ const buildQuery = (params: Record<string, string | number | undefined>) => {
 }
 
 export class NewsService {
+  static async uploadImage(file: File): Promise<ApiResponse<{ url: string }>> {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('mediaType', 'IMAGE')
+    formData.append('title', file.name)
+    formData.append('altText', file.name)
+
+    return apiRequest<{ url: string }>({
+      method: 'POST',
+      url: PATHS.MEDIA.UPLOAD,
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  }
+
   static async getNewsList(
     filter?: NewsFilterRequest,
   ): Promise<NewsListApiResponse> {

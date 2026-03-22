@@ -59,13 +59,13 @@ export const NotificationBell: React.FC = () => {
         size='sm'
         onClick={toggleDropdown}
         className={classNames(
-          'relative p-2 hover:bg-gray-100 transition-colors',
+          'relative h-8 w-8 p-0 transition-colors hover:bg-accent',
           {
-            'bg-gray-100': isOpen,
+            'bg-accent': isOpen,
           },
         )}
       >
-        <Bell className='h-5 w-5 text-gray-700' />
+        <Bell className='h-4.5 w-4.5 text-foreground/80' />
 
         {/* Unread Badge */}
         {unreadCount > 0 && (

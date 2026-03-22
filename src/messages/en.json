@@ -1332,7 +1332,7 @@
     },
     "membership": {
       "description": "Manage membership packages and pricing tiers",
-      "addPackage": "Add Package",
+      "addPackage": "Create Membership Package",
       "table": {
         "package": "Package",
         "price": "Price",
@@ -1399,7 +1399,7 @@
     },
     "postBoosts": {
       "description": "Manage post boost packages and pricing",
-      "addBoost": "Add Boost Package",
+      "addBoost": "Create Boost Package",
       "boostsPerDay": "boosts/day",
       "activePackage": "Active Package",
       "inactivePackage": "Inactive Package",
@@ -1737,6 +1737,8 @@
         "tagsPlaceholder": "tag1, tag2, tag3",
         "thumbnail": "Thumbnail URL",
         "thumbnailPlaceholder": "https://...",
+        "addThumbnail": "Add Thumbnail",
+        "uploadingThumbnail": "Uploading thumbnail...",
         "author": "Author name",
         "authorPlaceholder": "Author name...",
         "metaTitle": "Meta Title",

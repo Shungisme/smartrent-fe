@@ -4,7 +4,6 @@ import { Button } from '@/components/atoms/button'
 import { NotificationItem } from '@/components/molecules/NotificationItem'
 import { Notification } from '@/api/types/notification.type'
 import { Loader2, CheckCheck, Bell } from 'lucide-react'
-import classNames from 'classnames'
 
 interface NotificationDropdownProps {
   notifications: Notification[]

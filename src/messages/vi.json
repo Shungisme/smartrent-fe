@@ -1297,7 +1297,7 @@
     },
     "membership": {
       "description": "Quản lý gói thành viên và bậc giá",
-      "addPackage": "Thêm Gói",
+      "addPackage": "Tạo Gói Thành Viên",
       "table": {
         "package": "Gói",
         "price": "Giá",
@@ -1364,7 +1364,7 @@
     },
     "postBoosts": {
       "description": "Quản lý gói đẩy tin và giá",
-      "addBoost": "Thêm Gói Đẩy Tin",
+      "addBoost": "Tạo Gói Đẩy Tin",
       "boostsPerDay": "lượt đẩy/ngày",
       "activePackage": "Gói Hoạt Động",
       "inactivePackage": "Gói Không Hoạt Động",
@@ -1702,6 +1702,8 @@
         "tagsPlaceholder": "tag1, tag2, tag3",
         "thumbnail": "URL Ảnh đại diện",
         "thumbnailPlaceholder": "https://...",
+        "addThumbnail": "Thêm ảnh đại diện",
+        "uploadingThumbnail": "Đang tải ảnh đại diện...",
         "author": "Tên tác giả",
         "authorPlaceholder": "Tên tác giả...",
         "metaTitle": "Meta Title",

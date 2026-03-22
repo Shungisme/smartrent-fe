@@ -14,6 +14,7 @@ export function TableDesktop<T = any>({
   selectedRows = [],
   onRowSelect,
   onSelectAll,
+  maxHeightClassName,
 }: TableDesktopProps<T>) {
   const getValue = (row: T, column: Column<T>) => {
     if (typeof column.accessor === 'function') {
@@ -38,112 +39,120 @@ export function TableDesktop<T = any>({
     selectable && data.length > 0 && selectedRows.length === data.length
 
   return (
-    <div className='hidden lg:block rounded-2xl border border-gray-200 bg-white shadow-sm overflow-x-auto'>
-      <table className='w-full min-w-[800px]'>
-        {/* Table Header */}
-        <thead className='bg-gray-50 border-b border-gray-100'>
-          <tr>
-            {/* Selection checkbox */}
-            {selectable && (
-              <th className='px-4 py-3 text-left w-12'>
-                <input
-                  type='checkbox'
-                  checked={allSelected}
-                  onChange={onSelectAll}
-                  className='h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
-                />
-              </th>
-            )}
-
-            {/* Column headers */}
-            {columns.map((column) => (
-              <th
-                key={column.id}
-                className={`px-4 py-3 text-left text-sm font-semibold text-gray-700 ${
-                  column.sortable ? 'cursor-pointer hover:bg-gray-100' : ''
-                } ${column.className || ''}`}
-                onClick={() => column.sortable && onSort(column.id as keyof T)}
-              >
-                <div className='flex items-center gap-2'>
-                  <span>{column.header}</span>
-                  {column.sortable && renderSortIcon(column.id)}
-                </div>
-              </th>
-            ))}
-
-            {/* Actions column */}
-            {actions && (
-              <th className='px-4 py-3 text-right text-sm font-semibold text-gray-700'>
-                Actions
-              </th>
-            )}
-          </tr>
-        </thead>
-
-        {/* Table Body */}
-        <tbody className='divide-y divide-gray-100'>
-          {data.length === 0 ? (
+    <div className='table-surface hidden lg:block'>
+      <div
+        className={`overflow-y-auto ${
+          maxHeightClassName || 'h-[50vh] xl:h-[56vh] 2xl:h-[60vh]'
+        }`}
+      >
+        <table className='w-full min-w-[800px]'>
+          {/* Table Header */}
+          <thead className='sticky top-0 z-10 border-b border-border/70 bg-muted/65 backdrop-blur'>
             <tr>
-              <td
-                colSpan={
-                  columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0)
-                }
-                className='px-4 py-12 text-center text-gray-500'
-              >
-                {emptyMessage}
-              </td>
-            </tr>
-          ) : (
-            data.map((row, index) => {
-              const rowKey = getRowKey(row, index)
-              const isSelected = selectable && selectedRows.includes(row)
+              {/* Selection checkbox */}
+              {selectable && (
+                <th className='w-12 px-5 py-3.5 text-left'>
+                  <input
+                    type='checkbox'
+                    checked={allSelected}
+                    onChange={onSelectAll}
+                    className='h-4 w-4 rounded border-border text-primary focus:ring-primary'
+                  />
+                </th>
+              )}
 
-              return (
-                <tr
-                  key={rowKey}
-                  className={`hover:bg-gray-50 ${isSelected ? 'bg-blue-50' : ''}`}
+              {/* Column headers */}
+              {columns.map((column) => (
+                <th
+                  key={column.id}
+                  className={`px-5 py-3.5 text-left text-xs font-semibold tracking-wide text-muted-foreground uppercase ${
+                    column.sortable ? 'cursor-pointer hover:bg-muted/80' : ''
+                  } ${column.className || ''}`}
+                  onClick={() =>
+                    column.sortable && onSort(column.id as keyof T)
+                  }
                 >
-                  {/* Selection checkbox */}
-                  {selectable && (
-                    <td className='px-4 py-4'>
-                      <input
-                        type='checkbox'
-                        checked={isSelected}
-                        onChange={() => onRowSelect?.(row)}
-                        className='h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
-                      />
-                    </td>
-                  )}
+                  <div className='flex items-center gap-2'>
+                    <span>{column.header}</span>
+                    {column.sortable && renderSortIcon(column.id)}
+                  </div>
+                </th>
+              ))}
 
-                  {/* Column data */}
-                  {columns.map((column) => {
-                    const value = getValue(row, column)
-                    const cellContent = column.render
-                      ? column.render(value, row)
-                      : value
+              {/* Actions column */}
+              {actions && (
+                <th className='px-5 py-3.5 text-right text-xs font-semibold tracking-wide text-muted-foreground uppercase'>
+                  Actions
+                </th>
+              )}
+            </tr>
+          </thead>
 
-                    return (
-                      <td
-                        key={column.id}
-                        className={`px-4 py-4 text-sm text-gray-900 ${column.className || ''}`}
-                      >
-                        {cellContent as React.ReactNode}
+          {/* Table Body */}
+          <tbody>
+            {data.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={
+                    columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0)
+                  }
+                  className='px-5 py-14 text-center text-sm text-muted-foreground'
+                >
+                  {emptyMessage}
+                </td>
+              </tr>
+            ) : (
+              data.map((row, index) => {
+                const rowKey = getRowKey(row, index)
+                const isSelected = selectable && selectedRows.includes(row)
+
+                return (
+                  <tr
+                    key={rowKey}
+                    className={`border-b border-border/60 transition-colors hover:bg-accent/55 ${isSelected ? 'bg-primary/8' : ''}`}
+                  >
+                    {/* Selection checkbox */}
+                    {selectable && (
+                      <td className='px-5 py-4'>
+                        <input
+                          type='checkbox'
+                          checked={isSelected}
+                          onChange={() => onRowSelect?.(row)}
+                          className='h-4 w-4 rounded border-border text-primary focus:ring-primary'
+                        />
                       </td>
-                    )
-                  })}
+                    )}
 
-                  {/* Actions */}
-                  {actions && (
-                    <td className='px-4 py-4 text-right'>
-                      {actions(row, index)}
-                    </td>
-                  )}
-                </tr>
-              )
-            })
-          )}
-        </tbody>
-      </table>
+                    {/* Column data */}
+                    {columns.map((column) => {
+                      const value = getValue(row, column)
+                      const cellContent = column.render
+                        ? column.render(value, row)
+                        : value
+
+                      return (
+                        <td
+                          key={column.id}
+                          className={`px-5 py-4 text-sm text-foreground ${column.className || ''}`}
+                        >
+                          {cellContent as React.ReactNode}
+                        </td>
+                      )
+                    })}
+
+                    {/* Actions */}
+                    {actions && (
+                      <td className='px-5 py-4 text-right'>
+                        {actions(row, index)}
+                      </td>
+                    )}
+                  </tr>
+                )
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

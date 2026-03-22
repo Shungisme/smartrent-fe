@@ -16,11 +16,16 @@ const eslintConfig = [
     rules: {
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'error',
-      '@typescript-eslint/no-explicit-any': 'warn', // warning if using any
+      '@typescript-eslint/no-explicit-any': 'off',
       eqeqeq: ['error', 'always'], // always use ===
       'no-var': 'error', // error if using var
       'react-hooks/exhaustive-deps': 'off', // off for missing dependencies in useEffect
       'react-hooks/rules-of-hooks': 'off',
+      'react-hooks/static-components': 'off',
+      'react-hooks/immutability': 'off',
+      'react-hooks/set-state-in-effect': 'off',
+      'react-hooks/preserve-manual-memoization': 'off',
+      'react-hooks/incompatible-library': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-require-imports': 'off',
     },

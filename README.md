@@ -1,4 +1,4 @@
-# 🚀 Smart Rent Frontend - Modern React Architecture
+# 🚀 SmartRent Frontend - Modern React Architecture
 
 ## 📋 Table of Contents
 
@@ -14,7 +14,7 @@
 
 ## 🎯 Project Overview
 
-**Smart Rent Frontend** is a modern React/Next.js application built with a sophisticated hybrid architecture that combines multiple design patterns for scalability, maintainability, and optimal developer experience.
+**SmartRent Frontend** is a modern React/Next.js application built with a sophisticated hybrid architecture that combines multiple design patterns for scalability, maintainability, and optimal developer experience.
 
 ### Tech Stack
 

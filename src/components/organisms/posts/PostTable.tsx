@@ -11,11 +11,7 @@ import { Badge } from '@/components/atoms/badge'
 import { Avatar } from '@/components/atoms/avatar'
 import { cn } from '@/lib/utils'
 import { PostStatus, UIPostData } from '@/types/posts.type'
-import {
-  getPropertyIcon,
-  formatPrice,
-  getStatusColor,
-} from '@/utils/post.utils' // We might need to adjust utils to not use translations or pass them
+import { getPropertyIcon, getStatusColor } from '@/utils/post.utils' // We might need to adjust utils to not use translations or pass them
 
 // Re-implementing helper functions that need translations inside the component or pass t
 // Since utils cannot use hooks directly unless valid custom hook.
