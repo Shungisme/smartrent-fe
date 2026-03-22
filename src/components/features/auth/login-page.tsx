@@ -47,7 +47,7 @@ const LoginPage = () => {
           <div className='w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center'>
             <span className='text-white text-2xl font-bold'>SR</span>
           </div>
-          <h1 className='text-2xl font-bold text-gray-900'>Smart Rent</h1>
+          <h1 className='text-2xl font-bold text-gray-900'>SmartRent</h1>
           <p className='text-gray-500 text-sm'>Admin Panel</p>
         </div>
 
@@ -55,7 +55,7 @@ const LoginPage = () => {
 
         <div className='mt-6 text-center'>
           <p className='text-xs text-gray-500'>
-            © 2026 Smart Rent. All rights reserved.
+            © 2026 SmartRent. All rights reserved.
           </p>
         </div>
       </div>

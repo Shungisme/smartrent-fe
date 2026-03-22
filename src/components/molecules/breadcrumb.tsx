@@ -1,18 +1,18 @@
 import React from 'react'
 import Link from 'next/link'
-import { Home, ChevronRight } from 'lucide-react'
+import { Home, ChevronRight, MoreHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import type { BreadcrumbItem } from '@/constants/navigation'
 
-type BreadcrumbItem = {
-  label: string
-  href?: string
+type BreadcrumbDisplayItem = BreadcrumbItem & {
   icon?: React.ReactNode
 }
 
 type BreadcrumbProps = {
-  items: BreadcrumbItem[]
+  items: BreadcrumbDisplayItem[]
   separator?: React.ReactNode
   showHomeIcon?: boolean
+  maxVisibleItems?: number
   className?: string
 }
 
@@ -20,97 +20,87 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   items,
   separator,
   showHomeIcon = true,
+  maxVisibleItems = 4,
   className,
 }) => {
-  const defaultSeparator = <ChevronRight className='h-4 w-4 text-gray-400' />
+  const defaultSeparator = (
+    <ChevronRight className='h-3.5 w-3.5 text-muted-foreground/60' />
+  )
+
+  const desktopItems =
+    items.length > maxVisibleItems
+      ? [items[0], ...items.slice(items.length - (maxVisibleItems - 1))]
+      : items
+
+  const mobileItems =
+    items.length <= 2
+      ? items
+      : [items[items.length - 2], items[items.length - 1]]
+
+  const renderItem = (
+    item: BreadcrumbDisplayItem,
+    index: number,
+    list: BreadcrumbDisplayItem[],
+  ) => {
+    const isLast = index === list.length - 1
+    const isFirst = index === 0
+    const isDisabled = !!item.disabled
+
+    return (
+      <li key={`${item.label}-${index}`} className='flex items-center'>
+        {!isFirst && (
+          <span className='mx-1.5 sm:mx-2' aria-hidden='true'>
+            {separator || defaultSeparator}
+          </span>
+        )}
+
+        {isLast ? (
+          <span
+            className='inline-flex max-w-[11rem] items-center gap-1.5 truncate text-sm font-semibold text-foreground sm:max-w-[16rem]'
+            aria-current='page'
+          >
+            {isFirst && showHomeIcon && <Home className='h-3.5 w-3.5' />}
+            {item.icon && <span className='shrink-0'>{item.icon}</span>}
+            <span className='truncate'>{item.label}</span>
+          </span>
+        ) : item.href && !isDisabled ? (
+          <Link
+            href={item.href}
+            className='inline-flex max-w-[9rem] items-center gap-1.5 truncate rounded-sm px-1 py-0.5 text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:max-w-[13rem]'
+          >
+            {isFirst && showHomeIcon && <Home className='h-3.5 w-3.5' />}
+            {item.icon && <span className='shrink-0'>{item.icon}</span>}
+            <span className='truncate'>{item.label}</span>
+          </Link>
+        ) : (
+          <span className='inline-flex max-w-[9rem] items-center gap-1.5 truncate px-1 py-0.5 text-sm text-muted-foreground/60 sm:max-w-[13rem]'>
+            {isFirst && showHomeIcon && <Home className='h-3.5 w-3.5' />}
+            {item.icon && <span className='shrink-0'>{item.icon}</span>}
+            <span className='truncate'>{item.label}</span>
+          </span>
+        )}
+      </li>
+    )
+  }
 
   return (
-    <nav
-      className={cn(
-        'flex items-center space-x-1 text-sm mb-6 overflow-x-auto',
-        className,
-      )}
-      aria-label='Breadcrumb'
-    >
-      <ol className='flex items-center space-x-1'>
-        {items.map((item, index) => {
-          const isLast = index === items.length - 1
-          const isFirst = index === 0
+    <nav className={cn('mb-6', className)} aria-label='Breadcrumb'>
+      <ol className='hidden items-center sm:flex'>
+        {desktopItems.map((item, index) => (
+          <React.Fragment key={`${item.label}-${index}`}>
+            {renderItem(item, index, desktopItems)}
+            {items.length > maxVisibleItems && index === 0 && (
+              <li className='mx-1.5 flex items-center text-muted-foreground/70 sm:mx-2'>
+                {separator || defaultSeparator}
+                <MoreHorizontal className='ml-1 h-3.5 w-3.5' />
+              </li>
+            )}
+          </React.Fragment>
+        ))}
+      </ol>
 
-          return (
-            <li key={index} className='flex items-center'>
-              {/* Separator - skip for first item */}
-              {!isFirst && (
-                <span className='mx-2' aria-hidden='true'>
-                  {separator || defaultSeparator}
-                </span>
-              )}
-
-              {/* Breadcrumb Item */}
-              {isLast ? (
-                // Current page - not clickable
-                <span
-                  className='flex items-center gap-1.5 font-medium text-gray-900 cursor-default'
-                  aria-current='page'
-                >
-                  {isFirst && showHomeIcon && (
-                    <Home className='h-4 w-4' aria-hidden='true' />
-                  )}
-                  {item.icon && (
-                    <span className='flex-shrink-0' aria-hidden='true'>
-                      {item.icon}
-                    </span>
-                  )}
-                  <span className='truncate max-w-[200px] sm:max-w-none'>
-                    {item.label}
-                  </span>
-                </span>
-              ) : item.href ? (
-                // Clickable link
-                <Link
-                  href={item.href}
-                  className={cn(
-                    'flex items-center gap-1.5 text-gray-600 hover:text-gray-900',
-                    'transition-colors duration-200 rounded-md px-2 py-1 -mx-2 -my-1',
-                    'hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1',
-                  )}
-                >
-                  {isFirst && showHomeIcon && (
-                    <Home className='h-4 w-4' aria-hidden='true' />
-                  )}
-                  {item.icon && (
-                    <span className='flex-shrink-0' aria-hidden='true'>
-                      {item.icon}
-                    </span>
-                  )}
-                  <span className='truncate max-w-[150px] sm:max-w-none'>
-                    {item.label}
-                  </span>
-                </Link>
-              ) : (
-                // Plain text (no href)
-                <span
-                  className={cn(
-                    'flex items-center gap-1.5 text-gray-600',
-                    'px-2 py-1 -mx-2 -my-1',
-                  )}
-                >
-                  {isFirst && showHomeIcon && (
-                    <Home className='h-4 w-4' aria-hidden='true' />
-                  )}
-                  {item.icon && (
-                    <span className='flex-shrink-0' aria-hidden='true'>
-                      {item.icon}
-                    </span>
-                  )}
-                  <span className='truncate max-w-[150px] sm:max-w-none'>
-                    {item.label}
-                  </span>
-                </span>
-              )}
-            </li>
-          )
-        })}
+      <ol className='flex items-center sm:hidden'>
+        {mobileItems.map((item, index) => renderItem(item, index, mobileItems))}
       </ol>
     </nav>
   )

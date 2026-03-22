@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { ListingReport } from '@/api/types/listing-report.type'
 import { ListingService } from '@/api/services/listing.service'
@@ -10,7 +9,6 @@ import { ReportTable } from '@/components/organisms/reports/ReportTable'
 import { ReportReviewModal } from '@/components/organisms/reports/ReportReviewModal'
 
 const ViolationReportManagement = () => {
-  const t = useTranslations('reports')
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
@@ -109,18 +107,6 @@ const ViolationReportManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
-        {/* Header Section */}
-        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-3'>
-          <div>
-            <h1 className='text-xl md:text-2xl font-bold text-gray-900'>
-              {t('title')}
-            </h1>
-            <p className='mt-0.5 text-xs sm:text-sm text-gray-600'>
-              {t('description')}
-            </p>
-          </div>
-        </div>
-
         {/* Stats Cards */}
         <ReportStats stats={stats} />
 

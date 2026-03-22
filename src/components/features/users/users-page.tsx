@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/atoms/button'
 import { useTranslations } from 'next-intl'
+import { Plus } from 'lucide-react'
 import { getUserList } from '@/api/services/user.service'
 import { UserProfile } from '@/api/types/user.type'
 import { UserTable } from '@/components/organisms/users/UserTable'
@@ -74,24 +75,13 @@ const UserManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
-        {/* Header Section */}
-        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-3'>
-          <div>
-            <h1 className='text-xl md:text-2xl font-bold text-gray-900'>
-              {t('title')}
-            </h1>
-            <p className='mt-0.5 text-xs sm:text-sm text-gray-600'>
-              {t('breadcrumb.dashboard')}
-            </p>
-          </div>
-        </div>
-
         <div className='flex justify-stretch sm:justify-end'>
           <Button
             className='w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white'
             onClick={() => setShowCreate(true)}
           >
-            + {t('create.button') || 'Create User'}
+            <Plus className='h-4 w-4' />
+            {t('create.button') || 'Create User'}
           </Button>
         </div>
 

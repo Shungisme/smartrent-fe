@@ -86,7 +86,7 @@ const NewsEditor = () => {
     content: '',
     editorProps: {
       attributes: {
-        class: 'prose prose-sm max-w-none focus:outline-none min-h-[500px] p-6',
+        class: 'prose prose-sm max-w-none focus:outline-none min-h-[320px] p-6',
       },
     },
   })
@@ -255,23 +255,22 @@ const NewsEditor = () => {
   }
 
   return (
-    <div className='min-h-screen bg-gray-50'>
-      <NewsEditorHeader
-        isEditMode={isEditMode}
-        wordCount={wordCount}
-        characterCount={characterCount}
-        previewMode={previewMode}
-        setPreviewMode={setPreviewMode}
-        onSave={handleSubmit((data) => onSubmit(data, false))}
-        onPublish={handlePublish}
-        loading={saveLoading}
-      />
-
-      <div className='py-10'>
+    <div className='min-h-screen'>
+      <div>
         <form onSubmit={handleSubmit((data) => onSubmit(data, false))}>
-          <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
-            <div className='lg:col-span-2 space-y-6'>
-              <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 p-8 border border-gray-100'>
+          <NewsEditorHeader
+            wordCount={wordCount}
+            characterCount={characterCount}
+            previewMode={previewMode}
+            setPreviewMode={setPreviewMode}
+            onSave={handleSubmit((data) => onSubmit(data, false))}
+            onPublish={handlePublish}
+            loading={saveLoading}
+          />
+
+          <div className='grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8'>
+            <div className='order-1 space-y-6 lg:col-span-8'>
+              <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 px-8 py-4 border border-gray-100'>
                 <input
                   {...register('title', { required: true })}
                   type='text'
@@ -284,7 +283,9 @@ const NewsEditor = () => {
                 {!previewMode ? (
                   <>
                     <NewsEditorMenuBar editor={editor} />
-                    <EditorContent editor={editor} />
+                    <div className='min-h-[320px] max-h-[60vh] overflow-y-auto'>
+                      <EditorContent editor={editor} />
+                    </div>
                   </>
                 ) : (
                   <div className='p-10 bg-gradient-to-br from-gray-50 to-white'>
@@ -304,7 +305,7 @@ const NewsEditor = () => {
               </div>
             </div>
 
-            <div className='space-y-4'>
+            <div className='order-2 space-y-4 lg:col-span-4'>
               <NewsMetaForm
                 register={register}
                 watch={watch}

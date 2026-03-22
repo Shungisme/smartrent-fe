@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { useDebounce } from '@/hooks/useDebounce'
 import { ListingService } from '@/api/services/listing.service'
@@ -14,8 +13,6 @@ import { PostTable } from '@/components/organisms/posts/PostTable'
 import { PostReviewModal } from '@/components/organisms/posts/PostReviewModal'
 
 const PostVerification = () => {
-  const t = useTranslations('posts')
-
   const [posts, setPosts] = useState<UIPostData[]>([])
   const [initialLoading, setInitialLoading] = useState(true)
   const [tableLoading, setTableLoading] = useState(false)
@@ -63,7 +60,6 @@ const PostVerification = () => {
 
   const fetchListings = async () => {
     try {
-      // Only show full-page loading on initial load
       if (initialLoading) {
         setInitialLoading(true)
       } else {
@@ -226,18 +222,6 @@ const PostVerification = () => {
         </div>
       ) : (
         <div className='space-y-6'>
-          {/* Header Section */}
-          <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-3'>
-            <div>
-              <h1 className='text-xl md:text-2xl font-bold text-gray-900'>
-                {t('title')}
-              </h1>
-              <p className='mt-0.5 text-xs sm:text-sm text-gray-600'>
-                {t('description')}
-              </p>
-            </div>
-          </div>
-
           {/* Stats Cards */}
           <PostStats stats={stats} totalPosts={posts.length} />
 

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/atoms/button'
 import { useTranslations } from 'next-intl'
+import { Plus } from 'lucide-react'
 import { getAdminList } from '@/api/services/admin.service'
 import { AdminProfile } from '@/api/types/admin.type'
 import { AdminTable } from '@/components/organisms/admins/AdminTable'
@@ -60,25 +61,14 @@ const AdminManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
-        {/* Header Section */}
-        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-3'>
-          <div>
-            <h1 className='text-xl md:text-2xl font-bold text-gray-900'>
-              {t('title')}
-            </h1>
-            <p className='mt-0.5 text-xs sm:text-sm text-gray-600'>
-              {t('subtitle')}
-            </p>
-          </div>
-        </div>
-
         {/* Header with Create Button */}
         <div className='flex items-center justify-stretch sm:justify-end'>
           <Button
             className='w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white'
             onClick={() => setCreateDialogOpen(true)}
           >
-            + {t('createNewAdmin')}
+            <Plus className='h-4 w-4' />
+            {t('createNewAdmin')}
           </Button>
         </div>
 

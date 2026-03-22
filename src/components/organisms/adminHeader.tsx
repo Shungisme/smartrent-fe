@@ -15,7 +15,11 @@ import { toast } from 'sonner'
 import { User, LogOut, Settings, ChevronDown } from 'lucide-react'
 import { NotificationBell } from './NotificationBell'
 
-const AdminHeader: React.FC = () => {
+type AdminHeaderProps = {
+  leftContent?: React.ReactNode
+}
+
+const AdminHeader: React.FC<AdminHeaderProps> = ({ leftContent }) => {
   const t = useTranslations('admin.header')
   const router = useRouter()
   const { user, logout } = useAuth()
@@ -37,42 +41,35 @@ const AdminHeader: React.FC = () => {
   }
 
   return (
-    <header className='bg-white border-b border-gray-200 px-6 py-2'>
-      <div className='flex items-center justify-between'>
-        <div
-          className='flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity'
-          onClick={() => router.push('/users')}
-        >
-          <span className='font-bold text-xl text-gray-900'>
-            SmartRent Admin
-          </span>
-        </div>
+    <header className='app-header'>
+      <div className='flex w-full items-center justify-between gap-4'>
+        <div className='min-w-0 flex-1 overflow-hidden'>{leftContent}</div>
 
         {/* Right - Notifications & Profile */}
-        <div className='flex items-center gap-4'>
+        <div className='flex shrink-0 items-center gap-2.5'>
           {/* Notification Bell */}
           <NotificationBell />
 
           {/* Profile Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className='flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors'>
-                <Avatar className='w-9 h-9'>
-                  <div className='w-full h-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold'>
+              <div className='flex cursor-pointer items-center gap-2 rounded-lg border border-transparent p-1.5 transition-colors hover:border-border/70 hover:bg-accent'>
+                <Avatar className='h-8 w-8'>
+                  <div className='flex h-full w-full items-center justify-center bg-gradient-to-br from-primary to-primary/80 font-semibold text-primary-foreground'>
                     {user?.firstName?.[0]?.toUpperCase() || 'A'}
                   </div>
                 </Avatar>
                 <div className='flex flex-col'>
-                  <span className='text-sm font-medium text-gray-900'>
+                  <span className='text-xs font-semibold text-foreground sm:text-sm'>
                     {user?.firstName && user?.lastName
                       ? `${user.firstName} ${user.lastName}`
                       : user?.email?.split('@')[0] || 'Admin'}
                   </span>
-                  <span className='text-xs text-gray-500'>
+                  <span className='text-[11px] leading-4 text-muted-foreground'>
                     {user?.roles?.[0] || t('defaultRole')}
                   </span>
                 </div>
-                <ChevronDown className='w-4 h-4 text-gray-500' />
+                <ChevronDown className='h-4 w-4 text-muted-foreground' />
               </div>
             </DropdownMenuTrigger>
 

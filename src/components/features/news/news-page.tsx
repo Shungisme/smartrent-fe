@@ -189,15 +189,7 @@ const NewsManagement = () => {
         </div>
       ) : (
         <div className='space-y-6'>
-          <div className='flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3'>
-            <div>
-              <h1 className='text-xl md:text-2xl font-bold text-gray-900'>
-                {t('title')}
-              </h1>
-              <p className='mt-0.5 text-xs sm:text-sm text-gray-600'>
-                {t('subtitle')}
-              </p>
-            </div>
+          <div className='flex items-center justify-end'>
             <Button
               onClick={handleCreate}
               className='w-full sm:w-auto flex items-center justify-center gap-2'

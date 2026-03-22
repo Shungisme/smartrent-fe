@@ -15,9 +15,6 @@ export const PostStats: React.FC<PostStatsProps> = ({ stats, totalPosts }) => {
       <div className='rounded-xl border border-gray-100 bg-white p-6'>
         <div className='text-2xl font-bold text-gray-900'>{totalPosts}</div>
         <div className='mt-1 text-sm text-gray-400'>{t('stats.total')}</div>
-        <div className='mt-2 text-xs text-gray-500'>
-          {t('stats.allSubmitted')}
-        </div>
       </div>
 
       <div className='rounded-xl border border-gray-100 bg-white p-6'>
@@ -25,9 +22,6 @@ export const PostStats: React.FC<PostStatsProps> = ({ stats, totalPosts }) => {
           {stats.pendingVerification}
         </div>
         <div className='mt-1 text-sm text-gray-400'>{t('stats.pending')}</div>
-        <div className='mt-2 text-xs text-gray-500'>
-          {t('stats.awaitingVerification')}
-        </div>
       </div>
 
       <div className='rounded-xl border border-gray-100 bg-white p-6'>
@@ -35,15 +29,11 @@ export const PostStats: React.FC<PostStatsProps> = ({ stats, totalPosts }) => {
           {stats.verified}
         </div>
         <div className='mt-1 text-sm text-gray-400'>{t('stats.approved')}</div>
-        <div className='mt-2 text-xs text-gray-500'>{t('stats.published')}</div>
       </div>
 
       <div className='rounded-xl border border-gray-100 bg-white p-6'>
         <div className='text-2xl font-bold text-red-600'>{stats.expired}</div>
         <div className='mt-1 text-sm text-gray-400'>{t('stats.rejected')}</div>
-        <div className='mt-2 text-xs text-gray-500'>
-          {t('stats.notApproved')}
-        </div>
       </div>
     </div>
   )

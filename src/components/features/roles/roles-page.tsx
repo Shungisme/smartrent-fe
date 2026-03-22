@@ -19,6 +19,7 @@ import {
 } from '@/api/services/role.service'
 import { Role } from '@/api/types/role.type'
 import { useTranslations } from 'next-intl'
+import { Plus } from 'lucide-react'
 
 type RoleRow = {
   id: string
@@ -109,18 +110,6 @@ const RoleManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
-        {/* Header Section */}
-        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-3'>
-          <div>
-            <h1 className='text-xl md:text-2xl font-bold text-gray-900'>
-              {t('title')}
-            </h1>
-            <p className='mt-0.5 text-xs sm:text-sm text-gray-600'>
-              {t('subtitle')}
-            </p>
-          </div>
-        </div>
-
         <div className='flex items-center justify-stretch sm:justify-end'>
           <Button
             className='w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white'
@@ -130,7 +119,8 @@ const RoleManagement = () => {
               setFormError(null)
             }}
           >
-            + {t('createNewRole')}
+            <Plus className='h-4 w-4' />
+            {t('createNewRole')}
           </Button>
         </div>
         <DataTable

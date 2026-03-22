@@ -1,5 +1,5 @@
-import PremiumPage from '@/components/features/premium/premium-page'
+import { redirect } from 'next/navigation'
 
 export default function PremiumRoute() {
-  return <PremiumPage />
+  redirect('/premium/overview')
 }

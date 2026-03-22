@@ -44,9 +44,15 @@ h2,
 h3,
 h4,
 button,
-input,
 label {
   line-height: 1.1;
+}
+
+/* Keep form controls readable and avoid clipping descenders in compact fields */
+input,
+textarea,
+select {
+  line-height: 1.5;
 }
 
 /* Balance text wrapping on headings */

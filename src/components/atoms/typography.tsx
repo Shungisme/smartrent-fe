@@ -69,17 +69,17 @@ function getDefaultComponent(variant: TypographyProps['variant']) {
 function getVariantClasses(variant: TypographyProps['variant']) {
   switch (variant) {
     case 'h1':
-      return 'scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl'
+      return 'scroll-m-20 text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl'
     case 'h2':
-      return 'scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0'
+      return 'scroll-m-20 text-2xl font-semibold tracking-tight text-foreground md:text-3xl first:mt-0'
     case 'h3':
-      return 'scroll-m-20 text-2xl font-semibold tracking-tight'
+      return 'scroll-m-20 text-xl font-semibold tracking-tight text-foreground md:text-2xl'
     case 'h4':
-      return 'scroll-m-20 text-xl font-semibold tracking-tight'
+      return 'scroll-m-20 text-lg font-semibold tracking-tight text-foreground'
     case 'h5':
-      return 'scroll-m-20 text-lg font-semibold tracking-tight'
+      return 'scroll-m-20 text-base font-semibold tracking-tight text-foreground'
     case 'h6':
-      return 'scroll-m-20 text-base font-semibold tracking-tight'
+      return 'scroll-m-20 text-sm font-semibold tracking-tight text-muted-foreground'
     case 'blockquote':
       return 'mt-6 border-l-2 pl-6 italic'
     case 'list':
@@ -87,13 +87,13 @@ function getVariantClasses(variant: TypographyProps['variant']) {
     case 'inlineCode':
       return 'relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold'
     case 'lead':
-      return 'text-xl text-muted-foreground'
+      return 'text-lg text-muted-foreground md:text-xl'
     case 'large':
-      return 'text-lg font-semibold'
+      return 'text-base font-semibold text-foreground md:text-lg'
     case 'p':
-      return 'leading-7'
+      return 'text-sm leading-6 text-foreground md:text-base md:leading-7'
     case 'small':
-      return 'text-sm font-medium leading-none'
+      return 'text-xs font-medium leading-5 md:text-sm'
     case 'muted':
       return 'text-sm text-muted-foreground'
     default:

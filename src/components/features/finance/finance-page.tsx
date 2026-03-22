@@ -15,7 +15,7 @@ import {
   AlertCircle,
   TrendingUp,
   FileCheck,
-  FilePlus,
+  Plus,
   Download,
   BarChart3,
   Calendar,
@@ -67,7 +67,7 @@ const FinancialManagement = () => {
   const quickAccessButtons = [
     { icon: <FileText className='h-5 w-5' />, label: t('buttons.invoiceList') },
     {
-      icon: <FilePlus className='h-5 w-5' />,
+      icon: <Plus className='h-5 w-5' />,
       label: t('buttons.createInvoice'),
     },
     {
@@ -81,34 +81,23 @@ const FinancialManagement = () => {
   ]
 
   return (
-    <div>
-      <div className='space-y-6'>
-        {/* Header Section */}
-        <div className='flex flex-col lg:flex-row items-start lg:items-start justify-between gap-3'>
-          <div>
-            <h1 className='text-xl md:text-2xl font-bold text-gray-900'>
-              {t('title')}
-            </h1>
-            <p className='mt-0.5 text-xs sm:text-sm text-gray-600'>
-              {t('subtitle')}
-            </p>
+    <div className='section-stack'>
+      <div className='section-stack'>
+        {/* Top Actions */}
+        <div className='flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-end'>
+          <div className='relative'>
+            <Calendar className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+            <Input
+              type='text'
+              value={dateRange}
+              onChange={(e) => setDateRange(e.target.value)}
+              className='w-full sm:w-64 pl-10'
+            />
           </div>
-
-          <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto'>
-            <div className='relative'>
-              <Calendar className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400' />
-              <Input
-                type='text'
-                value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
-                className='w-full sm:w-64 pl-10'
-              />
-            </div>
-            <Button className='bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto'>
-              <FilePlus className='mr-2 h-4 w-4' />
-              {t('buttons.createInvoice')}
-            </Button>
-          </div>
+          <Button className='w-full sm:w-auto'>
+            <Plus className='h-4 w-4' />
+            {t('buttons.createInvoice')}
+          </Button>
         </div>
 
         {/* Stats Cards */}
@@ -154,16 +143,16 @@ const FinancialManagement = () => {
         {/* Quick Access + Recent Invoices */}
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-3'>
           {/* Quick Access */}
-          <div className='rounded-2xl border border-gray-200 bg-white p-6'>
-            <h3 className='mb-4 text-lg font-semibold text-gray-900'>
+          <div className='surface-card flex flex-col gap-3 p-6'>
+            <h3 className='mb-4 text-lg font-semibold text-foreground'>
               {t('sections.quickAccess')}
             </h3>
-            <div className='space-y-2'>
+            <div className='space-y-3'>
               {quickAccessButtons.map((button, index) => (
                 <Button
                   key={index}
                   variant='outline'
-                  className='w-full justify-start'
+                  className='h-11 w-full justify-start px-4'
                 >
                   {button.icon}
                   <span className='ml-2'>{button.label}</span>
@@ -173,9 +162,9 @@ const FinancialManagement = () => {
           </div>
 
           {/* Recent Invoices */}
-          <div className='lg:col-span-2 rounded-2xl border border-gray-200 bg-white p-6'>
+          <div className='surface-card p-6 lg:col-span-2'>
             <div className='mb-4 flex items-center justify-between'>
-              <h3 className='text-lg font-semibold text-gray-900'>
+              <h3 className='text-lg font-semibold text-foreground'>
                 {t('sections.recentInvoices')}
               </h3>
               <Button variant='ghost' size='sm'>
