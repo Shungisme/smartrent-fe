@@ -1,6 +1,5 @@
 import React from 'react'
-import { useTranslations } from 'next-intl'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { Notification, NotificationType } from '@/api/types/notification.type'
 import { Bell, FileText, RefreshCw } from 'lucide-react'
 import classNames from 'classnames'
@@ -70,7 +69,6 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
   onClick,
 }) => {
   const router = useRouter()
-  const t = useTranslations('notifications')
 
   const Icon = getNotificationIcon(notification.type)
   const colorClasses = getNotificationColor(notification.type)

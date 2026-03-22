@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/atoms/button'
 import { Loader2, ArrowLeft, Eye, Save } from 'lucide-react'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 
 interface NewsEditorHeaderProps {
   isEditMode: boolean

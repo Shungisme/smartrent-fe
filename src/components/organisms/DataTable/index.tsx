@@ -18,6 +18,7 @@ function DataTableContent<T = any>({
   onSelectionChange,
   filterMode = 'frontend',
   itemsPerPageOptions,
+  tableClassName,
 }: Omit<DataTableProps<T>, 'data'>) {
   const {
     paginatedData,
@@ -88,6 +89,7 @@ function DataTableContent<T = any>({
             selectedRows={selectedRows}
             onRowSelect={toggleRowSelection}
             onSelectAll={toggleAllRows}
+            maxHeightClassName={tableClassName}
           />
 
           {/* Mobile Cards */}

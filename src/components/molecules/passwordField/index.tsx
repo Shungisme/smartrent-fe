@@ -16,7 +16,6 @@ type PasswordFieldProps = {
   showToggle?: boolean
   showIcon?: boolean
   name: string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: Control<any>
   className?: string
   placeholder?: string

@@ -151,6 +151,7 @@ export interface TableDesktopProps<T = Record<string, unknown>> {
   selectedRows?: T[]
   onRowSelect?: (row: T) => void
   onSelectAll?: () => void
+  maxHeightClassName?: string
 }
 
 export interface TableMobileProps<T = Record<string, unknown>> {
