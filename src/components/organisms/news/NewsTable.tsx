@@ -61,6 +61,11 @@ const isValidImageSrc = (src: unknown): src is string => {
   return normalized.startsWith('/') || /^https?:\/\//i.test(normalized)
 }
 
+const getDisplayStatus = (row: NewsSummaryResponse): NewsStatus => {
+  if (row.status) return row.status
+  return row.publishedAt ? 'PUBLISHED' : 'DRAFT'
+}
+
 export const NewsTable: React.FC<NewsTableProps> = ({
   data,
   totalItems,
@@ -83,6 +88,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
         const safeThumbnailSrc = isValidImageSrc(row.thumbnailUrl)
           ? row.thumbnailUrl
           : null
+        const displayStatus = getDisplayStatus(row)
 
         return (
           <div className='flex gap-3'>
@@ -122,10 +128,10 @@ export const NewsTable: React.FC<NewsTableProps> = ({
                   variant='outline'
                   className={cn(
                     'text-xs px-2 py-0',
-                    getStatusColor(row.status || 'DRAFT'),
+                    getStatusColor(displayStatus),
                   )}
                 >
-                  {t(`status.${row.status || 'DRAFT'}`)}
+                  {t(`status.${displayStatus}`)}
                 </Badge>
               </div>
             </div>

@@ -61,32 +61,6 @@ const NewsManagement = () => {
     filterValues.pageSize,
   ])
 
-  useEffect(() => {
-    fetchStatistics()
-  }, [])
-
-  const fetchStatistics = async () => {
-    try {
-      const [all, published, drafts, archived, blogs] = await Promise.all([
-        NewsService.getNewsList({ page: 1, size: 1 }),
-        NewsService.getNewsList({ page: 1, size: 1, status: 'PUBLISHED' }),
-        NewsService.getNewsList({ page: 1, size: 1, status: 'DRAFT' }),
-        NewsService.getNewsList({ page: 1, size: 1, status: 'ARCHIVED' }),
-        NewsService.getNewsList({ page: 1, size: 1, category: 'BLOG' }),
-      ])
-
-      setStats({
-        totalNews: all.data?.totalItems || 0,
-        totalPublished: published.data?.totalItems || 0,
-        totalDrafts: drafts.data?.totalItems || 0,
-        totalArchived: archived.data?.totalItems || 0,
-        totalBlogs: blogs.data?.totalItems || 0,
-      })
-    } catch (error) {
-      console.error('Error fetching news statistics:', error)
-    }
-  }
-
   const fetchNews = async () => {
     try {
       if (initialLoading) {
@@ -117,6 +91,22 @@ const NewsManagement = () => {
       if (response.data) {
         setNewsList(response.data.news)
         setTotalCount(response.data.totalItems)
+
+        const totalItems = response.data.totalItems
+        const activeStatus = apiFilters.status
+        const activeCategory = apiFilters.category
+
+        setStats((prev) => ({
+          ...prev,
+          totalNews:
+            !activeStatus && !activeCategory ? totalItems : prev.totalNews,
+          totalPublished:
+            activeStatus === 'PUBLISHED' ? totalItems : prev.totalPublished,
+          totalDrafts: activeStatus === 'DRAFT' ? totalItems : prev.totalDrafts,
+          totalArchived:
+            activeStatus === 'ARCHIVED' ? totalItems : prev.totalArchived,
+          totalBlogs: activeCategory === 'BLOG' ? totalItems : prev.totalBlogs,
+        }))
       }
     } catch (error) {
       console.error('Error fetching news:', error)
@@ -169,7 +159,7 @@ const NewsManagement = () => {
         toast.success(t('messages.deleteSuccess'))
         setDeleteModalOpen(false)
         setSelectedNews(null)
-        await Promise.all([fetchNews(), fetchStatistics()])
+        await fetchNews()
       } else {
         toast.error(response.message || t('messages.deleteError'))
       }
@@ -199,7 +189,8 @@ const NewsManagement = () => {
             </Button>
           </div>
 
-          <NewsStats stats={stats} />
+          {/* Hidden by request */}
+          {false && <NewsStats stats={stats} />}
 
           <NewsTable
             data={newsList}

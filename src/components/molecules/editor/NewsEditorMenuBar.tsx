@@ -23,14 +23,20 @@ import {
   Heading1,
   Heading2,
   Heading3,
+  ImagePlus,
+  Loader2,
 } from 'lucide-react'
 
 interface NewsEditorMenuBarProps {
   editor: Editor | null
+  onSelectImage?: () => void
+  isUploadingImage?: boolean
 }
 
 export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
   editor,
+  onSelectImage,
+  isUploadingImage = false,
 }) => {
   const t = useTranslations('news.editor.menuBar')
 
@@ -280,6 +286,20 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
 
         {/* Other */}
         <div className='flex gap-1 pr-3 border-r border-gray-300'>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={onSelectImage}
+            disabled={!onSelectImage || isUploadingImage}
+            title='Insert Image'
+          >
+            {isUploadingImage ? (
+              <Loader2 className='h-4 w-4 animate-spin' />
+            ) : (
+              <ImagePlus className='h-4 w-4' />
+            )}
+          </Button>
           <Button
             type='button'
             variant='ghost'

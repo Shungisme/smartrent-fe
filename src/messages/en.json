@@ -1737,6 +1737,8 @@
         "tagsPlaceholder": "tag1, tag2, tag3",
         "thumbnail": "Thumbnail URL",
         "thumbnailPlaceholder": "https://...",
+        "addThumbnail": "Add Thumbnail",
+        "uploadingThumbnail": "Uploading thumbnail...",
         "author": "Author name",
         "authorPlaceholder": "Author name...",
         "metaTitle": "Meta Title",

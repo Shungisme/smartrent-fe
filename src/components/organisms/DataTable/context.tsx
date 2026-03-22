@@ -143,21 +143,18 @@ export function DataTableProvider<T = any>({
   // Filter handlers
   const setFilter = useCallback(
     (key: string, value: any) => {
-      setFilters((prev) => {
-        const updated = { ...prev, [key]: value, page: 1 }
+      const updated = { ...filters, [key]: value, page: 1 }
 
-        // Notify parent if in API mode
-        if (filterMode === 'api' && onFilterChange) {
-          onFilterChange(updated)
-        }
+      setFilters(updated)
+      // Reset to page 1 when filtering
+      setCurrentPage(1)
 
-        // Reset to page 1 when filtering
-        setCurrentPage(1)
-
-        return updated
-      })
+      // Notify parent if in API mode
+      if (filterMode === 'api' && onFilterChange) {
+        onFilterChange(updated)
+      }
     },
-    [filterMode, onFilterChange],
+    [filterMode, onFilterChange, filters],
   )
 
   const clearFilters = useCallback(() => {
@@ -176,25 +173,22 @@ export function DataTableProvider<T = any>({
   // Sort handler
   const handleSort = useCallback(
     (key: keyof T) => {
-      setSortConfig((prev) => {
-        let direction: 'asc' | 'desc' | null = 'asc'
+      let direction: 'asc' | 'desc' | null = 'asc'
 
-        if (prev.key === key) {
-          if (prev.direction === 'asc') direction = 'desc'
-          else if (prev.direction === 'desc') direction = null
-        }
+      if (sortConfig.key === key) {
+        if (sortConfig.direction === 'asc') direction = 'desc'
+        else if (sortConfig.direction === 'desc') direction = null
+      }
 
-        const newSort = { key: direction ? key : null, direction }
+      const newSort = { key: direction ? key : null, direction }
+      setSortConfig(newSort)
 
-        // Notify parent if in API mode
-        if (filterMode === 'api' && onSortChange) {
-          onSortChange(newSort)
-        }
-
-        return newSort
-      })
+      // Notify parent if in API mode
+      if (filterMode === 'api' && onSortChange) {
+        onSortChange(newSort)
+      }
     },
-    [filterMode, onSortChange],
+    [filterMode, onSortChange, sortConfig],
   )
 
   // Pagination handlers

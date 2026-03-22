@@ -98,6 +98,11 @@ export const PATHS = {
     ADMIN_ARCHIVE: '/v1/admin/news/:id/archive', // POST archive news
   },
 
+  // Media endpoints
+  MEDIA: {
+    UPLOAD: '/v1/media/upload',
+  },
+
   // Notification endpoints (Admin)
   NOTIFICATION: {
     LIST: '/v1/notifications', // GET paginated notifications

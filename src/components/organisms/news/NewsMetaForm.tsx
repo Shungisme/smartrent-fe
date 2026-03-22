@@ -20,6 +20,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/atoms/select'
+import { Button } from '@/components/atoms/button'
+import { ImagePlus, Loader2 } from 'lucide-react'
 import { EditorFormData } from '@/types/news-editor.type'
 import { NewsCategory, NewsStatus } from '@/api/types/news.type'
 
@@ -28,16 +30,35 @@ interface NewsMetaFormProps {
   watch: UseFormWatch<EditorFormData>
   setValue: UseFormSetValue<EditorFormData>
   errors?: FieldErrors<EditorFormData>
+  onThumbnailSelect?: (file: File) => void | Promise<void>
+  isUploadingThumbnail?: boolean
 }
 
 export const NewsMetaForm: React.FC<NewsMetaFormProps> = ({
   register,
   watch,
   setValue,
+  onThumbnailSelect,
+  isUploadingThumbnail = false,
 }) => {
   const t = useTranslations('news.editor.meta')
   const tStatus = useTranslations('news.status')
   const tCategory = useTranslations('news.category')
+  const thumbnailUrl = watch('thumbnailUrl')
+  const thumbnailInputRef = React.useRef<HTMLInputElement | null>(null)
+  const [showNewThumbnailPreview, setShowNewThumbnailPreview] =
+    React.useState(false)
+
+  const handleThumbnailChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0]
+    if (!file || !onThumbnailSelect) return
+
+    await onThumbnailSelect(file)
+    setShowNewThumbnailPreview(true)
+    event.target.value = ''
+  }
 
   return (
     <div className='sticky top-6 space-y-4'>
@@ -174,12 +195,45 @@ export const NewsMetaForm: React.FC<NewsMetaFormProps> = ({
                 {t('thumbnail')}
               </Label>
               <input
-                {...register('thumbnailUrl')}
-                id='thumbnailUrl'
-                type='text'
-                className='w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all'
-                placeholder={t('thumbnailPlaceholder')}
+                ref={thumbnailInputRef}
+                type='file'
+                accept='image/*'
+                onChange={handleThumbnailChange}
+                className='hidden'
               />
+              <Button
+                type='button'
+                variant='outline'
+                className='w-full justify-center gap-2'
+                onClick={() => thumbnailInputRef.current?.click()}
+                disabled={!onThumbnailSelect || isUploadingThumbnail}
+              >
+                {isUploadingThumbnail ? (
+                  <Loader2 className='h-4 w-4 animate-spin' />
+                ) : (
+                  <ImagePlus className='h-4 w-4' />
+                )}
+                {isUploadingThumbnail
+                  ? t('uploadingThumbnail')
+                  : t('addThumbnail')}
+              </Button>
+              <input
+                {...register('thumbnailUrl')}
+                type='hidden'
+                id='thumbnailUrl'
+              />
+              {showNewThumbnailPreview && thumbnailUrl ? (
+                <>
+                  <img
+                    src={thumbnailUrl}
+                    alt='Thumbnail preview'
+                    className='h-32 w-full rounded-lg border border-gray-200 object-cover'
+                  />
+                  <p className='break-all text-xs text-gray-500'>
+                    {thumbnailUrl}
+                  </p>
+                </>
+              ) : null}
             </div>
           </div>
         </TabsContent>

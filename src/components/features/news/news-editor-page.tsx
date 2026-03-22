@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
+import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import Underline from '@tiptap/extension-underline'
 import TextAlign from '@tiptap/extension-text-align'
@@ -39,6 +40,9 @@ const NewsEditor = () => {
   const [wordCount, setWordCount] = useState(0)
   const [characterCount, setCharacterCount] = useState(0)
   const [pendingContent, setPendingContent] = useState<string | null>(null)
+  const [uploadingContentImage, setUploadingContentImage] = useState(false)
+  const [uploadingThumbnail, setUploadingThumbnail] = useState(false)
+  const contentImageInputRef = useRef<HTMLInputElement | null>(null)
 
   const {
     register,
@@ -67,6 +71,7 @@ const NewsEditor = () => {
     immediatelyRender: false,
     extensions: [
       StarterKit,
+      Image,
       Underline,
       Link.configure({
         openOnClick: false,
@@ -242,6 +247,56 @@ const NewsEditor = () => {
     }
   }
 
+  const uploadImageAndGetUrl = async (file: File) => {
+    const response = await NewsService.uploadImage(file)
+
+    if (response.code !== SUCCESS_CODE || !response.data?.url) {
+      throw new Error(response.message || 'Image upload failed')
+    }
+
+    return response.data.url
+  }
+
+  const handleContentImageSelected = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0]
+    if (!file || !editor) return
+
+    try {
+      setUploadingContentImage(true)
+      const imageUrl = await uploadImageAndGetUrl(file)
+      editor
+        .chain()
+        .focus()
+        .setImage({ src: imageUrl, alt: file.name, title: file.name })
+        .run()
+      toast.success('Image inserted')
+    } catch (error) {
+      console.error('Error uploading content image:', error)
+      toast.error('Failed to upload image')
+    } finally {
+      setUploadingContentImage(false)
+      event.target.value = ''
+    }
+  }
+
+  const handleThumbnailSelect = async (file: File) => {
+    try {
+      setUploadingThumbnail(true)
+      const imageUrl = await uploadImageAndGetUrl(file)
+      setValue('thumbnailUrl', imageUrl, {
+        shouldDirty: true,
+      })
+      toast.success('Thumbnail uploaded')
+    } catch (error) {
+      console.error('Error uploading thumbnail:', error)
+      toast.error('Failed to upload thumbnail')
+    } finally {
+      setUploadingThumbnail(false)
+    }
+  }
+
   const handlePublish = () => {
     handleSubmit((data) => onSubmit(data, true))()
   }
@@ -257,6 +312,13 @@ const NewsEditor = () => {
   return (
     <div className='min-h-screen'>
       <div>
+        <input
+          ref={contentImageInputRef}
+          type='file'
+          accept='image/*'
+          onChange={handleContentImageSelected}
+          className='hidden'
+        />
         <form onSubmit={handleSubmit((data) => onSubmit(data, false))}>
           <NewsEditorHeader
             wordCount={wordCount}
@@ -282,7 +344,13 @@ const NewsEditor = () => {
               <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-gray-100'>
                 {!previewMode ? (
                   <>
-                    <NewsEditorMenuBar editor={editor} />
+                    <NewsEditorMenuBar
+                      editor={editor}
+                      onSelectImage={() =>
+                        contentImageInputRef.current?.click()
+                      }
+                      isUploadingImage={uploadingContentImage}
+                    />
                     <div className='min-h-[320px] max-h-[60vh] overflow-y-auto'>
                       <EditorContent editor={editor} />
                     </div>
@@ -311,6 +379,8 @@ const NewsEditor = () => {
                 watch={watch}
                 setValue={setValue}
                 errors={errors}
+                onThumbnailSelect={handleThumbnailSelect}
+                isUploadingThumbnail={uploadingThumbnail}
               />
             </div>
           </div>
