@@ -1055,20 +1055,44 @@
         "stats": {
           "totalRevenue": "Total Revenue",
           "packagesSold": "Membership Packages Sold",
+          "totalTransactions": "Total Transactions",
           "avgPerDay": "Avg Revenue/Day",
-          "avgPerPackage": "Avg Revenue/Package"
+          "avgPerPackage": "Avg Revenue/Package",
+          "activeMemberships": "Active Memberships",
+          "topSource": "Top revenue source"
         },
         "charts": {
           "revenueOverTime": "Revenue Over Time",
+          "membershipDistribution": "Membership Distribution",
           "unit": "Unit: VND"
         },
         "table": {
-          "title": "Revenue Analysis by Package",
+          "title": "Revenue Analysis by Transaction Type",
+          "type": "Transaction type",
           "package": "Package",
           "revenue": "Revenue",
           "percentage": "Percentage",
+          "transactions": "Transactions",
           "purchases": "Purchases",
           "total": "Total"
+        },
+        "transactionTypes": {
+          "membershipPurchase": "Membership purchase",
+          "membershipUpgrade": "Membership upgrade",
+          "postFee": "Post fee",
+          "pushFee": "Push fee",
+          "walletTopup": "Wallet top-up",
+          "refund": "Refund"
+        },
+        "membershipLevels": {
+          "basic": "Basic",
+          "standard": "Standard",
+          "advanced": "Advanced"
+        },
+        "messages": {
+          "revenueFetchError": "Unable to load revenue data.",
+          "membershipFetchError": "Unable to load membership distribution data.",
+          "defaultFetchError": "Unable to load chart data. Please try again."
         }
       },
       "reports": {
@@ -1363,6 +1387,10 @@
       "clicks": "clicks",
       "editPricing": "Edit Pricing",
       "tiers": {
+        "normal": "Regular Listing",
+        "silver": "VIP 1",
+        "gold": "VIP 2",
+        "diamond": "VIP 3",
         "regular": "Regular Listing",
         "vip1": "VIP 1",
         "vip2": "VIP 2",

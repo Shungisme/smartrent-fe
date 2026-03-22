@@ -1020,20 +1020,44 @@
         "stats": {
           "totalRevenue": "Tổng Doanh Thu",
           "packagesSold": "Gói Thành Viên Đã Bán",
+          "totalTransactions": "Tổng Giao Dịch",
           "avgPerDay": "Doanh Thu TB/Ngày",
-          "avgPerPackage": "Doanh Thu TB/Gói"
+          "avgPerPackage": "Doanh Thu TB/Gói",
+          "activeMemberships": "Thành Viên Đang Hoạt Động",
+          "topSource": "Nguồn doanh thu cao nhất"
         },
         "charts": {
           "revenueOverTime": "Doanh Thu Theo Thời Gian",
+          "membershipDistribution": "Phân Bố Gói Thành Viên",
           "unit": "Đơn vị: VNĐ"
         },
         "table": {
-          "title": "Phân Tích Doanh Thu Theo Gói",
+          "title": "Phân Tích Doanh Thu Theo Loại Giao Dịch",
+          "type": "Loại giao dịch",
           "package": "Gói",
           "revenue": "Doanh Thu",
           "percentage": "Tỷ Lệ",
+          "transactions": "Giao dịch",
           "purchases": "Lượt Mua",
           "total": "Tổng"
+        },
+        "transactionTypes": {
+          "membershipPurchase": "Mua gói thành viên",
+          "membershipUpgrade": "Nâng cấp gói thành viên",
+          "postFee": "Phí đăng tin",
+          "pushFee": "Phí đẩy tin",
+          "walletTopup": "Nạp ví",
+          "refund": "Hoàn tiền"
+        },
+        "membershipLevels": {
+          "basic": "Cơ Bản",
+          "standard": "Tiêu Chuẩn",
+          "advanced": "Nâng Cao"
+        },
+        "messages": {
+          "revenueFetchError": "Không thể tải dữ liệu doanh thu.",
+          "membershipFetchError": "Không thể tải dữ liệu phân bố thành viên.",
+          "defaultFetchError": "Không thể tải dữ liệu biểu đồ. Vui lòng thử lại."
         }
       },
       "reports": {
@@ -1328,6 +1352,10 @@
       "clicks": "clicks",
       "editPricing": "Chỉnh Sửa Giá",
       "tiers": {
+        "normal": "Tin Thường",
+        "silver": "VIP 1",
+        "gold": "VIP 2",
+        "diamond": "VIP 3",
         "regular": "Tin Thường",
         "vip1": "VIP 1",
         "vip2": "VIP 2",

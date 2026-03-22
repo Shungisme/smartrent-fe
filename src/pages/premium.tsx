@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AddMembershipModal, {
   type MembershipFormData,
@@ -46,6 +46,7 @@ import { BoostPackageList } from '@/components/organisms/premium/BoostPackageLis
 
 const PaidFeaturesManagement: NextPageWithLayout = () => {
   const t = useTranslations('premium')
+  const locale = useLocale()
   const [activeTab, setActiveTab] = useState('overview')
 
   // API state for membership packages
@@ -134,7 +135,7 @@ const PaidFeaturesManagement: NextPageWithLayout = () => {
   // Transform API VIP tiers to UI format
   const transformedVIPTiers: ListingTypePricing[] = apiVIPTiers.map((tier) => ({
     tier: tier.tierCode.toLowerCase() as PricingTier,
-    name: tier.tierNameEn,
+    name: locale === 'vi' ? tier.tierName : tier.tierNameEn,
     isActive: tier.isActive,
     dayPricing: [
       { days: 1, price: `${tier.pricePerDay.toLocaleString()}đ` },

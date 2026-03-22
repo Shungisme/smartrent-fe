@@ -26,7 +26,15 @@ export type PromotionalCode = {
   status: PromoStatus
 }
 
-export type PricingTier = 'regular' | 'vip1' | 'vip2' | 'vip3'
+export type PricingTier =
+  | 'normal'
+  | 'silver'
+  | 'gold'
+  | 'diamond'
+  | 'regular'
+  | 'vip1'
+  | 'vip2'
+  | 'vip3'
 export type DayPricing = { days: number; price: string }
 export type ClickPricing = {
   basePrice: string

@@ -98,7 +98,7 @@ export const mockPromotions: PromotionalCode[] = [
 
 export const mockListingTypes: ListingTypePricing[] = [
   {
-    tier: 'regular',
+    tier: 'normal',
     name: 'Regular Listing',
     isActive: true,
     dayPricing: [
@@ -111,7 +111,7 @@ export const mockListingTypes: ListingTypePricing[] = [
     color: 'bg-gray-100 text-gray-700',
   },
   {
-    tier: 'vip1',
+    tier: 'silver',
     name: 'VIP 1',
     isActive: true,
     dayPricing: [
@@ -124,7 +124,7 @@ export const mockListingTypes: ListingTypePricing[] = [
     color: 'bg-blue-100 text-blue-700',
   },
   {
-    tier: 'vip2',
+    tier: 'gold',
     name: 'VIP 2',
     isActive: true,
     dayPricing: [
@@ -137,7 +137,7 @@ export const mockListingTypes: ListingTypePricing[] = [
     color: 'bg-purple-100 text-purple-700',
   },
   {
-    tier: 'vip3',
+    tier: 'diamond',
     name: 'VIP 3',
     isActive: true,
     dayPricing: [

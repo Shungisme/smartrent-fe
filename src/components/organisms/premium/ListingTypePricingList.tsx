@@ -38,7 +38,8 @@ export const ListingTypePricingList: React.FC<ListingTypePricingListProps> = ({
           <div className='flex items-start justify-between mb-4'>
             <div>
               <Badge className={cn('text-sm font-medium', listingType.color)}>
-                {t(`listingTypes.tiers.${listingType.tier}`)}
+                {listingType.name ||
+                  t(`listingTypes.tiers.${listingType.tier}`)}
               </Badge>
             </div>
             <label className='relative inline-flex items-center cursor-pointer'>
