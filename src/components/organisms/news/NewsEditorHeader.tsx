@@ -10,7 +10,6 @@ interface NewsEditorHeaderProps {
   previewMode: boolean
   setPreviewMode: (value: boolean) => void
   onSave: () => void
-  onPublish: () => void
   loading: boolean
   compact?: boolean
 }
@@ -21,7 +20,6 @@ export const NewsEditorHeader: React.FC<NewsEditorHeaderProps> = ({
   previewMode,
   setPreviewMode,
   onSave,
-  onPublish,
   loading,
   compact = false,
 }) => {
@@ -58,6 +56,7 @@ export const NewsEditorHeader: React.FC<NewsEditorHeaderProps> = ({
           )}
         >
           <Button
+            type='button'
             variant='outline'
             size='sm'
             onClick={() => setPreviewMode(!previewMode)}
@@ -67,6 +66,7 @@ export const NewsEditorHeader: React.FC<NewsEditorHeaderProps> = ({
             {previewMode ? t('editButton') : t('previewButton')}
           </Button>
           <Button
+            type='button'
             variant='outline'
             size='sm'
             onClick={onSave}
@@ -75,16 +75,7 @@ export const NewsEditorHeader: React.FC<NewsEditorHeaderProps> = ({
           >
             {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
             <Save className='h-4 w-4 mr-2' />
-            {t('saveDraftButton')}
-          </Button>
-          <Button
-            size='sm'
-            onClick={onPublish}
-            disabled={loading}
-            className='hover:from-blue-700 hover:to-purple-700 shadow-md hover:shadow-lg transition-all'
-          >
-            {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-            {t('publishButton')}
+            {t('saveButton')}
           </Button>
         </div>
       </div>

@@ -98,9 +98,12 @@ export const PATHS = {
     ADMIN_ARCHIVE: '/v1/admin/news/:id/archive', // POST archive news
   },
 
-  // Media endpoints
-  MEDIA: {
-    UPLOAD: '/v1/media/upload',
+  // Admin media endpoints
+  ADMIN_MEDIA: {
+    UPLOAD: '/v1/admin/media/upload',
+    LIST: '/v1/admin/media',
+    DETAIL: '/v1/admin/media/:mediaId',
+    DELETE: '/v1/admin/media/:mediaId',
   },
 
   // Notification endpoints (Admin)

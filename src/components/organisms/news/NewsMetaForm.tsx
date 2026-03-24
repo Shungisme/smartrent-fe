@@ -49,6 +49,12 @@ export const NewsMetaForm: React.FC<NewsMetaFormProps> = ({
   const [showNewThumbnailPreview, setShowNewThumbnailPreview] =
     React.useState(false)
 
+  React.useEffect(() => {
+    if (thumbnailUrl) {
+      setShowNewThumbnailPreview(true)
+    }
+  }, [thumbnailUrl])
+
   const handleThumbnailChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
