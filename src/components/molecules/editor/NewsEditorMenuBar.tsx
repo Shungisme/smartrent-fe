@@ -25,6 +25,17 @@ import {
   Heading3,
   ImagePlus,
   Loader2,
+  Highlighter,
+  Subscript as SubscriptIcon,
+  Superscript as SuperscriptIcon,
+  Eraser,
+  Table,
+  Rows3,
+  Columns3,
+  Split,
+  Merge,
+  Trash2,
+  CopyPlus,
 } from 'lucide-react'
 
 interface NewsEditorMenuBarProps {
@@ -48,6 +59,12 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
       editor.chain().focus().setLink({ href: url }).run()
     }
   }
+
+  const setTextColor = (event: React.ChangeEvent<HTMLInputElement>) => {
+    editor.chain().focus().setColor(event.target.value).run()
+  }
+
+  const isInTable = editor.isActive('table')
 
   return (
     <div className='border-b border-gray-200 bg-gradient-to-r from-slate-50 via-white to-slate-50 shadow-sm'>
@@ -123,6 +140,70 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             title='Inline Code'
           >
             <Code className='h-4 w-4' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().toggleHighlight().run()}
+            className={
+              editor.isActive('highlight')
+                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                : ''
+            }
+            title='Highlight'
+          >
+            <Highlighter className='h-4 w-4' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().toggleSubscript().run()}
+            className={
+              editor.isActive('subscript')
+                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                : ''
+            }
+            title='Subscript'
+          >
+            <SubscriptIcon className='h-4 w-4' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().toggleSuperscript().run()}
+            className={
+              editor.isActive('superscript')
+                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                : ''
+            }
+            title='Superscript'
+          >
+            <SuperscriptIcon className='h-4 w-4' />
+          </Button>
+          <label
+            className='flex h-8 w-8 cursor-pointer items-center justify-center rounded-md hover:bg-gray-100'
+            title='Text Color'
+          >
+            <input
+              type='color'
+              onChange={setTextColor}
+              className='h-6 w-6 cursor-pointer border-0 bg-transparent p-0'
+              value={editor.getAttributes('textStyle').color || '#111827'}
+            />
+          </label>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() =>
+              editor.chain().focus().unsetColor().unsetAllMarks().run()
+            }
+            title='Clear Formatting'
+          >
+            <Eraser className='h-4 w-4' />
           </Button>
         </div>
 
@@ -336,6 +417,135 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             title='Horizontal Rule'
           >
             <Minus className='h-4 w-4' />
+          </Button>
+        </div>
+
+        {/* Table */}
+        <div className='flex gap-1 pr-3 border-r border-gray-300'>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() =>
+              editor
+                .chain()
+                .focus()
+                .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+                .run()
+            }
+            title='Insert Table'
+          >
+            <Table className='h-4 w-4' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().addRowAfter().run()}
+            disabled={!isInTable}
+            title='Add Row'
+          >
+            <Rows3 className='h-4 w-4' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().deleteRow().run()}
+            disabled={!isInTable}
+            title='Delete Row'
+          >
+            <Rows3 className='h-4 w-4 text-red-600' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().addColumnAfter().run()}
+            disabled={!isInTable}
+            title='Add Column'
+          >
+            <Columns3 className='h-4 w-4' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().deleteColumn().run()}
+            disabled={!isInTable}
+            title='Delete Column'
+          >
+            <Columns3 className='h-4 w-4 text-red-600' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().duplicateRow(true).run()}
+            disabled={!isInTable}
+            title='Duplicate Row'
+          >
+            <CopyPlus className='h-4 w-4' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().duplicateColumn(true).run()}
+            disabled={!isInTable}
+            title='Duplicate Column'
+          >
+            <CopyPlus className='h-4 w-4 rotate-90' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().mergeCells().run()}
+            disabled={!isInTable}
+            title='Merge Cells'
+          >
+            <Merge className='h-4 w-4' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().splitCell().run()}
+            disabled={!isInTable}
+            title='Split Cell'
+          >
+            <Split className='h-4 w-4' />
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().toggleHeaderRow().run()}
+            disabled={!isInTable}
+            title='Toggle Header Row'
+          >
+            <span className='text-xs font-medium'>HR</span>
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().toggleHeaderColumn().run()}
+            disabled={!isInTable}
+            title='Toggle Header Column'
+          >
+            <span className='text-xs font-medium'>HC</span>
+          </Button>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            onClick={() => editor.chain().focus().deleteTable().run()}
+            disabled={!isInTable}
+            title='Delete Table'
+          >
+            <Trash2 className='h-4 w-4' />
           </Button>
         </div>
 

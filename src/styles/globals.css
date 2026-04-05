@@ -41,6 +41,67 @@
   border-radius: 6px;
 }
 
+/* Table styles for Tiptap + tiptap-table-plus */
+.ProseMirror table,
+.news-editor-preview table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.ProseMirror th,
+.ProseMirror td,
+.news-editor-preview th,
+.news-editor-preview td {
+  border: 1px solid #d4d4d8;
+  min-width: 80px;
+  padding: 0.55rem 0.75rem;
+  vertical-align: top;
+  position: relative;
+  word-break: break-word;
+}
+
+.ProseMirror th,
+.news-editor-preview th {
+  background: #f4f4f5;
+  font-weight: 600;
+}
+
+.ProseMirror .selectedCell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(59, 130, 246, 0.12);
+  pointer-events: none;
+}
+
+.ProseMirror .column-resize-handle {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  bottom: 0;
+  width: 4px;
+  background-color: #2563eb;
+  pointer-events: none;
+}
+
+.ProseMirror.resize-cursor {
+  cursor: col-resize;
+}
+
+/* Pagination visual polish (tiptap-pagination-plus) */
+.ProseMirror.rm-with-pagination {
+  background: #f4f4f5;
+  border-radius: 10px;
+}
+
+.ProseMirror.rm-with-pagination .rm-page-break {
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
 @import 'tailwindcss';
 @import 'tw-animate-css';
 

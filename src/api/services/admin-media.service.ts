@@ -34,7 +34,7 @@ export class AdminMediaService {
     formData.append('file', request.file)
     formData.append('mediaType', request.mediaType)
 
-    if (request.listingId != null) {
+    if (request.listingId !== null && request.listingId !== undefined) {
       formData.append('listingId', String(request.listingId))
     }
     if (request.title) {
@@ -46,10 +46,10 @@ export class AdminMediaService {
     if (request.altText) {
       formData.append('altText', request.altText)
     }
-    if (request.isPrimary != null) {
+    if (request.isPrimary !== null && request.isPrimary !== undefined) {
       formData.append('isPrimary', String(request.isPrimary))
     }
-    if (request.sortOrder != null) {
+    if (request.sortOrder !== null && request.sortOrder !== undefined) {
       formData.append('sortOrder', String(request.sortOrder))
     }
 
