@@ -13,6 +13,12 @@ import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import Placeholder from '@tiptap/extension-placeholder'
 import CharacterCount from '@tiptap/extension-character-count'
+import { TextStyle } from '@tiptap/extension-text-style'
+import Color from '@tiptap/extension-color'
+import Highlight from '@tiptap/extension-highlight'
+import Subscript from '@tiptap/extension-subscript'
+import Superscript from '@tiptap/extension-superscript'
+import { TableKitPlus } from 'tiptap-table-plus'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import slugify from 'react-slugify'
@@ -71,6 +77,19 @@ const NewsEditor = () => {
     immediatelyRender: false,
     extensions: [
       StarterKit,
+      TextStyle,
+      Color,
+      Highlight,
+      Subscript,
+      Superscript,
+      TableKitPlus.configure({
+        table: {
+          resizable: true,
+          lastColumnResizable: true,
+          allowTableNodeSelection: true,
+          cellMinWidth: 80,
+        },
+      }),
       // extend image to be a block/atom node, allow selection and textAlign attribute
       Image.extend({
         inline: false,
@@ -398,7 +417,7 @@ const NewsEditor = () => {
                         {watch('title')}
                       </h2>
                       <div
-                        className='prose prose-lg max-w-none mt-8'
+                        className='news-editor-preview prose prose-lg max-w-none mt-8'
                         dangerouslySetInnerHTML={{
                           __html: editor?.getHTML() || '',
                         }}

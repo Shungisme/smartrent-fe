@@ -123,7 +123,7 @@ export const NewsPreviewModal: React.FC<NewsPreviewModalProps> = ({
 
             {/* Content */}
             <div
-              className='prose prose-sm max-w-none'
+              className='news-editor-preview prose prose-sm max-w-none'
               dangerouslySetInnerHTML={{ __html: news.content }}
             />
 
