@@ -26,16 +26,28 @@ const LineChartCard: React.FC<LineChartCardProps> = ({
 }) => {
   // Find max value across all datasets for scaling
   const allValues = datasets.flatMap((d) => d.data)
-  const maxValue = Math.max(...allValues)
-  const minValue = Math.min(...allValues, 0)
+  const normalizedValues = allValues.length > 0 ? allValues : [0]
+  const maxValue = Math.max(...normalizedValues)
+  const minValue = Math.min(...normalizedValues, 0)
   const valueRange = maxValue - minValue
+
+  const getX = (index: number, length: number) => {
+    if (length <= 1) return 50
+    return (index / (length - 1)) * 100
+  }
+
+  const getY = (value: number) => {
+    return 100 - ((value - minValue) / (valueRange || 1)) * 80
+  }
 
   // Generate points for each dataset
   const generatePoints = (data: number[]) => {
-    return data
+    const normalizedData = data.length > 0 ? data : [0]
+
+    return normalizedData
       .map((value, index) => {
-        const x = (index / (data.length - 1)) * 100
-        const y = 100 - ((value - minValue) / valueRange) * 80
+        const x = getX(index, normalizedData.length)
+        const y = getY(value)
         return `${x},${y}`
       })
       .join(' ')
@@ -83,6 +95,7 @@ const LineChartCard: React.FC<LineChartCardProps> = ({
           {/* Render each dataset */}
           {datasets.map((dataset, datasetIndex) => {
             const points = generatePoints(dataset.data)
+            const normalizedData = dataset.data.length > 0 ? dataset.data : [0]
 
             return (
               <g key={datasetIndex}>
@@ -97,9 +110,9 @@ const LineChartCard: React.FC<LineChartCardProps> = ({
                 />
 
                 {/* Dots */}
-                {dataset.data.map((value, index) => {
-                  const x = (index / (dataset.data.length - 1)) * 100
-                  const y = 100 - ((value - minValue) / valueRange) * 80
+                {normalizedData.map((value, index) => {
+                  const x = getX(index, normalizedData.length)
+                  const y = getY(value)
 
                   return (
                     <circle
