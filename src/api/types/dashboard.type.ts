@@ -6,6 +6,8 @@ export type DashboardTransactionType =
   | 'WALLET_TOPUP'
   | 'REFUND'
 
+export type DashboardGranularity = 'DAY' | 'MONTH'
+
 export interface RevenueDataPoint {
   date: string
   totalAmount: number
@@ -23,6 +25,7 @@ export interface RevenueOverTimeResponse {
   grandTotal: number
   totalTransactions: number
   revenueByType: RevenueByTypeItem[]
+  granularity: DashboardGranularity
 }
 
 export type MembershipPackageLevel = 'BASIC' | 'STANDARD' | 'ADVANCED'
@@ -37,4 +40,15 @@ export interface MembershipDistributionItem {
 export interface MembershipDistributionResponse {
   distribution: MembershipDistributionItem[]
   totalActive: number
+}
+
+export interface TimeSeriesDataPoint {
+  label: string
+  count: number
+}
+
+export interface TimeSeriesResponse {
+  dataPoints: TimeSeriesDataPoint[]
+  total: number
+  granularity: DashboardGranularity
 }

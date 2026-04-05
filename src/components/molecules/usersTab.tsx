@@ -1,15 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import StatsCard from '@/components/molecules/statsCard'
 import LineChartCard from '@/components/molecules/lineChartCard'
-import PieChartCard from '@/components/molecules/pieChartCard'
-import {
-  userGrowthData,
-  userTypeDistribution,
-  userStats,
-  type TimeRange,
-} from '@/data/analyticsData'
-import { Users, UserCheck, UserPlus } from 'lucide-react'
+import { DashboardService } from '@/api/services/dashboard.service'
+import { type TimeRange } from '@/data/analyticsData'
+import { Users, Loader2 } from 'lucide-react'
 
 type UsersTabProps = {
   timeRange: TimeRange
@@ -17,89 +13,98 @@ type UsersTabProps = {
 
 const UsersTab: React.FC<UsersTabProps> = ({ timeRange }) => {
   const t = useTranslations('admin.analytics.users')
-  const tOverview = useTranslations('admin.analytics.overview')
-  // Filter data based on time range
-  const filterData = <T extends { date: string }>(data: T[]): T[] => {
-    switch (timeRange) {
-      case 'today':
-        return data.slice(-1)
-      case 'week':
-        return data.slice(-7)
-      case 'month':
-      default:
-        return data
-    }
+  const tRevenue = useTranslations('admin.analytics.revenue')
+
+  const [loading, setLoading] = useState(true)
+  const [data, setData] =
+    useState<
+      Awaited<ReturnType<typeof DashboardService.getUserGrowth>>['data']
+    >(null)
+
+  const mapTimeRangeToDays = (range: TimeRange): number => {
+    if (range === 'month') return 30
+    return 7
   }
 
-  const filteredUserData = filterData(userGrowthData)
-  const totalUsers =
-    filteredUserData[filteredUserData.length - 1]?.totalUsers ||
-    userStats.totalUsers
+  const formatXLabel = (label: string, granularity: 'DAY' | 'MONTH') => {
+    if (granularity === 'MONTH') {
+      const [year, month] = label.split('-')
+      return `T${month}/${year}`
+    }
+    return label.length > 5 ? label.slice(5) : label
+  }
 
-  // Translate user type distribution labels
-  const translatedUserTypeDistribution = userTypeDistribution.map((item) => ({
-    ...item,
-    label:
-      item.label === 'Chủ Nhà'
-        ? tOverview('userTypes.landlord')
-        : tOverview('userTypes.tenant'),
-  }))
+  useEffect(() => {
+    const fetchUserGrowth = async () => {
+      try {
+        setLoading(true)
+        const days = mapTimeRangeToDays(timeRange)
+        const response = await DashboardService.getUserGrowth(days)
+
+        if (!response.success || !response.data) {
+          throw new Error(
+            response.message || tRevenue('messages.defaultFetchError'),
+          )
+        }
+
+        setData(response.data)
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : tRevenue('messages.defaultFetchError')
+        toast.error(message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUserGrowth()
+  }, [timeRange, tRevenue])
+
+  if (loading) {
+    return (
+      <div className='flex h-64 items-center justify-center'>
+        <Loader2 className='h-8 w-8 animate-spin text-blue-600' />
+      </div>
+    )
+  }
 
   return (
     <div className='space-y-6'>
-      {/* Stats Cards */}
-      <div className='grid grid-cols-1 gap-6 md:grid-cols-3'>
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
         <StatsCard
-          title={t('stats.totalUsers')}
-          value={totalUsers.toLocaleString('vi-VN')}
+          title={t('charts.newUsers')}
+          value={(data?.total || 0).toLocaleString('vi-VN')}
           icon={<Users className='h-5 w-5' />}
         />
         <StatsCard
-          title={t('stats.landlords')}
-          value={userStats.landlords.toLocaleString('vi-VN')}
-          subtitle={`${userStats.landlords === 680 ? '40' : calculatePercentage(userStats.landlords, totalUsers)}% ${t('stats.ofTotal')}`}
-          icon={<UserCheck className='h-5 w-5' />}
-        />
-        <StatsCard
-          title={t('stats.tenants')}
-          value={userStats.tenants.toLocaleString('vi-VN')}
-          subtitle={`${userStats.tenants === 1240 ? '74' : calculatePercentage(userStats.tenants, totalUsers)}% ${t('stats.ofTotal')}`}
-          icon={<UserPlus className='h-5 w-5' />}
+          title={t('stats.totalUsers')}
+          value={(data?.dataPoints.length || 0).toLocaleString('vi-VN')}
+          subtitle={t('charts.userGrowthOverTime')}
+          icon={<Users className='h-5 w-5' />}
         />
       </div>
 
-      {/* Charts Grid */}
-      <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
-        {/* User Growth Chart */}
+      <div className='grid grid-cols-1 gap-6'>
         <LineChartCard
           title={t('charts.userGrowthOverTime')}
           datasets={[
             {
-              data: filteredUserData.map((d) => d.newUsers),
+              data: (data?.dataPoints || []).map((item) => item.count),
               color: '#2563EB',
               label: t('charts.newUsers'),
             },
           ]}
-          labels={filteredUserData.map((d) => d.date)}
+          labels={(data?.dataPoints || []).map((item) =>
+            formatXLabel(item.label, data?.granularity || 'DAY'),
+          )}
           height='h-80'
           showLegend={false}
-        />
-
-        {/* User Type Distribution */}
-        <PieChartCard
-          title={t('charts.userTypeDistribution')}
-          data={translatedUserTypeDistribution}
-          showPercentage={true}
-          height='h-80'
         />
       </div>
     </div>
   )
-}
-
-// Helper function
-const calculatePercentage = (value: number, total: number): number => {
-  return Math.round((value / total) * 100)
 }
 
 export default UsersTab

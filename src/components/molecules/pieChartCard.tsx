@@ -25,7 +25,8 @@ const PieChartCard: React.FC<PieChartCardProps> = ({
   let currentAngle = 0
 
   const segments = data.map((item) => {
-    const percentage = item.percentage ?? (item.value / total) * 100
+    const percentage =
+      item.percentage ?? (total > 0 ? (item.value / total) * 100 : 0)
     const angle = (percentage / 100) * 360
     const startAngle = currentAngle
     currentAngle += angle

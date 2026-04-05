@@ -47,6 +47,9 @@ export const PATHS = {
   ADMIN_DASHBOARD: {
     REVENUE: '/v1/admin/dashboard/revenue',
     MEMBERSHIP_DISTRIBUTION: '/v1/admin/dashboard/memberships/distribution',
+    USERS_GROWTH: '/v1/admin/dashboard/users/growth',
+    REPORTS_COUNT: '/v1/admin/dashboard/reports/count',
+    LISTINGS_CREATION: '/v1/admin/dashboard/listings/creation',
   },
 
   // Role endpoints

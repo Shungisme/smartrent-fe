@@ -1,16 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { toast } from 'sonner'
 import StatsCard from '@/components/molecules/statsCard'
 import LineChartCard from '@/components/molecules/lineChartCard'
-import PieChartCard from '@/components/molecules/pieChartCard'
-import {
-  postActivityData,
-  postViewsClicksData,
-  postStatusDistribution,
-  postStats,
-  type TimeRange,
-} from '@/data/analyticsData'
-import { FileText, Clock, Eye, MousePointerClick } from 'lucide-react'
+import { DashboardService } from '@/api/services/dashboard.service'
+import { type TimeRange } from '@/data/analyticsData'
+import { FileText, Loader2 } from 'lucide-react'
 
 type PostsTabProps = {
   timeRange: TimeRange
@@ -18,115 +13,95 @@ type PostsTabProps = {
 
 const PostsTab: React.FC<PostsTabProps> = ({ timeRange }) => {
   const t = useTranslations('admin.analytics.posts')
-  const tOverview = useTranslations('admin.analytics.overview')
-  // Filter data based on time range
-  const filterData = <T extends { date: string }>(data: T[]): T[] => {
-    switch (timeRange) {
-      case 'today':
-        return data.slice(-1)
-      case 'week':
-        return data.slice(-7)
-      case 'month':
-      default:
-        return data
-    }
+  const tRevenue = useTranslations('admin.analytics.revenue')
+
+  const [loading, setLoading] = useState(true)
+  const [data, setData] =
+    useState<
+      Awaited<ReturnType<typeof DashboardService.getListingCreation>>['data']
+    >(null)
+
+  const mapTimeRangeToDays = (range: TimeRange): number => {
+    if (range === 'month') return 30
+    return 7
   }
 
-  const filteredPostData = filterData(postActivityData)
-  const filteredViewsData = filterData(postViewsClicksData)
+  const formatXLabel = (label: string, granularity: 'DAY' | 'MONTH') => {
+    if (granularity === 'MONTH') {
+      const [year, month] = label.split('-')
+      return `T${month}/${year}`
+    }
+    return label.length > 5 ? label.slice(5) : label
+  }
 
-  const totalPosts =
-    filteredPostData[filteredPostData.length - 1]?.totalPosts ||
-    postStats.totalPosts
-  const newPosts = filteredPostData.reduce((sum, d) => sum + d.newPosts, 0)
-  const totalViews = filteredViewsData.reduce((sum, d) => sum + d.views, 0)
-  const totalClicks = filteredViewsData.reduce((sum, d) => sum + d.clicks, 0)
-  const ctr = totalViews > 0 ? Math.round((totalClicks / totalViews) * 100) : 0
+  useEffect(() => {
+    const fetchListingCreation = async () => {
+      try {
+        setLoading(true)
+        const days = mapTimeRangeToDays(timeRange)
+        const response = await DashboardService.getListingCreation(days)
 
-  // Translate post status distribution labels
-  const translatedPostStatusDistribution = postStatusDistribution.map(
-    (item) => {
-      let translatedLabel = item.label
-      if (item.label === 'Hoạt động')
-        translatedLabel = tOverview('postStatus.active')
-      else if (item.label === 'Chờ duyệt')
-        translatedLabel = tOverview('postStatus.pending')
-      else if (item.label === 'Bị từ chối')
-        translatedLabel = tOverview('postStatus.rejected')
-      return { ...item, label: translatedLabel }
-    },
-  )
+        if (!response.success || !response.data) {
+          throw new Error(
+            response.message || tRevenue('messages.defaultFetchError'),
+          )
+        }
+
+        setData(response.data)
+      } catch (error) {
+        const message =
+          error instanceof Error
+            ? error.message
+            : tRevenue('messages.defaultFetchError')
+        toast.error(message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchListingCreation()
+  }, [timeRange, tRevenue])
+
+  if (loading) {
+    return (
+      <div className='flex h-64 items-center justify-center'>
+        <Loader2 className='h-8 w-8 animate-spin text-blue-600' />
+      </div>
+    )
+  }
 
   return (
     <div className='space-y-6'>
-      {/* Stats Cards */}
-      <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
+      <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
         <StatsCard
           title={t('stats.totalPosts')}
-          value={totalPosts.toLocaleString('vi-VN')}
-          subtitle={`+${newPosts} ${t('stats.inThisPeriod')}`}
+          value={(data?.total || 0).toLocaleString('vi-VN')}
+          subtitle={t('stats.inThisPeriod')}
           icon={<FileText className='h-5 w-5' />}
         />
         <StatsCard
-          title={t('stats.pending')}
-          value={postStats.pendingPosts.toString()}
-          icon={<Clock className='h-5 w-5' />}
-        />
-        <StatsCard
-          title={t('stats.totalViews')}
-          value={totalViews.toLocaleString('vi-VN')}
-          icon={<Eye className='h-5 w-5' />}
-        />
-        <StatsCard
-          title={t('stats.clicks')}
-          value={totalClicks.toLocaleString('vi-VN')}
-          subtitle={`CTR: ${ctr}%`}
-          icon={<MousePointerClick className='h-5 w-5' />}
+          title={t('charts.newPosts')}
+          value={(data?.dataPoints.length || 0).toLocaleString('vi-VN')}
+          subtitle={t('charts.postActivity')}
+          icon={<FileText className='h-5 w-5' />}
         />
       </div>
 
-      {/* Charts Grid */}
-      <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
-        {/* Post Activity Chart */}
+      <div className='grid grid-cols-1 gap-6'>
         <LineChartCard
           title={t('charts.postActivity')}
           datasets={[
             {
-              data: filteredPostData.map((d) => d.newPosts),
+              data: (data?.dataPoints || []).map((item) => item.count),
               color: '#22C55E',
               label: t('charts.newPosts'),
             },
           ]}
-          labels={filteredPostData.map((d) => d.date)}
+          labels={(data?.dataPoints || []).map((item) =>
+            formatXLabel(item.label, data?.granularity || 'DAY'),
+          )}
           showLegend={false}
-        />
-
-        {/* Views & Clicks Chart */}
-        <LineChartCard
-          title={t('charts.viewsAndClicks')}
-          datasets={[
-            {
-              data: filteredViewsData.map((d) => d.views),
-              color: '#3B82F6',
-              label: t('charts.views'),
-            },
-            {
-              data: filteredViewsData.map((d) => d.clicks),
-              color: '#F97316',
-              label: t('charts.clicks'),
-            },
-          ]}
-          labels={filteredViewsData.map((d) => d.date)}
-          showLegend={true}
-        />
-      </div>
-
-      {/* Status Distribution */}
-      <div className='grid grid-cols-1 gap-6'>
-        <PieChartCard
-          title={t('charts.statusDistribution')}
-          data={translatedPostStatusDistribution}
-          showPercentage={true}
+          height='h-80'
         />
       </div>
     </div>

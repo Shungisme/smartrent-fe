@@ -14,7 +14,7 @@ import UsersTab from '@/components/molecules/usersTab'
 import PostsTab from '@/components/molecules/postsTab'
 import RevenueTabAnalytics from '@/components/molecules/revenueTabAnalytics'
 import ReportsTab from '@/components/molecules/reportsTab'
-import type { TimeRange, ChartType } from '@/data/analyticsData'
+import type { TimeRange } from '@/data/analyticsData'
 
 export type AnalyticsSection =
   | 'overview'
@@ -32,25 +32,10 @@ const AnalyticsSectionPage: React.FC<AnalyticsSectionPageProps> = ({
 }) => {
   const t = useTranslations('admin.analytics')
   const [timeRange, setTimeRange] = useState<TimeRange>('month')
-  const [chartType, setChartType] = useState<ChartType>('line')
 
   return (
     <div className='space-y-6'>
       <div className='flex flex-col gap-3 sm:flex-row'>
-        <Select
-          value={chartType}
-          onValueChange={(value) => setChartType(value as ChartType)}
-        >
-          <SelectTrigger className='w-full sm:w-[180px]'>
-            <SelectValue placeholder={t('filters.chartType.label')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value='line'>{t('filters.chartType.line')}</SelectItem>
-            <SelectItem value='bar'>{t('filters.chartType.bar')}</SelectItem>
-            <SelectItem value='area'>{t('filters.chartType.area')}</SelectItem>
-          </SelectContent>
-        </Select>
-
         <Select
           value={timeRange}
           onValueChange={(value) => setTimeRange(value as TimeRange)}
