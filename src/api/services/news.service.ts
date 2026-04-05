@@ -10,6 +10,7 @@ import {
   NewestNewsApiResponse,
 } from '@/api/types/news.type'
 import { ApiResponse } from '@/configs/axios/types'
+import { AdminMediaService } from '@/api/services/admin-media.service'
 
 const replacePathParam = (path: string, key: string, value: string | number) =>
   path.replace(`:${key}`, String(value))
@@ -29,20 +30,17 @@ const buildQuery = (params: Record<string, string | number | undefined>) => {
 
 export class NewsService {
   static async uploadImage(file: File): Promise<ApiResponse<{ url: string }>> {
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('mediaType', 'IMAGE')
-    formData.append('title', file.name)
-    formData.append('altText', file.name)
-
-    return apiRequest<{ url: string }>({
-      method: 'POST',
-      url: PATHS.MEDIA.UPLOAD,
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+    const response = await AdminMediaService.uploadMedia({
+      file,
+      mediaType: 'IMAGE',
+      title: file.name,
+      altText: file.name,
     })
+
+    return {
+      ...response,
+      data: response.data?.url ? { url: response.data.url } : null,
+    }
   }
 
   static async getNewsList(

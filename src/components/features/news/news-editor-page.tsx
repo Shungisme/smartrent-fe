@@ -71,13 +71,31 @@ const NewsEditor = () => {
     immediatelyRender: false,
     extensions: [
       StarterKit,
-      Image,
+      // extend image to be a block/atom node, allow selection and textAlign attribute
+      Image.extend({
+        inline: false,
+        group: 'block',
+        draggable: true,
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            textAlign: {
+              default: null,
+              parseHTML: (element) => element.style?.textAlign || null,
+              renderHTML: (attributes) => {
+                if (!attributes.textAlign) return {}
+                return { style: `text-align: ${attributes.textAlign};` }
+              },
+            },
+          }
+        },
+      }),
       Underline,
       Link.configure({
         openOnClick: false,
       }),
       TextAlign.configure({
-        types: ['heading', 'paragraph'],
+        types: ['heading', 'paragraph', 'image'],
       }),
       TaskList,
       TaskItem.configure({
@@ -91,7 +109,7 @@ const NewsEditor = () => {
     content: '',
     editorProps: {
       attributes: {
-        class: 'prose prose-sm max-w-none focus:outline-none min-h-[320px] p-6',
+        class: 'prose prose-sm max-w-none focus:outline-none min-h-[420px] p-6',
       },
     },
   })
@@ -179,7 +197,7 @@ const NewsEditor = () => {
     metaKeywords: data.metaKeywords || undefined,
   })
 
-  const onSubmit = async (data: EditorFormData, publish = false) => {
+  const onSubmit = async (data: EditorFormData) => {
     if (!editor) return
 
     const content = editor.getHTML()
@@ -203,19 +221,34 @@ const NewsEditor = () => {
           return
         }
 
-        if (publish && updateResponse.data) {
-          const publishResponse = await NewsService.publishNews(
-            updateResponse.data.newsId,
-          )
+        const targetNewsId = updateResponse.data?.newsId ?? (newsId as number)
+
+        if (data.status === 'PUBLISHED') {
+          const publishResponse = await NewsService.publishNews(targetNewsId)
           if (publishResponse.code !== SUCCESS_CODE) {
             toast.error(publishResponse.message || t('messages.updateError'))
             return
           }
         }
 
-        toast.success(
-          publish ? t('messages.updateSuccess') : t('messages.updateSuccess'),
-        )
+        if (data.status === 'DRAFT') {
+          const unpublishResponse =
+            await NewsService.unpublishNews(targetNewsId)
+          if (unpublishResponse.code !== SUCCESS_CODE) {
+            toast.error(unpublishResponse.message || t('messages.updateError'))
+            return
+          }
+        }
+
+        if (data.status === 'ARCHIVED') {
+          const archiveResponse = await NewsService.archiveNews(targetNewsId)
+          if (archiveResponse.code !== SUCCESS_CODE) {
+            toast.error(archiveResponse.message || t('messages.updateError'))
+            return
+          }
+        }
+
+        toast.success(t('messages.updateSuccess'))
         router.push('/news')
       } else {
         const createData = buildPayload(data, content) as NewsCreateRequest
@@ -226,12 +259,20 @@ const NewsEditor = () => {
           return
         }
 
-        if (publish) {
-          const publishResponse = await NewsService.publishNews(
-            createResponse.data.newsId,
-          )
+        const targetNewsId = createResponse.data.newsId
+
+        if (data.status === 'PUBLISHED') {
+          const publishResponse = await NewsService.publishNews(targetNewsId)
           if (publishResponse.code !== SUCCESS_CODE) {
             toast.error(publishResponse.message || t('messages.createError'))
+            return
+          }
+        }
+
+        if (data.status === 'ARCHIVED') {
+          const archiveResponse = await NewsService.archiveNews(targetNewsId)
+          if (archiveResponse.code !== SUCCESS_CODE) {
+            toast.error(archiveResponse.message || t('messages.createError'))
             return
           }
         }
@@ -297,10 +338,6 @@ const NewsEditor = () => {
     }
   }
 
-  const handlePublish = () => {
-    handleSubmit((data) => onSubmit(data, true))()
-  }
-
   if (loading) {
     return (
       <div className='flex items-center justify-center h-screen'>
@@ -310,7 +347,7 @@ const NewsEditor = () => {
   }
 
   return (
-    <div className='min-h-screen'>
+    <div>
       <div>
         <input
           ref={contentImageInputRef}
@@ -319,14 +356,13 @@ const NewsEditor = () => {
           onChange={handleContentImageSelected}
           className='hidden'
         />
-        <form onSubmit={handleSubmit((data) => onSubmit(data, false))}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <NewsEditorHeader
             wordCount={wordCount}
             characterCount={characterCount}
             previewMode={previewMode}
             setPreviewMode={setPreviewMode}
-            onSave={handleSubmit((data) => onSubmit(data, false))}
-            onPublish={handlePublish}
+            onSave={handleSubmit(onSubmit)}
             loading={saveLoading}
           />
 
@@ -351,7 +387,7 @@ const NewsEditor = () => {
                       }
                       isUploadingImage={uploadingContentImage}
                     />
-                    <div className='min-h-[320px] max-h-[60vh] overflow-y-auto'>
+                    <div className='min-h-[50vh] max-h-[50vh] overflow-y-auto'>
                       <EditorContent editor={editor} />
                     </div>
                   </>

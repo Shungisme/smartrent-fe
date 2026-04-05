@@ -1681,6 +1681,7 @@
         "characterCount": "{count} ký tự",
         "previewButton": "Xem trước",
         "editButton": "Chỉnh sửa",
+        "saveButton": "Lưu",
         "saveDraftButton": "Lưu nháp",
         "publishButton": "Xuất bản"
       },
