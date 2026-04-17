@@ -5,6 +5,7 @@ import { PaginatedResponse } from './pagination.type'
 export enum NotificationType {
   NEW_REPORT = 'NEW_REPORT',
   LISTING_RESUBMITTED = 'LISTING_RESUBMITTED',
+  BROKER_REGISTRATION_RECEIVED = 'BROKER_REGISTRATION_RECEIVED',
 }
 
 export enum ReferenceType {
