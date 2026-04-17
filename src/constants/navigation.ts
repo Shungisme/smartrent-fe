@@ -16,6 +16,7 @@ type PageKey =
   | 'users'
   | 'admins'
   | 'roles'
+  | 'brokerPending'
   | 'financeOverview'
   | 'premiumOverview'
   | 'premiumMembership'
@@ -36,6 +37,7 @@ const ROUTE_META: Record<string, { category: CategoryKey; page: PageKey }> = {
   '/users': { category: 'management', page: 'users' },
   '/admins': { category: 'management', page: 'admins' },
   '/roles': { category: 'management', page: 'roles' },
+  '/broker-pending': { category: 'moderation', page: 'brokerPending' },
   '/finance': { category: 'finance', page: 'financeOverview' },
   '/premium/overview': {
     category: 'monetization',
@@ -101,7 +103,7 @@ const CATEGORY_ROUTES: Record<CategoryKey, string[]> = {
     '/analytics/reports',
   ],
   content: ['/posts', '/news'],
-  moderation: ['/reports'],
+  moderation: ['/reports', '/broker-pending'],
 }
 
 type NavigationLabels = {
@@ -127,6 +129,7 @@ const LABELS = {
       users: 'Users',
       admins: 'Admins',
       roles: 'Roles',
+      brokerPending: 'Pending Broker Applications',
       financeOverview: 'Overview',
       premiumOverview: 'Overview',
       premiumMembership: 'Membership',
@@ -159,6 +162,7 @@ const LABELS = {
       users: 'Người dùng',
       admins: 'Quản trị viên',
       roles: 'Vai trò',
+      brokerPending: 'Đơn đăng ký môi giới chờ duyệt',
       financeOverview: 'Tổng quan',
       premiumOverview: 'Tổng quan',
       premiumMembership: 'Thành viên',

@@ -17,6 +17,7 @@ import {
   Search,
   Settings,
   Shield,
+  UserCheck,
   UserCogIcon,
   Users,
   Newspaper,
@@ -224,6 +225,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     analyticsReports: <ChartColumn width={20} />,
     posts: <FileCheck width={20} />,
     news: <Newspaper width={20} />,
+    brokerPending: <UserCheck width={20} />,
     reports: <Shield width={20} />,
   }
 

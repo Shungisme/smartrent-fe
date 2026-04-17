@@ -1,7 +1,7 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { Notification, NotificationType } from '@/api/types/notification.type'
-import { Bell, FileText, RefreshCw } from 'lucide-react'
+import { Bell, FileText, RefreshCw, UserCheck } from 'lucide-react'
 import classNames from 'classnames'
 
 interface NotificationItemProps {
@@ -40,6 +40,8 @@ function getNotificationIcon(type: NotificationType) {
       return FileText
     case NotificationType.LISTING_RESUBMITTED:
       return RefreshCw
+    case NotificationType.BROKER_REGISTRATION_RECEIVED:
+      return UserCheck
     default:
       return Bell
   }
@@ -54,6 +56,8 @@ function getNotificationColor(type: NotificationType) {
       return 'text-red-600 bg-red-100'
     case NotificationType.LISTING_RESUBMITTED:
       return 'text-blue-600 bg-blue-100'
+    case NotificationType.BROKER_REGISTRATION_RECEIVED:
+      return 'text-emerald-600 bg-emerald-100'
     default:
       return 'text-gray-600 bg-gray-100'
   }
@@ -80,17 +84,22 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
     }
 
     // Navigate based on notification type
-    if (notification.referenceId) {
-      switch (notification.type) {
-        case NotificationType.NEW_REPORT:
+    switch (notification.type) {
+      case NotificationType.NEW_REPORT:
+        if (notification.referenceId) {
           router.push(`/reports?id=${notification.referenceId}`)
-          break
-        case NotificationType.LISTING_RESUBMITTED:
+        }
+        break
+      case NotificationType.LISTING_RESUBMITTED:
+        if (notification.referenceId) {
           router.push(`/posts?id=${notification.referenceId}`)
-          break
-        default:
-          break
-      }
+        }
+        break
+      case NotificationType.BROKER_REGISTRATION_RECEIVED:
+        router.push('/broker-pending')
+        break
+      default:
+        break
     }
 
     // Call custom onClick if provided

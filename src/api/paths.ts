@@ -43,6 +43,13 @@ export const PATHS = {
     LIST: '/v1/admins/list', // GET all admins (paginated)
   },
 
+  // Admin user endpoints
+  ADMIN_USERS: {
+    BROKER_PENDING: '/v1/admin/users/broker-pending',
+    BROKER_VERIFY: '/v1/admin/users/:userId/broker-verification',
+    BROKER_REMOVE: '/v1/admin/users/:userId/broker',
+  },
+
   // Admin dashboard endpoints
   ADMIN_DASHBOARD: {
     REVENUE: '/v1/admin/dashboard/revenue',

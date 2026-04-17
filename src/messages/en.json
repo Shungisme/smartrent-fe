@@ -1763,6 +1763,58 @@
       "menuBar": {
         "enterUrl": "Enter URL:"
       }
+    },
+    "brokerPending": {
+      "title": "Pending Broker Applications",
+      "subtitle": "Review broker registrations and verify documents",
+      "table": {
+        "headers": {
+          "name": "Name",
+          "email": "Email",
+          "phone": "Phone",
+          "registeredAt": "Registration Date",
+          "actions": "Actions"
+        },
+        "verifyLink": "Verify on official registry ↗"
+      },
+      "documents": {
+        "cccdFront": "CCCD - Front",
+        "cccdBack": "CCCD - Back",
+        "certificate": "Practice Certificate",
+        "notSubmitted": "Not submitted"
+      },
+      "actions": {
+        "approve": "Approve",
+        "reject": "Reject",
+        "removeBroker": "Remove Broker"
+      },
+      "modal": {
+        "title": "Reject Broker Application",
+        "reasonLabel": "Rejection Reason",
+        "reasonPlaceholder": "Describe why this application cannot be approved...",
+        "reasonRequired": "Rejection reason is required",
+        "cancel": "Cancel",
+        "submit": "Reject"
+      },
+      "confirmRemove": {
+        "title": "Remove Broker",
+        "description": "Remove broker privileges for this user?",
+        "confirm": "Remove Broker",
+        "cancel": "Cancel"
+      },
+      "states": {
+        "empty": "No pending broker applications.",
+        "error": "Failed to load.",
+        "retry": "Retry"
+      },
+      "toasts": {
+        "approved": "Broker approved successfully",
+        "rejected": "Broker application rejected",
+        "removed": "Broker role removed",
+        "userNotFound": "User not found",
+        "accessDenied": "Access Denied",
+        "genericError": "Something went wrong. Please try again."
+      }
     }
   },
   "notifications": {
@@ -1772,11 +1824,13 @@
     "viewAll": "View all notifications",
     "types": {
       "NEW_REPORT": "New Report",
-      "LISTING_RESUBMITTED": "Listing Resubmitted"
+      "LISTING_RESUBMITTED": "Listing Resubmitted",
+      "BROKER_REGISTRATION_RECEIVED": "New Broker Application"
     },
     "messages": {
       "newReport": "A new report has been submitted",
-      "listingResubmitted": "A listing has been resubmitted for review"
+      "listingResubmitted": "A listing has been resubmitted for review",
+      "brokerRegistrationReceived": "A broker registration request was received"
     }
   }
 }

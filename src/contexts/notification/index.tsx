@@ -4,7 +4,7 @@ import { createContext, PropsWithChildren, useContext, useMemo } from 'react'
 import { useNotifications } from '@/hooks/useNotifications'
 import { useAuth } from '@/hooks/useAuth'
 import { cookieManager } from '@/utils/cookies'
-import { Notification } from '@/api/types/notification.type'
+import { Notification, NotificationType } from '@/api/types/notification.type'
 
 interface NotificationContextType {
   notifications: Notification[]
@@ -41,7 +41,9 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
     token,
     enabled: isAuthenticated && !!adminId,
     onNotificationReceived: (notification) => {
-      // Optional: Add custom logic when notification is received
+      if (notification.type === NotificationType.BROKER_REGISTRATION_RECEIVED) {
+        window.dispatchEvent(new CustomEvent('broker-pending-refresh'))
+      }
       console.log('[NotificationProvider] New notification:', notification)
     },
   })

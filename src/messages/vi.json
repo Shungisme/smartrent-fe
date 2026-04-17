@@ -1728,6 +1728,58 @@
       "menuBar": {
         "enterUrl": "Nhập URL:"
       }
+    },
+    "brokerPending": {
+      "title": "Đơn đăng ký môi giới chờ duyệt",
+      "subtitle": "Xem và xác minh hồ sơ đăng ký môi giới",
+      "table": {
+        "headers": {
+          "name": "Họ tên",
+          "email": "Email",
+          "phone": "Số điện thoại",
+          "registeredAt": "Ngày đăng ký",
+          "actions": "Thao tác"
+        },
+        "verifyLink": "Xác minh trên cổng chính thức ↗"
+      },
+      "documents": {
+        "cccdFront": "CCCD - Mặt trước",
+        "cccdBack": "CCCD - Mặt sau",
+        "certificate": "Chứng chỉ hành nghề",
+        "notSubmitted": "Chưa cung cấp"
+      },
+      "actions": {
+        "approve": "Chấp thuận",
+        "reject": "Từ chối",
+        "removeBroker": "Gỡ môi giới"
+      },
+      "modal": {
+        "title": "Từ chối đơn môi giới",
+        "reasonLabel": "Lý do từ chối",
+        "reasonPlaceholder": "Mô tả lý do không thể chấp thuận đơn này...",
+        "reasonRequired": "Vui lòng nhập lý do từ chối",
+        "cancel": "Hủy",
+        "submit": "Từ chối"
+      },
+      "confirmRemove": {
+        "title": "Gỡ môi giới",
+        "description": "Gỡ quyền môi giới của người dùng này?",
+        "confirm": "Gỡ môi giới",
+        "cancel": "Hủy"
+      },
+      "states": {
+        "empty": "Không có đơn chờ duyệt",
+        "error": "Tải dữ liệu thất bại.",
+        "retry": "Thử lại"
+      },
+      "toasts": {
+        "approved": "Đã chấp thuận môi giới",
+        "rejected": "Đã từ chối đơn môi giới",
+        "removed": "Đã gỡ quyền môi giới",
+        "userNotFound": "Không tìm thấy người dùng",
+        "accessDenied": "Từ chối truy cập",
+        "genericError": "Có lỗi xảy ra. Vui lòng thử lại."
+      }
     }
   },
   "notifications": {
@@ -1737,11 +1789,13 @@
     "viewAll": "Xem tất cả thông báo",
     "types": {
       "NEW_REPORT": "Báo cáo mới",
-      "LISTING_RESUBMITTED": "Tin đăng gửi lại"
+      "LISTING_RESUBMITTED": "Tin đăng gửi lại",
+      "BROKER_REGISTRATION_RECEIVED": "Đơn môi giới mới"
     },
     "messages": {
       "newReport": "Có báo cáo mới được gửi",
-      "listingResubmitted": "Tin đăng đã được gửi lại để duyệt"
+      "listingResubmitted": "Tin đăng đã được gửi lại để duyệt",
+      "brokerRegistrationReceived": "Có đơn đăng ký môi giới mới"
     }
   }
 }

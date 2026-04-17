@@ -1,6 +1,7 @@
 export * from './admins'
 export * from './analytics'
 export * from './auth'
+export * from './brokers'
 export * from './finance'
 export * from './news'
 export * from './not-found'

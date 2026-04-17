@@ -20,6 +20,7 @@ const ACTIVE_MAP: Record<string, string> = {
   '/premium/promotions': 'premiumPromotions',
   '/premium/listing-types': 'premiumListingTypes',
   '/premium/post-boosts': 'premiumPostBoosts',
+  '/broker-pending': 'brokerPending',
   '/reports': 'reports',
   '/roles': 'roles',
 }
