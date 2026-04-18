@@ -823,8 +823,7 @@
     "sidebar": {
       "title": "SmartRent Admin",
       "sections": {
-        "management": "Quản Trị",
-        "comingSoon": "Sắp Ra Mắt"
+        "management": "Quản Trị"
       },
       "menuItems": {
         "users": "Quản Lý Người Dùng",

@@ -13,7 +13,7 @@ const LoginPage = () => {
   // Redirect to users page if already authenticated
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push('/users')
+      router.push('/management/users')
     }
   }, [isAuthenticated, isLoading, router])
 

@@ -64,7 +64,7 @@ const AdminLoginForm: NextPage<AdminLoginFormProps> = (props) => {
         toast.success(t('homePage.auth.login.successMessage'))
         onSuccess?.()
         // Redirect to users page
-        router.push('/users')
+        router.push('/management/users')
       } else {
         toast.error(result.message || t('homePage.auth.login.errorMessage'))
       }

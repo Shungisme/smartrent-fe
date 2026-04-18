@@ -858,8 +858,7 @@
     "sidebar": {
       "title": "SmartRent Admin",
       "sections": {
-        "management": "Management",
-        "comingSoon": "Coming Soon"
+        "management": "Management"
       },
       "menuItems": {
         "users": "User Management",

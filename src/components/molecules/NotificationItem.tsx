@@ -87,16 +87,16 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
     switch (notification.type) {
       case NotificationType.NEW_REPORT:
         if (notification.referenceId) {
-          router.push(`/reports?id=${notification.referenceId}`)
+          router.push(`/moderation/reports?id=${notification.referenceId}`)
         }
         break
       case NotificationType.LISTING_RESUBMITTED:
         if (notification.referenceId) {
-          router.push(`/posts?id=${notification.referenceId}`)
+          router.push(`/content/posts?id=${notification.referenceId}`)
         }
         break
       case NotificationType.BROKER_REGISTRATION_RECEIVED:
-        router.push('/broker-pending')
+        router.push('/moderation/broker-pending')
         break
       default:
         break

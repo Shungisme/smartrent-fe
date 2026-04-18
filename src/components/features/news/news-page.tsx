@@ -136,11 +136,11 @@ const NewsManagement = () => {
   }
 
   const handleEdit = (news: NewsSummaryResponse) => {
-    router.push(`/news-editor?id=${news.newsId}`)
+    router.push(`/content/news-editor?id=${news.newsId}`)
   }
 
   const handleCreate = () => {
-    router.push('/news-editor')
+    router.push('/content/news-editor')
   }
 
   const handleDeleteClick = (news: NewsSummaryResponse) => {
