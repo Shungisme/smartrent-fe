@@ -315,7 +315,7 @@
   }
 
   .app-header {
-    @apply flex h-[var(--app-topbar-height)] items-center border-b border-border/70 bg-card/95 px-4 sm:px-5 lg:px-6 backdrop-blur supports-[backdrop-filter]:bg-card/80;
+    @apply relative z-40 isolate flex h-[var(--app-topbar-height)] items-center border-b border-border/70 bg-card/95 px-4 sm:px-5 lg:px-6 backdrop-blur supports-[backdrop-filter]:bg-card/80;
   }
 
   .app-sidebar {
