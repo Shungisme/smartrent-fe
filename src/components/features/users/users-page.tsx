@@ -1,10 +1,12 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/atoms/button'
 import { useTranslations } from 'next-intl'
 import { Plus } from 'lucide-react'
+import { toast } from 'sonner'
 import { getUserList } from '@/api/services/user.service'
+import { BrokerService } from '@/api/services/broker.service'
 import { useDebounce } from '@/hooks/useDebounce'
 import { UserProfile } from '@/api/types/user.type'
 import { UserTable } from '@/components/organisms/users/UserTable'
@@ -32,45 +34,38 @@ const UserManagement = () => {
   const debouncedSearchTerm = useDebounce(filterValues.search || '', 500)
   const [totalItems, setTotalItems] = useState(0)
 
-  // Fetch users from API
-  useEffect(() => {
-    const fetchUsers = async () => {
-      setLoading(true)
-      setError(null)
-      try {
-        const selectedType =
-          typeof filterValues.type === 'string' ? filterValues.type : undefined
+  const fetchUsers = useCallback(async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const selectedType =
+        typeof filterValues.type === 'string' ? filterValues.type : undefined
 
-        const response = await getUserList({
-          page: filterValues.page ? Number(filterValues.page) : 1,
-          size: filterValues.pageSize ? Number(filterValues.pageSize) : 10,
-          keyword: debouncedSearchTerm
-            ? String(debouncedSearchTerm)
-            : undefined,
-          isBroker:
-            selectedType === 'broker'
-              ? true
-              : selectedType === 'normal_user'
-                ? false
-                : undefined,
-          status: filterValues.status ? String(filterValues.status) : undefined,
-        })
-        if (response.success && response.data) {
-          setUsers(response.data.data)
-          setTotalItems(response.data.totalElements)
-        } else {
-          setError(response.message || 'Failed to load users')
-        }
-      } catch (err: unknown) {
-        const error = err as { message?: string }
-        setError(error.message || 'An error occurred while loading users')
-        console.error('Error fetching users:', err)
-      } finally {
-        setLoading(false)
+      const response = await getUserList({
+        page: filterValues.page ? Number(filterValues.page) : 1,
+        size: filterValues.pageSize ? Number(filterValues.pageSize) : 10,
+        keyword: debouncedSearchTerm ? String(debouncedSearchTerm) : undefined,
+        isBroker:
+          selectedType === 'broker'
+            ? true
+            : selectedType === 'normal_user'
+              ? false
+              : undefined,
+        status: filterValues.status ? String(filterValues.status) : undefined,
+      })
+      if (response.success && response.data) {
+        setUsers(response.data.data)
+        setTotalItems(response.data.totalElements)
+      } else {
+        setError(response.message || 'Failed to load users')
       }
+    } catch (err: unknown) {
+      const error = err as { message?: string }
+      setError(error.message || 'An error occurred while loading users')
+      console.error('Error fetching users:', err)
+    } finally {
+      setLoading(false)
     }
-
-    fetchUsers()
   }, [
     debouncedSearchTerm,
     filterValues.page,
@@ -79,8 +74,39 @@ const UserManagement = () => {
     filterValues.status,
   ])
 
+  // Fetch users from API
+  useEffect(() => {
+    fetchUsers()
+  }, [fetchUsers])
+
   const handleFilterChange = (newFilters: Record<string, unknown>) => {
     setFilterValues(newFilters)
+  }
+
+  const handleRemoveBroker = async (user: UserProfile) => {
+    const displayName =
+      `${user.firstName} ${user.lastName}`.trim() || user.userId
+    const confirmed = window.confirm(
+      t('table.actions.removeBrokerConfirm', { name: displayName }),
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    try {
+      const response = await BrokerService.removeBroker(user.userId)
+
+      if (response.success) {
+        toast.success(t('table.actions.removeBrokerSuccess'))
+        await fetchUsers()
+      } else {
+        toast.error(response.message || t('table.actions.removeBrokerError'))
+      }
+    } catch (err) {
+      console.error('Error removing broker role:', err)
+      toast.error(t('table.actions.removeBrokerError'))
+    }
   }
 
   // Show error state
@@ -124,6 +150,7 @@ const UserManagement = () => {
           onFilterChange={handleFilterChange}
           onEdit={setEditingUser}
           onDelete={setShowDelete}
+          onRemoveBroker={handleRemoveBroker}
         />
       </div>
 
