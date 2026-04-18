@@ -5,15 +5,20 @@ import { Typography } from '@/components/atoms/typography'
 import { cn } from '@/lib/utils'
 import { VIETNAM_PHONE_REGEX } from '@/constants/regex'
 import { useTranslations } from 'next-intl'
-import { useController, Control } from 'react-hook-form'
+import {
+  useController,
+  type Control,
+  type FieldPath,
+  type FieldValues,
+} from 'react-hook-form'
 import { Phone } from 'lucide-react'
 
-interface PhoneFieldProps {
+interface PhoneFieldProps<TFieldValues extends FieldValues = FieldValues> {
   label?: string
   error?: string
   description?: string
-  name: string
-  control: Control<any>
+  name: FieldPath<TFieldValues>
+  control: Control<TFieldValues>
   showIcon?: boolean
   placeholder?: string
   className?: string
@@ -21,7 +26,9 @@ interface PhoneFieldProps {
   required?: boolean
 }
 
-const PhoneField = (props: PhoneFieldProps) => {
+const PhoneField = <TFieldValues extends FieldValues = FieldValues>(
+  props: PhoneFieldProps<TFieldValues>,
+) => {
   const {
     label,
     error,
@@ -36,7 +43,7 @@ const PhoneField = (props: PhoneFieldProps) => {
   } = props
 
   const t = useTranslations()
-  const fieldId = id || `phone-field-${name}`
+  const fieldId = id || `phone-field-${String(name)}`
 
   const {
     field,

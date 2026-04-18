@@ -6,24 +6,31 @@ import { Typography } from '@/components/atoms/typography'
 import { cn } from '@/lib/utils'
 import { PASSWORD_STRENGTH_REGEX } from '@/constants/regex'
 import { useTranslations } from 'next-intl'
-import { useController, Control } from 'react-hook-form'
+import {
+  useController,
+  type Control,
+  type FieldPath,
+  type FieldValues,
+} from 'react-hook-form'
 import { Eye, EyeOff, Lock } from 'lucide-react'
 
-type PasswordFieldProps = {
+type PasswordFieldProps<TFieldValues extends FieldValues = FieldValues> = {
   label?: string
   error?: string
   description?: string
   showToggle?: boolean
   showIcon?: boolean
-  name: string
-  control: Control<any>
+  name: FieldPath<TFieldValues>
+  control: Control<TFieldValues>
   className?: string
   placeholder?: string
   id?: string
   required?: boolean
 }
 
-const PasswordField = (props: PasswordFieldProps) => {
+const PasswordField = <TFieldValues extends FieldValues = FieldValues>(
+  props: PasswordFieldProps<TFieldValues>,
+) => {
   const {
     control,
     name,
@@ -39,7 +46,7 @@ const PasswordField = (props: PasswordFieldProps) => {
   } = props
   const [showPassword, setShowPassword] = React.useState(false)
   const t = useTranslations()
-  const fieldId = id || `password-field-${name}`
+  const fieldId = id || `password-field-${String(name)}`
 
   const {
     field,

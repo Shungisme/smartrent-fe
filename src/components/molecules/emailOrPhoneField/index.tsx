@@ -9,22 +9,31 @@ import {
   isValidEmailOrPhone,
 } from '@/constants/regex'
 import { useTranslations } from 'next-intl'
-import { useController, Control } from 'react-hook-form'
+import {
+  useController,
+  type Control,
+  type FieldPath,
+  type FieldValues,
+} from 'react-hook-form'
 import { Mail, Phone } from 'lucide-react'
 
-interface EmailOrPhoneFieldProps {
+interface EmailOrPhoneFieldProps<
+  TFieldValues extends FieldValues = FieldValues,
+> {
   label?: string
   error?: string
   description?: string
-  name: string
-  control: Control<any>
+  name: FieldPath<TFieldValues>
+  control: Control<TFieldValues>
   showIcon?: boolean
   placeholder?: string
   className?: string
   id?: string
 }
 
-const EmailOrPhoneField = (props: EmailOrPhoneFieldProps) => {
+const EmailOrPhoneField = <TFieldValues extends FieldValues = FieldValues>(
+  props: EmailOrPhoneFieldProps<TFieldValues>,
+) => {
   const {
     label,
     error,
@@ -38,7 +47,7 @@ const EmailOrPhoneField = (props: EmailOrPhoneFieldProps) => {
   } = props
 
   const t = useTranslations()
-  const fieldId = id || `emailorphone-field-${name}`
+  const fieldId = id || `emailorphone-field-${String(name)}`
 
   const {
     field,
@@ -62,9 +71,11 @@ const EmailOrPhoneField = (props: EmailOrPhoneFieldProps) => {
   const displayError = fieldError?.message || error
 
   const getIcon = () => {
+    const fieldValue = String(field.value ?? '')
+
     if (!showIcon) return null
 
-    if (EMAIL_PREFIX_REGEX.test(field.value || '')) {
+    if (EMAIL_PREFIX_REGEX.test(fieldValue)) {
       return (
         <Mail
           className={cn(
@@ -73,7 +84,7 @@ const EmailOrPhoneField = (props: EmailOrPhoneFieldProps) => {
           )}
         />
       )
-    } else if (PHONE_PREFIX_REGEX.test(field.value || '')) {
+    } else if (PHONE_PREFIX_REGEX.test(fieldValue)) {
       return (
         <Phone
           className={cn(

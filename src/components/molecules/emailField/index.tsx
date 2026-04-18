@@ -5,22 +5,29 @@ import { Typography } from '@/components/atoms/typography'
 import { cn } from '@/lib/utils'
 import { EMAIL_REGEX } from '@/constants/regex'
 import { useTranslations } from 'next-intl'
-import { useController, Control } from 'react-hook-form'
+import {
+  useController,
+  type Control,
+  type FieldPath,
+  type FieldValues,
+} from 'react-hook-form'
 import { Mail } from 'lucide-react'
 
-interface EmailFieldProps {
+interface EmailFieldProps<TFieldValues extends FieldValues = FieldValues> {
   label?: string
   error?: string
   description?: string
-  name: string
-  control: Control<any>
+  name: FieldPath<TFieldValues>
+  control: Control<TFieldValues>
   showIcon?: boolean
   placeholder?: string
   className?: string
   id?: string
 }
 
-const EmailField = (props: EmailFieldProps) => {
+const EmailField = <TFieldValues extends FieldValues = FieldValues>(
+  props: EmailFieldProps<TFieldValues>,
+) => {
   const {
     label,
     error,
@@ -34,7 +41,7 @@ const EmailField = (props: EmailFieldProps) => {
   } = props
 
   const t = useTranslations()
-  const fieldId = id || `email-field-${name}`
+  const fieldId = id || `email-field-${String(name)}`
 
   const {
     field,
