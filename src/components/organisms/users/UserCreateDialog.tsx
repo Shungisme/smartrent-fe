@@ -137,28 +137,6 @@ export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
             />
           </div>
 
-          <div className='space-y-2'>
-            <Label htmlFor='idDocument'>{t('create.idDocument')}</Label>
-            <Input
-              id='idDocument'
-              value={form.idDocument || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, idDocument: e.target.value }))
-              }
-            />
-          </div>
-
-          <div className='space-y-2'>
-            <Label htmlFor='taxNumber'>{t('create.taxNumber')}</Label>
-            <Input
-              id='taxNumber'
-              value={form.taxNumber || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, taxNumber: e.target.value }))
-              }
-            />
-          </div>
-
           {error && <div className='text-red-600 text-sm'>{error}</div>}
 
           <div className='flex justify-end gap-2'>

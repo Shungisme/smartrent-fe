@@ -124,6 +124,7 @@ export class UserService {
     size?: number
     keyword?: string
     type?: string
+    isBroker?: boolean
     status?: string
   }): Promise<ApiResponse<UserListResponse>> {
     const response = await apiRequest<UserListResponse>({

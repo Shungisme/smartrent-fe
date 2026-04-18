@@ -3,11 +3,15 @@ export interface UserUpdateRequest {
   email?: string
   firstName?: string
   lastName?: string
-  idDocument?: string
-  taxNumber?: string
   contactPhoneNumber?: string
   isVerified?: boolean
 }
+
+export type UserBrokerVerificationStatus =
+  | 'NONE'
+  | 'PENDING'
+  | 'APPROVED'
+  | 'REJECTED'
 
 // User profile response from GET /v1/users
 export interface UserProfile {
@@ -17,10 +21,12 @@ export interface UserProfile {
   email: string
   firstName: string
   lastName: string
-  idDocument: string
-  taxNumber: string
+  idDocument?: string
+  taxNumber?: string
   contactPhoneNumber?: string
   contactPhoneVerified?: boolean
+  isBroker?: boolean
+  brokerVerificationStatus?: UserBrokerVerificationStatus
 }
 
 // Legacy interface - kept for backward compatibility
@@ -57,8 +63,6 @@ export interface CreateUserRequest {
   password: string
   firstName: string
   lastName: string
-  idDocument: string
-  taxNumber: string
 }
 
 // Request body for PATCH /v1/users/contact-phone

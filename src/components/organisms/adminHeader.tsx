@@ -1,6 +1,7 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 import { Avatar } from '@/components/atoms/avatar'
+import { Button } from '@/components/atoms/button'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -12,14 +13,20 @@ import {
 import { useTranslations } from 'next-intl'
 import { useAuth } from '@/hooks/useAuth'
 import { toast } from 'sonner'
-import { User, LogOut, Settings, ChevronDown } from 'lucide-react'
+import { User, LogOut, Settings, ChevronDown, Menu } from 'lucide-react'
 import { NotificationBell } from './NotificationBell'
 
 type AdminHeaderProps = {
   leftContent?: React.ReactNode
+  showMenuButton?: boolean
+  onMenuClick?: () => void
 }
 
-const AdminHeader: React.FC<AdminHeaderProps> = ({ leftContent }) => {
+const AdminHeader: React.FC<AdminHeaderProps> = ({
+  leftContent,
+  showMenuButton = false,
+  onMenuClick,
+}) => {
   const t = useTranslations('admin.header')
   const router = useRouter()
   const { user, logout } = useAuth()
@@ -43,7 +50,21 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ leftContent }) => {
   return (
     <header className='app-header'>
       <div className='flex w-full items-center justify-between gap-4'>
-        <div className='min-w-0 flex-1 overflow-hidden'>{leftContent}</div>
+        <div className='flex min-w-0 flex-1 items-center gap-2 overflow-hidden'>
+          {showMenuButton && (
+            <Button
+              type='button'
+              variant='ghost'
+              size='sm'
+              onClick={onMenuClick}
+              className='h-8 w-8 p-0 md:hidden'
+              aria-label='Open navigation menu'
+            >
+              <Menu className='h-4.5 w-4.5 text-foreground/80' />
+            </Button>
+          )}
+          <div className='min-w-0 flex-1 overflow-hidden'>{leftContent}</div>
+        </div>
 
         {/* Right - Notifications & Profile */}
         <div className='flex shrink-0 items-center gap-2.5'>
@@ -59,7 +80,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ leftContent }) => {
                     {user?.firstName?.[0]?.toUpperCase() || 'A'}
                   </div>
                 </Avatar>
-                <div className='flex flex-col'>
+                <div className='hidden sm:flex flex-col'>
                   <span className='text-xs font-semibold text-foreground sm:text-sm'>
                     {user?.firstName && user?.lastName
                       ? `${user.firstName} ${user.lastName}`
@@ -69,7 +90,7 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({ leftContent }) => {
                     {user?.roles?.[0] || t('defaultRole')}
                   </span>
                 </div>
-                <ChevronDown className='h-4 w-4 text-muted-foreground' />
+                <ChevronDown className='hidden sm:block h-4 w-4 text-muted-foreground' />
               </div>
             </DropdownMenuTrigger>
 

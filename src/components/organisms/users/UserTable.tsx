@@ -38,9 +38,9 @@ export const UserTable: React.FC<UserTableProps> = ({
     id: user.userId,
     name: `${user.firstName} ${user.lastName}`,
     avatar: undefined, // API doesn't return avatar yet
-    type: 'tenant', // API doesn't specify type yet, default to tenant
-    joinDate: new Date(user.userId).toLocaleDateString('vi-VN'), // Temporary until API provides join date
-    lastOnline: new Date().toLocaleDateString('vi-VN'), // Temporary until API provides last online
+    type: user.isBroker ? 'broker' : 'normal_user',
+    joinDate: '-',
+    lastOnline: '-',
     posts: null, // API doesn't return posts count yet
     status: 'normal', // API doesn't return status yet, default to normal
   }))
@@ -82,10 +82,10 @@ export const UserTable: React.FC<UserTableProps> = ({
       accessor: 'type',
       render: (value) => (
         <Badge
-          variant={(value as string) === 'landlord' ? 'default' : 'secondary'}
+          variant={(value as string) === 'broker' ? 'default' : 'secondary'}
           className={cn(
             'px-3 py-1',
-            (value as string) === 'landlord'
+            (value as string) === 'broker'
               ? 'bg-blue-100 text-blue-800'
               : 'bg-gray-100 text-gray-800',
           )}
@@ -191,8 +191,8 @@ export const UserTable: React.FC<UserTableProps> = ({
       type: 'select',
       label: t('filters.allUsers'),
       options: [
-        { value: 'landlord', label: t('filters.landlord') },
-        { value: 'tenant', label: t('filters.tenant') },
+        { value: 'broker', label: t('filters.broker') },
+        { value: 'normal_user', label: t('filters.normalUser') },
       ],
     },
   ]

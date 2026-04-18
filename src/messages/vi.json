@@ -853,8 +853,8 @@
       },
       "filters": {
         "allUsers": "Tất Cả Người Dùng",
-        "landlord": "Chủ nhà",
-        "tenant": "Người thuê"
+        "broker": "Môi giới",
+        "normalUser": "Người dùng thường"
       },
       "perPage": "mỗi trang",
       "table": {
@@ -869,8 +869,8 @@
           "actions": "Hành Động"
         },
         "userTypes": {
-          "landlord": "Chủ nhà",
-          "tenant": "Người thuê"
+          "broker": "Môi giới",
+          "normal_user": "Người dùng thường"
         },
         "postsBadge": "bài đăng",
         "notApplicable": "Không áp dụng",

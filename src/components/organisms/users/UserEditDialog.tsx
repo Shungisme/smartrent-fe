@@ -36,8 +36,6 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        idDocument: user.idDocument,
-        taxNumber: user.taxNumber,
         contactPhoneNumber: user.contactPhoneNumber,
         isVerified:
           (user as UserProfile & { isVerified?: boolean }).isVerified ?? false,
@@ -113,32 +111,6 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
                 setForm((f) => ({ ...f, lastName: e.target.value }))
               }
               required
-            />
-          </div>
-          <div className='space-y-2'>
-            <Label htmlFor='editIdDocument'>
-              {t('edit.idDocument') || 'ID Document'}
-            </Label>
-            <Input
-              id='editIdDocument'
-              placeholder='ID Document'
-              value={form.idDocument || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, idDocument: e.target.value }))
-              }
-            />
-          </div>
-          <div className='space-y-2'>
-            <Label htmlFor='editTaxNumber'>
-              {t('edit.taxNumber') || 'Tax Number'}
-            </Label>
-            <Input
-              id='editTaxNumber'
-              placeholder='Tax Number'
-              value={form.taxNumber || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, taxNumber: e.target.value }))
-              }
             />
           </div>
           <div className='space-y-2'>

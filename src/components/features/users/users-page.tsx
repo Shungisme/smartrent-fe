@@ -38,13 +38,21 @@ const UserManagement = () => {
       setLoading(true)
       setError(null)
       try {
+        const selectedType =
+          typeof filterValues.type === 'string' ? filterValues.type : undefined
+
         const response = await getUserList({
           page: filterValues.page ? Number(filterValues.page) : 1,
           size: filterValues.pageSize ? Number(filterValues.pageSize) : 10,
           keyword: debouncedSearchTerm
             ? String(debouncedSearchTerm)
             : undefined,
-          type: filterValues.type ? String(filterValues.type) : undefined,
+          isBroker:
+            selectedType === 'broker'
+              ? true
+              : selectedType === 'normal_user'
+                ? false
+                : undefined,
           status: filterValues.status ? String(filterValues.status) : undefined,
         })
         if (response.success && response.data) {

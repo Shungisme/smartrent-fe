@@ -130,12 +130,16 @@ type AdminSidebarProps = {
   activeItem?: string
   collapsed?: boolean
   onToggleCollapse?: () => void
+  showCollapseToggle?: boolean
+  onNavigate?: () => void
 }
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({
   activeItem,
   collapsed = false,
   onToggleCollapse,
+  showCollapseToggle = true,
+  onNavigate,
 }) => {
   const router = useRouter()
   const pathname = usePathname() ?? ''
@@ -229,6 +233,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     moderation: <Shield className='h-4 w-4' />,
   }
 
+  const handleNavigate = (href: string) => {
+    router.push(href)
+    onNavigate?.()
+  }
+
   return (
     <div className='flex h-full flex-col overflow-y-auto'>
       <div className='h-[var(--app-topbar-height)] border-b border-sidebar-border/70 px-2'>
@@ -240,7 +249,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
         >
           <button
             type='button'
-            onClick={() => router.push('/management/users')}
+            onClick={() => handleNavigate('/management/users')}
             className={cn(
               'min-w-0 flex-1 rounded-md px-3 py-1.5 text-left text-sm font-semibold text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
               collapsed && 'hidden',
@@ -249,18 +258,20 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             SmartRent Admin
           </button>
 
-          <button
-            type='button'
-            onClick={onToggleCollapse}
-            className='flex items-center justify-center rounded-md px-3 py-1.5 text-sidebar-foreground/80 transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
-            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {collapsed ? (
-              <PanelLeftOpen className='h-4 w-4 transition-transform duration-300 ease-in-out' />
-            ) : (
-              <PanelLeftClose className='h-4 w-4 transition-transform duration-300 ease-in-out' />
-            )}
-          </button>
+          {showCollapseToggle && (
+            <button
+              type='button'
+              onClick={onToggleCollapse}
+              className='flex items-center justify-center rounded-md px-3 py-1.5 text-sidebar-foreground/80 transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+              title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              {collapsed ? (
+                <PanelLeftOpen className='h-4 w-4 transition-transform duration-300 ease-in-out' />
+              ) : (
+                <PanelLeftClose className='h-4 w-4 transition-transform duration-300 ease-in-out' />
+              )}
+            </button>
+          )}
         </div>
       </div>
 
@@ -282,7 +293,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 label={item.label}
                 collapsed={collapsed}
                 isActive={pathname === item.href || activeItem === item.key}
-                onClick={() => router.push(item.href)}
+                onClick={() => handleNavigate(item.href)}
               />
             ))}
           </SidebarSection>
