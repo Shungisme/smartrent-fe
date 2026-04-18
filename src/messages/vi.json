@@ -1728,7 +1728,9 @@
       "menuBar": {
         "enterUrl": "Nhập URL:"
       }
-    },
+    }
+  },
+  "moderation": {
     "brokerPending": {
       "title": "Đơn đăng ký môi giới chờ duyệt",
       "subtitle": "Xem và xác minh hồ sơ đăng ký môi giới",

@@ -1763,7 +1763,9 @@
       "menuBar": {
         "enterUrl": "Enter URL:"
       }
-    },
+    }
+  },
+  "moderation": {
     "brokerPending": {
       "title": "Pending Broker Applications",
       "subtitle": "Review broker registrations and verify documents",

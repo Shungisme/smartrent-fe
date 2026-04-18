@@ -14,7 +14,7 @@ export const BrokerDocumentViewer: React.FC<BrokerDocumentViewerProps> = ({
   user,
   onImageError,
 }) => {
-  const t = useTranslations('admin.brokerPending')
+  const t = useTranslations('moderation.brokerPending')
 
   const documents = [
     {

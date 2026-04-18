@@ -45,7 +45,7 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
   onRemove,
   onDocError,
 }) => {
-  const t = useTranslations('admin.brokerPending')
+  const t = useTranslations('moderation.brokerPending')
 
   const columns: Column<AdminBrokerUserResponse>[] = [
     {

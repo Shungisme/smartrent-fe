@@ -25,7 +25,7 @@ export const BrokerRemoveDialog: React.FC<BrokerRemoveDialogProps> = ({
   onConfirm,
   loading = false,
 }) => {
-  const t = useTranslations('admin.brokerPending')
+  const t = useTranslations('moderation.brokerPending')
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

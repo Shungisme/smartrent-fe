@@ -24,7 +24,7 @@ type BrokerFilterValues = {
 }
 
 const BrokerPendingPage = () => {
-  const t = useTranslations('admin.brokerPending')
+  const t = useTranslations('moderation.brokerPending')
 
   const [brokers, setBrokers] = useState<AdminBrokerUserResponse[]>([])
   const [loading, setLoading] = useState(false)
