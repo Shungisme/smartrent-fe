@@ -5,6 +5,7 @@ import { Button } from '@/components/atoms/button'
 import { useTranslations } from 'next-intl'
 import { Plus } from 'lucide-react'
 import { getUserList } from '@/api/services/user.service'
+import { useDebounce } from '@/hooks/useDebounce'
 import { UserProfile } from '@/api/types/user.type'
 import { UserTable } from '@/components/organisms/users/UserTable'
 import { UserCreateDialog } from '@/components/organisms/users/UserCreateDialog'
@@ -23,9 +24,12 @@ const UserManagement = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  // Filters/pagination state (controlled by DataTable in API mode)
+  const [filterValues, setFilterValues] = useState<Record<string, unknown>>({
+    page: 1,
+    pageSize: 10,
+  })
+  const debouncedSearchTerm = useDebounce(filterValues.search || '', 500)
   const [totalItems, setTotalItems] = useState(0)
 
   // Fetch users from API
@@ -34,7 +38,15 @@ const UserManagement = () => {
       setLoading(true)
       setError(null)
       try {
-        const response = await getUserList(currentPage, pageSize)
+        const response = await getUserList({
+          page: filterValues.page ? Number(filterValues.page) : 1,
+          size: filterValues.pageSize ? Number(filterValues.pageSize) : 10,
+          keyword: debouncedSearchTerm
+            ? String(debouncedSearchTerm)
+            : undefined,
+          type: filterValues.type ? String(filterValues.type) : undefined,
+          status: filterValues.status ? String(filterValues.status) : undefined,
+        })
         if (response.success && response.data) {
           setUsers(response.data.data)
           setTotalItems(response.data.totalElements)
@@ -51,7 +63,17 @@ const UserManagement = () => {
     }
 
     fetchUsers()
-  }, [currentPage, pageSize])
+  }, [
+    debouncedSearchTerm,
+    filterValues.page,
+    filterValues.pageSize,
+    filterValues.type,
+    filterValues.status,
+  ])
+
+  const handleFilterChange = (newFilters: Record<string, unknown>) => {
+    setFilterValues(newFilters)
+  }
 
   // Show error state
   if (error) {
@@ -88,16 +110,12 @@ const UserManagement = () => {
         {/* User Table Component */}
         <UserTable
           users={users}
+          totalItems={totalItems}
           loading={loading}
+          filterValues={filterValues}
+          onFilterChange={handleFilterChange}
           onEdit={setEditingUser}
           onDelete={setShowDelete}
-          pagination={{
-            totalItems,
-            itemsPerPage: pageSize,
-            currentPage,
-            onPageChange: setCurrentPage,
-            onPageSizeChange: setPageSize,
-          }}
         />
       </div>
 

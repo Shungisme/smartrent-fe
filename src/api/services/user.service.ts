@@ -119,13 +119,17 @@ export class UserService {
    * @param page - Page number (1-indexed, must be >= 1)
    * @param size - Number of items per page
    */
-  static async getUserList(
-    page: number = 1,
-    size: number = 10,
-  ): Promise<ApiResponse<UserListResponse>> {
+  static async getUserList(params?: {
+    page?: number
+    size?: number
+    keyword?: string
+    type?: string
+    status?: string
+  }): Promise<ApiResponse<UserListResponse>> {
     const response = await apiRequest<UserListResponse>({
       method: 'GET',
-      url: `${ENV.API.USER.LIST}?page=${page}&size=${size}`,
+      url: ENV.API.USER.LIST,
+      params,
     })
 
     return response
