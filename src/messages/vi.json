@@ -880,7 +880,11 @@
         },
         "actions": {
           "edit": "Chỉnh sửa",
-          "delete": "Xóa"
+          "delete": "Xóa",
+          "removeBroker": "Gỡ môi giới",
+          "removeBrokerConfirm": "Bạn có chắc muốn gỡ vai trò môi giới của {name}?",
+          "removeBrokerSuccess": "Đã gỡ vai trò môi giới thành công",
+          "removeBrokerError": "Không thể gỡ vai trò môi giới. Vui lòng thử lại."
         }
       },
       "delete": {

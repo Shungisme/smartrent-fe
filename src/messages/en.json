@@ -915,7 +915,11 @@
         },
         "actions": {
           "edit": "Edit",
-          "delete": "Delete"
+          "delete": "Delete",
+          "removeBroker": "Remove Broker",
+          "removeBrokerConfirm": "Remove broker role for {name}?",
+          "removeBrokerSuccess": "Broker role removed successfully",
+          "removeBrokerError": "Unable to remove broker role. Please try again."
         }
       },
       "delete": {

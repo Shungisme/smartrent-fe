@@ -20,6 +20,7 @@ interface UserTableProps {
   onFilterChange: (newFilters: Record<string, unknown>) => void
   onEdit: (user: UserProfile) => void
   onDelete: (user: UserProfile) => void
+  onRemoveBroker: (user: UserProfile) => void
 }
 
 export const UserTable: React.FC<UserTableProps> = ({
@@ -30,6 +31,7 @@ export const UserTable: React.FC<UserTableProps> = ({
   onFilterChange,
   onEdit,
   onDelete,
+  onRemoveBroker,
 }) => {
   const t = useTranslations('admin.users')
 
@@ -154,28 +156,40 @@ export const UserTable: React.FC<UserTableProps> = ({
       id: 'actions',
       header: t('table.headers.actions') || 'Actions',
       accessor: () => '',
-      render: (_, row) => (
-        <div className='flex gap-2'>
-          <button
-            className='px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200'
-            onClick={() => {
-              const user = users.find((u) => u.userId === row.id)
-              if (user) onEdit(user)
-            }}
-          >
-            {t('table.actions.edit') || 'Edit'}
-          </button>
-          <button
-            className='px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200'
-            onClick={() => {
-              const user = users.find((u) => u.userId === row.id)
-              if (user) onDelete(user)
-            }}
-          >
-            {t('table.actions.delete') || 'Delete'}
-          </button>
-        </div>
-      ),
+      render: (_, row) => {
+        const user = users.find((u) => u.userId === row.id)
+
+        return (
+          <div className='flex gap-2'>
+            <button
+              className='px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200'
+              onClick={() => {
+                if (user) onEdit(user)
+              }}
+            >
+              {t('table.actions.edit') || 'Edit'}
+            </button>
+            {user?.isBroker && (
+              <button
+                className='px-2 py-1 text-xs bg-orange-100 text-orange-700 rounded hover:bg-orange-200'
+                onClick={() => {
+                  if (user) onRemoveBroker(user)
+                }}
+              >
+                {t('table.actions.removeBroker') || 'Remove Broker'}
+              </button>
+            )}
+            <button
+              className='px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200'
+              onClick={() => {
+                if (user) onDelete(user)
+              }}
+            >
+              {t('table.actions.delete') || 'Delete'}
+            </button>
+          </div>
+        )
+      },
     },
   ]
 
