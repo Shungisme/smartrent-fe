@@ -191,7 +191,7 @@ const NewsEditor = () => {
         }
       } else {
         toast.error(t('messages.notFound'))
-        router.push('/news')
+        router.push('/content/news')
       }
     } catch (error) {
       console.error('Error fetching news:', error)
@@ -268,7 +268,7 @@ const NewsEditor = () => {
         }
 
         toast.success(t('messages.updateSuccess'))
-        router.push('/news')
+        router.push('/content/news')
       } else {
         const createData = buildPayload(data, content) as NewsCreateRequest
         const createResponse = await NewsService.createNews(createData)
@@ -297,7 +297,7 @@ const NewsEditor = () => {
         }
 
         toast.success(t('messages.createSuccess'))
-        router.push('/news')
+        router.push('/content/news')
       }
     } catch (error) {
       console.error('Error saving news:', error)

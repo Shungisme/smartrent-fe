@@ -51,7 +51,7 @@ export const NotificationBell: React.FC = () => {
   }
 
   return (
-    <div className='relative'>
+    <div className='relative z-[70]'>
       {/* Bell Button */}
       <Button
         ref={buttonRef}
@@ -84,7 +84,7 @@ export const NotificationBell: React.FC = () => {
       {isOpen && (
         <div
           ref={dropdownRef}
-          className='absolute right-0 mt-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200'
+          className='fixed left-2 right-2 top-[calc(var(--app-topbar-height)+0.5rem)] z-[80] animate-in fade-in slide-in-from-top-2 duration-200 sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-2'
         >
           <NotificationDropdown
             notifications={notifications}

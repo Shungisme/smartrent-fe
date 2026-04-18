@@ -26,24 +26,22 @@ const getRoleBadgeClass = (role: AdminRole): string => {
 
 interface AdminTableProps {
   admins: AdminProfile[]
+  totalItems: number
   loading: boolean
+  filterValues: Record<string, unknown>
+  onFilterChange: (newFilters: Record<string, unknown>) => void
   onEdit: (admin: AdminProfile) => void
   onDelete: (admin: AdminProfile) => void
-  pagination?: {
-    totalItems: number
-    itemsPerPage: number
-    currentPage: number
-    onPageChange: (page: number) => void
-    onPageSizeChange: (size: number) => void
-  }
 }
 
 export const AdminTable: React.FC<AdminTableProps> = ({
   admins,
+  totalItems,
   loading,
+  filterValues,
+  onFilterChange,
   onEdit,
   onDelete,
-  pagination,
 }) => {
   const t = useTranslations('admin.admins')
 
@@ -209,13 +207,11 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       data={transformedAdmins}
       columns={columns}
       filters={filters}
-      filterMode='frontend'
-      pagination={!!pagination}
-      totalItems={pagination?.totalItems}
-      itemsPerPage={pagination?.itemsPerPage}
+      filterMode='api'
+      filterValues={filterValues}
+      onFilterChange={onFilterChange}
+      totalItems={totalItems}
       itemsPerPageOptions={[10, 20, 50]}
-      onPageChange={pagination?.onPageChange}
-      onItemsPerPageChange={pagination?.onPageSizeChange}
       sortable
       defaultSort={{ key: 'joinDate', direction: 'desc' }}
       loading={loading}

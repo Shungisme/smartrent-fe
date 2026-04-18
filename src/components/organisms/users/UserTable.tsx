@@ -14,24 +14,22 @@ import { UserData } from '@/types/users.type'
 
 interface UserTableProps {
   users: UserProfile[]
+  totalItems: number
   loading: boolean
+  filterValues: Record<string, unknown>
+  onFilterChange: (newFilters: Record<string, unknown>) => void
   onEdit: (user: UserProfile) => void
   onDelete: (user: UserProfile) => void
-  pagination?: {
-    totalItems: number
-    itemsPerPage: number
-    currentPage: number
-    onPageChange: (page: number) => void
-    onPageSizeChange: (size: number) => void
-  }
 }
 
 export const UserTable: React.FC<UserTableProps> = ({
   users,
+  totalItems,
   loading,
+  filterValues,
+  onFilterChange,
   onEdit,
   onDelete,
-  pagination,
 }) => {
   const t = useTranslations('admin.users')
 
@@ -40,9 +38,9 @@ export const UserTable: React.FC<UserTableProps> = ({
     id: user.userId,
     name: `${user.firstName} ${user.lastName}`,
     avatar: undefined, // API doesn't return avatar yet
-    type: 'tenant', // API doesn't specify type yet, default to tenant
-    joinDate: new Date(user.userId).toLocaleDateString('vi-VN'), // Temporary until API provides join date
-    lastOnline: new Date().toLocaleDateString('vi-VN'), // Temporary until API provides last online
+    type: user.isBroker ? 'broker' : 'normal_user',
+    joinDate: '-',
+    lastOnline: '-',
     posts: null, // API doesn't return posts count yet
     status: 'normal', // API doesn't return status yet, default to normal
   }))
@@ -84,10 +82,10 @@ export const UserTable: React.FC<UserTableProps> = ({
       accessor: 'type',
       render: (value) => (
         <Badge
-          variant={(value as string) === 'landlord' ? 'default' : 'secondary'}
+          variant={(value as string) === 'broker' ? 'default' : 'secondary'}
           className={cn(
             'px-3 py-1',
-            (value as string) === 'landlord'
+            (value as string) === 'broker'
               ? 'bg-blue-100 text-blue-800'
               : 'bg-gray-100 text-gray-800',
           )}
@@ -193,8 +191,8 @@ export const UserTable: React.FC<UserTableProps> = ({
       type: 'select',
       label: t('filters.allUsers'),
       options: [
-        { value: 'landlord', label: t('filters.landlord') },
-        { value: 'tenant', label: t('filters.tenant') },
+        { value: 'broker', label: t('filters.broker') },
+        { value: 'normal_user', label: t('filters.normalUser') },
       ],
     },
   ]
@@ -204,13 +202,11 @@ export const UserTable: React.FC<UserTableProps> = ({
       data={transformedUsers}
       columns={columns}
       filters={filters}
-      filterMode='frontend'
-      pagination={!!pagination}
-      totalItems={pagination?.totalItems}
-      itemsPerPage={pagination?.itemsPerPage}
+      filterMode='api'
+      filterValues={filterValues}
+      onFilterChange={onFilterChange}
+      totalItems={totalItems}
       itemsPerPageOptions={[5, 10, 20, 50]}
-      onPageChange={pagination?.onPageChange}
-      onItemsPerPageChange={pagination?.onPageSizeChange}
       sortable
       defaultSort={{ key: 'joinDate', direction: 'desc' }}
       loading={loading}

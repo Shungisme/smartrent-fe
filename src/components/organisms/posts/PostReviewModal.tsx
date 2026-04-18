@@ -139,7 +139,7 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='max-w-3xl max-h-[90vh] overflow-y-auto w-[calc(100%-2rem)] mx-auto'>
+        <DialogContent className='max-w-3xl max-h-[90vh] overflow-x-hidden overflow-y-auto w-[calc(100%-2rem)] mx-auto'>
           <DialogHeader>
             <DialogTitle className='text-xl md:text-2xl font-semibold'>
               {t('review.title')}
@@ -148,27 +148,29 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
 
           <div className='space-y-4 md:space-y-6'>
             {/* Images Gallery */}
-            <div className='flex gap-2 overflow-x-auto'>
-              {selectedPost.images.map((img, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => openLightbox(idx)}
-                  className='relative h-24 w-32 md:h-32 md:w-48 flex-shrink-0 rounded-lg overflow-hidden cursor-pointer group'
-                >
-                  <Image
-                    src={img}
-                    alt={`${selectedPost.title} ${idx + 1}`}
-                    width={192}
-                    height={128}
-                    className='h-full w-full object-cover transition-transform group-hover:scale-110'
-                  />
-                  <div className='absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center'>
-                    <span className='text-white opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium'>
-                      Click to view
-                    </span>
+            <div className='w-full overflow-x-auto overscroll-x-contain pb-2'>
+              <div className='flex min-w-max gap-2'>
+                {selectedPost.images.map((img, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => openLightbox(idx)}
+                    className='relative h-24 w-32 shrink-0 cursor-pointer overflow-hidden rounded-lg group md:h-32 md:w-48'
+                  >
+                    <Image
+                      src={img}
+                      alt={`${selectedPost.title} ${idx + 1}`}
+                      width={192}
+                      height={128}
+                      className='h-full w-full object-cover transition-transform group-hover:scale-110'
+                    />
+                    <div className='absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center'>
+                      <span className='text-white opacity-0 group-hover:opacity-100 transition-opacity text-sm font-medium'>
+                        Click to view
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             {/* Post Info */}

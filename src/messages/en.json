@@ -858,8 +858,7 @@
     "sidebar": {
       "title": "SmartRent Admin",
       "sections": {
-        "management": "Management",
-        "comingSoon": "Coming Soon"
+        "management": "Management"
       },
       "menuItems": {
         "users": "User Management",
@@ -889,8 +888,8 @@
       },
       "filters": {
         "allUsers": "All Users",
-        "landlord": "Landlord",
-        "tenant": "Tenant"
+        "broker": "Broker",
+        "normalUser": "Normal User"
       },
       "perPage": "per page",
       "table": {
@@ -905,8 +904,8 @@
           "actions": "Actions"
         },
         "userTypes": {
-          "landlord": "Landlord",
-          "tenant": "Tenant"
+          "broker": "Broker",
+          "normal_user": "Normal User"
         },
         "postsBadge": "posts",
         "notApplicable": "N/A",
@@ -1763,7 +1762,9 @@
       "menuBar": {
         "enterUrl": "Enter URL:"
       }
-    },
+    }
+  },
+  "moderation": {
     "brokerPending": {
       "title": "Pending Broker Applications",
       "subtitle": "Review broker registrations and verify documents",

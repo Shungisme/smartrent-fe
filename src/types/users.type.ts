@@ -2,7 +2,7 @@ export type UserData = {
   id: string
   name: string
   avatar?: string
-  type: 'landlord' | 'tenant'
+  type: 'normal_user' | 'broker'
   joinDate: string
   lastOnline: string
   posts: number | null

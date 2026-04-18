@@ -5,6 +5,7 @@ import { Button } from '@/components/atoms/button'
 import { useTranslations } from 'next-intl'
 import { Plus } from 'lucide-react'
 import { getAdminList } from '@/api/services/admin.service'
+import { useDebounce } from '@/hooks/useDebounce'
 import { AdminProfile } from '@/api/types/admin.type'
 import { AdminTable } from '@/components/organisms/admins/AdminTable'
 import { AdminCreateDialog } from '@/components/organisms/admins/AdminCreateDialog'
@@ -21,9 +22,12 @@ const AdminManagement = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [error, setError] = useState<string | null>(null)
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1)
-  const [pageSize, setPageSize] = useState(10)
+  // Filters/pagination state (controlled by DataTable in API mode)
+  const [filterValues, setFilterValues] = useState<Record<string, unknown>>({
+    page: 1,
+    pageSize: 10,
+  })
+  const debouncedSearchTerm = useDebounce(filterValues.search || '', 500)
   const [totalItems, setTotalItems] = useState(0)
 
   // Edit/Delete modal state
@@ -38,8 +42,13 @@ const AdminManagement = () => {
       setError(null)
       try {
         const response = await getAdminList({
-          page: currentPage,
-          size: pageSize,
+          page: filterValues.page ? Number(filterValues.page) : 1,
+          size: filterValues.pageSize ? Number(filterValues.pageSize) : 10,
+          keyword: debouncedSearchTerm
+            ? String(debouncedSearchTerm)
+            : undefined,
+          role: filterValues.role ? String(filterValues.role) : undefined,
+          status: filterValues.status ? String(filterValues.status) : undefined,
         })
         if (response.success && response.data) {
           setAdmins(response.data.data)
@@ -56,7 +65,17 @@ const AdminManagement = () => {
       }
     }
     fetchAdmins()
-  }, [currentPage, pageSize])
+  }, [
+    debouncedSearchTerm,
+    filterValues.page,
+    filterValues.pageSize,
+    filterValues.role,
+    filterValues.status,
+  ])
+
+  const handleFilterChange = (newFilters: Record<string, unknown>) => {
+    setFilterValues(newFilters)
+  }
 
   return (
     <div>
@@ -75,16 +94,12 @@ const AdminManagement = () => {
         {/* DataTable Component */}
         <AdminTable
           admins={admins}
+          totalItems={totalItems}
           loading={loading}
+          filterValues={filterValues}
+          onFilterChange={handleFilterChange}
           onEdit={setEditingAdmin}
           onDelete={setShowDelete}
-          pagination={{
-            totalItems,
-            itemsPerPage: pageSize,
-            currentPage,
-            onPageChange: setCurrentPage,
-            onPageSizeChange: setPageSize,
-          }}
         />
 
         {/* Modals */}

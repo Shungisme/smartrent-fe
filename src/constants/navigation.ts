@@ -6,7 +6,6 @@ export type BreadcrumbItem = {
 
 type CategoryKey =
   | 'management'
-  | 'finance'
   | 'monetization'
   | 'insights'
   | 'content'
@@ -17,7 +16,6 @@ type PageKey =
   | 'admins'
   | 'roles'
   | 'brokerPending'
-  | 'financeOverview'
   | 'premiumOverview'
   | 'premiumMembership'
   | 'premiumPromotions'
@@ -34,76 +32,77 @@ type PageKey =
   | 'reports'
 
 const ROUTE_META: Record<string, { category: CategoryKey; page: PageKey }> = {
-  '/users': { category: 'management', page: 'users' },
-  '/admins': { category: 'management', page: 'admins' },
-  '/roles': { category: 'management', page: 'roles' },
-  '/broker-pending': { category: 'moderation', page: 'brokerPending' },
-  '/finance': { category: 'finance', page: 'financeOverview' },
-  '/premium/overview': {
+  '/management/users': { category: 'management', page: 'users' },
+  '/management/admins': { category: 'management', page: 'admins' },
+  '/management/roles': { category: 'management', page: 'roles' },
+  '/moderation/broker-pending': {
+    category: 'moderation',
+    page: 'brokerPending',
+  },
+  '/monetization/overview': {
     category: 'monetization',
     page: 'premiumOverview',
   },
-  '/premium/membership': {
+  '/monetization/membership': {
     category: 'monetization',
     page: 'premiumMembership',
   },
-  '/premium/promotions': {
+  '/monetization/promotions': {
     category: 'monetization',
     page: 'premiumPromotions',
   },
-  '/premium/listing-types': {
+  '/monetization/listing-types': {
     category: 'monetization',
     page: 'premiumListingTypes',
   },
-  '/premium/post-boosts': {
+  '/monetization/post-boosts': {
     category: 'monetization',
     page: 'premiumPostBoosts',
   },
-  '/analytics/overview': {
+  '/insights/overview': {
     category: 'insights',
     page: 'analyticsOverview',
   },
-  '/analytics/users': {
+  '/insights/users': {
     category: 'insights',
     page: 'analyticsUsers',
   },
-  '/analytics/posts': {
+  '/insights/posts': {
     category: 'insights',
     page: 'analyticsPosts',
   },
-  '/analytics/revenue': {
+  '/insights/revenue': {
     category: 'insights',
     page: 'analyticsRevenue',
   },
-  '/analytics/reports': {
+  '/insights/reports': {
     category: 'insights',
     page: 'analyticsReports',
   },
-  '/posts': { category: 'content', page: 'posts' },
-  '/news': { category: 'content', page: 'news' },
-  '/news-editor': { category: 'content', page: 'newsEditor' },
-  '/reports': { category: 'moderation', page: 'reports' },
+  '/content/posts': { category: 'content', page: 'posts' },
+  '/content/news': { category: 'content', page: 'news' },
+  '/content/news-editor': { category: 'content', page: 'newsEditor' },
+  '/moderation/reports': { category: 'moderation', page: 'reports' },
 }
 
 const CATEGORY_ROUTES: Record<CategoryKey, string[]> = {
-  management: ['/users', '/admins', '/roles'],
-  finance: ['/finance'],
+  management: ['/management/users', '/management/admins', '/management/roles'],
   monetization: [
-    '/premium/overview',
-    '/premium/membership',
-    '/premium/promotions',
-    '/premium/listing-types',
-    '/premium/post-boosts',
+    '/monetization/overview',
+    '/monetization/membership',
+    '/monetization/promotions',
+    '/monetization/listing-types',
+    '/monetization/post-boosts',
   ],
   insights: [
-    '/analytics/overview',
-    '/analytics/users',
-    '/analytics/posts',
-    '/analytics/revenue',
-    '/analytics/reports',
+    '/insights/overview',
+    '/insights/users',
+    '/insights/posts',
+    '/insights/revenue',
+    '/insights/reports',
   ],
-  content: ['/posts', '/news'],
-  moderation: ['/reports', '/broker-pending'],
+  content: ['/content/posts', '/content/news'],
+  moderation: ['/moderation/reports', '/moderation/broker-pending'],
 }
 
 type NavigationLabels = {
@@ -119,7 +118,6 @@ const LABELS = {
     fallbackDashboard: 'Dashboard',
     categories: {
       management: 'Management',
-      finance: 'Finance',
       monetization: 'Monetization',
       insights: 'Insights',
       content: 'Content',
@@ -130,7 +128,6 @@ const LABELS = {
       admins: 'Admins',
       roles: 'Roles',
       brokerPending: 'Pending Broker Applications',
-      financeOverview: 'Overview',
       premiumOverview: 'Overview',
       premiumMembership: 'Membership',
       premiumPromotions: 'Promotions',
@@ -152,7 +149,6 @@ const LABELS = {
     fallbackDashboard: 'Tổng quan',
     categories: {
       management: 'Quản trị',
-      finance: 'Tài chính',
       monetization: 'Thương mại',
       insights: 'Phân tích',
       content: 'Nội dung',
@@ -163,7 +159,6 @@ const LABELS = {
       admins: 'Quản trị viên',
       roles: 'Vai trò',
       brokerPending: 'Đơn đăng ký môi giới chờ duyệt',
-      financeOverview: 'Tổng quan',
       premiumOverview: 'Tổng quan',
       premiumMembership: 'Thành viên',
       premiumPromotions: 'Khuyến mãi',
@@ -214,7 +209,7 @@ export const getBreadcrumbItems = (
   if (meta) {
     const categoryRoot = CATEGORY_ROUTES[meta.category][0]
     const breadcrumb: BreadcrumbItem[] = [
-      { label: dictionary.home, href: '/users' },
+      { label: dictionary.home, href: '/management/users' },
       {
         label: dictionary.categories[meta.category],
         href: categoryRoot,
@@ -224,7 +219,7 @@ export const getBreadcrumbItems = (
     if (meta.page === 'newsEditor') {
       breadcrumb.push({
         label: dictionary.pages.news,
-        href: '/news',
+        href: '/content/news',
       })
       breadcrumb.push({ label: dictionary.pages.newsEditor })
       return breadcrumb
@@ -237,13 +232,13 @@ export const getBreadcrumbItems = (
   const segments = pathname.split('/').filter(Boolean)
   if (segments.length === 0) {
     return [
-      { label: dictionary.home, href: '/users' },
+      { label: dictionary.home, href: '/management/users' },
       { label: dictionary.fallbackDashboard },
     ]
   }
 
   const fallbackItems: BreadcrumbItem[] = [
-    { label: dictionary.home, href: '/users' },
+    { label: dictionary.home, href: '/management/users' },
   ]
   let cumulativePath = ''
 

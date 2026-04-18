@@ -34,7 +34,7 @@ export const BrokerRejectDialog: React.FC<BrokerRejectDialogProps> = ({
   loading = false,
   maxLength = 500,
 }) => {
-  const t = useTranslations('admin.brokerPending')
+  const t = useTranslations('moderation.brokerPending')
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

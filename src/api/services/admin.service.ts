@@ -86,6 +86,9 @@ export class AdminService {
   static async getAdminList(params?: {
     page?: number
     size?: number
+    keyword?: string
+    role?: string
+    status?: string
   }): Promise<ApiResponse<PaginatedResponse<AdminProfile>>> {
     return apiRequest<PaginatedResponse<AdminProfile>>({
       method: 'GET',

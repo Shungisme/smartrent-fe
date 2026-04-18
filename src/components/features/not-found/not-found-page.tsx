@@ -16,11 +16,11 @@ export default function Custom404() {
         <p className='text-gray-600 mb-8 max-w-md'>{t('description')}</p>
         <div className='space-y-4'>
           <Button asChild>
-            <Link href='/users'>{t('backToAdmin')}</Link>
+            <Link href='/management/users'>{t('backToAdmin')}</Link>
           </Button>
           <div>
             <Button variant='outline' asChild>
-              <Link href='/analytics'>{t('viewAnalytics')}</Link>
+              <Link href='/insights/overview'>{t('viewAnalytics')}</Link>
             </Button>
           </div>
         </div>

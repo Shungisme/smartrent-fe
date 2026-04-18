@@ -24,6 +24,7 @@ const AppAdminLayout: React.FC<AppAdminLayoutProps> = ({
   const { language } = useSwitchLanguage()
   const { isAuthenticated, isLoading } = useAuth()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const breadcrumbItems = getBreadcrumbItems(pathname, language)
 
   useAuthGuard()
@@ -33,6 +34,10 @@ const AppAdminLayout: React.FC<AppAdminLayoutProps> = ({
       router.push('/login')
     }
   }, [isAuthenticated, isLoading, router])
+
+  useEffect(() => {
+    setMobileSidebarOpen(false)
+  }, [pathname])
 
   if (isLoading) {
     return (
@@ -59,6 +64,26 @@ const AppAdminLayout: React.FC<AppAdminLayoutProps> = ({
 
   return (
     <div className='app-shell flex h-screen overflow-hidden'>
+      {mobileSidebarOpen && (
+        <div className='fixed inset-0 z-[70] md:hidden'>
+          <button
+            type='button'
+            className='absolute inset-0 bg-black/40'
+            onClick={() => setMobileSidebarOpen(false)}
+            aria-label='Close navigation menu'
+          />
+
+          <aside className='absolute left-0 top-0 h-full w-72 max-w-[85vw] app-sidebar shadow-xl'>
+            <AdminSidebar
+              activeItem={activeItem}
+              collapsed={false}
+              showCollapseToggle={false}
+              onNavigate={() => setMobileSidebarOpen(false)}
+            />
+          </aside>
+        </div>
+      )}
+
       <aside
         className={`hidden md:block app-sidebar transition-[width] duration-300 ease-in-out ${
           sidebarCollapsed ? 'w-20' : 'w-72'
@@ -68,11 +93,14 @@ const AppAdminLayout: React.FC<AppAdminLayoutProps> = ({
           activeItem={activeItem}
           collapsed={sidebarCollapsed}
           onToggleCollapse={() => setSidebarCollapsed((prev) => !prev)}
+          showCollapseToggle
         />
       </aside>
 
       <div className='flex min-w-0 flex-1 flex-col overflow-hidden'>
         <AdminHeader
+          showMenuButton
+          onMenuClick={() => setMobileSidebarOpen(true)}
           leftContent={<Breadcrumb items={breadcrumbItems} className='mb-0' />}
         />
 

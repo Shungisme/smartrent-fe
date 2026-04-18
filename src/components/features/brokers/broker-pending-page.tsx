@@ -3,17 +3,15 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import { FileSearch } from 'lucide-react'
 import { BrokerService } from '@/api/services/broker.service'
 import { ApiResponse } from '@/configs/axios/types'
 import { AdminBrokerUserResponse } from '@/api/types/broker.type'
 import { Button } from '@/components/atoms/button'
-import { Skeleton } from '@/components/atoms/skeleton'
 import { BrokerPendingTable } from '@/components/organisms/brokers/BrokerPendingTable'
 import { BrokerRejectDialog } from '@/components/organisms/brokers/BrokerRejectDialog'
 import { BrokerRemoveDialog } from '@/components/organisms/brokers/BrokerRemoveDialog'
 
-const DEFAULT_PAGE_SIZE = 20
+const DEFAULT_PAGE_SIZE = 10
 const DOC_REFRESH_COOLDOWN_MS = 60 * 1000
 
 type ActionKind = 'approve' | 'reject' | 'remove'
@@ -24,7 +22,7 @@ type BrokerFilterValues = {
 }
 
 const BrokerPendingPage = () => {
-  const t = useTranslations('admin.brokerPending')
+  const t = useTranslations('moderation.brokerPending')
 
   const [brokers, setBrokers] = useState<AdminBrokerUserResponse[]>([])
   const [loading, setLoading] = useState(false)
@@ -100,8 +98,20 @@ const BrokerPendingPage = () => {
       })
 
       if (response.success && response.data) {
+        const payload = response.data as typeof response.data & {
+          totalItems?: number
+        }
+        const resolvedTotalItems =
+          typeof payload.totalElements === 'number'
+            ? payload.totalElements
+            : typeof payload.totalItems === 'number'
+              ? payload.totalItems
+              : Array.isArray(payload.data)
+                ? payload.data.length
+                : 0
+
         setBrokers(response.data.data || [])
-        setTotalItems(response.data.totalElements || 0)
+        setTotalItems(resolvedTotalItems)
         setError(null)
       } else {
         setError(response.message || t('states.error'))
@@ -238,61 +248,20 @@ const BrokerPendingPage = () => {
   const removeLoading =
     removeTarget && actionState[removeTarget.userId] === 'remove'
 
-  const showErrorState = !!error && brokers.length === 0 && !loading
-  const showEmptyState = !loading && !error && brokers.length === 0
-
   return (
-    <div className='space-y-6'>
-      <div>
-        <h1 className='text-xl font-semibold text-gray-900'>{t('title')}</h1>
-        <p className='mt-1 text-sm text-gray-600'>{t('subtitle')}</p>
-      </div>
-
-      {loading && brokers.length === 0 && (
-        <div className='space-y-4'>
-          <div className='rounded-2xl border border-gray-200 bg-white'>
-            <div className='grid grid-cols-5 gap-4 border-b border-gray-200 px-6 py-4'>
-              {Array.from({ length: 5 }).map((_, idx) => (
-                <Skeleton key={idx} className='h-4 w-24' />
-              ))}
+    <div>
+      <div className='space-y-6'>
+        {error && (
+          <div className='rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700'>
+            <div className='flex items-center justify-between gap-3'>
+              <span>{error || t('states.error')}</span>
+              <Button variant='outline' size='sm' onClick={fetchPendingBrokers}>
+                {t('states.retry')}
+              </Button>
             </div>
-            {Array.from({ length: 5 }).map((_, rowIdx) => (
-              <div
-                key={rowIdx}
-                className='grid grid-cols-5 gap-4 border-b border-gray-100 px-6 py-4'
-              >
-                {Array.from({ length: 5 }).map((_, colIdx) => (
-                  <Skeleton key={colIdx} className='h-4 w-full' />
-                ))}
-              </div>
-            ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {showErrorState && (
-        <div className='flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white px-6 py-16 text-center'>
-          <p className='text-sm text-gray-700'>{t('states.error')}</p>
-          <Button
-            variant='outline'
-            className='mt-4'
-            onClick={() => fetchPendingBrokers()}
-          >
-            {t('states.retry')}
-          </Button>
-        </div>
-      )}
-
-      {showEmptyState && (
-        <div className='flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white px-6 py-16 text-center'>
-          <div className='flex h-16 w-16 items-center justify-center rounded-full bg-blue-50'>
-            <FileSearch className='h-8 w-8 text-blue-600' />
-          </div>
-          <p className='mt-4 text-sm text-gray-600'>{t('states.empty')}</p>
-        </div>
-      )}
-
-      {!showEmptyState && !showErrorState && brokers.length > 0 && (
         <BrokerPendingTable
           data={brokers}
           loading={loading}
@@ -305,27 +274,27 @@ const BrokerPendingPage = () => {
           onRemove={handleRemoveOpen}
           onDocError={handleDocError}
         />
-      )}
 
-      <BrokerRejectDialog
-        open={!!rejectTarget}
-        onOpenChange={(open) => !open && setRejectTarget(null)}
-        reason={rejectReason}
-        onReasonChange={(value) => {
-          setRejectReason(value)
-          if (rejectError) setRejectError(null)
-        }}
-        onSubmit={handleRejectSubmit}
-        error={rejectError}
-        loading={!!rejectLoading}
-      />
+        <BrokerRejectDialog
+          open={!!rejectTarget}
+          onOpenChange={(open) => !open && setRejectTarget(null)}
+          reason={rejectReason}
+          onReasonChange={(value) => {
+            setRejectReason(value)
+            if (rejectError) setRejectError(null)
+          }}
+          onSubmit={handleRejectSubmit}
+          error={rejectError}
+          loading={!!rejectLoading}
+        />
 
-      <BrokerRemoveDialog
-        open={!!removeTarget}
-        onOpenChange={(open) => !open && setRemoveTarget(null)}
-        onConfirm={handleRemoveConfirm}
-        loading={!!removeLoading}
-      />
+        <BrokerRemoveDialog
+          open={!!removeTarget}
+          onOpenChange={(open) => !open && setRemoveTarget(null)}
+          onConfirm={handleRemoveConfirm}
+          loading={!!removeLoading}
+        />
+      </div>
     </div>
   )
 }

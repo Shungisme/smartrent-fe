@@ -1,21 +1,16 @@
 import React from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { useTranslations } from 'next-intl'
 import { useSwitchLanguage } from '@/contexts/switchLanguage/index.context'
 import { getSidebarNavigationGroups } from '@/constants/navigation'
 import {
   ChevronRight,
   PanelLeftClose,
   PanelLeftOpen,
-  Calculator,
   ChartColumn,
   CreditCard,
   FileCheck,
-  Home,
   ChevronDown,
-  Search,
-  Settings,
   Shield,
   UserCheck,
   UserCogIcon,
@@ -135,16 +130,19 @@ type AdminSidebarProps = {
   activeItem?: string
   collapsed?: boolean
   onToggleCollapse?: () => void
+  showCollapseToggle?: boolean
+  onNavigate?: () => void
 }
 
 const AdminSidebar: React.FC<AdminSidebarProps> = ({
   activeItem,
   collapsed = false,
   onToggleCollapse,
+  showCollapseToggle = true,
+  onNavigate,
 }) => {
   const router = useRouter()
   const pathname = usePathname() ?? ''
-  const t = useTranslations('admin.sidebar')
   const { language, updateLanguage } = useSwitchLanguage()
   const navigationGroups = React.useMemo(
     () => getSidebarNavigationGroups(language),
@@ -164,7 +162,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>({
     management: true,
-    comingSoon: false,
   })
   const openGroupsBeforeCollapseRef = React.useRef<Record<
     string,
@@ -176,7 +173,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
       const hasAnyOpenGroup = Object.values(openGroups).some(Boolean)
       if (hasAnyOpenGroup) {
         openGroupsBeforeCollapseRef.current = openGroups
-        setOpenGroups({ comingSoon: false })
+        setOpenGroups({})
       }
       return
     }
@@ -212,7 +209,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     users: <Users width={20} />,
     admins: <UserCogIcon width={20} />,
     roles: <Shield width={20} />,
-    financeOverview: <Calculator width={20} />,
     premiumOverview: <CreditCard width={20} />,
     premiumMembership: <CreditCard width={20} />,
     premiumPromotions: <CreditCard width={20} />,
@@ -231,30 +227,16 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   const groupIconMap: Record<string, React.ReactNode> = {
     management: <UserCogIcon className='h-4 w-4' />,
-    finance: <Calculator className='h-4 w-4' />,
     monetization: <CreditCard className='h-4 w-4' />,
     insights: <ChartColumn className='h-4 w-4' />,
     content: <Newspaper className='h-4 w-4' />,
     moderation: <Shield className='h-4 w-4' />,
   }
 
-  const upcomingItems = [
-    {
-      key: 'properties',
-      label: t('menuItems.properties'),
-      icon: <Home width={20} />,
-    },
-    {
-      key: 'settings',
-      label: t('menuItems.settings'),
-      icon: <Settings width={20} />,
-    },
-    {
-      key: 'search',
-      label: t('menuItems.search'),
-      icon: <Search width={20} />,
-    },
-  ]
+  const handleNavigate = (href: string) => {
+    router.push(href)
+    onNavigate?.()
+  }
 
   return (
     <div className='flex h-full flex-col overflow-y-auto'>
@@ -267,7 +249,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
         >
           <button
             type='button'
-            onClick={() => router.push('/users')}
+            onClick={() => handleNavigate('/management/users')}
             className={cn(
               'min-w-0 flex-1 rounded-md px-3 py-1.5 text-left text-sm font-semibold text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
               collapsed && 'hidden',
@@ -276,18 +258,20 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             SmartRent Admin
           </button>
 
-          <button
-            type='button'
-            onClick={onToggleCollapse}
-            className='flex items-center justify-center rounded-md px-3 py-1.5 text-sidebar-foreground/80 transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
-            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          >
-            {collapsed ? (
-              <PanelLeftOpen className='h-4 w-4 transition-transform duration-300 ease-in-out' />
-            ) : (
-              <PanelLeftClose className='h-4 w-4 transition-transform duration-300 ease-in-out' />
-            )}
-          </button>
+          {showCollapseToggle && (
+            <button
+              type='button'
+              onClick={onToggleCollapse}
+              className='flex items-center justify-center rounded-md px-3 py-1.5 text-sidebar-foreground/80 transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+              title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              {collapsed ? (
+                <PanelLeftOpen className='h-4 w-4 transition-transform duration-300 ease-in-out' />
+              ) : (
+                <PanelLeftClose className='h-4 w-4 transition-transform duration-300 ease-in-out' />
+              )}
+            </button>
+          )}
         </div>
       </div>
 
@@ -309,30 +293,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 label={item.label}
                 collapsed={collapsed}
                 isActive={pathname === item.href || activeItem === item.key}
-                onClick={() => router.push(item.href)}
+                onClick={() => handleNavigate(item.href)}
               />
             ))}
           </SidebarSection>
         ))}
-
-        <SidebarSection
-          title={t('sections.comingSoon')}
-          icon={<Home className='h-4 w-4' />}
-          collapsed={collapsed}
-          open={!!openGroups.comingSoon}
-          onToggle={() => toggleGroup('comingSoon')}
-        >
-          {upcomingItems.map((item) => (
-            <SidebarItem
-              key={item.key}
-              icon={item.icon}
-              label={item.label}
-              collapsed={collapsed}
-              isActive={false}
-              disabled={true}
-            />
-          ))}
-        </SidebarSection>
       </div>
 
       {/* Language Switcher */}

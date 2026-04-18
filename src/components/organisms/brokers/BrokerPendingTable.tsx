@@ -45,7 +45,7 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
   onRemove,
   onDocError,
 }) => {
-  const t = useTranslations('admin.brokerPending')
+  const t = useTranslations('moderation.brokerPending')
 
   const columns: Column<AdminBrokerUserResponse>[] = [
     {
@@ -164,7 +164,7 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
   ]
 
   const pageSize =
-    typeof filterValues.pageSize === 'number' ? filterValues.pageSize : 20
+    typeof filterValues.pageSize === 'number' ? filterValues.pageSize : 10
 
   return (
     <DataTable
@@ -177,7 +177,7 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
       pagination
       totalItems={totalItems}
       itemsPerPage={pageSize}
-      itemsPerPageOptions={[10, 20, 50]}
+      itemsPerPageOptions={[5, 10, 20, 50]}
       emptyMessage={t('states.empty')}
       getRowKey={(row) => row.userId}
     />
