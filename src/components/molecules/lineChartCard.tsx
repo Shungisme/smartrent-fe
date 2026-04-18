@@ -1,5 +1,20 @@
-import React from 'react'
-import { Card } from '@/components/atoms/card'
+import React, { useMemo } from 'react'
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/atoms/card'
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/atoms/chart'
+import { cn } from '@/lib/utils'
 
 export type LineChartDataset = {
   data: number[]
@@ -24,131 +39,123 @@ const LineChartCard: React.FC<LineChartCardProps> = ({
   showGrid = true,
   showLegend = true,
 }) => {
-  // Find max value across all datasets for scaling
-  const allValues = datasets.flatMap((d) => d.data)
-  const normalizedValues = allValues.length > 0 ? allValues : [0]
-  const maxValue = Math.max(...normalizedValues)
-  const minValue = Math.min(...normalizedValues, 0)
-  const valueRange = maxValue - minValue
+  const pointCount = Math.max(
+    labels.length,
+    ...datasets.map((dataset) => dataset.data.length),
+    1,
+  )
 
-  const getX = (index: number, length: number) => {
-    if (length <= 1) return 50
-    return (index / (length - 1)) * 100
-  }
+  const chartData = useMemo(
+    () =>
+      Array.from({ length: pointCount }, (_, index) => {
+        const point: Record<string, string | number | null> = {
+          label: labels[index] ?? `${index + 1}`,
+        }
 
-  const getY = (value: number) => {
-    return 100 - ((value - minValue) / (valueRange || 1)) * 80
-  }
+        datasets.forEach((dataset, datasetIndex) => {
+          point[`series${datasetIndex}`] = dataset.data[index] ?? null
+        })
 
-  // Generate points for each dataset
-  const generatePoints = (data: number[]) => {
-    const normalizedData = data.length > 0 ? data : [0]
+        return point
+      }),
+    [datasets, labels, pointCount],
+  )
 
-    return normalizedData
-      .map((value, index) => {
-        const x = getX(index, normalizedData.length)
-        const y = getY(value)
-        return `${x},${y}`
-      })
-      .join(' ')
+  const chartConfig = useMemo(
+    () =>
+      datasets.reduce<ChartConfig>((accumulator, dataset, datasetIndex) => {
+        accumulator[`series${datasetIndex}`] = {
+          label: dataset.label,
+          color: dataset.color,
+        }
+
+        return accumulator
+      }, {}),
+    [datasets],
+  )
+
+  const formatTick = (value: string | number) => {
+    if (typeof value !== 'number') {
+      return value
+    }
+
+    if (Math.abs(value) < 1000) {
+      return value.toLocaleString('vi-VN')
+    }
+
+    return new Intl.NumberFormat('vi-VN', {
+      notation: 'compact',
+      maximumFractionDigits: 1,
+    }).format(value)
   }
 
   return (
-    <Card className='p-6'>
-      <div className='mb-4 flex items-center justify-between'>
-        <h3 className='text-lg font-semibold text-gray-900'>{title}</h3>
-        {showLegend && datasets.length > 1 && (
-          <div className='flex items-center gap-4'>
-            {datasets.map((dataset, index) => (
-              <div key={index} className='flex items-center gap-2'>
-                <div
-                  className='h-3 w-3 rounded'
-                  style={{ backgroundColor: dataset.color }}
-                />
-                <span className='text-sm text-gray-600'>{dataset.label}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+    <Card className='py-4'>
+      <CardHeader className='pb-0'>
+        <CardTitle className='text-base md:text-lg'>{title}</CardTitle>
+      </CardHeader>
 
-      <div className={`relative ${height}`}>
-        <svg
-          className='h-full w-full'
-          viewBox='0 0 100 100'
-          preserveAspectRatio='none'
-        >
-          {/* Grid lines */}
-          {showGrid &&
-            [0, 25, 50, 75, 100].map((y) => (
-              <line
-                key={y}
-                x1='0'
-                y1={y}
-                x2='100'
-                y2={y}
-                stroke='#e5e7eb'
-                strokeWidth='0.2'
+      <CardContent className='space-y-2'>
+        <div className={cn('w-full', height)}>
+          <ChartContainer config={chartConfig} className='h-full w-full'>
+            <LineChart
+              data={chartData}
+              margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+            >
+              {showGrid && (
+                <CartesianGrid vertical={false} strokeDasharray='3 3' />
+              )}
+
+              <XAxis
+                dataKey='label'
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={24}
               />
-            ))}
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                width={42}
+                tickMargin={8}
+                tickFormatter={formatTick}
+              />
 
-          {/* Render each dataset */}
-          {datasets.map((dataset, datasetIndex) => {
-            const points = generatePoints(dataset.data)
-            const normalizedData = dataset.data.length > 0 ? dataset.data : [0]
+              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
 
-            return (
-              <g key={datasetIndex}>
-                {/* Line */}
-                <polyline
-                  points={points}
-                  fill='none'
-                  stroke={dataset.color}
-                  strokeWidth='0.5'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
+              {showLegend && datasets.length > 1 && (
+                <ChartLegend content={<ChartLegendContent />} />
+              )}
 
-                {/* Dots */}
-                {normalizedData.map((value, index) => {
-                  const x = getX(index, normalizedData.length)
-                  const y = getY(value)
+              {datasets.map((_, datasetIndex) => {
+                const dataKey = `series${datasetIndex}`
 
-                  return (
-                    <circle
-                      key={`dot-${datasetIndex}-${index}`}
-                      cx={x}
-                      cy={y}
-                      r='0.8'
-                      fill={dataset.color}
-                    />
-                  )
-                })}
-              </g>
-            )
-          })}
-        </svg>
-
-        {/* X-axis labels */}
-        <div className='mt-2 flex justify-between px-1'>
-          {labels.map((label, index) => {
-            // Show every nth label to avoid crowding
-            const showEvery = Math.ceil(labels.length / 8)
-            if (index % showEvery !== 0 && index !== labels.length - 1) {
-              return (
-                <span key={index} className='text-xs text-transparent'>
-                  .
-                </span>
-              )
-            }
-            return (
-              <span key={index} className='text-xs text-gray-500'>
-                {label}
-              </span>
-            )
-          })}
+                return (
+                  <Line
+                    key={dataKey}
+                    type='monotone'
+                    dataKey={dataKey}
+                    stroke={`var(--color-${dataKey})`}
+                    strokeWidth={2.5}
+                    dot={{
+                      r: 3,
+                      fill: `var(--color-${dataKey})`,
+                      strokeWidth: 2,
+                      stroke: 'var(--background)',
+                    }}
+                    activeDot={{ r: 5 }}
+                    connectNulls
+                  />
+                )
+              })}
+            </LineChart>
+          </ChartContainer>
         </div>
-      </div>
+
+        {datasets.length === 0 && (
+          <p className='text-center text-sm text-muted-foreground'>No data</p>
+        )}
+      </CardContent>
     </Card>
   )
 }

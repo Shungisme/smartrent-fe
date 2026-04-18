@@ -1,5 +1,18 @@
-import React from 'react'
-import { Card } from '@/components/atoms/card'
+import React, { useId, useMemo } from 'react'
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@/components/atoms/card'
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/atoms/chart'
+import { cn } from '@/lib/utils'
 
 type AreaChartCardProps = {
   title: string
@@ -22,106 +35,113 @@ const AreaChartCard: React.FC<AreaChartCardProps> = ({
   showGrid = true,
   unit,
 }) => {
-  const normalizedData = data.length > 0 ? data : [0]
-  const normalizedLabels = labels.length > 0 ? labels : ['-']
-  const isSinglePoint = normalizedData.length === 1
+  const pointCount = Math.max(data.length, labels.length, 1)
+  const uniqueId = useId().replace(/:/g, '')
+  const gradientKey = `${gradientId}-${uniqueId}`
 
-  const maxValue = Math.max(...normalizedData)
-  const minValue = Math.min(...normalizedData, 0)
-  const valueRange = maxValue - minValue
+  const chartData = useMemo(
+    () =>
+      Array.from({ length: pointCount }, (_, index) => ({
+        label: labels[index] ?? `${index + 1}`,
+        value: data[index] ?? 0,
+      })),
+    [data, labels, pointCount],
+  )
 
-  const points = normalizedData
-    .map((value, index) => {
-      const x = isSinglePoint ? 50 : (index / (normalizedData.length - 1)) * 100
-      const y = 100 - ((value - minValue) / (valueRange || 1)) * 80
-      return `${x},${y}`
-    })
-    .join(' ')
+  const chartConfig: ChartConfig = {
+    value: {
+      label: title,
+      color,
+    },
+  }
+
+  const formatTick = (value: string | number) => {
+    if (typeof value !== 'number') {
+      return value
+    }
+
+    if (Math.abs(value) < 1000) {
+      return value.toLocaleString('vi-VN')
+    }
+
+    return new Intl.NumberFormat('vi-VN', {
+      notation: 'compact',
+      maximumFractionDigits: 1,
+    }).format(value)
+  }
 
   return (
-    <Card className='p-6'>
-      <h3 className='mb-4 text-lg font-semibold text-gray-900'>{title}</h3>
-      <div className={`relative ${height}`}>
-        <svg
-          className='h-full w-full'
-          viewBox='0 0 100 100'
-          preserveAspectRatio='none'
-        >
-          {/* Grid lines */}
-          {showGrid &&
-            [0, 25, 50, 75, 100].map((y) => (
-              <line
-                key={y}
-                x1='0'
-                y1={y}
-                x2='100'
-                y2={y}
-                stroke='#e5e7eb'
-                strokeWidth='0.2'
+    <Card className='py-4'>
+      <CardHeader className='pb-0'>
+        <CardTitle className='text-base md:text-lg'>{title}</CardTitle>
+      </CardHeader>
+
+      <CardContent className='space-y-2'>
+        <div className={cn('w-full', height)}>
+          <ChartContainer config={chartConfig} className='h-full w-full'>
+            <AreaChart
+              data={chartData}
+              margin={{ top: 10, right: 8, left: 0, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id={gradientKey} x1='0' y1='0' x2='0' y2='1'>
+                  <stop
+                    offset='5%'
+                    stopColor='var(--color-value)'
+                    stopOpacity={0.35}
+                  />
+                  <stop
+                    offset='95%'
+                    stopColor='var(--color-value)'
+                    stopOpacity={0.03}
+                  />
+                </linearGradient>
+              </defs>
+
+              {showGrid && (
+                <CartesianGrid vertical={false} strokeDasharray='3 3' />
+              )}
+
+              <XAxis
+                dataKey='label'
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                minTickGap={24}
               />
-            ))}
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                width={42}
+                tickMargin={8}
+                tickFormatter={formatTick}
+              />
 
-          {/* Area gradient */}
-          <defs>
-            <linearGradient id={gradientId} x1='0' x2='0' y1='0' y2='1'>
-              <stop offset='0%' stopColor={color} stopOpacity='0.4' />
-              <stop offset='100%' stopColor={color} stopOpacity='0.05' />
-            </linearGradient>
-          </defs>
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent hideLabel />}
+              />
 
-          {/* Area fill */}
-          <polygon
-            points={`0,100 ${points} 100,100`}
-            fill={`url(#${gradientId})`}
-          />
-
-          {/* Line */}
-          <polyline
-            points={points}
-            fill='none'
-            stroke={color}
-            strokeWidth='0.5'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          />
-
-          {/* Dots */}
-          {normalizedData.map((value, index) => {
-            const x = isSinglePoint
-              ? 50
-              : (index / (normalizedData.length - 1)) * 100
-            const y = 100 - ((value - minValue) / (valueRange || 1)) * 80
-
-            return (
-              <circle key={`dot-${index}`} cx={x} cy={y} r='0.8' fill={color} />
-            )
-          })}
-        </svg>
-
-        {/* X-axis labels */}
-        <div className='mt-2 flex justify-between px-1'>
-          {normalizedLabels.map((label, index) => {
-            // Show every nth label to avoid crowding
-            const showEvery = Math.ceil(normalizedLabels.length / 8)
-            if (
-              index % showEvery !== 0 &&
-              index !== normalizedLabels.length - 1
-            ) {
-              return (
-                <span key={index} className='text-xs text-transparent'>
-                  .
-                </span>
-              )
-            }
-            return (
-              <span key={index} className='text-xs text-gray-500'>
-                {label}
-              </span>
-            )
-          })}
+              <Area
+                type='monotone'
+                dataKey='value'
+                stroke='var(--color-value)'
+                strokeWidth={2.5}
+                fill={`url(#${gradientKey})`}
+                dot={{
+                  r: 3,
+                  fill: 'var(--color-value)',
+                  strokeWidth: 2,
+                  stroke: 'var(--background)',
+                }}
+                activeDot={{ r: 5 }}
+              />
+            </AreaChart>
+          </ChartContainer>
         </div>
-      </div>
-      {unit && <div className='mt-4 text-sm text-gray-600'>{unit}</div>}
+
+        {unit && <div className='text-sm text-muted-foreground'>{unit}</div>}
+      </CardContent>
     </Card>
   )
 }
