@@ -863,7 +863,6 @@
           "user": "Người Dùng",
           "type": "Loại",
           "joinDate": "Ngày Tham Gia",
-          "lastOnline": "Lần Online Cuối",
           "posts": "Bài Đăng",
           "status": "Trạng Thái",
           "actions": "Hành Động"
@@ -1092,13 +1091,12 @@
       },
       "filters": {
         "allRoles": "Tất Cả Vai Trò",
-        "support": "Hỗ Trợ",
-        "moderator": "Điều Hành Viên",
-        "admin": "Admin",
-        "superAdmin": "Siêu Admin",
-        "allStatuses": "Tất Cả Trạng Thái",
-        "active": "Hoạt động",
-        "inactive": "Không hoạt động"
+        "SA": "Super Admin",
+        "UA": "User Admin",
+        "CM": "Content Moderator",
+        "SPA": "Support Admin",
+        "FA": "Finance Admin",
+        "MA": "Marketing Admin"
       },
       "perPage": "mỗi trang",
       "createNewAdmin": "Tạo Admin Mới",
@@ -1108,19 +1106,15 @@
           "admin": "Admin",
           "role": "Vai Trò",
           "joinDate": "Ngày Tham Gia",
-          "lastOnline": "Lần Online Cuối",
-          "status": "Trạng Thái",
           "actions": "Thao Tác"
         },
         "roles": {
-          "support": "Hỗ Trợ",
-          "moderator": "Điều Hành Viên",
-          "admin": "Admin",
-          "super_admin": "Siêu Admin"
-        },
-        "statuses": {
-          "active": "Hoạt động",
-          "inactive": "Không hoạt động"
+          "SA": "Super Admin",
+          "UA": "User Admin",
+          "CM": "Content Moderator",
+          "SPA": "Support Admin",
+          "FA": "Finance Admin",
+          "MA": "Marketing Admin"
         },
         "actions": {
           "edit": "Chỉnh sửa",

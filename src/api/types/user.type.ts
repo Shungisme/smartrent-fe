@@ -21,6 +21,7 @@ export interface UserProfile {
   email: string
   firstName: string
   lastName: string
+  createdAt?: string
   idDocument?: string
   taxNumber?: string
   contactPhoneNumber?: string

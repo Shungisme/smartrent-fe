@@ -898,7 +898,6 @@
           "user": "User",
           "type": "Type",
           "joinDate": "Join Date",
-          "lastOnline": "Last Online",
           "posts": "Posts",
           "status": "Status",
           "actions": "Actions"
@@ -1127,13 +1126,12 @@
       },
       "filters": {
         "allRoles": "All Roles",
-        "support": "Support",
-        "moderator": "Moderator",
-        "admin": "Admin",
-        "superAdmin": "Super Admin",
-        "allStatuses": "All Statuses",
-        "active": "Active",
-        "inactive": "Inactive"
+        "SA": "Super Admin",
+        "UA": "User Admin",
+        "CM": "Content Moderator",
+        "SPA": "Support Admin",
+        "FA": "Finance Admin",
+        "MA": "Marketing Admin"
       },
       "perPage": "per page",
       "createNewAdmin": "Create New Admin",
@@ -1143,19 +1141,15 @@
           "admin": "Admin",
           "role": "Role",
           "joinDate": "Join Date",
-          "lastOnline": "Last Online",
-          "status": "Status",
           "actions": "Actions"
         },
         "roles": {
-          "support": "Support",
-          "moderator": "Moderator",
-          "admin": "Admin",
-          "super_admin": "Super Admin"
-        },
-        "statuses": {
-          "active": "Active",
-          "inactive": "Inactive"
+          "SA": "Super Admin",
+          "UA": "User Admin",
+          "CM": "Content Moderator",
+          "SPA": "Support Admin",
+          "FA": "Finance Admin",
+          "MA": "Marketing Admin"
         },
         "actions": {
           "edit": "Edit",

@@ -29,6 +29,7 @@ export interface AdminProfile {
   email: string
   firstName: string
   lastName: string
+  createdAt?: string
   idDocument: string | null
   taxNumber: string | null
   roles: string[]
