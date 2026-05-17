@@ -12,6 +12,22 @@ import { useTranslations } from 'next-intl'
 import { UserProfile } from '@/api/types/user.type'
 import { UserData } from '@/types/users.type'
 
+const formatDateTime = (value?: string | null): string => {
+  if (!value) return '-'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '-'
+
+  const pad = (input: number) => String(input).padStart(2, '0')
+  const hours = pad(date.getHours())
+  const minutes = pad(date.getMinutes())
+  const seconds = pad(date.getSeconds())
+  const day = pad(date.getDate())
+  const month = pad(date.getMonth() + 1)
+  const year = date.getFullYear()
+
+  return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`
+}
+
 interface UserTableProps {
   users: UserProfile[]
   totalItems: number
@@ -41,8 +57,7 @@ export const UserTable: React.FC<UserTableProps> = ({
     name: `${user.firstName} ${user.lastName}`,
     avatar: undefined, // API doesn't return avatar yet
     type: user.isBroker ? 'broker' : 'normal_user',
-    joinDate: '-',
-    lastOnline: '-',
+    joinDate: user.createdAt || '-',
     posts: null, // API doesn't return posts count yet
     status: 'normal', // API doesn't return status yet, default to normal
   }))
@@ -102,16 +117,9 @@ export const UserTable: React.FC<UserTableProps> = ({
       accessor: 'joinDate',
       sortable: true,
       render: (value) => (
-        <div className='text-sm text-gray-900'>{value as React.ReactNode}</div>
-      ),
-    },
-    {
-      id: 'lastOnline',
-      header: t('table.headers.lastOnline'),
-      accessor: 'lastOnline',
-      sortable: true,
-      render: (value) => (
-        <div className='text-sm text-gray-900'>{value as React.ReactNode}</div>
+        <div className='text-sm text-gray-900'>
+          {formatDateTime(value as string | null)}
+        </div>
       ),
     },
     {

@@ -47,8 +47,13 @@ const AdminManagement = () => {
           keyword: debouncedSearchTerm
             ? String(debouncedSearchTerm)
             : undefined,
-          role: filterValues.role ? String(filterValues.role) : undefined,
-          status: filterValues.status ? String(filterValues.status) : undefined,
+          role: Array.isArray(filterValues.role)
+            ? filterValues.role.length > 0
+              ? filterValues.role.join(',')
+              : undefined
+            : filterValues.role
+              ? String(filterValues.role)
+              : undefined,
         })
         if (response.success && response.data) {
           setAdmins(response.data.data)
@@ -70,7 +75,6 @@ const AdminManagement = () => {
     filterValues.page,
     filterValues.pageSize,
     filterValues.role,
-    filterValues.status,
   ])
 
   const handleFilterChange = (newFilters: Record<string, unknown>) => {

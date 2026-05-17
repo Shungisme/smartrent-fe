@@ -5,6 +5,4 @@ export type AdminRow = {
   avatar?: string
   role: string[]
   joinDate: string
-  lastOnline: string
-  status: string
 }

@@ -10,7 +10,7 @@ export interface Role {
 }
 
 // Available role IDs in the system
-export type RoleId = 'ADMIN' | 'SUPER_ADMIN' | 'USER' | 'MODERATOR'
+export type RoleId = 'SA' | 'UA' | 'CM' | 'SPA' | 'FA' | 'MA'
 
 // Role list response type (paginated)
 export interface RoleListResponse {

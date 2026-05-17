@@ -15,21 +15,31 @@ export function TableFilters({
 
   if (!filters || filters.length === 0) return null
 
-  const hasActiveFilters = Object.values(values).some(
-    (value) => value && value !== '' && value !== 'all',
-  )
+  const hasActiveFilters = Object.values(values).some((value) => {
+    if (Array.isArray(value)) return value.length > 0
+
+    return (
+      value !== undefined && value !== null && value !== '' && value !== 'all'
+    )
+  })
 
   const renderFilter = (filter: FilterConfig) => {
-    const value = values[filter.id] || filter.defaultValue || ''
+    const value = Object.prototype.hasOwnProperty.call(values, filter.id)
+      ? values[filter.id]
+      : (filter.defaultValue ?? '')
     const stringValue = typeof value === 'string' ? value : String(value || '')
 
     // Custom render function
     if (filter.render) {
-      return filter.render({
-        value,
-        onChange: (newValue) => onChange(filter.id, newValue),
-        filter,
-      })
+      return (
+        <div key={filter.id}>
+          {filter.render({
+            value,
+            onChange: (newValue) => onChange(filter.id, newValue),
+            filter,
+          })}
+        </div>
+      )
     }
 
     // Search filter

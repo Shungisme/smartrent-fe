@@ -7,21 +7,47 @@ import {
 } from '@/components/organisms/DataTable'
 import { Avatar } from '@/components/atoms/avatar'
 import { Badge } from '@/components/atoms/badge'
+import { Button } from '@/components/atoms/button'
+import { Checkbox } from '@/components/atoms/checkbox'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/atoms/dropdown-menu'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 import { AdminProfile } from '@/api/types/admin.type'
 import { AdminRow } from '@/types/admins.type'
+import { ChevronDown } from 'lucide-react'
 
-type AdminRole = 'support' | 'moderator' | 'admin' | 'super_admin'
+type AdminRole = 'SA' | 'UA' | 'CM' | 'SPA' | 'FA' | 'MA'
 
-const getRoleBadgeClass = (role: AdminRole): string => {
+const formatDateTime = (value?: string | null): string => {
+  if (!value) return '-'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '-'
+
+  const pad = (input: number) => String(input).padStart(2, '0')
+  const hours = pad(date.getHours())
+  const minutes = pad(date.getMinutes())
+  const seconds = pad(date.getSeconds())
+  const day = pad(date.getDate())
+  const month = pad(date.getMonth() + 1)
+  const year = date.getFullYear()
+
+  return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`
+}
+
+const getRoleBadgeClass = (role: string): string => {
   const classes: Record<AdminRole, string> = {
-    support: 'bg-blue-100 text-blue-800 border-blue-200',
-    moderator: 'bg-purple-100 text-purple-800 border-purple-200',
-    admin: 'bg-orange-100 text-orange-800 border-orange-200',
-    super_admin: 'bg-red-100 text-red-800 border-red-200',
+    SA: 'bg-red-100 text-red-800 border-red-200',
+    UA: 'bg-orange-100 text-orange-800 border-orange-200',
+    CM: 'bg-purple-100 text-purple-800 border-purple-200',
+    SPA: 'bg-blue-100 text-blue-800 border-blue-200',
+    FA: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    MA: 'bg-pink-100 text-pink-800 border-pink-200',
   }
-  return classes[role] || 'bg-gray-100 text-gray-800'
+  return classes[role as AdminRole] || 'bg-gray-100 text-gray-800'
 }
 
 interface AdminTableProps {
@@ -44,6 +70,14 @@ export const AdminTable: React.FC<AdminTableProps> = ({
   onDelete,
 }) => {
   const t = useTranslations('admin.admins')
+  const roleLabels: Record<AdminRole, string> = {
+    SA: t('table.roles.SA'),
+    UA: t('table.roles.UA'),
+    CM: t('table.roles.CM'),
+    SPA: t('table.roles.SPA'),
+    FA: t('table.roles.FA'),
+    MA: t('table.roles.MA'),
+  }
 
   // Transform API data to match UI format
   const transformedAdmins: AdminRow[] = admins.map((admin) => ({
@@ -52,9 +86,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
     email: admin.email,
     avatar: undefined, // No avatar in API
     role: admin.roles,
-    joinDate: '', // No join date in API
-    lastOnline: '', // No last online in API
-    status: 'active', // No status in API
+    joinDate: admin.createdAt || '-',
   }))
 
   const columns: Column<AdminRow>[] = [
@@ -102,10 +134,10 @@ export const AdminTable: React.FC<AdminTableProps> = ({
             variant='outline'
             className={cn(
               'px-3 py-1 font-medium mr-1',
-              getRoleBadgeClass(role as AdminRole),
+              getRoleBadgeClass(role),
             )}
           >
-            {`${role}`}
+            {roleLabels[role as AdminRole] || role}
           </Badge>
         )),
     },
@@ -115,33 +147,9 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       accessor: 'joinDate',
       sortable: true,
       render: (value) => (
-        <div className='text-sm text-gray-900'>{value as React.ReactNode}</div>
-      ),
-    },
-    {
-      id: 'lastOnline',
-      header: t('table.headers.lastOnline'),
-      accessor: 'lastOnline',
-      sortable: true,
-      render: (value) => (
-        <div className='text-sm text-gray-900'>{value as React.ReactNode}</div>
-      ),
-    },
-    {
-      id: 'status',
-      header: t('table.headers.status'),
-      accessor: 'status',
-      render: (value) => (
-        <Badge
-          className={cn(
-            'px-3 py-1',
-            value === 'active'
-              ? 'bg-green-100 text-green-800 border-green-200'
-              : 'bg-gray-100 text-gray-800 border-gray-200',
-          )}
-        >
-          {t(`table.statuses.${value}`)}
-        </Badge>
+        <div className='text-sm text-gray-900'>
+          {formatDateTime(value as string | null)}
+        </div>
       ),
     },
     {
@@ -182,23 +190,74 @@ export const AdminTable: React.FC<AdminTableProps> = ({
     },
     {
       id: 'role',
-      type: 'select',
+      type: 'custom',
       label: t('filters.allRoles'),
-      options: [
-        { value: 'support', label: t('filters.support') },
-        { value: 'moderator', label: t('filters.moderator') },
-        { value: 'admin', label: t('filters.admin') },
-        { value: 'super_admin', label: t('filters.superAdmin') },
-      ],
-    },
-    {
-      id: 'status',
-      type: 'select',
-      label: t('filters.allStatuses'),
-      options: [
-        { value: 'active', label: t('filters.active') },
-        { value: 'inactive', label: t('filters.inactive') },
-      ],
+      defaultValue: [],
+      render: ({ value, onChange }) => {
+        const selectedRoles = Array.isArray(value)
+          ? value.map((role) => String(role))
+          : []
+        const roleOptions = [
+          { value: 'SA', label: roleLabels.SA },
+          { value: 'UA', label: roleLabels.UA },
+          { value: 'CM', label: roleLabels.CM },
+          { value: 'SPA', label: roleLabels.SPA },
+          { value: 'FA', label: roleLabels.FA },
+          { value: 'MA', label: roleLabels.MA },
+        ]
+        const selectedCount = selectedRoles.length
+        const triggerLabel =
+          selectedCount > 0
+            ? `${t('filters.allRoles')} (${selectedCount})`
+            : t('filters.allRoles')
+
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                type='button'
+                variant='outline'
+                className='w-full justify-between gap-2 sm:w-64'
+              >
+                <span className='truncate'>{triggerLabel}</span>
+                <ChevronDown className='h-4 w-4 shrink-0 opacity-60' />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align='start' className='w-80 p-2'>
+              <div className='space-y-1'>
+                <div className='px-2 py-1 text-xs font-medium uppercase tracking-wide text-muted-foreground'>
+                  {t('filters.allRoles')}
+                </div>
+                {roleOptions.map((option) => {
+                  const checked = selectedRoles.includes(option.value)
+
+                  return (
+                    <label
+                      key={option.value}
+                      className='flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 text-sm hover:bg-muted'
+                    >
+                      <Checkbox
+                        checked={checked}
+                        onCheckedChange={(nextChecked) => {
+                          const isChecked = nextChecked === true
+                          const nextValues = isChecked
+                            ? [...selectedRoles, option.value]
+                            : selectedRoles.filter(
+                                (role) => role !== option.value,
+                              )
+
+                          onChange(nextValues)
+                        }}
+                      />
+                      <span className='flex-1'>{option.label}</span>
+                    </label>
+                  )
+                })}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
     },
   ]
 
