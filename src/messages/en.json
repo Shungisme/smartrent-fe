@@ -878,6 +878,7 @@
         "reports": "Violation Reports Management",
         "analytics": "Application Analytics",
         "properties": "Property Listings",
+        "transactions": "Transaction Management",
         "settings": "Settings",
         "search": "Advanced Search",
         "roles": "Roles Management",
@@ -1882,6 +1883,98 @@
         "accessDenied": "Access Denied",
         "genericError": "Something went wrong. Please try again."
       }
+    }
+  },
+  "transactions": {
+    "title": "Transaction Management",
+    "description": "View and manage all customer payments across the platform",
+    "breadcrumb": {
+      "title": "Transaction Management"
+    },
+    "table": {
+      "transaction": "Transaction",
+      "invoice": "Invoice",
+      "customer": "Customer",
+      "landlord": "Landlord",
+      "type": "Type",
+      "gateway": "Gateway",
+      "amount": "Amount",
+      "status": "Status",
+      "created": "Created",
+      "actions": "Actions",
+      "noData": "No transactions found"
+    },
+    "filters": {
+      "search": "Search by transaction code, invoice code or gateway code...",
+      "status": "Status",
+      "gateway": "Gateway",
+      "fromDate": "From Date",
+      "toDate": "To Date",
+      "allStatus": "All Status",
+      "allGateways": "All Gateways",
+      "quick": "Quick:",
+      "today": "Today",
+      "week": "Last 7 days",
+      "month": "This Month",
+      "clearFilters": "Clear Filters",
+      "export": "Export CSV"
+    },
+    "status": {
+      "PENDING": "Pending",
+      "SUCCESS": "Success",
+      "FAILED": "Failed",
+      "CANCELLED": "Cancelled",
+      "REFUNDED": "Refunded"
+    },
+    "detail": {
+      "title": "Transaction Details",
+      "transactionInfo": "Transaction Information",
+      "transactionCode": "Transaction Code",
+      "idempotencyKey": "Idempotency Key",
+      "amount": "Amount",
+      "paymentType": "Payment Type",
+      "gateway": "Gateway",
+      "paymentMethod": "Payment Method",
+      "dates": "Time Information",
+      "created": "Created",
+      "completed": "Completed",
+      "expired": "Expired",
+      "customerInfo": "Customer Information",
+      "landlordInfo": "Landlord Information",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "id": "ID",
+      "invoiceInfo": "Invoice & Room Information",
+      "invoiceCode": "Invoice Code",
+      "roomCode": "Room Code",
+      "roomName": "Room Name",
+      "address": "Address",
+      "gatewayInfo": "Gateway Information",
+      "gatewayTransaction": "Gateway Transaction Code",
+      "responseCode": "Response Code",
+      "payload": "Payload from Gateway",
+      "failureReason": "Failure Reason",
+      "timeline": "Transaction Timeline",
+      "noTimeline": "No timeline available"
+    },
+    "stats": {
+      "totalRevenue": "Total Revenue",
+      "totalTransactions": "Total Transactions",
+      "successful": "Successful Payments",
+      "failed": "Failed Payments",
+      "pending": "Pending Payments",
+      "refunded": "Refunded Payments",
+      "successRate": "Success Rate",
+      "average": "Avg/Transaction"
+    },
+    "chart": {
+      "title": "Revenue Trend",
+      "day": "By Day",
+      "month": "By Month",
+      "total": "Total Revenue",
+      "count": "successful transactions",
+      "average": "Average/Period"
     }
   },
   "notifications": {
