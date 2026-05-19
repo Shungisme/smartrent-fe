@@ -1569,7 +1569,8 @@
       "level": {
         "low": "Low",
         "medium": "Medium",
-        "high": "High"
+        "high": "High",
+        "critical": "Critical"
       }
     },
     "listingTypes": {

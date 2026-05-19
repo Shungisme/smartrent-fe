@@ -92,11 +92,15 @@ export const getSuggestedStatusColor = (status: AiSuggestedStatus): string => {
 
 export const getSeverityColor = (level: AiSeverity | AiPriority): string => {
   const map: Record<string, string> = {
+    critical: 'bg-red-100 text-red-800 border-red-300',
     high: 'bg-red-50 text-red-700 border-red-200',
     medium: 'bg-yellow-50 text-yellow-800 border-yellow-200',
     low: 'bg-blue-50 text-blue-700 border-blue-200',
   }
-  return map[level] || 'bg-gray-50 text-gray-700 border-gray-200'
+  return (
+    map[String(level).toLowerCase()] ||
+    'bg-gray-50 text-gray-700 border-gray-200'
+  )
 }
 
 /** Round a 0..1 score to a whole percentage for display. */

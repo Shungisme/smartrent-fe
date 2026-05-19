@@ -1533,7 +1533,8 @@
       "level": {
         "low": "Thấp",
         "medium": "Trung bình",
-        "high": "Cao"
+        "high": "Cao",
+        "critical": "Nghiêm trọng"
       }
     },
     "listingTypes": {
