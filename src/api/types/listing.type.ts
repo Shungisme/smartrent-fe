@@ -192,6 +192,12 @@ export interface AdminListingItem {
     legacyProvinceName?: string
     legacyDistrictName?: string
   }
+  propertyInfo?: {
+    type?: ProductType
+    area?: number
+    district?: string | null
+    fullAddress?: string | null
+  }
   media: ListingMedia[] | null
   amenities: Amenity[]
   postDate: string

@@ -150,23 +150,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
             </div>
           </div>
         </div>
-        <div className='flex items-center gap-2'>
-          <AiServiceStatusBadge onStatusChange={setServiceAvailable} />
-          <Button
-            type='button'
-            size='sm'
-            onClick={runAnalysis}
-            disabled={loading || serviceAvailable === false}
-            className='bg-blue-600 text-sm hover:bg-blue-700'
-          >
-            {loading ? (
-              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-            ) : (
-              <Sparkles className='mr-2 h-4 w-4' />
-            )}
-            {result ? t('aiAnalysis.rerunButton') : t('aiAnalysis.runButton')}
-          </Button>
-        </div>
+        <AiServiceStatusBadge onStatusChange={setServiceAvailable} />
       </div>
 
       {/* Loading */}
@@ -462,14 +446,34 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
               </div>
             </div>
           )}
-
-          {/* Footer note */}
-          <div className='flex items-center gap-1.5 text-xs text-gray-400'>
-            <CheckCircle2 className='h-3.5 w-3.5' />
-            {t('aiAnalysis.advisoryNote')}
-          </div>
         </div>
       )}
+
+      {/* Footer: advisory note (when result) + run / re-run action */}
+      <div className='mt-4 flex items-center justify-between gap-3 border-t border-blue-200/70 pt-3'>
+        <div className='flex items-center gap-1.5 text-xs text-gray-400'>
+          {result && !loading && (
+            <>
+              <CheckCircle2 className='h-3.5 w-3.5' />
+              {t('aiAnalysis.advisoryNote')}
+            </>
+          )}
+        </div>
+        <Button
+          type='button'
+          size='sm'
+          onClick={runAnalysis}
+          disabled={loading || serviceAvailable === false}
+          className='bg-blue-600 text-sm hover:bg-blue-700'
+        >
+          {loading ? (
+            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+          ) : (
+            <Sparkles className='mr-2 h-4 w-4' />
+          )}
+          {result ? t('aiAnalysis.rerunButton') : t('aiAnalysis.runButton')}
+        </Button>
+      </div>
     </div>
   )
 }

@@ -27,6 +27,7 @@ export const buildAiVerificationRequest = (
     (url) => !!url && !PLACEHOLDER_IMAGES.has(url),
   )
 
+  console.log('Building AI verification request', post)
   const metadata: AiVerificationRequest['metadata'] = {}
   if (post.bedrooms !== null && post.bedrooms !== undefined) {
     metadata.bedrooms = post.bedrooms

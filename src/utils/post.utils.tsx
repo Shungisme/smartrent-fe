@@ -291,8 +291,12 @@ export const mapApiDataToUI = (item: AdminListingItem): UIPostData => {
     propertyInfo: {
       type: item.productType,
       area: item.area || 0,
-      district: item.address?.legacyDistrictName || 'N/A',
-      fullAddress: item.address?.fullAddress || 'N/A',
+      district:
+        item.propertyInfo?.district ||
+        item.address?.legacyDistrictName ||
+        'N/A',
+      fullAddress:
+        item.propertyInfo?.fullAddress || item.address?.fullAddress || 'N/A',
     },
     price: formatPrice(item.price, item.priceUnit),
     priceRaw: item.price,
