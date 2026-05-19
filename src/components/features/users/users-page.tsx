@@ -7,7 +7,6 @@ import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
 import { getUserList } from '@/api/services/user.service'
 import { BrokerService } from '@/api/services/broker.service'
-import { useDebounce } from '@/hooks/useDebounce'
 import { UserProfile } from '@/api/types/user.type'
 import { UserTable } from '@/components/organisms/users/UserTable'
 import { UserCreateDialog } from '@/components/organisms/users/UserCreateDialog'
@@ -31,27 +30,38 @@ const UserManagement = () => {
     page: 1,
     pageSize: 10,
   })
-  const debouncedSearchTerm = useDebounce(filterValues.search || '', 500)
   const [totalItems, setTotalItems] = useState(0)
 
   const fetchUsers = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
-      const selectedType =
-        typeof filterValues.type === 'string' ? filterValues.type : undefined
+      // Build filter array from filterValues
+      const filterArray: string[] = []
+
+      if (filterValues.firstName) {
+        filterArray.push(`firstName:${filterValues.firstName}`)
+      }
+      if (filterValues.lastName) {
+        filterArray.push(`lastName:${filterValues.lastName}`)
+      }
+      if (filterValues.email) {
+        filterArray.push(`email:${filterValues.email}`)
+      }
+      if (filterValues.phoneNumber) {
+        filterArray.push(`phoneNumber:${filterValues.phoneNumber}`)
+      }
+      if (filterValues.userId) {
+        filterArray.push(`userId:${filterValues.userId}`)
+      }
+      if (filterValues.isBroker) {
+        filterArray.push(`isBroker:${filterValues.isBroker}`)
+      }
 
       const response = await getUserList({
         page: filterValues.page ? Number(filterValues.page) : 1,
         size: filterValues.pageSize ? Number(filterValues.pageSize) : 10,
-        keyword: debouncedSearchTerm ? String(debouncedSearchTerm) : undefined,
-        isBroker:
-          selectedType === 'broker'
-            ? true
-            : selectedType === 'normal_user'
-              ? false
-              : undefined,
-        status: filterValues.status ? String(filterValues.status) : undefined,
+        filter: filterArray.length > 0 ? filterArray : undefined,
       })
       if (response.success && response.data) {
         setUsers(response.data.data)
@@ -66,13 +76,7 @@ const UserManagement = () => {
     } finally {
       setLoading(false)
     }
-  }, [
-    debouncedSearchTerm,
-    filterValues.page,
-    filterValues.pageSize,
-    filterValues.type,
-    filterValues.status,
-  ])
+  }, [filterValues])
 
   // Fetch users from API
   useEffect(() => {
@@ -80,7 +84,18 @@ const UserManagement = () => {
   }, [fetchUsers])
 
   const handleFilterChange = (newFilters: Record<string, unknown>) => {
-    setFilterValues(newFilters)
+    setFilterValues((prev) => ({
+      ...newFilters,
+      page: 1, // Reset to first page when filters change
+      pageSize: prev.pageSize,
+    }))
+  }
+
+  const handleClearFilters = () => {
+    setFilterValues({
+      page: 1,
+      pageSize: 10,
+    })
   }
 
   const handleRemoveBroker = async (user: UserProfile) => {
@@ -131,7 +146,7 @@ const UserManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
-        <div className='flex justify-stretch sm:justify-end'>
+        <div className='flex items-center justify-stretch sm:justify-end'>
           <Button
             className='w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white'
             onClick={() => setShowCreate(true)}

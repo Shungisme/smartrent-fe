@@ -114,6 +114,7 @@ export interface NewsFilterRequest {
   category?: NewsCategory
   keyword?: string
   tag?: string
+  filter?: string[]
 }
 
 export type NewsApiResponse = ApiResponse<NewsResponse>

@@ -231,36 +231,56 @@ export const NewsTable: React.FC<NewsTableProps> = ({
     },
   ]
 
-  const filters: FilterConfig[] = [
+  const filterConfig: FilterConfig[] = [
     {
-      id: 'search',
+      id: 'title',
       type: 'search',
-      label: t('filters.search'),
-      placeholder: t('filters.searchPlaceholder'),
+      label: 'Title',
+      placeholder: 'e.g. market',
+      isFilterField: true,
+    },
+    {
+      id: 'summary',
+      type: 'search',
+      label: 'Summary',
+      placeholder: 'e.g. quarterly',
+      isFilterField: true,
     },
     {
       id: 'status',
       type: 'select',
-      label: t('filters.allStatus'),
+      label: 'Status',
       options: [
-        { value: 'DRAFT', label: t('status.DRAFT') },
-        { value: 'PUBLISHED', label: t('status.PUBLISHED') },
-        { value: 'ARCHIVED', label: t('status.ARCHIVED') },
+        { value: 'DRAFT', label: t('status.DRAFT') || 'Draft' },
+        { value: 'PUBLISHED', label: t('status.PUBLISHED') || 'Published' },
+        { value: 'ARCHIVED', label: t('status.ARCHIVED') || 'Archived' },
       ],
+      isFilterField: true,
     },
     {
       id: 'category',
       type: 'select',
-      label: t('filters.allCategory'),
+      label: 'Category',
       options: [
-        { value: 'NEWS', label: t('category.NEWS') },
-        { value: 'BLOG', label: t('category.BLOG') },
-        { value: 'POLICY', label: t('category.POLICY') },
-        { value: 'MARKET', label: t('category.MARKET') },
-        { value: 'PROJECT', label: t('category.PROJECT') },
-        { value: 'INVESTMENT', label: t('category.INVESTMENT') },
-        { value: 'GUIDE', label: t('category.GUIDE') },
+        { value: 'NEWS', label: t('category.NEWS') || 'News' },
+        { value: 'BLOG', label: t('category.BLOG') || 'Blog' },
+        { value: 'POLICY', label: t('category.POLICY') || 'Policy' },
+        { value: 'MARKET', label: t('category.MARKET') || 'Market' },
+        { value: 'PROJECT', label: t('category.PROJECT') || 'Project' },
+        {
+          value: 'INVESTMENT',
+          label: t('category.INVESTMENT') || 'Investment',
+        },
+        { value: 'GUIDE', label: t('category.GUIDE') || 'Guide' },
       ],
+      isFilterField: true,
+    },
+    {
+      id: 'tag',
+      type: 'search',
+      label: 'Tag',
+      placeholder: 'e.g. market,investment',
+      isFilterField: true,
     },
   ]
 
@@ -269,7 +289,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
       filterMode='api'
       data={data}
       columns={columns}
-      filters={filters}
+      filters={filterConfig}
       filterValues={filterValues}
       onFilterChange={onFilterChange}
       totalItems={totalItems}

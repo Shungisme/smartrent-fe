@@ -213,10 +213,11 @@ export const PostTable: React.FC<PostTableProps> = ({
 
   const filters: FilterConfig[] = [
     {
-      id: 'search',
+      id: 'keyword',
       type: 'search',
       label: t('search.placeholder'),
       placeholder: t('search.placeholder'),
+      isFilterField: true,
     },
     {
       id: 'moderationStatus',
@@ -230,17 +231,21 @@ export const PostTable: React.FC<PostTableProps> = ({
         { value: 'SUSPENDED', label: t('tabs.suspended') },
         { value: 'RESUBMITTED', label: t('tabs.resubmitted') },
       ],
+      isFilterField: true,
     },
     {
-      id: 'propertyInfo.type',
+      id: 'productType',
       type: 'select',
       label: t('filters.allTypes'),
       options: [
         { value: 'HOUSE', label: t('filters.house') },
         { value: 'APARTMENT', label: t('filters.apartment') },
         { value: 'OFFICE', label: t('filters.office') },
+        { value: 'ROOM', label: t('propertyTypes.room') },
         { value: 'LAND', label: t('filters.land') },
+        { value: 'OTHER', label: t('propertyTypes.other') },
       ],
+      isFilterField: true,
     },
     {
       id: 'listingType',
@@ -250,6 +255,98 @@ export const PostTable: React.FC<PostTableProps> = ({
         { value: 'for_sale', label: t('filters.forSale') },
         { value: 'for_rent', label: t('filters.forRent') },
       ],
+      isFilterField: true,
+    },
+    {
+      id: 'vipType',
+      type: 'select',
+      label: 'VIP Tier',
+      options: [
+        { value: 'NORMAL', label: 'Normal' },
+        { value: 'SILVER', label: 'Silver' },
+        { value: 'GOLD', label: 'Gold' },
+        { value: 'DIAMOND', label: 'Diamond' },
+      ],
+      isFilterField: true,
+    },
+    {
+      id: 'verified',
+      type: 'select',
+      label: 'Verified',
+      options: [
+        { value: 'true', label: 'Yes' },
+        { value: 'false', label: 'No' },
+      ],
+      isFilterField: true,
+    },
+    {
+      id: 'isVerify',
+      type: 'select',
+      label: 'Pending Verification',
+      options: [
+        { value: 'true', label: 'Yes' },
+        { value: 'false', label: 'No' },
+      ],
+      isFilterField: true,
+    },
+    {
+      id: 'expired',
+      type: 'select',
+      label: 'Expired',
+      options: [
+        { value: 'true', label: 'Yes' },
+        { value: 'false', label: 'No' },
+      ],
+      isFilterField: true,
+    },
+    {
+      id: 'userId',
+      type: 'search',
+      label: 'Owner User ID',
+      placeholder: 'e.g. user-123',
+      isFilterField: true,
+    },
+    {
+      id: 'minPrice',
+      type: 'search',
+      label: 'Min Price (VND)',
+      placeholder: 'e.g. 5000000',
+      isFilterField: true,
+    },
+    {
+      id: 'maxPrice',
+      type: 'search',
+      label: 'Max Price (VND)',
+      placeholder: 'e.g. 15000000',
+      isFilterField: true,
+    },
+    {
+      id: 'minArea',
+      type: 'search',
+      label: 'Min Area (m²)',
+      placeholder: 'e.g. 20',
+      isFilterField: true,
+    },
+    {
+      id: 'maxArea',
+      type: 'search',
+      label: 'Max Area (m²)',
+      placeholder: 'e.g. 100',
+      isFilterField: true,
+    },
+    {
+      id: 'minBedrooms',
+      type: 'search',
+      label: 'Min Bedrooms',
+      placeholder: 'e.g. 1',
+      isFilterField: true,
+    },
+    {
+      id: 'maxBedrooms',
+      type: 'search',
+      label: 'Max Bedrooms',
+      placeholder: 'e.g. 5',
+      isFilterField: true,
     },
   ]
 

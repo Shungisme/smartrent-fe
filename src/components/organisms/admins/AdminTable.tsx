@@ -79,6 +79,59 @@ export const AdminTable: React.FC<AdminTableProps> = ({
     MA: t('table.roles.MA'),
   }
 
+  const filterConfig: FilterConfig[] = [
+    {
+      id: 'firstName',
+      type: 'search',
+      label: 'First Name',
+      placeholder: 'e.g. John',
+      isFilterField: true,
+    },
+    {
+      id: 'lastName',
+      type: 'search',
+      label: 'Last Name',
+      placeholder: 'e.g. Smith',
+      isFilterField: true,
+    },
+    {
+      id: 'email',
+      type: 'search',
+      label: 'Email',
+      placeholder: 'e.g. admin@smartrent.com',
+      isFilterField: true,
+    },
+    {
+      id: 'phoneNumber',
+      type: 'search',
+      label: 'Phone Number',
+      placeholder: 'e.g. 0912345678',
+      isFilterField: true,
+    },
+    {
+      id: 'adminId',
+      type: 'search',
+      label: 'Admin ID',
+      placeholder: 'e.g. admin-123',
+      isFilterField: true,
+    },
+    {
+      id: 'role',
+      type: 'select',
+      label: 'Role',
+      options: [
+        { value: 'SA', label: roleLabels.SA },
+        { value: 'UA', label: roleLabels.UA },
+        { value: 'CM', label: roleLabels.CM },
+        { value: 'SPA', label: roleLabels.SPA },
+        { value: 'FA', label: roleLabels.FA },
+        { value: 'MA', label: roleLabels.MA },
+      ],
+      allowMultiple: true,
+      isFilterField: true,
+    },
+  ]
+
   // Transform API data to match UI format
   const transformedAdmins: AdminRow[] = admins.map((admin) => ({
     id: admin.adminId,
@@ -181,91 +234,11 @@ export const AdminTable: React.FC<AdminTableProps> = ({
     },
   ]
 
-  const filters: FilterConfig[] = [
-    {
-      id: 'search',
-      type: 'search',
-      label: t('search.placeholder'),
-      placeholder: t('search.placeholder'),
-    },
-    {
-      id: 'role',
-      type: 'custom',
-      label: t('filters.allRoles'),
-      defaultValue: [],
-      render: ({ value, onChange }) => {
-        const selectedRoles = Array.isArray(value)
-          ? value.map((role) => String(role))
-          : []
-        const roleOptions = [
-          { value: 'SA', label: roleLabels.SA },
-          { value: 'UA', label: roleLabels.UA },
-          { value: 'CM', label: roleLabels.CM },
-          { value: 'SPA', label: roleLabels.SPA },
-          { value: 'FA', label: roleLabels.FA },
-          { value: 'MA', label: roleLabels.MA },
-        ]
-        const selectedCount = selectedRoles.length
-        const triggerLabel =
-          selectedCount > 0
-            ? `${t('filters.allRoles')} (${selectedCount})`
-            : t('filters.allRoles')
-
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                type='button'
-                variant='outline'
-                className='w-full justify-between gap-2 sm:w-64'
-              >
-                <span className='truncate'>{triggerLabel}</span>
-                <ChevronDown className='h-4 w-4 shrink-0 opacity-60' />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align='start' className='w-80 p-2'>
-              <div className='space-y-1'>
-                <div className='px-2 py-1 text-xs font-medium uppercase tracking-wide text-muted-foreground'>
-                  {t('filters.allRoles')}
-                </div>
-                {roleOptions.map((option) => {
-                  const checked = selectedRoles.includes(option.value)
-
-                  return (
-                    <label
-                      key={option.value}
-                      className='flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 text-sm hover:bg-muted'
-                    >
-                      <Checkbox
-                        checked={checked}
-                        onCheckedChange={(nextChecked) => {
-                          const isChecked = nextChecked === true
-                          const nextValues = isChecked
-                            ? [...selectedRoles, option.value]
-                            : selectedRoles.filter(
-                                (role) => role !== option.value,
-                              )
-
-                          onChange(nextValues)
-                        }}
-                      />
-                      <span className='flex-1'>{option.label}</span>
-                    </label>
-                  )
-                })}
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )
-      },
-    },
-  ]
-
   return (
     <DataTable
       data={transformedAdmins}
       columns={columns}
-      filters={filters}
+      filters={filterConfig}
       filterMode='api'
       filterValues={filterValues}
       onFilterChange={onFilterChange}

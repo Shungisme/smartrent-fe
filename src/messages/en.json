@@ -25,7 +25,16 @@
     "page": "Page"
   },
   "dataTable": {
-    "clearFilters": "Clear Filters"
+    "clearFilters": "Clear Filters",
+    "filterButton": "Filter",
+    "filterKey": "Field",
+    "selectField": "Select a field",
+    "selectValue": "Select a value",
+    "filterValue": "Value",
+    "enterValue": "Enter value",
+    "addFilter": "Add Filter",
+    "cancel": "Cancel",
+    "apply": "Apply"
   },
   "homePage": {
     "title": "Find Your Dream Home",

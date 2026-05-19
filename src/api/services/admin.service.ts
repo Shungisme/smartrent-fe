@@ -89,6 +89,7 @@ export class AdminService {
     keyword?: string
     role?: string
     status?: string
+    filter?: string[]
   }): Promise<ApiResponse<PaginatedResponse<AdminProfile>>> {
     return apiRequest<PaginatedResponse<AdminProfile>>({
       method: 'GET',

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react'
 import { toast } from 'sonner'
-import { useDebounce } from '@/hooks/useDebounce'
 import { ListingService } from '@/api/services/listing.service'
 import { ListingStatisticsSummary } from '@/api/types/listing.type'
 import { Loader2 } from 'lucide-react'
@@ -36,27 +35,11 @@ const PostVerification = () => {
     pageSize: 20,
   })
   const [totalCount, setTotalCount] = useState(0)
-  const debouncedSearchTerm = useDebounce(filterValues.search || '', 500)
 
-  // Update filterValues with actual search term for DataTable to maintain input state
-  // This is passed to PostTable -> DataTable
-  // Wait, if I pass filterValues directly to DataTable, it might not work as expected if I debounced it inside DataTable?
-  // In original code:
-  // const controlledFilterValues = { ...filterValues, search: filterValues.search }
-  // debouncedSearchTerm was used in useEffect dependencies.
-  // PostTable accepts filterValues and onFilterChange.
-
-  // Fetch listings on mount and when filters change
+  // Fetch listings on mount and whenever filters/pagination change
   useEffect(() => {
     fetchListings()
-  }, [
-    debouncedSearchTerm,
-    filterValues.moderationStatus,
-    filterValues['propertyInfo.type'],
-    filterValues.listingType,
-    filterValues.page,
-    filterValues.pageSize,
-  ])
+  }, [filterValues])
 
   const fetchListings = async () => {
     try {
@@ -66,11 +49,8 @@ const PostVerification = () => {
         setTableLoading(true)
       }
 
-      // Map UI filters to API format
-      const apiFilters = mapUIFiltersToAPI({
-        ...filterValues,
-        search: debouncedSearchTerm,
-      })
+      // Map UI filters (key:value pairs from FilterDialog) to API format
+      const apiFilters = mapUIFiltersToAPI(filterValues)
 
       const response = await ListingService.getAdminListings(apiFilters)
 

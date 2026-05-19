@@ -15,14 +15,26 @@ import { AdminMediaService } from '@/api/services/admin-media.service'
 const replacePathParam = (path: string, key: string, value: string | number) =>
   path.replace(`:${key}`, String(value))
 
-const buildQuery = (params: Record<string, string | number | undefined>) => {
+const buildQuery = (
+  params: Record<string, string | number | string[] | undefined>,
+) => {
   const query = new URLSearchParams()
 
   Object.entries(params).forEach(([key, value]) => {
     if (value === undefined || value === null || value === '') {
       return
     }
-    query.set(key, String(value))
+
+    // Handle array params (filter=[])
+    if (Array.isArray(value)) {
+      value.forEach((v) => {
+        if (v) {
+          query.append(key, String(v))
+        }
+      })
+    } else {
+      query.set(key, String(value))
+    }
   })
 
   return query.toString()
@@ -53,6 +65,7 @@ export class NewsService {
       category: filter?.category,
       keyword: filter?.keyword,
       tag: filter?.tag,
+      filter: filter?.filter,
     })
 
     const url = query

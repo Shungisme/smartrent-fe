@@ -3,17 +3,23 @@ import { useTranslations } from 'next-intl'
 import { Input } from '@/components/atoms/input'
 import { Button } from '@/components/atoms/button'
 import { Search, X } from 'lucide-react'
+import { FilterDialog } from './FilterDialog'
 import type { TableFiltersProps, FilterConfig } from './types'
 
 export function TableFilters({
   filters,
   values,
   onChange,
+  onChangeMultiple,
   onClear,
 }: TableFiltersProps) {
   const t = useTranslations('dataTable')
 
   if (!filters || filters.length === 0) return null
+
+  // Check if there are filter fields meant for FilterDialog
+  const filterDialogFilters = filters.filter((f) => f.isFilterField)
+  const hasFilterDialog = filterDialogFilters.length > 0
 
   const hasActiveFilters = Object.values(values).some((value) => {
     if (Array.isArray(value)) return value.length > 0
@@ -23,6 +29,30 @@ export function TableFilters({
     )
   })
 
+  // If we have FilterDialog filters, show only the FilterDialog
+  if (hasFilterDialog) {
+    return (
+      <div className='flex gap-2 items-center'>
+        <FilterDialog
+          filterConfig={filterDialogFilters}
+          currentFilters={values}
+          onFilterChange={(newFilters) => {
+            // Use batch update if available, otherwise update individually
+            if (onChangeMultiple) {
+              onChangeMultiple(newFilters)
+            } else {
+              Object.entries(newFilters).forEach(([key, value]) => {
+                onChange(key, value)
+              })
+            }
+          }}
+          onClear={onClear}
+        />
+      </div>
+    )
+  }
+
+  // Original filter rendering for backward compatibility
   const renderFilter = (filter: FilterConfig) => {
     const value = Object.prototype.hasOwnProperty.call(values, filter.id)
       ? values[filter.id]

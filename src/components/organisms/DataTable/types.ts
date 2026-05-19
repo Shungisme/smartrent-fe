@@ -34,6 +34,8 @@ export interface FilterConfig {
   defaultValue?: unknown
   render?: (props: FilterRenderProps) => ReactNode
   className?: string
+  allowMultiple?: boolean // For fields that support CSV values like role:SA,UA,CM
+  isFilterField?: boolean // For new FilterDialog - if true, field appears in filter dialog
 }
 
 export interface FilterRenderProps {
@@ -167,6 +169,7 @@ export interface TableFiltersProps {
   filters: FilterConfig[]
   values: Record<string, unknown>
   onChange: (key: string, value: unknown) => void
+  onChangeMultiple?: (filters: Record<string, unknown>) => void
   onClear?: () => void
   mode?: FilterMode
 }

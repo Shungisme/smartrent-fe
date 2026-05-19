@@ -126,6 +126,7 @@ export class UserService {
     type?: string
     isBroker?: boolean
     status?: string
+    filter?: string[]
   }): Promise<ApiResponse<UserListResponse>> {
     const response = await apiRequest<UserListResponse>({
       method: 'GET',
