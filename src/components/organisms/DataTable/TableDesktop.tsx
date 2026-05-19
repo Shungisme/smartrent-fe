@@ -1,5 +1,6 @@
 import React from 'react'
-import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react'
+import { ChevronUp, ChevronDown, ChevronsUpDown, SearchX } from 'lucide-react'
+import { EmptyState } from '@/components/molecules/emptyState'
 import type { TableDesktopProps, Column } from './types'
 
 export function TableDesktop<T = any>({
@@ -96,9 +97,13 @@ export function TableDesktop<T = any>({
                   colSpan={
                     columns.length + (selectable ? 1 : 0) + (actions ? 1 : 0)
                   }
-                  className='px-5 py-14 text-center text-sm text-muted-foreground'
+                  className='p-0'
                 >
-                  {emptyMessage}
+                  <EmptyState
+                    icon={SearchX}
+                    title={emptyMessage}
+                    description='Try adjusting your filters or search terms.'
+                  />
                 </td>
               </tr>
             ) : (

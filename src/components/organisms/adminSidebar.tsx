@@ -16,6 +16,13 @@ import {
   UserCogIcon,
   Users,
   Newspaper,
+  Crown,
+  BadgePercent,
+  Layers,
+  Rocket,
+  FileBarChart,
+  Banknote,
+  BarChart3,
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -45,23 +52,35 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     <div
       onClick={disabled ? undefined : onClick}
       className={cn(
-        'mx-2 flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all',
+        'relative mx-2 flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors',
         collapsed ? 'justify-center' : 'gap-3',
         disabled
           ? 'cursor-not-allowed text-muted-foreground/60'
           : 'cursor-pointer',
         !disabled &&
           (isActive
-            ? 'bg-sidebar-primary/12 text-sidebar-primary shadow-xs ring-1 ring-sidebar-primary/20'
-            : 'text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'),
+            ? 'bg-sidebar-primary/10 text-sidebar-primary'
+            : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'),
       )}
       title={collapsed ? label : undefined}
     >
-      {collapsed ? (
-        icon && <span className='h-5 w-5'>{icon}</span>
-      ) : (
-        <span className='truncate text-nowrap'>{label}</span>
+      {!disabled && isActive && !collapsed && (
+        <span
+          aria-hidden
+          className='absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-sidebar-primary'
+        />
       )}
+      {icon && (
+        <span
+          className={cn(
+            'flex h-5 w-5 shrink-0 items-center justify-center',
+            !isActive && !disabled && 'text-muted-foreground',
+          )}
+        >
+          {icon}
+        </span>
+      )}
+      {!collapsed && <span className='truncate text-nowrap'>{label}</span>}
     </div>
   )
 }
@@ -88,7 +107,7 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({
       <button
         type='button'
         onClick={collapsed ? undefined : onToggle}
-        className='mb-1 flex w-full items-center justify-between rounded-md px-3 py-1.5 text-sm font-medium text-sidebar-foreground/80 transition-all duration-200 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+        className='mb-1 flex w-full items-center justify-between rounded-md px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-sidebar-foreground'
         title={collapsed ? title : undefined}
       >
         <span
@@ -97,9 +116,7 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({
             collapsed && 'mx-auto',
           )}
         >
-          {icon && (
-            <span className='h-4 w-4 text-muted-foreground'>{icon}</span>
-          )}
+          {icon && <span className='h-4 w-4'>{icon}</span>}
           {!collapsed && <span>{title}</span>}
         </span>
         {!collapsed && (
@@ -209,16 +226,14 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     users: <Users width={20} />,
     admins: <UserCogIcon width={20} />,
     roles: <Shield width={20} />,
-    premiumOverview: <CreditCard width={20} />,
-    premiumMembership: <CreditCard width={20} />,
-    premiumPromotions: <CreditCard width={20} />,
-    premiumListingTypes: <CreditCard width={20} />,
-    premiumPostBoosts: <CreditCard width={20} />,
-    analyticsOverview: <ChartColumn width={20} />,
-    analyticsUsers: <ChartColumn width={20} />,
-    analyticsPosts: <ChartColumn width={20} />,
-    analyticsRevenue: <ChartColumn width={20} />,
-    analyticsReports: <ChartColumn width={20} />,
+    premiumMembership: <Crown width={20} />,
+    premiumPromotions: <BadgePercent width={20} />,
+    premiumListingTypes: <Layers width={20} />,
+    premiumPostBoosts: <Rocket width={20} />,
+    analyticsUsers: <Users width={20} />,
+    analyticsPosts: <FileBarChart width={20} />,
+    analyticsRevenue: <Banknote width={20} />,
+    analyticsReports: <BarChart3 width={20} />,
     posts: <FileCheck width={20} />,
     news: <Newspaper width={20} />,
     brokerPending: <UserCheck width={20} />,

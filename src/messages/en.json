@@ -1446,16 +1446,16 @@
       "placeholder": "Search by title, poster name, or address..."
     },
     "filters": {
-      "allStatus": "All Status",
+      "status": "Status",
       "pending": "Pending",
       "approved": "Approved",
       "rejected": "Rejected",
-      "allTypes": "All Types",
+      "type": "Type",
       "house": "House",
       "apartment": "Apartment",
       "office": "Office",
       "land": "Land",
-      "allCategories": "All Categories",
+      "category": "Category",
       "forSale": "For Sale",
       "forRent": "For Rent",
       "pickDateRange": "Pick a date range"
@@ -1477,6 +1477,7 @@
     },
     "review": {
       "title": "Review Post",
+      "noImages": "No images provided",
       "postInfo": "Post Information",
       "postCode": "Post Code",
       "listingType": "Listing Type",
@@ -1627,11 +1628,11 @@
       "placeholder": "Search by post title, reporter name, or post ID..."
     },
     "filters": {
-      "allStatus": "All Status",
+      "status": "Status",
       "pending": "Pending",
       "resolved": "Resolved",
       "dismissed": "Dismissed",
-      "allCategories": "All Categories",
+      "category": "Category",
       "fakeFraudulent": "Fake/Fraudulent Listing",
       "spamPromotional": "Spam/Promotional",
       "inappropriateContent": "Inappropriate Content",
@@ -1751,8 +1752,8 @@
     "filters": {
       "search": "Search",
       "searchPlaceholder": "Search by title, content...",
-      "allStatus": "All statuses",
-      "allCategory": "All categories"
+      "status": "Status",
+      "category": "Category"
     },
     "messages": {
       "fetchError": "Unable to load news list. Please try again.",
@@ -1910,8 +1911,6 @@
       "gateway": "Gateway",
       "fromDate": "From Date",
       "toDate": "To Date",
-      "allStatus": "All Status",
-      "allGateways": "All Gateways",
       "quick": "Quick:",
       "today": "Today",
       "week": "Last 7 days",

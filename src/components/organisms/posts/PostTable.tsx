@@ -213,16 +213,9 @@ export const PostTable: React.FC<PostTableProps> = ({
 
   const filters: FilterConfig[] = [
     {
-      id: 'keyword',
-      type: 'search',
-      label: t('search.placeholder'),
-      placeholder: t('search.placeholder'),
-      isFilterField: true,
-    },
-    {
       id: 'moderationStatus',
       type: 'select',
-      label: t('filters.allStatus'),
+      label: t('filters.status'),
       options: [
         { value: 'PENDING_REVIEW', label: t('tabs.pendingReview') },
         { value: 'APPROVED', label: t('tabs.approved') },
@@ -236,7 +229,7 @@ export const PostTable: React.FC<PostTableProps> = ({
     {
       id: 'productType',
       type: 'select',
-      label: t('filters.allTypes'),
+      label: t('filters.type'),
       options: [
         { value: 'HOUSE', label: t('filters.house') },
         { value: 'APARTMENT', label: t('filters.apartment') },
@@ -250,7 +243,7 @@ export const PostTable: React.FC<PostTableProps> = ({
     {
       id: 'listingType',
       type: 'select',
-      label: t('filters.allCategories'),
+      label: t('filters.category'),
       options: [
         { value: 'for_sale', label: t('filters.forSale') },
         { value: 'for_rent', label: t('filters.forRent') },

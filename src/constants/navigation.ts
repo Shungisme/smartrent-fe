@@ -16,12 +16,10 @@ type PageKey =
   | 'admins'
   | 'roles'
   | 'brokerPending'
-  | 'premiumOverview'
   | 'premiumMembership'
   | 'premiumPromotions'
   | 'premiumListingTypes'
   | 'premiumPostBoosts'
-  | 'analyticsOverview'
   | 'analyticsUsers'
   | 'analyticsPosts'
   | 'analyticsRevenue'
@@ -39,10 +37,6 @@ const ROUTE_META: Record<string, { category: CategoryKey; page: PageKey }> = {
     category: 'moderation',
     page: 'brokerPending',
   },
-  '/monetization/overview': {
-    category: 'monetization',
-    page: 'premiumOverview',
-  },
   '/monetization/membership': {
     category: 'monetization',
     page: 'premiumMembership',
@@ -58,10 +52,6 @@ const ROUTE_META: Record<string, { category: CategoryKey; page: PageKey }> = {
   '/monetization/post-boosts': {
     category: 'monetization',
     page: 'premiumPostBoosts',
-  },
-  '/insights/overview': {
-    category: 'insights',
-    page: 'analyticsOverview',
   },
   '/insights/users': {
     category: 'insights',
@@ -88,14 +78,12 @@ const ROUTE_META: Record<string, { category: CategoryKey; page: PageKey }> = {
 const CATEGORY_ROUTES: Record<CategoryKey, string[]> = {
   management: ['/management/users', '/management/admins', '/management/roles'],
   monetization: [
-    '/monetization/overview',
     '/monetization/membership',
     '/monetization/promotions',
     '/monetization/listing-types',
     '/monetization/post-boosts',
   ],
   insights: [
-    '/insights/overview',
     '/insights/users',
     '/insights/posts',
     '/insights/revenue',
@@ -128,12 +116,10 @@ const LABELS = {
       admins: 'Admins',
       roles: 'Roles',
       brokerPending: 'Pending Broker Applications',
-      premiumOverview: 'Overview',
       premiumMembership: 'Membership',
       premiumPromotions: 'Promotions',
       premiumListingTypes: 'Listing Types',
       premiumPostBoosts: 'Post Boosts',
-      analyticsOverview: 'Overview',
       analyticsUsers: 'Users',
       analyticsPosts: 'Posts',
       analyticsRevenue: 'Revenue',
@@ -159,12 +145,10 @@ const LABELS = {
       admins: 'Quản trị viên',
       roles: 'Vai trò',
       brokerPending: 'Đơn đăng ký môi giới chờ duyệt',
-      premiumOverview: 'Tổng quan',
       premiumMembership: 'Thành viên',
       premiumPromotions: 'Khuyến mãi',
       premiumListingTypes: 'Loại tin đăng',
       premiumPostBoosts: 'Đẩy tin',
-      analyticsOverview: 'Tổng quan',
       analyticsUsers: 'Người dùng',
       analyticsPosts: 'Tin đăng',
       analyticsRevenue: 'Doanh thu',
