@@ -132,8 +132,10 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
 
   if (!post) return null
 
-  const levelLabel = (level: AiSeverity | AiPriority) =>
-    t(`aiAnalysis.level.${level}`)
+  const levelLabel = (level: AiSeverity | AiPriority) => {
+    const key = `aiAnalysis.level.${String(level).toLowerCase()}`
+    return t.has(key) ? t(key) : String(level)
+  }
 
   return (
     <div className='rounded-xl border border-blue-200 bg-blue-50/40 p-4'>

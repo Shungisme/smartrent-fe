@@ -59,8 +59,8 @@ export type AiViolationCode =
   | 'MISSING_MEDIA'
   | 'PRICE_ANOMALY'
 
-export type AiSeverity = 'low' | 'medium' | 'high'
-export type AiPriority = 'low' | 'medium' | 'high'
+export type AiSeverity = 'low' | 'medium' | 'high' | 'critical'
+export type AiPriority = 'low' | 'medium' | 'high' | 'critical'
 
 export interface AiImageValidation {
   is_valid: boolean
