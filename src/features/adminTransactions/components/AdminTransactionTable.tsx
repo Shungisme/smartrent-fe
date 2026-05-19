@@ -1,206 +1,194 @@
 'use client'
 
-import { MoreVertical } from 'lucide-react'
-import { useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/atoms/Button'
+import { useTranslations } from 'next-intl'
+import { Button } from '@/components/atoms/button'
+import { DataTable, Column } from '@/components/organisms/DataTable'
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from '@/components/atoms/Table'
-import { AdminTransaction, PaymentStatus } from '../types/transaction.type'
+  AdminTransaction,
+  AdminTransactionFilters,
+  PaymentStatus,
+} from '../types/transaction.type'
 import {
   formatDateTime,
   formatPhoneNumber,
   formatVND,
   getPaymentGatewayLabel,
-  getPaymentStatusColor,
-  getPaymentStatusLabel,
-  getPaymentTypeLabel,
 } from '../utils/formatters'
 
 interface AdminTransactionTableProps {
   transactions: AdminTransaction[]
+  totalItems: number
+  filters: AdminTransactionFilters
+  onFiltersChange: (filters: AdminTransactionFilters) => void
   isLoading?: boolean
   onViewDetails: (transactionId: string) => void
 }
 
+const STATUS_BADGE_CLASS: Record<PaymentStatus, string> = {
+  PENDING: 'bg-yellow-100 text-yellow-800',
+  SUCCESS: 'bg-green-100 text-green-800',
+  FAILED: 'bg-red-100 text-red-800',
+  CANCELLED: 'bg-gray-100 text-gray-800',
+  REFUNDED: 'bg-blue-100 text-blue-800',
+}
+
 /**
- * Admin Transaction Table Component
- * Displays list of transactions with key information
+ * Admin Transaction Table
+ * Renders the transaction list through the shared DataTable organism
+ * (server-driven pagination via filterMode="api").
  */
 export const AdminTransactionTable = ({
   transactions,
+  totalItems,
+  filters,
+  onFiltersChange,
   isLoading,
   onViewDetails,
 }: AdminTransactionTableProps) => {
-  const { t } = useTranslation()
-  const [hoveredRow, setHoveredRow] = useState<string | null>(null)
+  const t = useTranslations('transactions')
+  const pageSize = filters.size ?? 20
 
-  const getStatusBadgeClass = (status: PaymentStatus): string => {
-    const baseClass = 'px-3 py-1 rounded-full text-sm font-medium'
-    const colorClass = {
-      PENDING: 'bg-yellow-100 text-yellow-800',
-      SUCCESS: 'bg-green-100 text-green-800',
-      FAILED: 'bg-red-100 text-red-800',
-      CANCELLED: 'bg-gray-100 text-gray-800',
-      REFUNDED: 'bg-blue-100 text-blue-800',
-    }
-    return `${baseClass} ${colorClass[status] || colorClass.PENDING}`
-  }
-
-  if (isLoading) {
-    return (
-      <div className='flex items-center justify-center h-64'>
-        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary'></div>
-      </div>
-    )
-  }
-
-  if (!transactions || transactions.length === 0) {
-    return (
-      <div className='flex items-center justify-center h-64'>
-        <p className='text-gray-500'>
-          {t('admin.transactions?.noData') || 'Không có giao dịch nào'}
-        </p>
-      </div>
-    )
-  }
+  const columns: Column<AdminTransaction>[] = [
+    {
+      id: 'transaction',
+      header: t('table.transaction'),
+      accessor: (row) => row.transactionCode,
+      render: (_, row) => (
+        <div className='flex flex-col gap-1'>
+          <span className='font-semibold'>{row.transactionCode}</span>
+          {row.gatewayTransactionCode && (
+            <span className='text-xs text-muted-foreground'>
+              {t('table.gatewayPrefix')}: {row.gatewayTransactionCode}
+            </span>
+          )}
+        </div>
+      ),
+    },
+    {
+      id: 'invoiceRoom',
+      header: t('table.invoice'),
+      accessor: (row) => row.invoice?.invoiceCode ?? '',
+      render: (_, row) => (
+        <div className='flex flex-col gap-1'>
+          {row.invoice && (
+            <span className='text-sm'>{row.invoice.invoiceCode}</span>
+          )}
+          {row.room && (
+            <span className='text-xs text-muted-foreground'>
+              {row.room.roomCode} - {row.room.roomName}
+            </span>
+          )}
+        </div>
+      ),
+    },
+    {
+      id: 'customer',
+      header: t('table.customer'),
+      accessor: (row) => row.customer.name,
+      render: (_, row) => (
+        <div className='flex flex-col gap-1'>
+          <span className='text-sm font-medium'>{row.customer.name}</span>
+          <span className='text-xs text-muted-foreground'>
+            {formatPhoneNumber(row.customer.phone)}
+          </span>
+        </div>
+      ),
+    },
+    {
+      id: 'landlord',
+      header: t('table.landlord'),
+      accessor: (row) => row.landlord?.name ?? '',
+      render: (_, row) =>
+        row.landlord ? (
+          <div className='flex flex-col gap-1'>
+            <span className='text-sm font-medium'>{row.landlord.name}</span>
+            <span className='text-xs text-muted-foreground'>
+              {formatPhoneNumber(row.landlord.phone)}
+            </span>
+          </div>
+        ) : (
+          <span className='text-muted-foreground'>-</span>
+        ),
+    },
+    {
+      id: 'paymentType',
+      header: t('table.type'),
+      accessor: (row) => row.paymentType,
+      render: (_, row) => (
+        <span className='text-sm'>{t(`type.${row.paymentType}`)}</span>
+      ),
+    },
+    {
+      id: 'gateway',
+      header: t('table.gateway'),
+      accessor: (row) => row.paymentGateway,
+      render: (_, row) => (
+        <span className='text-sm'>
+          {getPaymentGatewayLabel(row.paymentGateway)}
+        </span>
+      ),
+    },
+    {
+      id: 'amount',
+      header: t('table.amount'),
+      accessor: (row) => row.amount,
+      className: 'text-right',
+      render: (_, row) => (
+        <span className='font-medium'>{formatVND(row.amount)}</span>
+      ),
+    },
+    {
+      id: 'status',
+      header: t('table.status'),
+      accessor: (row) => row.status,
+      render: (_, row) => (
+        <span
+          className={`rounded-full px-3 py-1 text-sm font-medium ${
+            STATUS_BADGE_CLASS[row.status] ?? STATUS_BADGE_CLASS.PENDING
+          }`}
+        >
+          {t(`status.${row.status}`)}
+        </span>
+      ),
+    },
+    {
+      id: 'createdAt',
+      header: t('table.created'),
+      accessor: (row) => row.createdAt,
+      render: (_, row) => (
+        <span className='text-sm'>{formatDateTime(row.createdAt)}</span>
+      ),
+    },
+  ]
 
   return (
-    <div className='rounded-lg border border-gray-200 overflow-hidden'>
-      <Table>
-        <TableHeader>
-          <TableRow className='bg-gray-50'>
-            <TableCell className='font-semibold'>Giao dịch</TableCell>
-            <TableCell className='font-semibold'>Hóa đơn / Phòng</TableCell>
-            <TableCell className='font-semibold'>Khách hàng</TableCell>
-            <TableCell className='font-semibold'>Chủ nhà</TableCell>
-            <TableCell className='font-semibold'>Loại</TableCell>
-            <TableCell className='font-semibold'>Cổng thanh toán</TableCell>
-            <TableCell className='font-semibold text-right'>Số tiền</TableCell>
-            <TableCell className='font-semibold'>Trạng thái</TableCell>
-            <TableCell className='font-semibold'>Ngày tạo</TableCell>
-            <TableCell className='font-semibold text-center'>
-              Hành động
-            </TableCell>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {transactions.map((transaction) => (
-            <TableRow
-              key={transaction.transactionId}
-              onMouseEnter={() => setHoveredRow(transaction.transactionId)}
-              onMouseLeave={() => setHoveredRow(null)}
-              className='hover:bg-gray-50 transition-colors'
-            >
-              {/* Transaction Code */}
-              <TableCell className='font-medium'>
-                <div className='flex flex-col gap-1'>
-                  <span className='font-semibold'>
-                    {transaction.transactionCode}
-                  </span>
-                  {transaction.gatewayTransactionCode && (
-                    <span className='text-xs text-gray-500'>
-                      Gateway: {transaction.gatewayTransactionCode}
-                    </span>
-                  )}
-                </div>
-              </TableCell>
-
-              {/* Invoice / Room */}
-              <TableCell>
-                <div className='flex flex-col gap-1'>
-                  {transaction.invoice && (
-                    <span className='text-sm'>
-                      {transaction.invoice.invoiceCode}
-                    </span>
-                  )}
-                  {transaction.room && (
-                    <span className='text-xs text-gray-500'>
-                      {transaction.room.roomCode} - {transaction.room.roomName}
-                    </span>
-                  )}
-                </div>
-              </TableCell>
-
-              {/* Customer */}
-              <TableCell>
-                <div className='flex flex-col gap-1'>
-                  <span className='text-sm font-medium'>
-                    {transaction.customer.name}
-                  </span>
-                  <span className='text-xs text-gray-500'>
-                    {formatPhoneNumber(transaction.customer.phone)}
-                  </span>
-                </div>
-              </TableCell>
-
-              {/* Landlord */}
-              <TableCell>
-                {transaction.landlord ? (
-                  <div className='flex flex-col gap-1'>
-                    <span className='text-sm font-medium'>
-                      {transaction.landlord.name}
-                    </span>
-                    <span className='text-xs text-gray-500'>
-                      {formatPhoneNumber(transaction.landlord.phone)}
-                    </span>
-                  </div>
-                ) : (
-                  <span className='text-gray-500'>-</span>
-                )}
-              </TableCell>
-
-              {/* Payment Type */}
-              <TableCell>
-                <span className='text-sm'>
-                  {getPaymentTypeLabel(transaction.paymentType)}
-                </span>
-              </TableCell>
-
-              {/* Gateway */}
-              <TableCell>
-                <span className='text-sm'>
-                  {getPaymentGatewayLabel(transaction.paymentGateway)}
-                </span>
-              </TableCell>
-
-              {/* Amount */}
-              <TableCell className='text-right font-medium'>
-                {formatVND(transaction.amount)}
-              </TableCell>
-
-              {/* Status */}
-              <TableCell>
-                <span className={getStatusBadgeClass(transaction.status)}>
-                  {getPaymentStatusLabel(transaction.status)}
-                </span>
-              </TableCell>
-
-              {/* Created Date */}
-              <TableCell className='text-sm'>
-                {formatDateTime(transaction.createdAt)}
-              </TableCell>
-
-              {/* Actions */}
-              <TableCell className='text-center'>
-                <Button
-                  size='sm'
-                  variant='ghost'
-                  onClick={() => onViewDetails(transaction.transactionId)}
-                  className='w-full'
-                >
-                  Chi tiết
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+    <DataTable<AdminTransaction>
+      data={transactions}
+      columns={columns}
+      filterMode='api'
+      filterValues={{ page: filters.page ?? 1, pageSize }}
+      onFilterChange={(next) =>
+        onFiltersChange({
+          ...filters,
+          page: Number(next.page) || 1,
+          size: Number(next.pageSize) || pageSize,
+        })
+      }
+      totalItems={totalItems}
+      itemsPerPage={pageSize}
+      itemsPerPageOptions={[10, 20, 50]}
+      loading={isLoading}
+      emptyMessage={t('table.noData')}
+      getRowKey={(row) => row.transactionId}
+      actions={(row) => (
+        <Button
+          size='sm'
+          variant='ghost'
+          onClick={() => onViewDetails(row.transactionId)}
+        >
+          {t('table.viewDetails')}
+        </Button>
+      )}
+    />
   )
 }

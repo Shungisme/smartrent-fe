@@ -191,7 +191,6 @@
         "success": "Đặt lại mật khẩu thành công!",
         "error": "Đặt lại mật khẩu thất bại. Vui lòng thử lại."
       },
-
       "common": {
         "password": "Mật khẩu",
         "hidePassword": "Ẩn mật khẩu",
@@ -1868,7 +1867,9 @@
       "status": "Trạng Thái",
       "created": "Ngày Tạo",
       "actions": "Hành Động",
-      "noData": "Không có giao dịch nào"
+      "noData": "Không có giao dịch nào",
+      "viewDetails": "Chi tiết",
+      "gatewayPrefix": "Cổng"
     },
     "filters": {
       "search": "Tìm kiếm theo mã giao dịch, mã hóa đơn hoặc mã cổng...",
@@ -1881,7 +1882,9 @@
       "week": "7 Ngày Qua",
       "month": "Tháng Này",
       "clearFilters": "Xóa Bộ Lọc",
-      "export": "Xuất CSV"
+      "export": "Xuất CSV",
+      "allStatus": "Tất cả trạng thái",
+      "allGateways": "Tất cả cổng"
     },
     "status": {
       "PENDING": "Chờ Xử Lý",
@@ -1920,7 +1923,10 @@
       "payload": "Tải Từ Cổng",
       "failureReason": "Lý Do Thất Bại",
       "timeline": "Lịch Sử Giao Dịch",
-      "noTimeline": "Không có lịch sử"
+      "noTimeline": "Không có lịch sử",
+      "back": "Quay lại",
+      "loadError": "Không thể tải chi tiết giao dịch",
+      "notFound": "Giao dịch không tìm thấy"
     },
     "stats": {
       "totalRevenue": "Tổng Doanh Thu",
@@ -1938,7 +1944,33 @@
       "month": "Theo Tháng",
       "total": "Tổng Doanh Thu",
       "count": "giao dịch thành công",
-      "average": "Trung Bình/Kỳ"
+      "average": "Trung Bình/Kỳ",
+      "noData": "Không có dữ liệu"
+    },
+    "type": {
+      "MONTHLY_INVOICE": "Hóa đơn hàng tháng",
+      "MEMBERSHIP_PURCHASE": "Mua gói membership",
+      "LISTING_BOOST": "Nâng cấp tin đăng",
+      "LISTING_POST": "Đăng tin",
+      "DEPOSIT": "Ký quỹ"
+    },
+    "dashboard": {
+      "title": "Tổng quan giao dịch",
+      "description": "Xem tổng quan về doanh thu, tỷ lệ thành công và xu hướng thanh toán",
+      "week": "7 ngày",
+      "month": "Tháng này",
+      "quarter": "Quý này"
+    },
+    "timeline": {
+      "transaction": "Giao dịch",
+      "by": "Bởi",
+      "at": "lúc",
+      "actor": {
+        "SYSTEM": "Hệ thống",
+        "GATEWAY": "Cổng thanh toán",
+        "ADMIN": "Quản trị viên",
+        "CUSTOMER": "Khách hàng"
+      }
     }
   },
   "notifications": {

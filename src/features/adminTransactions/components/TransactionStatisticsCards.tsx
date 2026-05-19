@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowUpRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { TransactionStatistics } from '../types/transaction.type'
 import { formatVND } from '../utils/formatters'
 
@@ -15,54 +15,54 @@ interface TransactionStatisticsCardsProps {
  */
 export const TransactionStatisticsCards = ({
   statistics,
-  isLoading,
 }: TransactionStatisticsCardsProps) => {
+  const t = useTranslations('transactions')
   const cards = statistics
     ? [
         {
-          label: 'Tổng doanh thu',
+          label: t('stats.totalRevenue'),
           value: formatVND(statistics.totalRevenue),
           icon: '💰',
           color: 'bg-blue-50',
         },
         {
-          label: 'Tổng giao dịch',
+          label: t('stats.totalTransactions'),
           value: statistics.totalTransactions,
           icon: '📊',
           color: 'bg-purple-50',
         },
         {
-          label: 'Thanh toán thành công',
+          label: t('stats.successful'),
           value: statistics.successfulPayments,
           icon: '✅',
           color: 'bg-green-50',
         },
         {
-          label: 'Thanh toán thất bại',
+          label: t('stats.failed'),
           value: statistics.failedPayments,
           icon: '❌',
           color: 'bg-red-50',
         },
         {
-          label: 'Chờ xử lý',
+          label: t('stats.pending'),
           value: statistics.pendingPayments,
           icon: '⏳',
           color: 'bg-yellow-50',
         },
         {
-          label: 'Hoàn tiền',
+          label: t('stats.refunded'),
           value: statistics.refundedPayments,
           icon: '🔄',
           color: 'bg-orange-50',
         },
         {
-          label: 'Tỷ lệ thành công',
+          label: t('stats.successRate'),
           value: `${statistics.successRate.toFixed(2)}%`,
           icon: '📈',
           color: 'bg-indigo-50',
         },
         {
-          label: 'Trung bình/Giao dịch',
+          label: t('stats.average'),
           value: formatVND(statistics.averageSuccessfulAmount),
           icon: '💵',
           color: 'bg-teal-50',

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { NextIntlClientProvider } from 'next-intl'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import ThemeDataProvider from '@/contexts/theme'
 import AuthProvider from '@/contexts/auth'
@@ -22,32 +23,42 @@ const messages = {
 
 function ProvidersContent({ children }: { children: React.ReactNode }) {
   const { language } = useSwitchLanguage()
+  const [queryClient] = React.useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: { refetchOnWindowFocus: false, retry: 1 },
+        },
+      }),
+  )
 
   return (
-    <NextIntlClientProvider
-      locale={language}
-      messages={messages[language as Locale]}
-    >
-      <NextThemesProvider
-        attribute='class'
-        defaultTheme='light'
-        enableSystem={false}
-        disableTransitionOnChange
+    <QueryClientProvider client={queryClient}>
+      <NextIntlClientProvider
+        locale={language}
+        messages={messages[language as Locale]}
       >
-        <ThemeDataProvider>
-          <AuthProvider>
-            <ToastProvider>
-              <NotificationProvider>
-                <AuthDialogProvider>
-                  {children}
-                  <Toaster />
-                </AuthDialogProvider>
-              </NotificationProvider>
-            </ToastProvider>
-          </AuthProvider>
-        </ThemeDataProvider>
-      </NextThemesProvider>
-    </NextIntlClientProvider>
+        <NextThemesProvider
+          attribute='class'
+          defaultTheme='light'
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <ThemeDataProvider>
+            <AuthProvider>
+              <ToastProvider>
+                <NotificationProvider>
+                  <AuthDialogProvider>
+                    {children}
+                    <Toaster />
+                  </AuthDialogProvider>
+                </NotificationProvider>
+              </ToastProvider>
+            </AuthProvider>
+          </ThemeDataProvider>
+        </NextThemesProvider>
+      </NextIntlClientProvider>
+    </QueryClientProvider>
   )
 }
 

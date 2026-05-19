@@ -2,15 +2,13 @@
 
 import { Search, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Button } from '@/components/atoms/Button'
-import { Input } from '@/components/atoms/Input'
-import { Select } from '@/components/atoms/Select'
+import { useTranslations } from 'next-intl'
+import { Button } from '@/components/atoms/button'
+import { Input } from '@/components/atoms/input'
 import {
   AdminTransactionFilters,
   PaymentGateway,
   PaymentStatus,
-  PaymentType,
 } from '../types/transaction.type'
 import { getDateRange } from '../utils/formatters'
 
@@ -29,7 +27,7 @@ export const AdminTransactionFiltersComponent = ({
   onFiltersChange,
   onExport,
 }: AdminTransactionFiltersProps) => {
-  const { t } = useTranslation()
+  const t = useTranslations('transactions')
   const [searchQuery, setSearchQuery] = useState(filters.q || '')
   const [status, setStatus] = useState<PaymentStatus | ''>(filters.status || '')
   const [gateway, setGateway] = useState<PaymentGateway | ''>(
@@ -119,7 +117,7 @@ export const AdminTransactionFiltersComponent = ({
       <div className='relative'>
         <Search className='absolute left-3 top-3 h-5 w-5 text-gray-400' />
         <Input
-          placeholder='Tìm kiếm mã giao dịch, mã hóa đơn hoặc mã cổng...'
+          placeholder={t('filters.search')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className='pl-10'
@@ -129,37 +127,45 @@ export const AdminTransactionFiltersComponent = ({
       {/* Filter Row */}
       <div className='grid grid-cols-1 gap-4 md:grid-cols-4'>
         {/* Status Filter */}
-        <Select
-          value={status}
-          onChange={(e) => handleStatusChange(e.target.value)}
-          options={[
-            { label: 'Tất cả trạng thái', value: '' },
-            { label: 'Chờ xử lý', value: 'PENDING' },
-            { label: 'Thành công', value: 'SUCCESS' },
-            { label: 'Thất bại', value: 'FAILED' },
-            { label: 'Đã huỷ', value: 'CANCELLED' },
-            { label: 'Hoàn tiền', value: 'REFUNDED' },
-          ]}
-          label='Trạng thái'
-        />
+        <div>
+          <label className='mb-2 block text-sm font-medium text-gray-700'>
+            {t('filters.status')}
+          </label>
+          <select
+            value={status}
+            onChange={(e) => handleStatusChange(e.target.value)}
+            className='w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary'
+          >
+            <option value=''>{t('filters.allStatus')}</option>
+            <option value='PENDING'>{t('status.PENDING')}</option>
+            <option value='SUCCESS'>{t('status.SUCCESS')}</option>
+            <option value='FAILED'>{t('status.FAILED')}</option>
+            <option value='CANCELLED'>{t('status.CANCELLED')}</option>
+            <option value='REFUNDED'>{t('status.REFUNDED')}</option>
+          </select>
+        </div>
 
         {/* Gateway Filter */}
-        <Select
-          value={gateway}
-          onChange={(e) => handleGatewayChange(e.target.value)}
-          options={[
-            { label: 'Tất cả cổng', value: '' },
-            { label: 'VNPay', value: 'VNPAY' },
-            { label: 'ZaloPay', value: 'ZALOPAY' },
-            { label: 'MoMo', value: 'MOMO' },
-          ]}
-          label='Cổng thanh toán'
-        />
+        <div>
+          <label className='mb-2 block text-sm font-medium text-gray-700'>
+            {t('filters.gateway')}
+          </label>
+          <select
+            value={gateway}
+            onChange={(e) => handleGatewayChange(e.target.value)}
+            className='w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary'
+          >
+            <option value=''>{t('filters.allGateways')}</option>
+            <option value='VNPAY'>VNPay</option>
+            <option value='ZALOPAY'>ZaloPay</option>
+            <option value='MOMO'>MoMo</option>
+          </select>
+        </div>
 
         {/* From Date */}
         <div>
           <label className='block text-sm font-medium text-gray-700 mb-2'>
-            Từ ngày
+            {t('filters.fromDate')}
           </label>
           <input
             type='date'
@@ -172,7 +178,7 @@ export const AdminTransactionFiltersComponent = ({
         {/* To Date */}
         <div>
           <label className='block text-sm font-medium text-gray-700 mb-2'>
-            Đến ngày
+            {t('filters.toDate')}
           </label>
           <input
             type='date'
@@ -186,33 +192,33 @@ export const AdminTransactionFiltersComponent = ({
       {/* Quick Date Range Buttons */}
       <div className='flex gap-2 flex-wrap'>
         <span className='text-sm font-medium text-gray-700 self-center'>
-          Nhanh:
+          {t('filters.quick')}
         </span>
         <Button
           size='sm'
           variant={
             fromDate === new Date().toISOString().split('T')[0] &&
             toDate === new Date().toISOString().split('T')[0]
-              ? 'primary'
+              ? 'default'
               : 'secondary'
           }
           onClick={() => handleQuickDateRange('today')}
         >
-          Hôm nay
+          {t('filters.today')}
         </Button>
         <Button
           size='sm'
           variant='secondary'
           onClick={() => handleQuickDateRange('week')}
         >
-          7 ngày qua
+          {t('filters.week')}
         </Button>
         <Button
           size='sm'
           variant='secondary'
           onClick={() => handleQuickDateRange('month')}
         >
-          Tháng này
+          {t('filters.month')}
         </Button>
       </div>
 
@@ -227,13 +233,13 @@ export const AdminTransactionFiltersComponent = ({
               className='gap-2'
             >
               <X className='h-4 w-4' />
-              Xóa bộ lọc
+              {t('filters.clearFilters')}
             </Button>
           )}
         </div>
         {onExport && (
           <Button size='sm' variant='secondary' onClick={onExport}>
-            Xuất CSV
+            {t('filters.export')}
           </Button>
         )}
       </div>
