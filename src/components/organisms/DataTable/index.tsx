@@ -4,6 +4,7 @@ import { TableFilters } from './TableFilters'
 import { TableDesktop } from './TableDesktop'
 import { TableMobile } from './TableMobile'
 import { TablePagination } from './TablePagination'
+import { TableSkeleton } from '@/components/molecules/tableSkeleton'
 import type { DataTableProps } from './types'
 
 // Internal component that uses the context
@@ -80,12 +81,12 @@ function DataTableContent<T = any>({
 
       {/* Loading state */}
       {loading ? (
-        <div className='table-surface flex h-[50vh] items-center justify-center px-4 py-12 text-center text-muted-foreground xl:h-[56vh] 2xl:h-[60vh]'>
-          <div className='flex flex-col items-center gap-3'>
-            <div className='h-8 w-8 animate-spin rounded-full border-4 border-input border-t-primary'></div>
-            <span>Loading...</span>
-          </div>
-        </div>
+        <TableSkeleton
+          columns={columns.length}
+          rows={Math.min(pagination.itemsPerPage || 8, 8)}
+          selectable={selectable}
+          actions={!!actions}
+        />
       ) : (
         <>
           {/* Desktop Table */}

@@ -20,7 +20,7 @@ export default function Custom404() {
           </Button>
           <div>
             <Button variant='outline' asChild>
-              <Link href='/insights/overview'>{t('viewAnalytics')}</Link>
+              <Link href='/insights/users'>{t('viewAnalytics')}</Link>
             </Button>
           </div>
         </div>

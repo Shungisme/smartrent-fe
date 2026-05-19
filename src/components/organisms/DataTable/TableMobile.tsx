@@ -1,4 +1,6 @@
 import React from 'react'
+import { SearchX } from 'lucide-react'
+import { EmptyState } from '@/components/molecules/emptyState'
 import type { TableMobileProps, Column } from './types'
 
 export function TableMobile<T = any>({
@@ -21,8 +23,12 @@ export function TableMobile<T = any>({
 
   if (data.length === 0) {
     return (
-      <div className='lg:hidden rounded-2xl border border-gray-200 bg-white px-4 py-12 text-center text-gray-500'>
-        {emptyMessage}
+      <div className='table-surface lg:hidden'>
+        <EmptyState
+          icon={SearchX}
+          title={emptyMessage}
+          description='Try adjusting your filters or search terms.'
+        />
       </div>
     )
   }

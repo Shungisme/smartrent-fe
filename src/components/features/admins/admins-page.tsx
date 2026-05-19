@@ -97,9 +97,9 @@ const AdminManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
-        <div className='flex items-center justify-stretch sm:justify-end'>
+        <div className='flex justify-stretch sm:justify-end'>
           <Button
-            className='w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white'
+            className='w-full sm:w-auto'
             onClick={() => setCreateDialogOpen(true)}
           >
             <Plus className='h-4 w-4' />

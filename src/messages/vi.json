@@ -1411,16 +1411,16 @@
       "placeholder": "Tìm theo tiêu đề, tên người đăng hoặc địa chỉ..."
     },
     "filters": {
-      "allStatus": "Tất Cả Trạng Thái",
+      "status": "Trạng Thái",
       "pending": "Chờ Duyệt",
       "approved": "Đã Duyệt",
       "rejected": "Từ Chối",
-      "allTypes": "Tất Cả Loại",
+      "type": "Loại",
       "house": "Nhà",
       "apartment": "Căn hộ",
       "office": "Văn phòng",
       "land": "Đất",
-      "allCategories": "Tất Cả Danh Mục",
+      "category": "Danh Mục",
       "forSale": "Bán",
       "forRent": "Cho Thuê",
       "pickDateRange": "Chọn khoảng thời gian"
@@ -1442,6 +1442,7 @@
     },
     "review": {
       "title": "Xem Xét Bài Đăng",
+      "noImages": "Không có hình ảnh",
       "postInfo": "Thông Tin Bài Đăng",
       "postCode": "Mã Bài Đăng",
       "listingType": "Loại Tin",
@@ -1592,11 +1593,11 @@
       "placeholder": "Tìm theo tiêu đề bài đăng, tên người báo cáo hoặc ID bài đăng..."
     },
     "filters": {
-      "allStatus": "Tất Cả Trạng Thái",
+      "status": "Trạng Thái",
       "pending": "Chờ Xử Lý",
       "resolved": "Đã Xử Lý",
       "dismissed": "Đã Bỏ Qua",
-      "allCategories": "Tất Cả Danh Mục",
+      "category": "Danh Mục",
       "fakeFraudulent": "Tin Giả/Lừa Đảo",
       "spamPromotional": "Spam/Quảng Cáo",
       "inappropriateContent": "Nội Dung Không Phù Hợp",
@@ -1716,8 +1717,8 @@
     "filters": {
       "search": "Tìm kiếm",
       "searchPlaceholder": "Tìm kiếm theo tiêu đề, nội dung...",
-      "allStatus": "Tất cả trạng thái",
-      "allCategory": "Tất cả danh mục"
+      "status": "Trạng Thái",
+      "category": "Danh Mục"
     },
     "messages": {
       "fetchError": "Không thể tải danh sách tin tức. Vui lòng thử lại.",
@@ -1875,8 +1876,6 @@
       "gateway": "Cổng Thanh Toán",
       "fromDate": "Từ Ngày",
       "toDate": "Đến Ngày",
-      "allStatus": "Tất Cả Trạng Thái",
-      "allGateways": "Tất Cả Cổng",
       "quick": "Nhanh:",
       "today": "Hôm Nay",
       "week": "7 Ngày Qua",
