@@ -3,7 +3,14 @@
     "allow": [
       "Bash(npx eslint *)",
       "Bash(echo \"ESLINT_EXIT=$?\")",
-      "Bash(node -e \"const m=require\\('./src/messages/en.json'\\);console.log\\('posts.search.placeholder =', m.posts && m.posts.search && m.posts.search.placeholder\\)\")"
+      "Bash(node -e \"const m=require\\('./src/messages/en.json'\\);console.log\\('posts.search.placeholder =', m.posts && m.posts.search && m.posts.search.placeholder\\)\")",
+      "Bash(npm run *)",
+      "Bash(node -e \"const en=require\\('./src/messages/en.json'\\); console.log\\('top-level keys:', Object.keys\\(en\\).join\\(', '\\)\\)\")",
+      "Bash(node -e \"const en=require\\('./src/messages/en.json'\\); console.log\\('transactions namespace keys:', JSON.stringify\\(en.transactions, null, 1\\).slice\\(0,1500\\)\\)\")",
+      "Bash(node -e \"const en=require\\('./src/messages/en.json'\\); console.log\\(JSON.stringify\\(en.transactions,null,1\\)\\)\")",
+      "Bash(node -e \"const vi=require\\('./src/messages/vi.json'\\); const t=vi.transactions; console.log\\('vi.transactions exists:', !!t\\); console.log\\('top keys:', t?Object.keys\\(t\\).join\\(', '\\):'MISSING'\\); console.log\\('vi.status:', JSON.stringify\\(t&&t.status\\)\\); console.log\\('vi.filters:', JSON.stringify\\(t&&t.filters\\)\\); console.log\\('vi.detail keys:', t&&t.detail?Object.keys\\(t.detail\\).join\\(','\\):'-'\\); console.log\\('vi.chart:', JSON.stringify\\(t&&t.chart\\)\\); console.log\\('has type?', !!\\(t&&t.type\\), ' has dashboard?', !!\\(t&&t.dashboard\\), ' has timeline?', !!\\(t&&t.timeline\\)\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(npx prettier *)"
     ]
   }
 }

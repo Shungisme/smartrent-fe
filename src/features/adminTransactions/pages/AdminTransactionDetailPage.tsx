@@ -2,7 +2,8 @@
 
 import { ArrowLeft } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
-import { Button } from '@/components/atoms/Button'
+import { useTranslations } from 'next-intl'
+import { Button } from '@/components/atoms/button'
 import { useAdminTransactionDetail } from '../hooks/useAdminTransactions'
 import { TransactionTimelineComponent } from '../components/TransactionTimeline'
 import {
@@ -10,15 +11,13 @@ import {
   formatPhoneNumber,
   formatVND,
   getPaymentGatewayLabel,
-  getPaymentStatusLabel,
-  getPaymentTypeLabel,
-  formatDate,
 } from '../utils/formatters'
 
 /**
  * Admin Transaction Detail Page
  */
 export const AdminTransactionDetailPage = () => {
+  const t = useTranslations('transactions')
   const router = useRouter()
   const params = useParams()
   const transactionId = params.transactionId as string
@@ -54,13 +53,11 @@ export const AdminTransactionDetailPage = () => {
       <div className='space-y-6'>
         <Button variant='ghost' onClick={() => router.back()} className='gap-2'>
           <ArrowLeft className='h-4 w-4' />
-          Quay lại
+          {t('detail.back')}
         </Button>
         <div className='rounded-lg border border-red-200 bg-red-50 p-6'>
           <p className='text-red-800'>
-            {error
-              ? 'Không thể tải chi tiết giao dịch'
-              : 'Giao dịch không tìm thấy'}
+            {error ? t('detail.loadError') : t('detail.notFound')}
           </p>
         </div>
       </div>
@@ -78,14 +75,14 @@ export const AdminTransactionDetailPage = () => {
             className='gap-2 mb-4'
           >
             <ArrowLeft className='h-4 w-4' />
-            Quay lại
+            {t('detail.back')}
           </Button>
           <h1 className='text-3xl font-bold text-gray-900'>
-            Chi tiết giao dịch
+            {t('detail.title')}
           </h1>
         </div>
         <div className={getStatusBadgeClass(transaction.status)}>
-          {getPaymentStatusLabel(transaction.status)}
+          {t(`status.${transaction.status}`)}
         </div>
       </div>
 
@@ -94,42 +91,48 @@ export const AdminTransactionDetailPage = () => {
         {/* Transaction Summary */}
         <div className='rounded-lg border border-gray-200 p-6 bg-white'>
           <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-            Thông tin giao dịch
+            {t('detail.transactionInfo')}
           </h2>
           <div className='space-y-4'>
             <div>
-              <p className='text-sm text-gray-600'>Mã giao dịch</p>
+              <p className='text-sm text-gray-600'>
+                {t('detail.transactionCode')}
+              </p>
               <p className='text-lg font-semibold text-gray-900'>
                 {transaction.transactionCode}
               </p>
             </div>
             <div>
-              <p className='text-sm text-gray-600'>Mã idempotency</p>
+              <p className='text-sm text-gray-600'>
+                {t('detail.idempotencyKey')}
+              </p>
               <p className='font-mono text-sm text-gray-700'>
                 {transaction.idempotencyKey}
               </p>
             </div>
             <div>
-              <p className='text-sm text-gray-600'>Số tiền</p>
+              <p className='text-sm text-gray-600'>{t('detail.amount')}</p>
               <p className='text-2xl font-bold text-gray-900'>
                 {formatVND(transaction.amount)}
               </p>
             </div>
             <div>
-              <p className='text-sm text-gray-600'>Loại thanh toán</p>
+              <p className='text-sm text-gray-600'>{t('detail.paymentType')}</p>
               <p className='text-gray-900'>
-                {getPaymentTypeLabel(transaction.paymentType)}
+                {t(`type.${transaction.paymentType}`)}
               </p>
             </div>
             <div>
-              <p className='text-sm text-gray-600'>Cổng thanh toán</p>
+              <p className='text-sm text-gray-600'>{t('detail.gateway')}</p>
               <p className='text-gray-900'>
                 {getPaymentGatewayLabel(transaction.paymentGateway)}
               </p>
             </div>
             {transaction.paymentMethod && (
               <div>
-                <p className='text-sm text-gray-600'>Phương thức thanh toán</p>
+                <p className='text-sm text-gray-600'>
+                  {t('detail.paymentMethod')}
+                </p>
                 <p className='text-gray-900'>{transaction.paymentMethod}</p>
               </div>
             )}
@@ -139,18 +142,18 @@ export const AdminTransactionDetailPage = () => {
         {/* Dates Info */}
         <div className='rounded-lg border border-gray-200 p-6 bg-white'>
           <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-            Thông tin thời gian
+            {t('detail.dates')}
           </h2>
           <div className='space-y-4'>
             <div>
-              <p className='text-sm text-gray-600'>Ngày tạo</p>
+              <p className='text-sm text-gray-600'>{t('detail.created')}</p>
               <p className='text-gray-900'>
                 {formatDateTime(transaction.createdAt)}
               </p>
             </div>
             {transaction.completedAt && (
               <div>
-                <p className='text-sm text-gray-600'>Ngày hoàn thành</p>
+                <p className='text-sm text-gray-600'>{t('detail.completed')}</p>
                 <p className='text-gray-900'>
                   {formatDateTime(transaction.completedAt)}
                 </p>
@@ -158,7 +161,7 @@ export const AdminTransactionDetailPage = () => {
             )}
             {transaction.expiredAt && (
               <div>
-                <p className='text-sm text-gray-600'>Ngày hết hạn</p>
+                <p className='text-sm text-gray-600'>{t('detail.expired')}</p>
                 <p className='text-gray-900'>
                   {formatDateTime(transaction.expiredAt)}
                 </p>
@@ -171,11 +174,11 @@ export const AdminTransactionDetailPage = () => {
       {/* Customer Info */}
       <div className='rounded-lg border border-gray-200 p-6 bg-white'>
         <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-          Thông tin khách hàng
+          {t('detail.customerInfo')}
         </h2>
         <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
           <div className='space-y-3'>
-            <p className='text-sm text-gray-600'>Tên khách hàng</p>
+            <p className='text-sm text-gray-600'>{t('detail.name')}</p>
             <p className='text-lg font-medium text-gray-900'>
               {transaction.customer.name}
             </p>
@@ -185,9 +188,9 @@ export const AdminTransactionDetailPage = () => {
             </p>
           </div>
           <div className='space-y-3'>
-            <p className='text-sm text-gray-600'>Email</p>
+            <p className='text-sm text-gray-600'>{t('detail.email')}</p>
             <p className='text-gray-900'>{transaction.customer.email || '-'}</p>
-            <p className='text-sm text-gray-600'>Số điện thoại</p>
+            <p className='text-sm text-gray-600'>{t('detail.phone')}</p>
             <p className='text-gray-900'>
               {formatPhoneNumber(transaction.customer.phone)}
             </p>
@@ -199,21 +202,21 @@ export const AdminTransactionDetailPage = () => {
       {transaction.landlord && (
         <div className='rounded-lg border border-gray-200 p-6 bg-white'>
           <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-            Thông tin chủ nhà
+            {t('detail.landlordInfo')}
           </h2>
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
             <div className='space-y-3'>
-              <p className='text-sm text-gray-600'>Tên chủ nhà</p>
+              <p className='text-sm text-gray-600'>{t('detail.name')}</p>
               <p className='text-lg font-medium text-gray-900'>
                 {transaction.landlord.name}
               </p>
-              <p className='text-sm text-gray-600'>ID</p>
+              <p className='text-sm text-gray-600'>{t('detail.id')}</p>
               <p className='font-mono text-sm text-gray-700'>
                 {transaction.landlord.landlordId}
               </p>
             </div>
             <div className='space-y-3'>
-              <p className='text-sm text-gray-600'>Số điện thoại</p>
+              <p className='text-sm text-gray-600'>{t('detail.phone')}</p>
               <p className='text-gray-900'>
                 {formatPhoneNumber(transaction.landlord.phone)}
               </p>
@@ -226,22 +229,24 @@ export const AdminTransactionDetailPage = () => {
       {(transaction.invoice || transaction.room) && (
         <div className='rounded-lg border border-gray-200 p-6 bg-white'>
           <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-            Thông tin hóa đơn & phòng
+            {t('detail.invoiceInfo')}
           </h2>
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
             {transaction.invoice && (
               <div className='space-y-3'>
-                <p className='text-sm text-gray-600'>Mã hóa đơn</p>
+                <p className='text-sm text-gray-600'>
+                  {t('detail.invoiceCode')}
+                </p>
                 <p className='text-lg font-medium text-gray-900'>
                   {transaction.invoice.invoiceCode}
                 </p>
-                <p className='text-sm text-gray-600'>ID</p>
+                <p className='text-sm text-gray-600'>{t('detail.id')}</p>
                 <p className='font-mono text-sm text-gray-700'>
                   {transaction.invoice.invoiceId}
                 </p>
                 {transaction.invoice.status && (
                   <>
-                    <p className='text-sm text-gray-600'>Trạng thái</p>
+                    <p className='text-sm text-gray-600'>{t('table.status')}</p>
                     <p className='text-gray-900'>
                       {transaction.invoice.status}
                     </p>
@@ -251,15 +256,17 @@ export const AdminTransactionDetailPage = () => {
             )}
             {transaction.room && (
               <div className='space-y-3'>
-                <p className='text-sm text-gray-600'>Mã phòng</p>
+                <p className='text-sm text-gray-600'>{t('detail.roomCode')}</p>
                 <p className='text-lg font-medium text-gray-900'>
                   {transaction.room.roomCode}
                 </p>
-                <p className='text-sm text-gray-600'>Tên phòng</p>
+                <p className='text-sm text-gray-600'>{t('detail.roomName')}</p>
                 <p className='text-gray-900'>{transaction.room.roomName}</p>
                 {transaction.room.address && (
                   <>
-                    <p className='text-sm text-gray-600'>Địa chỉ</p>
+                    <p className='text-sm text-gray-600'>
+                      {t('detail.address')}
+                    </p>
                     <p className='text-gray-900'>{transaction.room.address}</p>
                   </>
                 )}
@@ -274,12 +281,14 @@ export const AdminTransactionDetailPage = () => {
         transaction.gatewayResponseCode) && (
         <div className='rounded-lg border border-gray-200 p-6 bg-white'>
           <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-            Thông tin cổng thanh toán
+            {t('detail.gatewayInfo')}
           </h2>
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
             {transaction.gatewayTransactionCode && (
               <div>
-                <p className='text-sm text-gray-600'>Mã giao dịch cổng</p>
+                <p className='text-sm text-gray-600'>
+                  {t('detail.gatewayTransaction')}
+                </p>
                 <p className='font-mono text-gray-900'>
                   {transaction.gatewayTransactionCode}
                 </p>
@@ -287,7 +296,9 @@ export const AdminTransactionDetailPage = () => {
             )}
             {transaction.gatewayResponseCode && (
               <div>
-                <p className='text-sm text-gray-600'>Mã phản hồi</p>
+                <p className='text-sm text-gray-600'>
+                  {t('detail.responseCode')}
+                </p>
                 <p className='font-mono text-gray-900'>
                   {transaction.gatewayResponseCode}
                 </p>
@@ -297,7 +308,9 @@ export const AdminTransactionDetailPage = () => {
 
           {transaction.providerPayload && (
             <div className='mt-6 pt-6 border-t border-gray-200'>
-              <p className='text-sm text-gray-600 mb-2'>Payload từ cổng</p>
+              <p className='text-sm text-gray-600 mb-2'>
+                {t('detail.payload')}
+              </p>
               <pre className='bg-gray-50 p-4 rounded text-xs text-gray-700 overflow-x-auto'>
                 {JSON.stringify(transaction.providerPayload, null, 2)}
               </pre>
@@ -310,7 +323,7 @@ export const AdminTransactionDetailPage = () => {
       {transaction.failureReason && (
         <div className='rounded-lg border border-red-200 bg-red-50 p-6'>
           <h2 className='text-lg font-semibold text-red-900 mb-4'>
-            Lý do thất bại
+            {t('detail.failureReason')}
           </h2>
           <p className='text-red-700'>{transaction.failureReason}</p>
         </div>

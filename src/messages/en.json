@@ -1903,7 +1903,9 @@
       "status": "Status",
       "created": "Created",
       "actions": "Actions",
-      "noData": "No transactions found"
+      "noData": "No transactions found",
+      "viewDetails": "Details",
+      "gatewayPrefix": "Gateway"
     },
     "filters": {
       "search": "Search by transaction code, invoice code or gateway code...",
@@ -1916,7 +1918,10 @@
       "week": "Last 7 days",
       "month": "This Month",
       "clearFilters": "Clear Filters",
-      "export": "Export CSV"
+      "export": "Export CSV",
+      "allStatus": "All statuses",
+      "allGateways": "All gateways",
+      "keyword": "Keyword"
     },
     "status": {
       "PENDING": "Pending",
@@ -1955,7 +1960,10 @@
       "payload": "Payload from Gateway",
       "failureReason": "Failure Reason",
       "timeline": "Transaction Timeline",
-      "noTimeline": "No timeline available"
+      "noTimeline": "No timeline available",
+      "back": "Back",
+      "loadError": "Unable to load transaction details",
+      "notFound": "Transaction not found"
     },
     "stats": {
       "totalRevenue": "Total Revenue",
@@ -1973,7 +1981,33 @@
       "month": "By Month",
       "total": "Total Revenue",
       "count": "successful transactions",
-      "average": "Average/Period"
+      "average": "Average/Period",
+      "noData": "No data available"
+    },
+    "type": {
+      "MONTHLY_INVOICE": "Monthly Invoice",
+      "MEMBERSHIP_PURCHASE": "Membership Purchase",
+      "LISTING_BOOST": "Listing Boost",
+      "LISTING_POST": "Listing Post",
+      "DEPOSIT": "Deposit"
+    },
+    "dashboard": {
+      "title": "Transactions Overview",
+      "description": "Overview of revenue, success rate and payment trends",
+      "week": "7 days",
+      "month": "This month",
+      "quarter": "This quarter"
+    },
+    "timeline": {
+      "transaction": "Transaction",
+      "by": "By",
+      "at": "at",
+      "actor": {
+        "SYSTEM": "System",
+        "GATEWAY": "Payment Gateway",
+        "ADMIN": "Administrator",
+        "CUSTOMER": "Customer"
+      }
     }
   },
   "notifications": {

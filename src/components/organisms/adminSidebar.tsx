@@ -23,6 +23,7 @@ import {
   FileBarChart,
   Banknote,
   BarChart3,
+  Receipt,
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -226,6 +227,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     users: <Users width={20} />,
     admins: <UserCogIcon width={20} />,
     roles: <Shield width={20} />,
+    transactions: <Receipt width={20} />,
     premiumMembership: <Crown width={20} />,
     premiumPromotions: <BadgePercent width={20} />,
     premiumListingTypes: <Layers width={20} />,

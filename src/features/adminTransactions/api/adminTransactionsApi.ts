@@ -1,8 +1,7 @@
 'use client'
 
-import axiosInstance from '@/configs/axios'
+import { instanceClientAxios as axiosInstance } from '@/configs/axios/axiosClient'
 import {
-  AdminTransaction,
   AdminTransactionDetail,
   AdminTransactionFilters,
   AdminTransactionListResponse,

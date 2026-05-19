@@ -2,12 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { adminTransactionsApi } from '../api/adminTransactionsApi'
-import {
-  AdminTransactionDetail,
-  AdminTransactionFilters,
-  RevenueSeries,
-  TransactionStatistics,
-} from '../types/transaction.type'
+import { AdminTransactionFilters } from '../types/transaction.type'
 
 /**
  * Hook to fetch paginated transaction list

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import {
   useTransactionStatistics,
   useRevenueSeries,
@@ -14,6 +15,7 @@ import { getDateRange } from '../utils/formatters'
  * Shows high-level overview of transaction metrics and trends
  */
 export const AdminTransactionsDashboardPage = () => {
+  const t = useTranslations('transactions')
   const [dateRangeType, setDateRangeType] = useState<
     'month' | 'week' | 'quarter'
   >('month')
@@ -32,11 +34,9 @@ export const AdminTransactionsDashboardPage = () => {
       {/* Header */}
       <div className='mb-8'>
         <h1 className='text-3xl font-bold text-gray-900'>
-          Tổng quan giao dịch
+          {t('dashboard.title')}
         </h1>
-        <p className='mt-2 text-gray-600'>
-          Xem tổng quan về doanh thu, tỷ lệ thành công và xu hướng thanh toán
-        </p>
+        <p className='mt-2 text-gray-600'>{t('dashboard.description')}</p>
       </div>
 
       {/* Date Range Quick Select */}
@@ -49,7 +49,7 @@ export const AdminTransactionsDashboardPage = () => {
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
-          7 ngày
+          {t('dashboard.week')}
         </button>
         <button
           onClick={() => setDateRangeType('month')}
@@ -59,7 +59,7 @@ export const AdminTransactionsDashboardPage = () => {
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
-          Tháng này
+          {t('dashboard.month')}
         </button>
         <button
           onClick={() => setDateRangeType('quarter')}
@@ -69,7 +69,7 @@ export const AdminTransactionsDashboardPage = () => {
               : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
           }`}
         >
-          Quý này
+          {t('dashboard.quarter')}
         </button>
       </div>
 

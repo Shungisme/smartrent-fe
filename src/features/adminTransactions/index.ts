@@ -4,7 +4,6 @@ export { AdminTransactionDetailPage } from './pages/AdminTransactionDetailPage'
 
 // Components
 export { AdminTransactionTable } from './components/AdminTransactionTable'
-export { AdminTransactionFiltersComponent } from './components/AdminTransactionFilters'
 export { TransactionStatisticsCards } from './components/TransactionStatisticsCards'
 export { RevenueChart } from './components/RevenueChart'
 export { TransactionTimelineComponent } from './components/TransactionTimeline'
