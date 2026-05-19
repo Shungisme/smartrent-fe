@@ -25,6 +25,7 @@ import {
   VipType,
   ListingFilterRequest,
   ProductType,
+  ModerationStatus,
 } from '@/api/types/listing.type'
 import { PostStatus, UIPostData } from '@/types/posts.type'
 
@@ -118,14 +119,35 @@ export const mapUIFiltersToAPI = (
     sortBy: 'NEWEST',
   }
 
-  // Search keyword
-  if (uiFilters.search) {
-    apiFilters.keyword = String(uiFilters.search)
+  // Helpers to safely coerce FilterDialog values (always strings) to typed values
+  const str = (key: string): string | undefined => {
+    const value = uiFilters[key]
+    if (value === undefined || value === null || value === '') return undefined
+    return String(value)
+  }
+  const num = (key: string): number | undefined => {
+    const value = str(key)
+    if (value === undefined) return undefined
+    const parsed = Number(value)
+    return Number.isFinite(parsed) ? parsed : undefined
+  }
+  const bool = (key: string): boolean | undefined => {
+    const value = str(key)
+    if (value === 'true') return true
+    if (value === 'false') return false
+    return undefined
   }
 
-  // New: moderationStatus filter (primary)
-  if (uiFilters.moderationStatus) {
-    apiFilters.moderationStatus = String(uiFilters.moderationStatus) as any
+  // Search keyword (new `keyword` id, backward compatible with legacy `search`)
+  const keyword = str('keyword') ?? str('search')
+  if (keyword) {
+    apiFilters.keyword = keyword
+  }
+
+  // moderationStatus filter (primary moderation workflow field)
+  const moderationStatus = str('moderationStatus')
+  if (moderationStatus) {
+    apiFilters.moderationStatus = moderationStatus as ModerationStatus
   }
   // Legacy: Status mapping (backward compatible)
   else if (uiFilters.status) {
@@ -148,17 +170,75 @@ export const mapUIFiltersToAPI = (
     }
   }
 
-  // Property type (productType in API)
-  if (uiFilters['propertyInfo.type']) {
-    apiFilters.productType = String(
-      uiFilters['propertyInfo.type'],
-    ) as ProductType
+  // Property type (new `productType` id, backward compatible with `propertyInfo.type`)
+  const productType = str('productType') ?? str('propertyInfo.type')
+  if (productType) {
+    apiFilters.productType = productType as ProductType
   }
 
-  // Listing type mapping
-  if (uiFilters.listingType) {
+  // Listing type mapping (accepts UI `for_rent`/`for_sale` or API `FOR_RENT`/`FOR_SALE`)
+  const listingType = str('listingType')
+  if (listingType) {
     apiFilters.listingType =
-      String(uiFilters.listingType) === 'for_rent' ? 'FOR_RENT' : 'FOR_SALE'
+      listingType === 'for_rent' || listingType === 'FOR_RENT'
+        ? 'FOR_RENT'
+        : 'FOR_SALE'
+  }
+
+  // VIP tier
+  const vipType = str('vipType')
+  if (vipType) {
+    apiFilters.vipType = vipType as VipType
+  }
+
+  // Owner
+  const userId = str('userId')
+  if (userId) {
+    apiFilters.userId = userId
+  }
+
+  // Boolean flags
+  const verified = bool('verified')
+  if (verified !== undefined) {
+    apiFilters.verified = verified
+  }
+  const isVerify = bool('isVerify')
+  if (isVerify !== undefined) {
+    apiFilters.isVerify = isVerify
+  }
+  const expired = bool('expired')
+  if (expired !== undefined) {
+    apiFilters.expired = expired
+  }
+
+  // Numeric range filters
+  const minPrice = num('minPrice')
+  if (minPrice !== undefined) {
+    apiFilters.minPrice = minPrice
+  }
+  const maxPrice = num('maxPrice')
+  if (maxPrice !== undefined) {
+    apiFilters.maxPrice = maxPrice
+  }
+  const minArea = num('minArea')
+  if (minArea !== undefined) {
+    apiFilters.minArea = minArea
+  }
+  const maxArea = num('maxArea')
+  if (maxArea !== undefined) {
+    apiFilters.maxArea = maxArea
+  }
+  const minBedrooms = num('minBedrooms')
+  if (minBedrooms !== undefined) {
+    apiFilters.minBedrooms = minBedrooms
+  }
+  const maxBedrooms = num('maxBedrooms')
+  if (maxBedrooms !== undefined) {
+    apiFilters.maxBedrooms = maxBedrooms
+  }
+  const categoryId = num('categoryId')
+  if (categoryId !== undefined) {
+    apiFilters.categoryId = categoryId
   }
 
   return apiFilters

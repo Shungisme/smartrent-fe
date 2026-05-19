@@ -25,7 +25,16 @@
     "page": "Trang"
   },
   "dataTable": {
-    "clearFilters": "Xóa Bộ Lọc"
+    "clearFilters": "Xóa Bộ Lọc",
+    "filterButton": "Bộ lọc",
+    "filterKey": "Trường",
+    "selectField": "Chọn một trường",
+    "selectValue": "Chọn một giá trị",
+    "filterValue": "Giá trị",
+    "enterValue": "Nhập giá trị",
+    "addFilter": "Thêm Bộ lọc",
+    "cancel": "Hủy",
+    "apply": "Áp dụng"
   },
   "homePage": {
     "title": "Tìm Ngôi Nhà Mơ Ước",

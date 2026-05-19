@@ -21,6 +21,7 @@ export class RoleService {
   static async getRoles(params?: {
     page?: number
     size?: number
+    filter?: string[]
   }): Promise<ApiResponse<RoleListResponse>> {
     const response = await apiRequest<RoleListResponse>({
       method: 'GET',

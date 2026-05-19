@@ -36,6 +36,17 @@ function DataTableContent<T = any>({
     loading,
   } = useDataTable<T>()
 
+  // Handler for batch filter updates (from FilterDialog)
+  const handleChangeMultiple = React.useCallback(
+    (newFilters: Record<string, unknown>) => {
+      // Update all filters from FilterDialog
+      Object.entries(newFilters).forEach(([key, value]) => {
+        setFilter(key, value)
+      })
+    },
+    [setFilter],
+  )
+
   // Default row key extractor
   const defaultGetRowKey = (row: T, index: number) => {
     if (typeof row === 'object' && row !== null && 'id' in row) {
@@ -61,6 +72,7 @@ function DataTableContent<T = any>({
           filters={filters}
           values={filterValues}
           onChange={setFilter}
+          onChangeMultiple={handleChangeMultiple}
           onClear={clearFilters}
           mode={filterMode}
         />

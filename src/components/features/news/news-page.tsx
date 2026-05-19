@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import { useDebounce } from '@/hooks/useDebounce'
 import { Button } from '@/components/atoms/button'
 import { Plus, Loader2 } from 'lucide-react'
 import { NewsService } from '@/api/services/news.service'
@@ -49,17 +48,10 @@ const NewsManagement = () => {
     pageSize: 20,
   })
   const [totalCount, setTotalCount] = useState(0)
-  const debouncedSearchTerm = useDebounce(filterValues.search || '', 500)
 
   useEffect(() => {
     fetchNews()
-  }, [
-    debouncedSearchTerm,
-    filterValues.status,
-    filterValues.category,
-    filterValues.page,
-    filterValues.pageSize,
-  ])
+  }, [filterValues])
 
   const fetchNews = async () => {
     try {
@@ -69,21 +61,29 @@ const NewsManagement = () => {
         setTableLoading(true)
       }
 
+      // Build filter array from filterValues
+      const filterArray: string[] = []
+
+      if (filterValues.title) {
+        filterArray.push(`title:${filterValues.title}`)
+      }
+      if (filterValues.summary) {
+        filterArray.push(`summary:${filterValues.summary}`)
+      }
+      if (filterValues.status) {
+        filterArray.push(`status:${filterValues.status}`)
+      }
+      if (filterValues.category) {
+        filterArray.push(`category:${filterValues.category}`)
+      }
+      if (filterValues.tag) {
+        filterArray.push(`tag:${filterValues.tag}`)
+      }
+
       const apiFilters: NewsFilterRequest = {
         page: filterValues.page ? Number(filterValues.page) : 1,
         size: filterValues.pageSize ? Number(filterValues.pageSize) : 20,
-      }
-
-      if (debouncedSearchTerm) {
-        apiFilters.keyword = String(debouncedSearchTerm)
-      }
-
-      if (filterValues.status) {
-        apiFilters.status = String(filterValues.status) as NewsStatus
-      }
-
-      if (filterValues.category) {
-        apiFilters.category = String(filterValues.category) as NewsCategory
+        filter: filterArray.length > 0 ? filterArray : undefined,
       }
 
       const response = await NewsService.getNewsList(apiFilters)
@@ -93,19 +93,27 @@ const NewsManagement = () => {
         setTotalCount(response.data.totalItems)
 
         const totalItems = response.data.totalItems
-        const activeStatus = apiFilters.status
-        const activeCategory = apiFilters.category
+        const activeStatus = filterArray.find((f) => f.startsWith('status:'))
+        const activeCategory = filterArray.find((f) =>
+          f.startsWith('category:'),
+        )
 
         setStats((prev) => ({
           ...prev,
           totalNews:
             !activeStatus && !activeCategory ? totalItems : prev.totalNews,
-          totalPublished:
-            activeStatus === 'PUBLISHED' ? totalItems : prev.totalPublished,
-          totalDrafts: activeStatus === 'DRAFT' ? totalItems : prev.totalDrafts,
-          totalArchived:
-            activeStatus === 'ARCHIVED' ? totalItems : prev.totalArchived,
-          totalBlogs: activeCategory === 'BLOG' ? totalItems : prev.totalBlogs,
+          totalPublished: activeStatus?.includes('PUBLISHED')
+            ? totalItems
+            : prev.totalPublished,
+          totalDrafts: activeStatus?.includes('DRAFT')
+            ? totalItems
+            : prev.totalDrafts,
+          totalArchived: activeStatus?.includes('ARCHIVED')
+            ? totalItems
+            : prev.totalArchived,
+          totalBlogs: activeCategory?.includes('BLOG')
+            ? totalItems
+            : prev.totalBlogs,
         }))
       }
     } catch (error) {
@@ -118,7 +126,11 @@ const NewsManagement = () => {
   }
 
   const handleFilterChange = (newFilters: Record<string, unknown>) => {
-    setFilterValues(newFilters)
+    setFilterValues((prev) => ({
+      ...newFilters,
+      page: 1,
+      pageSize: prev.pageSize,
+    }))
   }
 
   const handlePreview = async (news: NewsSummaryResponse) => {
@@ -179,7 +191,7 @@ const NewsManagement = () => {
         </div>
       ) : (
         <div className='space-y-6'>
-          <div className='flex items-center justify-end'>
+          <div className='flex items-center justify-stretch sm:justify-end'>
             <Button
               onClick={handleCreate}
               className='w-full sm:w-auto flex items-center justify-center gap-2'

@@ -5,7 +5,6 @@ import { Button } from '@/components/atoms/button'
 import { useTranslations } from 'next-intl'
 import { Plus } from 'lucide-react'
 import { getAdminList } from '@/api/services/admin.service'
-import { useDebounce } from '@/hooks/useDebounce'
 import { AdminProfile } from '@/api/types/admin.type'
 import { AdminTable } from '@/components/organisms/admins/AdminTable'
 import { AdminCreateDialog } from '@/components/organisms/admins/AdminCreateDialog'
@@ -27,7 +26,6 @@ const AdminManagement = () => {
     page: 1,
     pageSize: 10,
   })
-  const debouncedSearchTerm = useDebounce(filterValues.search || '', 500)
   const [totalItems, setTotalItems] = useState(0)
 
   // Edit/Delete modal state
@@ -41,19 +39,35 @@ const AdminManagement = () => {
       setLoading(true)
       setError(null)
       try {
+        // Build filter array from filterValues
+        const filterArray: string[] = []
+
+        if (filterValues.firstName) {
+          filterArray.push(`firstName:${filterValues.firstName}`)
+        }
+        if (filterValues.lastName) {
+          filterArray.push(`lastName:${filterValues.lastName}`)
+        }
+        if (filterValues.email) {
+          filterArray.push(`email:${filterValues.email}`)
+        }
+        if (filterValues.phoneNumber) {
+          filterArray.push(`phoneNumber:${filterValues.phoneNumber}`)
+        }
+        if (filterValues.adminId) {
+          filterArray.push(`adminId:${filterValues.adminId}`)
+        }
+        if (filterValues.role) {
+          const roleValue = Array.isArray(filterValues.role)
+            ? filterValues.role.join(',')
+            : filterValues.role
+          filterArray.push(`role:${roleValue}`)
+        }
+
         const response = await getAdminList({
           page: filterValues.page ? Number(filterValues.page) : 1,
           size: filterValues.pageSize ? Number(filterValues.pageSize) : 10,
-          keyword: debouncedSearchTerm
-            ? String(debouncedSearchTerm)
-            : undefined,
-          role: Array.isArray(filterValues.role)
-            ? filterValues.role.length > 0
-              ? filterValues.role.join(',')
-              : undefined
-            : filterValues.role
-              ? String(filterValues.role)
-              : undefined,
+          filter: filterArray.length > 0 ? filterArray : undefined,
         })
         if (response.success && response.data) {
           setAdmins(response.data.data)
@@ -70,21 +84,19 @@ const AdminManagement = () => {
       }
     }
     fetchAdmins()
-  }, [
-    debouncedSearchTerm,
-    filterValues.page,
-    filterValues.pageSize,
-    filterValues.role,
-  ])
+  }, [filterValues])
 
   const handleFilterChange = (newFilters: Record<string, unknown>) => {
-    setFilterValues(newFilters)
+    setFilterValues({
+      ...newFilters,
+      page: 1,
+      pageSize: filterValues.pageSize,
+    })
   }
 
   return (
     <div>
       <div className='space-y-6'>
-        {/* Header with Create Button */}
         <div className='flex items-center justify-stretch sm:justify-end'>
           <Button
             className='w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white'

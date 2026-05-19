@@ -1,7 +1,11 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { DataTable, Column } from '@/components/organisms/DataTable'
+import React, { useState, useEffect, useCallback } from 'react'
+import {
+  DataTable,
+  Column,
+  FilterConfig,
+} from '@/components/organisms/DataTable'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import {
@@ -30,6 +34,11 @@ const RoleManagement = () => {
   const t = useTranslations('admin.roles')
   const [roles, setRoles] = useState<Role[]>([])
   const [loading, setLoading] = useState(true)
+  const [filterValues, setFilterValues] = useState<Record<string, unknown>>({
+    page: 1,
+    pageSize: 10,
+  })
+  const [totalItems, setTotalItems] = useState(0)
   const [showCreate, setShowCreate] = useState(false)
   const [showEdit, setShowEdit] = useState<Role | null>(null)
   const [showDelete, setShowDelete] = useState<Role | null>(null)
@@ -37,22 +46,50 @@ const RoleManagement = () => {
   const [formLoading, setFormLoading] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchRoles = async () => {
-      setLoading(true)
-      try {
-        const resp = await getRoles()
-        if (resp.success && resp.data) {
-          setRoles(resp.data.data || resp.data)
-        }
-      } catch (err: unknown) {
-        console.error('Error loading roles:', err)
-      } finally {
-        setLoading(false)
+  const fetchRoles = useCallback(async () => {
+    setLoading(true)
+    try {
+      // Build filter array from filterValues (filter=key:value format)
+      const filterArray: string[] = []
+
+      if (filterValues.roleId) {
+        filterArray.push(`roleId:${filterValues.roleId}`)
       }
+      if (filterValues.roleName) {
+        filterArray.push(`roleName:${filterValues.roleName}`)
+      }
+
+      const resp = await getRoles({
+        page: filterValues.page ? Number(filterValues.page) : 1,
+        size: filterValues.pageSize ? Number(filterValues.pageSize) : 10,
+        filter: filterArray.length > 0 ? filterArray : undefined,
+      })
+
+      if (resp.success && resp.data) {
+        const list = Array.isArray(resp.data)
+          ? (resp.data as Role[])
+          : resp.data.data || []
+        setRoles(list)
+        setTotalItems(
+          Array.isArray(resp.data)
+            ? list.length
+            : (resp.data.totalElements ?? list.length),
+        )
+      }
+    } catch (err: unknown) {
+      console.error('Error loading roles:', err)
+    } finally {
+      setLoading(false)
     }
+  }, [filterValues])
+
+  useEffect(() => {
     fetchRoles()
-  }, [])
+  }, [fetchRoles])
+
+  const handleFilterChange = (newFilters: Record<string, unknown>) => {
+    setFilterValues(newFilters)
+  }
 
   const columns: Column<RoleRow>[] = [
     {
@@ -107,6 +144,23 @@ const RoleManagement = () => {
     name: role.roleName,
   }))
 
+  const filterConfig: FilterConfig[] = [
+    {
+      id: 'roleId',
+      type: 'search',
+      label: t('table.headers.roleId') || 'Role ID',
+      placeholder: 'e.g. ADMIN',
+      isFilterField: true,
+    },
+    {
+      id: 'roleName',
+      type: 'search',
+      label: t('table.headers.roleName') || 'Role Name',
+      placeholder: 'e.g. Administrator',
+      isFilterField: true,
+    },
+  ]
+
   return (
     <div>
       <div className='space-y-6'>
@@ -126,13 +180,15 @@ const RoleManagement = () => {
         <DataTable
           data={transformedRoles}
           columns={columns}
-          filters={[]}
-          filterMode='frontend'
-          pagination
-          itemsPerPage={10}
+          filters={filterConfig}
+          filterMode='api'
+          filterValues={filterValues}
+          onFilterChange={handleFilterChange}
+          totalItems={totalItems}
           itemsPerPageOptions={[10, 20, 50]}
           sortable
           defaultSort={{ key: 'id', direction: 'asc' }}
+          loading={loading}
           emptyMessage={loading ? 'Loading roles...' : 'No roles found'}
           getRowKey={(row) => row.id}
         />
@@ -151,7 +207,7 @@ const RoleManagement = () => {
                   const resp = await createRole(form)
                   if (resp.success && resp.data) {
                     setShowCreate(false)
-                    setRoles((prev) => [resp.data!, ...prev])
+                    await fetchRoles()
                   } else {
                     setFormError(resp.message || 'Failed to create role')
                   }
@@ -232,11 +288,7 @@ const RoleManagement = () => {
                   })
                   if (resp.success && resp.data) {
                     setShowEdit(null)
-                    setRoles((prev) =>
-                      prev.map((r) =>
-                        r.roleId === resp.data!.roleId ? resp.data! : r,
-                      ),
-                    )
+                    await fetchRoles()
                   } else {
                     setFormError(resp.message || 'Failed to update role')
                   }
@@ -326,9 +378,7 @@ const RoleManagement = () => {
                       const resp = await deleteRole(showDelete!.roleId)
                       if (resp.success) {
                         setShowDelete(null)
-                        setRoles((prev) =>
-                          prev.filter((r) => r.roleId !== showDelete!.roleId),
-                        )
+                        await fetchRoles()
                       } else {
                         setFormError(resp.message || 'Failed to delete role')
                       }

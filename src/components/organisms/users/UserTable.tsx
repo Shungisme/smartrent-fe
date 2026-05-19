@@ -201,21 +201,51 @@ export const UserTable: React.FC<UserTableProps> = ({
     },
   ]
 
-  const filters: FilterConfig[] = [
+  const filterConfig: FilterConfig[] = [
     {
-      id: 'search',
+      id: 'firstName',
       type: 'search',
-      label: t('search.placeholder'),
-      placeholder: t('search.placeholder'),
+      label: 'First Name',
+      placeholder: 'e.g. John',
+      isFilterField: true,
     },
     {
-      id: 'type',
+      id: 'lastName',
+      type: 'search',
+      label: 'Last Name',
+      placeholder: 'e.g. Smith',
+      isFilterField: true,
+    },
+    {
+      id: 'email',
+      type: 'search',
+      label: 'Email',
+      placeholder: 'e.g. user@gmail.com',
+      isFilterField: true,
+    },
+    {
+      id: 'phoneNumber',
+      type: 'search',
+      label: 'Phone Number',
+      placeholder: 'e.g. 0912345678',
+      isFilterField: true,
+    },
+    {
+      id: 'userId',
+      type: 'search',
+      label: 'User ID',
+      placeholder: 'e.g. user-123',
+      isFilterField: true,
+    },
+    {
+      id: 'isBroker',
       type: 'select',
-      label: t('filters.allUsers'),
+      label: 'User Type',
       options: [
-        { value: 'broker', label: t('filters.broker') },
-        { value: 'normal_user', label: t('filters.normalUser') },
+        { value: 'true', label: 'Broker' },
+        { value: 'false', label: 'Normal User' },
       ],
+      isFilterField: true,
     },
   ]
 
@@ -223,7 +253,7 @@ export const UserTable: React.FC<UserTableProps> = ({
     <DataTable
       data={transformedUsers}
       columns={columns}
-      filters={filters}
+      filters={filterConfig}
       filterMode='api'
       filterValues={filterValues}
       onFilterChange={onFilterChange}
