@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { Download } from 'lucide-react'
+import { Button } from '@/components/atoms/button'
 import { adminTransactionsApi } from '../api/adminTransactionsApi'
 import {
   useAdminTransactions,
   useTransactionStatistics,
 } from '../hooks/useAdminTransactions'
 import { AdminTransactionFilters } from '../types/transaction.type'
-import { AdminTransactionFiltersComponent } from '../components/AdminTransactionFilters'
 import { AdminTransactionTable } from '../components/AdminTransactionTable'
 import { TransactionStatisticsCards } from '../components/TransactionStatisticsCards'
 
@@ -26,8 +27,10 @@ export const AdminTransactionsPage = () => {
 
   const { data: transactionsList, isLoading: isLoadingTransactions } =
     useAdminTransactions(filters)
-  const { data: statistics, isLoading: isLoadingStatistics } =
-    useTransactionStatistics(filters.fromDate, filters.toDate)
+  const { data: statistics } = useTransactionStatistics(
+    filters.fromDate,
+    filters.toDate,
+  )
 
   const handleFiltersChange = (newFilters: AdminTransactionFilters) => {
     setFilters(newFilters)
@@ -47,26 +50,18 @@ export const AdminTransactionsPage = () => {
 
   return (
     <div className='space-y-6'>
-      {/* Header */}
-      <div className='mb-8'>
-        <h1 className='text-3xl font-bold text-gray-900'>{t('title')}</h1>
-        <p className='mt-2 text-gray-600'>{t('description')}</p>
+      {/* Statistics Cards */}
+      <TransactionStatisticsCards statistics={statistics} />
+
+      {/* Export action */}
+      <div className='flex justify-end'>
+        <Button variant='outline' size='sm' onClick={handleExport}>
+          <Download className='h-4 w-4' />
+          {t('filters.export')}
+        </Button>
       </div>
 
-      {/* Statistics Cards */}
-      <TransactionStatisticsCards
-        statistics={statistics}
-        isLoading={isLoadingStatistics}
-      />
-
-      {/* Filters */}
-      <AdminTransactionFiltersComponent
-        filters={filters}
-        onFiltersChange={handleFiltersChange}
-        onExport={handleExport}
-      />
-
-      {/* Transaction Table */}
+      {/* Transaction Table (filter button + popup handled by DataTable) */}
       <AdminTransactionTable
         transactions={transactionsList?.data || []}
         totalItems={transactionsList?.totalElements || 0}

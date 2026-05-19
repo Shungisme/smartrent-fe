@@ -1884,7 +1884,8 @@
       "clearFilters": "Xóa Bộ Lọc",
       "export": "Xuất CSV",
       "allStatus": "Tất cả trạng thái",
-      "allGateways": "Tất cả cổng"
+      "allGateways": "Tất cả cổng",
+      "keyword": "Từ khóa"
     },
     "status": {
       "PENDING": "Chờ Xử Lý",

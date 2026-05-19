@@ -15,6 +15,7 @@ type PageKey =
   | 'users'
   | 'admins'
   | 'roles'
+  | 'transactions'
   | 'brokerPending'
   | 'premiumMembership'
   | 'premiumPromotions'
@@ -33,6 +34,7 @@ const ROUTE_META: Record<string, { category: CategoryKey; page: PageKey }> = {
   '/management/users': { category: 'management', page: 'users' },
   '/management/admins': { category: 'management', page: 'admins' },
   '/management/roles': { category: 'management', page: 'roles' },
+  '/management/transactions': { category: 'management', page: 'transactions' },
   '/moderation/broker-pending': {
     category: 'moderation',
     page: 'brokerPending',
@@ -76,7 +78,12 @@ const ROUTE_META: Record<string, { category: CategoryKey; page: PageKey }> = {
 }
 
 const CATEGORY_ROUTES: Record<CategoryKey, string[]> = {
-  management: ['/management/users', '/management/admins', '/management/roles'],
+  management: [
+    '/management/users',
+    '/management/admins',
+    '/management/roles',
+    '/management/transactions',
+  ],
   monetization: [
     '/monetization/membership',
     '/monetization/promotions',
@@ -115,6 +122,7 @@ const LABELS = {
       users: 'Users',
       admins: 'Admins',
       roles: 'Roles',
+      transactions: 'Transactions',
       brokerPending: 'Pending Broker Applications',
       premiumMembership: 'Membership',
       premiumPromotions: 'Promotions',
@@ -144,6 +152,7 @@ const LABELS = {
       users: 'Người dùng',
       admins: 'Quản trị viên',
       roles: 'Vai trò',
+      transactions: 'Giao dịch',
       brokerPending: 'Đơn đăng ký môi giới chờ duyệt',
       premiumMembership: 'Thành viên',
       premiumPromotions: 'Khuyến mãi',

@@ -7,6 +7,7 @@ const ACTIVE_MAP: Record<string, string> = {
   '/management/admins': 'admins',
   '/management/users': 'users',
   '/management/roles': 'roles',
+  '/management/transactions': 'transactions',
   '/content/news': 'news',
   '/content/news-editor': 'news',
   '/content/posts': 'posts',

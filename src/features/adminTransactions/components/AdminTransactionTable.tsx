@@ -2,10 +2,15 @@
 
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/atoms/button'
-import { DataTable, Column } from '@/components/organisms/DataTable'
+import {
+  DataTable,
+  Column,
+  FilterConfig,
+} from '@/components/organisms/DataTable'
 import {
   AdminTransaction,
   AdminTransactionFilters,
+  PaymentGateway,
   PaymentStatus,
 } from '../types/transaction.type'
 import {
@@ -161,15 +166,77 @@ export const AdminTransactionTable = ({
     },
   ]
 
+  const filterConfig: FilterConfig[] = [
+    {
+      id: 'q',
+      type: 'search',
+      label: t('filters.keyword'),
+      placeholder: t('filters.search'),
+      isFilterField: true,
+    },
+    {
+      id: 'status',
+      type: 'select',
+      label: t('filters.status'),
+      options: [
+        { value: 'PENDING', label: t('status.PENDING') },
+        { value: 'SUCCESS', label: t('status.SUCCESS') },
+        { value: 'FAILED', label: t('status.FAILED') },
+        { value: 'CANCELLED', label: t('status.CANCELLED') },
+        { value: 'REFUNDED', label: t('status.REFUNDED') },
+      ],
+      isFilterField: true,
+    },
+    {
+      id: 'gateway',
+      type: 'select',
+      label: t('filters.gateway'),
+      options: [
+        { value: 'VNPAY', label: 'VNPay' },
+        { value: 'ZALOPAY', label: 'ZaloPay' },
+        { value: 'MOMO', label: 'MoMo' },
+      ],
+      isFilterField: true,
+    },
+    {
+      id: 'fromDate',
+      type: 'search',
+      label: t('filters.fromDate'),
+      placeholder: 'YYYY-MM-DD',
+      isFilterField: true,
+    },
+    {
+      id: 'toDate',
+      type: 'search',
+      label: t('filters.toDate'),
+      placeholder: 'YYYY-MM-DD',
+      isFilterField: true,
+    },
+  ]
+
   return (
     <DataTable<AdminTransaction>
       data={transactions}
       columns={columns}
+      filters={filterConfig}
       filterMode='api'
-      filterValues={{ page: filters.page ?? 1, pageSize }}
+      filterValues={{
+        q: filters.q ?? '',
+        status: filters.status ?? '',
+        gateway: filters.gateway ?? '',
+        fromDate: filters.fromDate ?? '',
+        toDate: filters.toDate ?? '',
+        page: filters.page ?? 1,
+        pageSize,
+      }}
       onFilterChange={(next) =>
         onFiltersChange({
           ...filters,
+          q: (next.q as string) || undefined,
+          status: (next.status as PaymentStatus) || undefined,
+          gateway: (next.gateway as PaymentGateway) || undefined,
+          fromDate: (next.fromDate as string) || undefined,
+          toDate: (next.toDate as string) || undefined,
           page: Number(next.page) || 1,
           size: Number(next.pageSize) || pageSize,
         })
