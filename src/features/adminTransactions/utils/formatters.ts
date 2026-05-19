@@ -78,10 +78,16 @@ export const getPaymentGatewayLabel = (gateway: PaymentGateway): string => {
 export const getPaymentTypeLabel = (type: PaymentType): string => {
   const typeLabels: Record<PaymentType, string> = {
     MONTHLY_INVOICE: 'Hóa đơn hàng tháng',
-    MEMBERSHIP_PURCHASE: 'Mua gói membership',
-    LISTING_BOOST: 'Nâng cấp tin đăng',
+    MEMBERSHIP_PURCHASE: 'Mua gói thành viên',
+    MEMBERSHIP_UPGRADE: 'Nâng cấp gói thành viên',
+    LISTING_BOOST: 'Đẩy tin đăng',
     LISTING_POST: 'Đăng tin',
+    POST_FEE: 'Phí đăng tin',
+    REPOST_FEE: 'Phí đăng lại tin',
+    PUSH_FEE: 'Phí đẩy tin',
+    WALLET_TOPUP: 'Nạp ví',
     DEPOSIT: 'Ký quỹ',
+    REFUND: 'Hoàn tiền',
   }
   return typeLabels[type] || type
 }

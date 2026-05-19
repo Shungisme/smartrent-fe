@@ -7,6 +7,8 @@ import {
 } from '@/components/organisms/DataTable'
 import { Avatar } from '@/components/atoms/avatar'
 import { Badge } from '@/components/atoms/badge'
+import { Button } from '@/components/atoms/button'
+import { Pencil, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 import { AdminProfile } from '@/api/types/admin.type'
@@ -202,25 +204,31 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       header: t('table.headers.actions') || 'Actions',
       accessor: () => '',
       render: (_, row) => (
-        <div className='flex gap-2'>
-          <button
-            className='px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200'
+        <div className='flex items-center gap-2'>
+          <Button
+            variant='ghost'
+            size='sm'
+            className='h-8 w-8 p-0'
+            title={t('table.actions.edit') || 'Edit'}
             onClick={() => {
               const admin = admins.find((a) => a.adminId === row.id)
               if (admin) onEdit(admin)
             }}
           >
-            {t('table.actions.edit') || 'Edit'}
-          </button>
-          <button
-            className='px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200'
+            <Pencil className='h-4 w-4' />
+          </Button>
+          <Button
+            variant='ghost'
+            size='sm'
+            className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
+            title={t('table.actions.delete') || 'Delete'}
             onClick={() => {
               const admin = admins.find((a) => a.adminId === row.id)
               if (admin) onDelete(admin)
             }}
           >
-            {t('table.actions.delete') || 'Delete'}
-          </button>
+            <Trash2 className='h-4 w-4' />
+          </Button>
         </div>
       ),
     },

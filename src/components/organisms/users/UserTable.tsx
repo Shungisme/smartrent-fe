@@ -7,6 +7,8 @@ import {
 } from '@/components/organisms/DataTable'
 import { Avatar } from '@/components/atoms/avatar'
 import { Badge } from '@/components/atoms/badge'
+import { Button } from '@/components/atoms/button'
+import { Pencil, UserX, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 import { UserProfile } from '@/api/types/user.type'
@@ -168,33 +170,42 @@ export const UserTable: React.FC<UserTableProps> = ({
         const user = users.find((u) => u.userId === row.id)
 
         return (
-          <div className='flex gap-2'>
-            <button
-              className='px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200'
+          <div className='flex items-center gap-2'>
+            <Button
+              variant='ghost'
+              size='sm'
+              className='h-8 w-8 p-0'
+              title={t('table.actions.edit') || 'Edit'}
               onClick={() => {
                 if (user) onEdit(user)
               }}
             >
-              {t('table.actions.edit') || 'Edit'}
-            </button>
+              <Pencil className='h-4 w-4' />
+            </Button>
             {user?.isBroker && (
-              <button
-                className='px-2 py-1 text-xs bg-orange-100 text-orange-700 rounded hover:bg-orange-200'
+              <Button
+                variant='ghost'
+                size='sm'
+                className='h-8 w-8 p-0 text-orange-600 hover:text-orange-700'
+                title={t('table.actions.removeBroker') || 'Remove Broker'}
                 onClick={() => {
                   if (user) onRemoveBroker(user)
                 }}
               >
-                {t('table.actions.removeBroker') || 'Remove Broker'}
-              </button>
+                <UserX className='h-4 w-4' />
+              </Button>
             )}
-            <button
-              className='px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200'
+            <Button
+              variant='ghost'
+              size='sm'
+              className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
+              title={t('table.actions.delete') || 'Delete'}
               onClick={() => {
                 if (user) onDelete(user)
               }}
             >
-              {t('table.actions.delete') || 'Delete'}
-            </button>
+              <Trash2 className='h-4 w-4' />
+            </Button>
           </div>
         )
       },

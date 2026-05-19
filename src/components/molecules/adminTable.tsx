@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Avatar } from '@/components/atoms/avatar'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
+import { MoreVertical } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -97,8 +98,13 @@ const AdminRow: React.FC<AdminRowProps> = ({ admin }) => {
       <td className='px-6 py-4'>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
-              <span className='text-gray-500'>⋮</span>
+            <Button
+              variant='ghost'
+              size='sm'
+              className='h-8 w-8 p-0'
+              title={t('actions.viewDetails')}
+            >
+              <MoreVertical className='h-4 w-4 text-muted-foreground' />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>

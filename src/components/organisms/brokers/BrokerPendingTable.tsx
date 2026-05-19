@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useTranslations } from 'next-intl'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Check, X, UserX } from 'lucide-react'
 import { DataTable, Column } from '@/components/organisms/DataTable'
 import { Button } from '@/components/atoms/button'
 import { AdminBrokerUserResponse } from '@/api/types/broker.type'
@@ -104,47 +104,55 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
 
         return (
           <div className='flex flex-col gap-2'>
-            <div className='flex flex-wrap gap-2'>
+            <div className='flex flex-wrap items-center gap-2'>
               {isPending && (
                 <Button
                   size='sm'
+                  variant='ghost'
                   onClick={() => onApprove(row)}
                   disabled={isBusy}
-                  className='bg-blue-600 text-white hover:bg-blue-700'
+                  className='h-8 w-8 p-0 text-green-600 hover:text-green-700'
+                  title={t('actions.approve')}
                 >
-                  {action === 'approve' && (
+                  {action === 'approve' ? (
                     <Loader2 className='h-4 w-4 animate-spin' />
+                  ) : (
+                    <Check className='h-4 w-4' />
                   )}
-                  {t('actions.approve')}
                 </Button>
               )}
 
               {isPending && (
                 <Button
                   size='sm'
-                  variant='outline'
+                  variant='ghost'
                   onClick={() => onReject(row)}
                   disabled={isBusy}
-                  className='border-red-200 text-red-700 hover:bg-red-50'
+                  className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
+                  title={t('actions.reject')}
                 >
-                  {action === 'reject' && (
+                  {action === 'reject' ? (
                     <Loader2 className='h-4 w-4 animate-spin' />
+                  ) : (
+                    <X className='h-4 w-4' />
                   )}
-                  {t('actions.reject')}
                 </Button>
               )}
 
               {isApproved && (
                 <Button
                   size='sm'
-                  variant='destructive'
+                  variant='ghost'
                   onClick={() => onRemove(row)}
                   disabled={isBusy}
+                  className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
+                  title={t('actions.removeBroker')}
                 >
-                  {action === 'remove' && (
+                  {action === 'remove' ? (
                     <Loader2 className='h-4 w-4 animate-spin' />
+                  ) : (
+                    <UserX className='h-4 w-4' />
                   )}
-                  {t('actions.removeBroker')}
                 </Button>
               )}
             </div>

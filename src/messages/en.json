@@ -1337,6 +1337,10 @@
       "recentPromoActivity": "Recent Promotional Activity",
       "usage": "Usage"
     },
+    "actions": {
+      "edit": "Edit",
+      "delete": "Delete"
+    },
     "membership": {
       "description": "Manage membership packages and pricing tiers",
       "addPackage": "Create Membership Package",
@@ -1988,9 +1992,15 @@
     "type": {
       "MONTHLY_INVOICE": "Monthly Invoice",
       "MEMBERSHIP_PURCHASE": "Membership Purchase",
+      "MEMBERSHIP_UPGRADE": "Membership Upgrade",
       "LISTING_BOOST": "Listing Boost",
       "LISTING_POST": "Listing Post",
-      "DEPOSIT": "Deposit"
+      "POST_FEE": "Post Fee",
+      "REPOST_FEE": "Repost Fee",
+      "PUSH_FEE": "Push Fee",
+      "WALLET_TOPUP": "Wallet Top-up",
+      "DEPOSIT": "Deposit",
+      "REFUND": "Refund"
     },
     "dashboard": {
       "title": "Transactions Overview",
