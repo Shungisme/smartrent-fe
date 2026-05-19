@@ -834,6 +834,7 @@
         "reports": "Quản Lý Báo Cáo Vi Phạm",
         "analytics": "Phân Tích Ứng Dụng",
         "properties": "Danh Sách Bất Động Sản",
+        "transactions": "Quản Lý Giao Dịch",
         "settings": "Cài Đặt",
         "search": "Tìm Kiếm Nâng Cao",
         "roles": "Quản Lý Vai Trò",
@@ -1779,6 +1780,98 @@
         "accessDenied": "Từ chối truy cập",
         "genericError": "Có lỗi xảy ra. Vui lòng thử lại."
       }
+    }
+  },
+  "transactions": {
+    "title": "Quản Lý Giao Dịch",
+    "description": "Xem và quản lý tất cả các thanh toán của khách hàng trên nền tảng",
+    "breadcrumb": {
+      "title": "Quản Lý Giao Dịch"
+    },
+    "table": {
+      "transaction": "Giao Dịch",
+      "invoice": "Hóa Đơn",
+      "customer": "Khách Hàng",
+      "landlord": "Chủ Nhà",
+      "type": "Loại",
+      "gateway": "Cổng Thanh Toán",
+      "amount": "Số Tiền",
+      "status": "Trạng Thái",
+      "created": "Ngày Tạo",
+      "actions": "Hành Động",
+      "noData": "Không có giao dịch nào"
+    },
+    "filters": {
+      "search": "Tìm kiếm theo mã giao dịch, mã hóa đơn hoặc mã cổng...",
+      "status": "Trạng Thái",
+      "gateway": "Cổng Thanh Toán",
+      "fromDate": "Từ Ngày",
+      "toDate": "Đến Ngày",
+      "allStatus": "Tất Cả Trạng Thái",
+      "allGateways": "Tất Cả Cổng",
+      "quick": "Nhanh:",
+      "today": "Hôm Nay",
+      "week": "7 Ngày Qua",
+      "month": "Tháng Này",
+      "clearFilters": "Xóa Bộ Lọc",
+      "export": "Xuất CSV"
+    },
+    "status": {
+      "PENDING": "Chờ Xử Lý",
+      "SUCCESS": "Thành Công",
+      "FAILED": "Thất Bại",
+      "CANCELLED": "Đã Huỷ",
+      "REFUNDED": "Hoàn Tiền"
+    },
+    "detail": {
+      "title": "Chi Tiết Giao Dịch",
+      "transactionInfo": "Thông Tin Giao Dịch",
+      "transactionCode": "Mã Giao Dịch",
+      "idempotencyKey": "Khóa Tính Khác Nhau",
+      "amount": "Số Tiền",
+      "paymentType": "Loại Thanh Toán",
+      "gateway": "Cổng Thanh Toán",
+      "paymentMethod": "Phương Thức Thanh Toán",
+      "dates": "Thông Tin Thời Gian",
+      "created": "Ngày Tạo",
+      "completed": "Hoàn Thành",
+      "expired": "Hết Hạn",
+      "customerInfo": "Thông Tin Khách Hàng",
+      "landlordInfo": "Thông Tin Chủ Nhà",
+      "name": "Tên",
+      "email": "Email",
+      "phone": "Số Điện Thoại",
+      "id": "ID",
+      "invoiceInfo": "Thông Tin Hóa Đơn & Phòng",
+      "invoiceCode": "Mã Hóa Đơn",
+      "roomCode": "Mã Phòng",
+      "roomName": "Tên Phòng",
+      "address": "Địa Chỉ",
+      "gatewayInfo": "Thông Tin Cổng Thanh Toán",
+      "gatewayTransaction": "Mã Giao Dịch Cổng",
+      "responseCode": "Mã Phản Hồi",
+      "payload": "Tải Từ Cổng",
+      "failureReason": "Lý Do Thất Bại",
+      "timeline": "Lịch Sử Giao Dịch",
+      "noTimeline": "Không có lịch sử"
+    },
+    "stats": {
+      "totalRevenue": "Tổng Doanh Thu",
+      "totalTransactions": "Tổng Giao Dịch",
+      "successful": "Thanh Toán Thành Công",
+      "failed": "Thanh Toán Thất Bại",
+      "pending": "Chờ Xử Lý",
+      "refunded": "Hoàn Tiền",
+      "successRate": "Tỷ Lệ Thành Công",
+      "average": "Trung Bình/Giao Dịch"
+    },
+    "chart": {
+      "title": "Xu Hướng Doanh Thu",
+      "day": "Theo Ngày",
+      "month": "Theo Tháng",
+      "total": "Tổng Doanh Thu",
+      "count": "giao dịch thành công",
+      "average": "Trung Bình/Kỳ"
     }
   },
   "notifications": {
