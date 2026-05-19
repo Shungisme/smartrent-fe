@@ -20,6 +20,7 @@ import {
 import { cn } from '@/lib/utils'
 import { UIPostData } from '@/types/posts.type'
 import { getAmenityIcon, getStatusColor } from '@/utils/post.utils' // Need to ensure these helpers are exported correctly or pass translations
+import { PostAiAnalysis } from '@/components/organisms/posts/PostAiAnalysis'
 
 // Note: Helper functions like getPropertyTypeLabel depend on translation 't', so we should probably handle that.
 // I'll accept 't' as a prop or useTranslations hook inside the component.
@@ -348,6 +349,11 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                   {_getStatusLabel(selectedPost.status)}
                 </Badge>
               </div>
+
+              {/* AI-assisted analysis (advisory only) */}
+              {selectedPost.status === 'pending' && (
+                <PostAiAnalysis post={selectedPost} open={open} />
+              )}
 
               {/* Rejection Reason / Verification Notes */}
               {selectedPost.status === 'pending' && (

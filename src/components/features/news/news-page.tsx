@@ -8,8 +8,6 @@ import { Button } from '@/components/atoms/button'
 import { Plus, Loader2 } from 'lucide-react'
 import { NewsService } from '@/api/services/news.service'
 import {
-  NewsStatus,
-  NewsCategory,
   NewsFilterRequest,
   NewsStatistics,
   NewsSummaryResponse,

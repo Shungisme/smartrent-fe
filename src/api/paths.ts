@@ -92,6 +92,12 @@ export const PATHS = {
     ADMIN_VERIFY: '/v1/admin/listings/:listingId/status', // PUT verify/reject listing
   },
 
+  // AI listing verification endpoints (Spring Boot -> Python AI service)
+  AI_VERIFICATION: {
+    VERIFY: '/v1/ai/listings/verify', // POST run AI moderation on a listing payload
+    SERVICE_STATUS: '/v1/ai/listings/service-status', // GET Python AI service reachability
+  },
+
   // News endpoints
   NEWS: {
     PUBLIC_LIST: '/v1/news', // GET published news list
