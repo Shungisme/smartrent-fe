@@ -91,13 +91,6 @@ const UserManagement = () => {
     }))
   }
 
-  const handleClearFilters = () => {
-    setFilterValues({
-      page: 1,
-      pageSize: 10,
-    })
-  }
-
   const handleRemoveBroker = async (user: UserProfile) => {
     const displayName =
       `${user.firstName} ${user.lastName}`.trim() || user.userId

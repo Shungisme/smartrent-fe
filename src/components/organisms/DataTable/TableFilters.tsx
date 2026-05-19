@@ -46,7 +46,7 @@ export function TableFilters({
               })
             }
           }}
-          onClear={onClear}
+          onClear={() => onClear?.()}
         />
       </div>
     )

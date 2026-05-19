@@ -7,18 +7,10 @@ import {
 } from '@/components/organisms/DataTable'
 import { Avatar } from '@/components/atoms/avatar'
 import { Badge } from '@/components/atoms/badge'
-import { Button } from '@/components/atoms/button'
-import { Checkbox } from '@/components/atoms/checkbox'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/components/atoms/dropdown-menu'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 import { AdminProfile } from '@/api/types/admin.type'
 import { AdminRow } from '@/types/admins.type'
-import { ChevronDown } from 'lucide-react'
 
 type AdminRole = 'SA' | 'UA' | 'CM' | 'SPA' | 'FA' | 'MA'
 
