@@ -18,6 +18,17 @@ import {
   ChevronRight,
   ZoomIn,
   ImageOff,
+  MapPin,
+  Home,
+  Ruler,
+  BedDouble,
+  Bath,
+  Compass,
+  Sofa,
+  FileText,
+  Sparkles,
+  RotateCcw,
+  type LucideIcon,
 } from 'lucide-react'
 
 const MAX_VISIBLE_THUMBS = 8
@@ -38,6 +49,36 @@ interface PostReviewModalProps {
   onRequestRevision: (reason: string) => void
   actionLoading: boolean
 }
+
+/** Consistent section heading with a leading accent icon. */
+const SectionLabel: React.FC<{
+  icon: LucideIcon
+  children: React.ReactNode
+}> = ({ icon: Icon, children }) => (
+  <div className='mb-2 flex items-center gap-2 text-sm font-semibold text-foreground'>
+    <Icon className='h-4 w-4 text-primary' />
+    {children}
+  </div>
+)
+
+/** A single property stat tile (icon + label + value). */
+const Fact: React.FC<{
+  icon: LucideIcon
+  label: string
+  value: React.ReactNode
+}> = ({ icon: Icon, label, value }) => (
+  <div className='flex items-center gap-3 rounded-lg border border-border/70 bg-muted/30 p-3'>
+    <div className='flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary'>
+      <Icon className='h-4 w-4' />
+    </div>
+    <div className='min-w-0'>
+      <div className='text-xs text-muted-foreground'>{label}</div>
+      <div className='truncate text-sm font-medium text-foreground'>
+        {value}
+      </div>
+    </div>
+  </div>
+)
 
 export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   open,
@@ -156,312 +197,303 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   const images = selectedPost.images ?? []
   const visibleImages = images.slice(0, MAX_VISIBLE_THUMBS)
   const hiddenCount = images.length - visibleImages.length
+  const isPending = selectedPost.status === 'pending'
 
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='max-w-3xl max-h-[90vh] overflow-x-hidden overflow-y-auto w-[calc(100%-2rem)] mx-auto'>
-          <DialogHeader>
-            <DialogTitle className='text-xl md:text-2xl font-semibold'>
-              {t('review.title')}
-            </DialogTitle>
-          </DialogHeader>
+        <DialogContent className='max-w-3xl w-[calc(100%-2rem)] mx-auto max-h-[90vh] overflow-hidden p-0 gap-0'>
+          <div className='flex max-h-[90vh] flex-col'>
+            <DialogHeader className='shrink-0 border-b border-border/60 px-6 py-4'>
+              <DialogTitle className='text-xl md:text-2xl font-semibold'>
+                {t('review.title')}
+              </DialogTitle>
+            </DialogHeader>
 
-          <div className='space-y-4 md:space-y-6'>
-            {/* Images Gallery */}
-            {images.length === 0 ? (
-              <div className='flex h-32 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-muted/40 text-muted-foreground'>
-                <ImageOff className='h-6 w-6' />
-                <span className='text-sm'>{t('review.noImages')}</span>
-              </div>
-            ) : (
-              <div className='grid grid-cols-3 gap-2 sm:grid-cols-4'>
-                {visibleImages.map((img, idx) => {
-                  const isLastVisible = idx === visibleImages.length - 1
-                  const showMoreOverlay = isLastVisible && hiddenCount > 0
-                  return (
-                    <button
-                      type='button'
-                      key={idx}
-                      onClick={() => openLightbox(idx)}
-                      className='group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border border-border bg-muted outline-none transition-shadow focus-visible:ring-4 focus-visible:ring-ring'
-                    >
-                      <Image
-                        src={img}
-                        alt={`${selectedPost.title} ${idx + 1}`}
-                        width={320}
-                        height={240}
-                        className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-105'
-                      />
-                      {showMoreOverlay ? (
-                        <div className='absolute inset-0 flex items-center justify-center bg-black/60 text-lg font-semibold text-white'>
-                          +{hiddenCount}
-                        </div>
-                      ) : (
-                        <div className='absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/35'>
-                          <ZoomIn className='h-5 w-5 text-white opacity-0 transition-opacity group-hover:opacity-100' />
-                        </div>
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
-            )}
-
-            {/* Post Info */}
-            <div className='space-y-3 md:space-y-4'>
-              <div>
-                <h3 className='text-lg md:text-xl font-semibold text-foreground'>
-                  {selectedPost.title}
-                </h3>
-                <p className='text-xs md:text-sm text-muted-foreground'>
-                  {selectedPost.postCode}
-                </p>
-              </div>
-
-              {/* Description */}
-              {selectedPost.description && (
-                <div>
-                  <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                    {t('review.description')}
-                  </div>
-                  <div className='mt-1 text-sm text-muted-foreground whitespace-pre-wrap'>
-                    {selectedPost.description}
-                  </div>
-                </div>
-              )}
-
-              <div className='grid grid-cols-2 gap-3 md:gap-4'>
-                <div>
-                  <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                    {t('review.propertyType')}
-                  </div>
-                  <div className='text-sm md:text-base text-foreground'>
-                    {_getPropertyTypeLabel(selectedPost.propertyInfo.type)}
-                  </div>
-                </div>
-                <div>
-                  <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                    {t('review.area')}
-                  </div>
-                  <div className='text-sm md:text-base text-foreground'>
-                    {selectedPost.propertyInfo.area}m²
-                  </div>
-                </div>
-                {selectedPost.bedrooms !== null &&
-                  selectedPost.bedrooms !== undefined && (
-                    <div>
-                      <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                        {t('review.bedrooms')}
-                      </div>
-                      <div className='text-sm md:text-base text-foreground'>
-                        {selectedPost.bedrooms}
-                      </div>
-                    </div>
-                  )}
-                {selectedPost.bathrooms !== null &&
-                  selectedPost.bathrooms !== undefined && (
-                    <div>
-                      <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                        {t('review.bathrooms')}
-                      </div>
-                      <div className='text-sm md:text-base text-foreground'>
-                        {selectedPost.bathrooms}
-                      </div>
-                    </div>
-                  )}
-                {selectedPost.direction && (
-                  <div>
-                    <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                      {t('review.direction')}
-                    </div>
-                    <div className='text-sm md:text-base text-foreground'>
-                      {_getDirectionLabel(selectedPost.direction)}
-                    </div>
-                  </div>
-                )}
-                {selectedPost.furnishing && (
-                  <div>
-                    <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                      {t('review.furnishing')}
-                    </div>
-                    <div className='text-sm md:text-base text-foreground'>
-                      {_getFurnishingLabel(selectedPost.furnishing)}
-                    </div>
-                  </div>
-                )}
-                <div>
-                  <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                    {t('review.location')}
-                  </div>
-                  <div className='text-sm md:text-base text-foreground'>
-                    {selectedPost.propertyInfo.district}
-                  </div>
-                </div>
-                <div>
-                  <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                    {t('review.price')}
-                  </div>
-                  <div className='text-sm md:text-base text-foreground'>
-                    {selectedPost.price}
-                  </div>
-                </div>
-              </div>
-
-              {/* Full Address */}
-              <div>
-                <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                  {t('review.fullAddress')}
-                </div>
-                <div className='mt-1 text-sm text-muted-foreground'>
-                  {selectedPost.propertyInfo.fullAddress}
-                </div>
-              </div>
-
-              {/* Amenities */}
-              {selectedPost.amenities && selectedPost.amenities.length > 0 && (
-                <div>
-                  <div className='text-xs md:text-sm font-medium text-muted-foreground mb-2'>
-                    {t('review.amenities')}
-                  </div>
-                  <div className='flex flex-wrap gap-2'>
-                    {selectedPost.amenities.map((amenity) => (
-                      <Badge
-                        key={amenity.amenityId}
-                        variant='secondary'
-                        className='font-normal'
-                      >
-                        {amenity.icon && (
-                          <span className='mr-1'>
-                            {getAmenityIcon(amenity.icon)}
-                          </span>
-                        )}
-                        {amenity.name}
+            <div className='flex-1 overflow-y-auto px-6 py-5'>
+              <div className='space-y-5'>
+                {/* Hero: title, code, listing type, status & price */}
+                <div className='rounded-xl border border-border/70 bg-card p-4 shadow-sm md:p-5'>
+                  <div className='flex items-start justify-between gap-4'>
+                    <div className='min-w-0 space-y-1.5'>
+                      <Badge variant='secondary' className='font-normal'>
+                        {t(`listingTypes.${selectedPost.listingType}`)}
                       </Badge>
-                    ))}
+                      <h3 className='text-lg font-semibold leading-snug text-foreground md:text-xl'>
+                        {selectedPost.title}
+                      </h3>
+                      <p className='font-mono text-xs text-muted-foreground'>
+                        {selectedPost.postCode}
+                      </p>
+                    </div>
+                    <Badge
+                      variant='outline'
+                      className={cn(
+                        'shrink-0',
+                        getStatusColor(selectedPost.status),
+                      )}
+                    >
+                      {_getStatusLabel(selectedPost.status)}
+                    </Badge>
+                  </div>
+                  <div className='mt-4 border-t border-border/60 pt-4'>
+                    <span className='text-2xl font-bold text-primary md:text-3xl'>
+                      {selectedPost.price}
+                    </span>
                   </div>
                 </div>
-              )}
 
-              <div>
-                <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                  {t('review.postedBy')}
+                {/* Images Gallery */}
+                {images.length === 0 ? (
+                  <div className='flex h-32 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-muted/40 text-muted-foreground'>
+                    <ImageOff className='h-6 w-6' />
+                    <span className='text-sm'>{t('review.noImages')}</span>
+                  </div>
+                ) : (
+                  <div className='grid grid-cols-3 gap-2 sm:grid-cols-4'>
+                    {visibleImages.map((img, idx) => {
+                      const isLastVisible = idx === visibleImages.length - 1
+                      const showMoreOverlay = isLastVisible && hiddenCount > 0
+                      return (
+                        <button
+                          type='button'
+                          key={idx}
+                          onClick={() => openLightbox(idx)}
+                          className='group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border border-border bg-muted outline-none transition-shadow focus-visible:ring-4 focus-visible:ring-ring'
+                        >
+                          <Image
+                            src={img}
+                            alt={`${selectedPost.title} ${idx + 1}`}
+                            width={320}
+                            height={240}
+                            className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-105'
+                          />
+                          {showMoreOverlay ? (
+                            <div className='absolute inset-0 flex items-center justify-center bg-black/60 text-lg font-semibold text-white'>
+                              +{hiddenCount}
+                            </div>
+                          ) : (
+                            <div className='absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/35'>
+                              <ZoomIn className='h-5 w-5 text-white opacity-0 transition-opacity group-hover:opacity-100' />
+                            </div>
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
+                )}
+
+                {/* Property details */}
+                <div>
+                  <SectionLabel icon={Home}>
+                    {t('review.propertyDetails')}
+                  </SectionLabel>
+                  <div className='grid grid-cols-2 gap-2.5 sm:grid-cols-3'>
+                    <Fact
+                      icon={Home}
+                      label={t('review.propertyType')}
+                      value={_getPropertyTypeLabel(
+                        selectedPost.propertyInfo.type,
+                      )}
+                    />
+                    <Fact
+                      icon={Ruler}
+                      label={t('review.area')}
+                      value={`${selectedPost.propertyInfo.area}m²`}
+                    />
+                    {selectedPost.bedrooms !== null &&
+                      selectedPost.bedrooms !== undefined && (
+                        <Fact
+                          icon={BedDouble}
+                          label={t('review.bedrooms')}
+                          value={selectedPost.bedrooms}
+                        />
+                      )}
+                    {selectedPost.bathrooms !== null &&
+                      selectedPost.bathrooms !== undefined && (
+                        <Fact
+                          icon={Bath}
+                          label={t('review.bathrooms')}
+                          value={selectedPost.bathrooms}
+                        />
+                      )}
+                    {selectedPost.direction && (
+                      <Fact
+                        icon={Compass}
+                        label={t('review.direction')}
+                        value={_getDirectionLabel(selectedPost.direction)}
+                      />
+                    )}
+                    {selectedPost.furnishing && (
+                      <Fact
+                        icon={Sofa}
+                        label={t('review.furnishing')}
+                        value={_getFurnishingLabel(selectedPost.furnishing)}
+                      />
+                    )}
+                  </div>
                 </div>
-                <div className='mt-2 flex items-center gap-2'>
-                  <Avatar className='h-8 w-8 md:h-10 md:w-10'>
+
+                {/* Location */}
+                <div>
+                  <SectionLabel icon={MapPin}>
+                    {t('review.location')}
+                  </SectionLabel>
+                  <div className='rounded-lg border border-border/70 bg-muted/30 p-4'>
+                    <div className='text-xs text-muted-foreground'>
+                      {selectedPost.propertyInfo.district}
+                    </div>
+                    <div className='mt-1 text-sm text-foreground'>
+                      {selectedPost.propertyInfo.fullAddress}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Description */}
+                {selectedPost.description && (
+                  <div>
+                    <SectionLabel icon={FileText}>
+                      {t('review.description')}
+                    </SectionLabel>
+                    <div className='max-h-60 overflow-y-auto whitespace-pre-wrap rounded-lg border border-border/70 bg-muted/30 p-4 text-sm leading-relaxed text-muted-foreground'>
+                      {selectedPost.description}
+                    </div>
+                  </div>
+                )}
+
+                {/* Amenities */}
+                {selectedPost.amenities &&
+                  selectedPost.amenities.length > 0 && (
+                    <div>
+                      <SectionLabel icon={Sparkles}>
+                        {t('review.amenities')}
+                      </SectionLabel>
+                      <div className='flex flex-wrap gap-2'>
+                        {selectedPost.amenities.map((amenity) => (
+                          <Badge
+                            key={amenity.amenityId}
+                            variant='secondary'
+                            className='font-normal'
+                          >
+                            {amenity.icon && (
+                              <span className='mr-1'>
+                                {getAmenityIcon(amenity.icon)}
+                              </span>
+                            )}
+                            {amenity.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                {/* Poster */}
+                <div className='flex items-center gap-3 rounded-lg border border-border/70 bg-muted/30 p-4'>
+                  <Avatar className='h-10 w-10 md:h-12 md:w-12'>
                     <Image
                       src={
                         selectedPost.poster.avatar ||
                         '/images/default-image.jpg'
                       }
                       alt={selectedPost.poster.name}
-                      width={40}
-                      height={40}
+                      width={48}
+                      height={48}
                       className='h-full w-full object-cover'
                     />
                   </Avatar>
-                  <div>
-                    <div className='text-sm md:text-base font-medium text-foreground'>
+                  <div className='min-w-0'>
+                    <div className='text-xs text-muted-foreground'>
+                      {t('review.postedBy')}
+                    </div>
+                    <div className='truncate text-sm font-medium text-foreground md:text-base'>
                       {selectedPost.poster.name}
                     </div>
-                    <div className='text-xs md:text-sm text-muted-foreground'>
+                    <div className='text-xs text-muted-foreground md:text-sm'>
                       {selectedPost.poster.phone}
                     </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Current Status */}
-              <div>
-                <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                  {t('review.currentStatus')}
-                </div>
-                <Badge
-                  variant='outline'
-                  className={cn('mt-1', getStatusColor(selectedPost.status))}
-                >
-                  {_getStatusLabel(selectedPost.status)}
-                </Badge>
-              </div>
+                {/* AI-assisted analysis (advisory only) */}
+                {isPending && (
+                  <PostAiAnalysis post={selectedPost} open={open} />
+                )}
 
-              {/* AI-assisted analysis (advisory only) */}
-              {selectedPost.status === 'pending' && (
-                <PostAiAnalysis post={selectedPost} open={open} />
-              )}
-
-              {/* Rejection Reason / Verification Notes */}
-              {selectedPost.status === 'pending' && (
-                <>
-                  <div>
-                    <label
-                      htmlFor='verification-notes'
-                      className='text-xs md:text-sm font-medium text-muted-foreground'
-                    >
-                      {t('review.verificationNotes')}
-                    </label>
-                    <textarea
-                      id='verification-notes'
-                      value={verificationNotes}
-                      onChange={(e) => setVerificationNotes(e.target.value)}
-                      placeholder={t('review.verificationNotesPlaceholder')}
-                      className='mt-2 w-full rounded-lg border border-input bg-card px-3 py-2 text-xs md:text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-ring'
-                      rows={2}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor='rejection-reason'
-                      className='text-xs md:text-sm font-medium text-muted-foreground'
-                    >
-                      {t('review.rejectionReasonRequired')}
-                    </label>
-                    <textarea
-                      id='rejection-reason'
-                      value={rejectionReason}
-                      onChange={(e) => setRejectionReason(e.target.value)}
-                      placeholder={t('review.rejectionReasonPlaceholder')}
-                      className='mt-2 w-full rounded-lg border border-input bg-card px-3 py-2 text-xs md:text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-ring'
-                      rows={3}
-                    />
-                  </div>
-                </>
-              )}
-
-              {/* Display existing notes if already reviewed */}
-              {selectedPost.status !== 'pending' && (
-                <>
-                  {selectedPost.verificationNotes && (
+                {/* Rejection Reason / Verification Notes */}
+                {isPending && (
+                  <div className='space-y-4 rounded-lg border border-border/70 bg-muted/30 p-4'>
                     <div>
-                      <div className='text-xs md:text-sm font-medium text-muted-foreground'>
+                      <label
+                        htmlFor='verification-notes'
+                        className='text-sm font-medium text-foreground'
+                      >
                         {t('review.verificationNotes')}
-                      </div>
-                      <div className='mt-1 text-sm text-muted-foreground'>
-                        {selectedPost.verificationNotes}
-                      </div>
+                      </label>
+                      <textarea
+                        id='verification-notes'
+                        value={verificationNotes}
+                        onChange={(e) => setVerificationNotes(e.target.value)}
+                        placeholder={t('review.verificationNotesPlaceholder')}
+                        className='mt-2 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-ring'
+                        rows={2}
+                      />
                     </div>
-                  )}
-                  {selectedPost.rejectionReason && (
                     <div>
-                      <div className='text-xs md:text-sm font-medium text-muted-foreground'>
-                        {t('review.rejectionReason')}
-                      </div>
-                      <div className='mt-1 text-sm text-destructive'>
-                        {selectedPost.rejectionReason}
-                      </div>
+                      <label
+                        htmlFor='rejection-reason'
+                        className='text-sm font-medium text-foreground'
+                      >
+                        {t('review.rejectionReasonRequired')}
+                      </label>
+                      <textarea
+                        id='rejection-reason'
+                        value={rejectionReason}
+                        onChange={(e) => setRejectionReason(e.target.value)}
+                        placeholder={t('review.rejectionReasonPlaceholder')}
+                        className='mt-2 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-ring'
+                        rows={3}
+                      />
                     </div>
-                  )}
-                </>
-              )}
+                  </div>
+                )}
+
+                {/* Display existing notes if already reviewed */}
+                {!isPending && (
+                  <>
+                    {selectedPost.verificationNotes && (
+                      <div>
+                        <SectionLabel icon={FileText}>
+                          {t('review.verificationNotes')}
+                        </SectionLabel>
+                        <div className='rounded-lg border border-border/70 bg-muted/30 p-4 text-sm text-muted-foreground'>
+                          {selectedPost.verificationNotes}
+                        </div>
+                      </div>
+                    )}
+                    {selectedPost.rejectionReason && (
+                      <div>
+                        <SectionLabel icon={XCircle}>
+                          {t('review.rejectionReason')}
+                        </SectionLabel>
+                        <div className='rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive'>
+                          {selectedPost.rejectionReason}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Action Buttons */}
-            {selectedPost.status === 'pending' && (
-              <div className='flex flex-col gap-2 md:gap-3'>
-                <div className='flex flex-col sm:flex-row gap-2'>
+            {isPending && (
+              <div className='shrink-0 border-t border-border/60 bg-card px-6 py-4'>
+                <div className='grid gap-2.5 sm:grid-cols-3'>
                   <Button
+                    size='lg'
                     onClick={() => onApprove(verificationNotes)}
                     disabled={actionLoading}
-                    className='flex-1 bg-success text-white hover:bg-success/90 text-sm'
+                    className='bg-success text-white shadow-sm hover:bg-success/90'
                   >
                     {actionLoading ? (
                       <Loader2 className='mr-2 h-4 w-4 animate-spin' />
@@ -471,10 +503,11 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                     {t('review.approveButton')}
                   </Button>
                   <Button
+                    size='lg'
+                    variant='outline'
                     onClick={() => onReject(rejectionReason)}
                     disabled={actionLoading}
-                    variant='outline'
-                    className='flex-1 border-destructive/40 text-destructive hover:bg-destructive/10 text-sm'
+                    className='border-destructive/30 text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive'
                   >
                     {actionLoading ? (
                       <Loader2 className='mr-2 h-4 w-4 animate-spin' />
@@ -483,18 +516,21 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                     )}
                     {t('review.rejectButton')}
                   </Button>
+                  <Button
+                    size='lg'
+                    variant='outline'
+                    onClick={() => onRequestRevision(rejectionReason)}
+                    disabled={actionLoading}
+                    className='border-warning/40 text-warning hover:border-warning/60 hover:bg-warning/10 hover:text-warning'
+                  >
+                    {actionLoading ? (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    ) : (
+                      <RotateCcw className='mr-2 h-4 w-4' />
+                    )}
+                    {t('review.requestRevisionButton')}
+                  </Button>
                 </div>
-                <Button
-                  onClick={() => onRequestRevision(rejectionReason)}
-                  disabled={actionLoading}
-                  variant='outline'
-                  className='w-full border-warning/50 text-warning hover:bg-warning/10 text-sm'
-                >
-                  {actionLoading ? (
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  ) : null}
-                  {t('review.requestRevisionButton')}
-                </Button>
               </div>
             )}
           </div>
