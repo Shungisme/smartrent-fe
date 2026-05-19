@@ -150,9 +150,14 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       accessor: () => '',
       header: t('review.actions'),
       render: (_, row) => (
-        <Button size='sm' onClick={() => onReview(row)} className='text-sm'>
-          <Eye className='h-4 w-4 mr-1' />
-          {t('table.viewDetails')}
+        <Button
+          variant='ghost'
+          size='sm'
+          onClick={() => onReview(row)}
+          className='h-8 w-8 p-0'
+          title={t('table.viewDetails')}
+        >
+          <Eye className='h-4 w-4' />
         </Button>
       ),
     },

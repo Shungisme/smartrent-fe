@@ -19,9 +19,15 @@ export type PaymentGateway = 'VNPAY' | 'ZALOPAY' | 'MOMO'
 export type PaymentType =
   | 'MONTHLY_INVOICE'
   | 'MEMBERSHIP_PURCHASE'
+  | 'MEMBERSHIP_UPGRADE'
   | 'LISTING_BOOST'
   | 'LISTING_POST'
+  | 'POST_FEE'
+  | 'REPOST_FEE'
+  | 'PUSH_FEE'
+  | 'WALLET_TOPUP'
   | 'DEPOSIT'
+  | 'REFUND'
 
 /**
  * Customer information

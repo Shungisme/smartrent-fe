@@ -1,6 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+import { Eye } from 'lucide-react'
 import { Button } from '@/components/atoms/button'
 import {
   DataTable,
@@ -119,9 +120,14 @@ export const AdminTransactionTable = ({
       id: 'paymentType',
       header: t('table.type'),
       accessor: (row) => row.paymentType,
-      render: (_, row) => (
-        <span className='text-sm'>{t(`type.${row.paymentType}`)}</span>
-      ),
+      render: (_, row) => {
+        const key = `type.${row.paymentType}`
+        return (
+          <span className='text-sm'>
+            {t.has(key) ? t(key) : row.paymentType}
+          </span>
+        )
+      },
     },
     {
       id: 'gateway',
@@ -252,8 +258,10 @@ export const AdminTransactionTable = ({
           size='sm'
           variant='ghost'
           onClick={() => onViewDetails(row.transactionId)}
+          className='h-8 w-8 p-0'
+          title={t('table.viewDetails')}
         >
-          {t('table.viewDetails')}
+          <Eye className='h-4 w-4' />
         </Button>
       )}
     />

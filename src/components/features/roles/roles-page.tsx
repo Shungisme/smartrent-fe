@@ -23,7 +23,7 @@ import {
 } from '@/api/services/role.service'
 import { Role } from '@/api/types/role.type'
 import { useTranslations } from 'next-intl'
-import { Plus } from 'lucide-react'
+import { Plus, Pencil, Trash2 } from 'lucide-react'
 
 type RoleRow = {
   id: string
@@ -111,9 +111,12 @@ const RoleManagement = () => {
       header: t('table.headers.actions'),
       accessor: () => '',
       render: (_, row) => (
-        <div className='flex gap-2'>
-          <button
-            className='px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200'
+        <div className='flex items-center gap-2'>
+          <Button
+            variant='ghost'
+            size='sm'
+            className='h-8 w-8 p-0'
+            title={t('table.actions.edit')}
             onClick={() => {
               const role = roles.find((r) => r.roleId === row.id)
               if (role) {
@@ -123,17 +126,20 @@ const RoleManagement = () => {
               }
             }}
           >
-            {t('table.actions.edit')}
-          </button>
-          <button
-            className='px-2 py-1 text-xs bg-red-100 text-red-700 rounded hover:bg-red-200'
+            <Pencil className='h-4 w-4' />
+          </Button>
+          <Button
+            variant='ghost'
+            size='sm'
+            className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
+            title={t('table.actions.delete')}
             onClick={() => {
               const role = roles.find((r) => r.roleId === row.id)
               if (role) setShowDelete(role)
             }}
           >
-            {t('table.actions.delete')}
-          </button>
+            <Trash2 className='h-4 w-4' />
+          </Button>
         </div>
       ),
     },

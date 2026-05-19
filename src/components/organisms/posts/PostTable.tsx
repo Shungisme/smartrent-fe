@@ -9,6 +9,7 @@ import {
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { Avatar } from '@/components/atoms/avatar'
+import { Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PostStatus, UIPostData } from '@/types/posts.type'
 import { getPropertyIcon, getStatusColor } from '@/utils/post.utils' // We might need to adjust utils to not use translations or pass them
@@ -200,12 +201,13 @@ export const PostTable: React.FC<PostTableProps> = ({
       accessor: () => '',
       render: (_, row) => (
         <Button
-          variant='outline'
+          variant='ghost'
           size='sm'
           onClick={() => onReview(row)}
-          className='rounded-lg border-gray-300 px-3 py-1 text-sm hover:border-blue-500 hover:text-blue-600'
+          className='h-8 w-8 p-0'
+          title={t('table.reviewButton')}
         >
-          {t('table.reviewButton')}
+          <Eye className='h-4 w-4' />
         </Button>
       ),
     },

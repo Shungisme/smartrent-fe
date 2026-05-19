@@ -1,9 +1,17 @@
 'use client'
 
-import { ArrowLeft } from 'lucide-react'
-import { useParams, useRouter } from 'next/navigation'
+import {
+  Receipt,
+  CalendarClock,
+  User,
+  Building2,
+  Landmark,
+  AlertTriangle,
+  type LucideIcon,
+} from 'lucide-react'
+import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { Button } from '@/components/atoms/button'
+import { cn } from '@/lib/utils'
 import { useAdminTransactionDetail } from '../hooks/useAdminTransactions'
 import { TransactionTimelineComponent } from '../components/TransactionTimeline'
 import {
@@ -13,12 +21,53 @@ import {
   getPaymentGatewayLabel,
 } from '../utils/formatters'
 
+const STATUS_BADGE_CLASS: Record<string, string> = {
+  PENDING: 'bg-yellow-100 text-yellow-800',
+  SUCCESS: 'bg-green-100 text-green-800',
+  FAILED: 'bg-red-100 text-red-800',
+  CANCELLED: 'bg-gray-100 text-gray-800',
+  REFUNDED: 'bg-blue-100 text-blue-800',
+}
+
+/** A titled card section with a leading accent icon. */
+const SectionCard: React.FC<{
+  icon: LucideIcon
+  title: string
+  children: React.ReactNode
+}> = ({ icon: Icon, title, children }) => (
+  <div className='rounded-xl border border-border/70 bg-card p-6 shadow-sm'>
+    <div className='mb-4 flex items-center gap-2 text-base font-semibold text-foreground'>
+      <Icon className='h-4 w-4 text-primary' />
+      {title}
+    </div>
+    {children}
+  </div>
+)
+
+/** A label/value pair. */
+const Field: React.FC<{
+  label: string
+  value: React.ReactNode
+  mono?: boolean
+}> = ({ label, value, mono }) => (
+  <div className='min-w-0'>
+    <p className='text-xs font-medium text-muted-foreground'>{label}</p>
+    <p
+      className={cn(
+        'mt-0.5 break-words text-sm text-foreground',
+        mono && 'font-mono',
+      )}
+    >
+      {value}
+    </p>
+  </div>
+)
+
 /**
  * Admin Transaction Detail Page
  */
 export const AdminTransactionDetailPage = () => {
   const t = useTranslations('transactions')
-  const router = useRouter()
   const params = useParams()
   const transactionId = params.transactionId as string
 
@@ -28,304 +77,231 @@ export const AdminTransactionDetailPage = () => {
     error,
   } = useAdminTransactionDetail(transactionId)
 
-  const getStatusBadgeClass = (status: string): string => {
-    const baseClass = 'px-4 py-2 rounded-full text-sm font-medium'
-    const colorClass: Record<string, string> = {
-      PENDING: 'bg-yellow-100 text-yellow-800',
-      SUCCESS: 'bg-green-100 text-green-800',
-      FAILED: 'bg-red-100 text-red-800',
-      CANCELLED: 'bg-gray-100 text-gray-800',
-      REFUNDED: 'bg-blue-100 text-blue-800',
-    }
-    return `${baseClass} ${colorClass[status] || colorClass.PENDING}`
-  }
-
   if (isLoading) {
     return (
-      <div className='flex items-center justify-center h-screen'>
-        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-primary'></div>
+      <div className='flex h-[60vh] items-center justify-center'>
+        <div className='h-12 w-12 animate-spin rounded-full border-b-2 border-primary' />
       </div>
     )
   }
 
   if (error || !transaction) {
     return (
-      <div className='space-y-6'>
-        <Button variant='ghost' onClick={() => router.back()} className='gap-2'>
-          <ArrowLeft className='h-4 w-4' />
-          {t('detail.back')}
-        </Button>
-        <div className='rounded-lg border border-red-200 bg-red-50 p-6'>
-          <p className='text-red-800'>
-            {error ? t('detail.loadError') : t('detail.notFound')}
-          </p>
-        </div>
+      <div className='rounded-xl border border-red-200 bg-red-50 p-6'>
+        <p className='text-red-800'>
+          {error ? t('detail.loadError') : t('detail.notFound')}
+        </p>
       </div>
     )
   }
 
+  const typeKey = `type.${transaction.paymentType}`
+  const paymentTypeLabel = t.has(typeKey) ? t(typeKey) : transaction.paymentType
+
   return (
     <div className='space-y-6'>
       {/* Header */}
-      <div className='flex items-center justify-between'>
-        <div>
-          <Button
-            variant='ghost'
-            onClick={() => router.back()}
-            className='gap-2 mb-4'
-          >
-            <ArrowLeft className='h-4 w-4' />
-            {t('detail.back')}
-          </Button>
-          <h1 className='text-3xl font-bold text-gray-900'>
+      <div className='flex flex-wrap items-start justify-between gap-4'>
+        <div className='min-w-0'>
+          <h1 className='text-2xl font-bold text-foreground md:text-3xl'>
             {t('detail.title')}
           </h1>
+          <p className='mt-1 font-mono text-sm text-muted-foreground'>
+            {transaction.transactionCode}
+          </p>
         </div>
-        <div className={getStatusBadgeClass(transaction.status)}>
+        <span
+          className={cn(
+            'rounded-full px-4 py-1.5 text-sm font-medium',
+            STATUS_BADGE_CLASS[transaction.status] ??
+              STATUS_BADGE_CLASS.PENDING,
+          )}
+        >
           {t(`status.${transaction.status}`)}
-        </div>
+        </span>
       </div>
 
-      {/* Main Info */}
+      {/* Amount highlight */}
+      <div className='rounded-xl border border-border/70 bg-card p-6 shadow-sm'>
+        <p className='text-xs font-medium text-muted-foreground'>
+          {t('detail.amount')}
+        </p>
+        <p className='mt-1 text-3xl font-bold text-primary'>
+          {formatVND(transaction.amount)}
+        </p>
+      </div>
+
       <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
         {/* Transaction Summary */}
-        <div className='rounded-lg border border-gray-200 p-6 bg-white'>
-          <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-            {t('detail.transactionInfo')}
-          </h2>
-          <div className='space-y-4'>
-            <div>
-              <p className='text-sm text-gray-600'>
-                {t('detail.transactionCode')}
-              </p>
-              <p className='text-lg font-semibold text-gray-900'>
-                {transaction.transactionCode}
-              </p>
-            </div>
-            <div>
-              <p className='text-sm text-gray-600'>
-                {t('detail.idempotencyKey')}
-              </p>
-              <p className='font-mono text-sm text-gray-700'>
-                {transaction.idempotencyKey}
-              </p>
-            </div>
-            <div>
-              <p className='text-sm text-gray-600'>{t('detail.amount')}</p>
-              <p className='text-2xl font-bold text-gray-900'>
-                {formatVND(transaction.amount)}
-              </p>
-            </div>
-            <div>
-              <p className='text-sm text-gray-600'>{t('detail.paymentType')}</p>
-              <p className='text-gray-900'>
-                {t(`type.${transaction.paymentType}`)}
-              </p>
-            </div>
-            <div>
-              <p className='text-sm text-gray-600'>{t('detail.gateway')}</p>
-              <p className='text-gray-900'>
-                {getPaymentGatewayLabel(transaction.paymentGateway)}
-              </p>
-            </div>
+        <SectionCard icon={Receipt} title={t('detail.transactionInfo')}>
+          <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
+            <Field
+              label={t('detail.transactionCode')}
+              value={transaction.transactionCode}
+            />
+            <Field
+              label={t('detail.idempotencyKey')}
+              value={transaction.idempotencyKey}
+              mono
+            />
+            <Field label={t('detail.paymentType')} value={paymentTypeLabel} />
+            <Field
+              label={t('detail.gateway')}
+              value={getPaymentGatewayLabel(transaction.paymentGateway)}
+            />
             {transaction.paymentMethod && (
-              <div>
-                <p className='text-sm text-gray-600'>
-                  {t('detail.paymentMethod')}
-                </p>
-                <p className='text-gray-900'>{transaction.paymentMethod}</p>
-              </div>
+              <Field
+                label={t('detail.paymentMethod')}
+                value={transaction.paymentMethod}
+              />
             )}
           </div>
-        </div>
+        </SectionCard>
 
         {/* Dates Info */}
-        <div className='rounded-lg border border-gray-200 p-6 bg-white'>
-          <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-            {t('detail.dates')}
-          </h2>
-          <div className='space-y-4'>
-            <div>
-              <p className='text-sm text-gray-600'>{t('detail.created')}</p>
-              <p className='text-gray-900'>
-                {formatDateTime(transaction.createdAt)}
-              </p>
-            </div>
+        <SectionCard icon={CalendarClock} title={t('detail.dates')}>
+          <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
+            <Field
+              label={t('detail.created')}
+              value={formatDateTime(transaction.createdAt)}
+            />
             {transaction.completedAt && (
-              <div>
-                <p className='text-sm text-gray-600'>{t('detail.completed')}</p>
-                <p className='text-gray-900'>
-                  {formatDateTime(transaction.completedAt)}
-                </p>
-              </div>
+              <Field
+                label={t('detail.completed')}
+                value={formatDateTime(transaction.completedAt)}
+              />
             )}
             {transaction.expiredAt && (
-              <div>
-                <p className='text-sm text-gray-600'>{t('detail.expired')}</p>
-                <p className='text-gray-900'>
-                  {formatDateTime(transaction.expiredAt)}
-                </p>
-              </div>
+              <Field
+                label={t('detail.expired')}
+                value={formatDateTime(transaction.expiredAt)}
+              />
             )}
           </div>
-        </div>
+        </SectionCard>
       </div>
 
       {/* Customer Info */}
-      <div className='rounded-lg border border-gray-200 p-6 bg-white'>
-        <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-          {t('detail.customerInfo')}
-        </h2>
-        <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-          <div className='space-y-3'>
-            <p className='text-sm text-gray-600'>{t('detail.name')}</p>
-            <p className='text-lg font-medium text-gray-900'>
-              {transaction.customer.name}
-            </p>
-            <p className='text-sm text-gray-600'>ID</p>
-            <p className='font-mono text-sm text-gray-700'>
-              {transaction.customer.customerId}
-            </p>
-          </div>
-          <div className='space-y-3'>
-            <p className='text-sm text-gray-600'>{t('detail.email')}</p>
-            <p className='text-gray-900'>{transaction.customer.email || '-'}</p>
-            <p className='text-sm text-gray-600'>{t('detail.phone')}</p>
-            <p className='text-gray-900'>
-              {formatPhoneNumber(transaction.customer.phone)}
-            </p>
-          </div>
+      <SectionCard icon={User} title={t('detail.customerInfo')}>
+        <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
+          <Field label={t('detail.name')} value={transaction.customer.name} />
+          <Field label='ID' value={transaction.customer.customerId} mono />
+          <Field
+            label={t('detail.email')}
+            value={transaction.customer.email || '-'}
+          />
+          <Field
+            label={t('detail.phone')}
+            value={formatPhoneNumber(transaction.customer.phone)}
+          />
         </div>
-      </div>
+      </SectionCard>
 
       {/* Landlord Info */}
       {transaction.landlord && (
-        <div className='rounded-lg border border-gray-200 p-6 bg-white'>
-          <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-            {t('detail.landlordInfo')}
-          </h2>
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-            <div className='space-y-3'>
-              <p className='text-sm text-gray-600'>{t('detail.name')}</p>
-              <p className='text-lg font-medium text-gray-900'>
-                {transaction.landlord.name}
-              </p>
-              <p className='text-sm text-gray-600'>{t('detail.id')}</p>
-              <p className='font-mono text-sm text-gray-700'>
-                {transaction.landlord.landlordId}
-              </p>
-            </div>
-            <div className='space-y-3'>
-              <p className='text-sm text-gray-600'>{t('detail.phone')}</p>
-              <p className='text-gray-900'>
-                {formatPhoneNumber(transaction.landlord.phone)}
-              </p>
-            </div>
+        <SectionCard icon={User} title={t('detail.landlordInfo')}>
+          <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
+            <Field label={t('detail.name')} value={transaction.landlord.name} />
+            <Field
+              label={t('detail.id')}
+              value={transaction.landlord.landlordId}
+              mono
+            />
+            <Field
+              label={t('detail.phone')}
+              value={formatPhoneNumber(transaction.landlord.phone)}
+            />
           </div>
-        </div>
+        </SectionCard>
       )}
 
       {/* Invoice & Room Info */}
       {(transaction.invoice || transaction.room) && (
-        <div className='rounded-lg border border-gray-200 p-6 bg-white'>
-          <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-            {t('detail.invoiceInfo')}
-          </h2>
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+        <SectionCard icon={Building2} title={t('detail.invoiceInfo')}>
+          <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
             {transaction.invoice && (
-              <div className='space-y-3'>
-                <p className='text-sm text-gray-600'>
-                  {t('detail.invoiceCode')}
-                </p>
-                <p className='text-lg font-medium text-gray-900'>
-                  {transaction.invoice.invoiceCode}
-                </p>
-                <p className='text-sm text-gray-600'>{t('detail.id')}</p>
-                <p className='font-mono text-sm text-gray-700'>
-                  {transaction.invoice.invoiceId}
-                </p>
+              <>
+                <Field
+                  label={t('detail.invoiceCode')}
+                  value={transaction.invoice.invoiceCode}
+                />
+                <Field
+                  label={t('detail.id')}
+                  value={transaction.invoice.invoiceId}
+                  mono
+                />
                 {transaction.invoice.status && (
-                  <>
-                    <p className='text-sm text-gray-600'>{t('table.status')}</p>
-                    <p className='text-gray-900'>
-                      {transaction.invoice.status}
-                    </p>
-                  </>
+                  <Field
+                    label={t('table.status')}
+                    value={transaction.invoice.status}
+                  />
                 )}
-              </div>
+              </>
             )}
             {transaction.room && (
-              <div className='space-y-3'>
-                <p className='text-sm text-gray-600'>{t('detail.roomCode')}</p>
-                <p className='text-lg font-medium text-gray-900'>
-                  {transaction.room.roomCode}
-                </p>
-                <p className='text-sm text-gray-600'>{t('detail.roomName')}</p>
-                <p className='text-gray-900'>{transaction.room.roomName}</p>
+              <>
+                <Field
+                  label={t('detail.roomCode')}
+                  value={transaction.room.roomCode}
+                />
+                <Field
+                  label={t('detail.roomName')}
+                  value={transaction.room.roomName}
+                />
                 {transaction.room.address && (
-                  <>
-                    <p className='text-sm text-gray-600'>
-                      {t('detail.address')}
-                    </p>
-                    <p className='text-gray-900'>{transaction.room.address}</p>
-                  </>
+                  <Field
+                    label={t('detail.address')}
+                    value={transaction.room.address}
+                  />
                 )}
-              </div>
+              </>
             )}
           </div>
-        </div>
+        </SectionCard>
       )}
 
       {/* Gateway Info */}
       {(transaction.gatewayTransactionCode ||
         transaction.gatewayResponseCode) && (
-        <div className='rounded-lg border border-gray-200 p-6 bg-white'>
-          <h2 className='text-lg font-semibold text-gray-900 mb-4'>
-            {t('detail.gatewayInfo')}
-          </h2>
-          <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
+        <SectionCard icon={Landmark} title={t('detail.gatewayInfo')}>
+          <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
             {transaction.gatewayTransactionCode && (
-              <div>
-                <p className='text-sm text-gray-600'>
-                  {t('detail.gatewayTransaction')}
-                </p>
-                <p className='font-mono text-gray-900'>
-                  {transaction.gatewayTransactionCode}
-                </p>
-              </div>
+              <Field
+                label={t('detail.gatewayTransaction')}
+                value={transaction.gatewayTransactionCode}
+                mono
+              />
             )}
             {transaction.gatewayResponseCode && (
-              <div>
-                <p className='text-sm text-gray-600'>
-                  {t('detail.responseCode')}
-                </p>
-                <p className='font-mono text-gray-900'>
-                  {transaction.gatewayResponseCode}
-                </p>
-              </div>
+              <Field
+                label={t('detail.responseCode')}
+                value={transaction.gatewayResponseCode}
+                mono
+              />
             )}
           </div>
 
           {transaction.providerPayload && (
-            <div className='mt-6 pt-6 border-t border-gray-200'>
-              <p className='text-sm text-gray-600 mb-2'>
+            <div className='mt-6 border-t border-border/60 pt-6'>
+              <p className='mb-2 text-xs font-medium text-muted-foreground'>
                 {t('detail.payload')}
               </p>
-              <pre className='bg-gray-50 p-4 rounded text-xs text-gray-700 overflow-x-auto'>
+              <pre className='overflow-x-auto rounded-lg bg-muted/40 p-4 text-xs text-muted-foreground'>
                 {JSON.stringify(transaction.providerPayload, null, 2)}
               </pre>
             </div>
           )}
-        </div>
+        </SectionCard>
       )}
 
       {/* Failure Reason */}
       {transaction.failureReason && (
-        <div className='rounded-lg border border-red-200 bg-red-50 p-6'>
-          <h2 className='text-lg font-semibold text-red-900 mb-4'>
+        <div className='rounded-xl border border-red-200 bg-red-50 p-6'>
+          <div className='mb-2 flex items-center gap-2 text-base font-semibold text-red-900'>
+            <AlertTriangle className='h-4 w-4' />
             {t('detail.failureReason')}
-          </h2>
-          <p className='text-red-700'>{transaction.failureReason}</p>
+          </div>
+          <p className='text-sm text-red-700'>{transaction.failureReason}</p>
         </div>
       )}
 
