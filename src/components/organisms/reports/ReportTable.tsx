@@ -62,7 +62,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
     {
       id: 'reportId',
       accessor: 'reportId',
-      header: 'ID',
+      header: t('table.id'),
       render: (_, row) => (
         <Badge variant='outline' className='font-mono text-xs'>
           #{row.reportId}
@@ -75,7 +75,10 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       header: t('review.reportedPost'),
       render: (_, row) => (
         <div>
-          <div className='font-medium text-sm'>Listing #{row.listingId}</div>
+          <div className='font-medium text-sm'>
+            {t('table.listingNumber')}
+            {row.listingId}
+          </div>
           <div className='text-xs text-gray-500'>{row.category}</div>
         </div>
       ),
@@ -111,12 +114,16 @@ export const ReportTable: React.FC<ReportTableProps> = ({
               </div>
               {row.reportReasons.length > 1 && (
                 <div className='text-xs text-gray-500 mt-1'>
-                  +{row.reportReasons.length - 1} more reason(s)
+                  {t('table.moreReasons', {
+                    count: row.reportReasons.length - 1,
+                  })}
                 </div>
               )}
             </div>
           ) : (
-            <span className='text-xs text-gray-400'>No reasons specified</span>
+            <span className='text-xs text-gray-400'>
+              {t('table.noReasons')}
+            </span>
           )}
         </div>
       ),

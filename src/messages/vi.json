@@ -869,7 +869,18 @@
       "filters": {
         "allUsers": "Tất Cả Người Dùng",
         "broker": "Môi giới",
-        "normalUser": "Người dùng thường"
+        "normalUser": "Người dùng thường",
+        "firstName": "Tên",
+        "firstNamePlaceholder": "ví dụ: John",
+        "lastName": "Họ",
+        "lastNamePlaceholder": "ví dụ: Smith",
+        "email": "Email",
+        "emailPlaceholder": "ví dụ: user@gmail.com",
+        "phoneNumber": "Số điện thoại",
+        "phoneNumberPlaceholder": "ví dụ: 0912345678",
+        "userId": "ID người dùng",
+        "userIdPlaceholder": "ví dụ: user-123",
+        "userType": "Loại người dùng"
       },
       "perPage": "mỗi trang",
       "table": {
@@ -899,7 +910,9 @@
           "removeBrokerConfirm": "Bạn có chắc muốn gỡ vai trò môi giới của {name}?",
           "removeBrokerSuccess": "Đã gỡ vai trò môi giới thành công",
           "removeBrokerError": "Không thể gỡ vai trò môi giới. Vui lòng thử lại."
-        }
+        },
+        "loading": "Đang tải người dùng...",
+        "noUsersFound": "Không tìm thấy người dùng"
       },
       "delete": {
         "title": "Xóa Người Dùng",
@@ -1125,7 +1138,18 @@
         "CM": "Content Moderator",
         "SPA": "Support Admin",
         "FA": "Finance Admin",
-        "MA": "Marketing Admin"
+        "MA": "Marketing Admin",
+        "firstName": "Tên",
+        "firstNamePlaceholder": "ví dụ: John",
+        "lastName": "Họ",
+        "lastNamePlaceholder": "ví dụ: Smith",
+        "email": "Email",
+        "emailPlaceholder": "ví dụ: admin@smartrent.com",
+        "phoneNumber": "Số điện thoại",
+        "phoneNumberPlaceholder": "ví dụ: 0912345678",
+        "adminId": "ID quản trị viên",
+        "adminIdPlaceholder": "ví dụ: admin-123",
+        "role": "Vai trò"
       },
       "perPage": "mỗi trang",
       "createNewAdmin": "Tạo Admin Mới",
@@ -1148,7 +1172,9 @@
         "actions": {
           "edit": "Chỉnh sửa",
           "delete": "Xóa"
-        }
+        },
+        "loading": "Đang tải quản trị viên...",
+        "noAdminsFound": "Không tìm thấy quản trị viên"
       },
       "edit": {
         "title": "Chỉnh sửa Admin",
@@ -1621,7 +1647,11 @@
       "status": "Trạng Thái",
       "actions": "Thao Tác",
       "noReportsFound": "Không tìm thấy báo cáo phù hợp",
-      "viewDetails": "Xem Chi Tiết"
+      "viewDetails": "Xem Chi Tiết",
+      "id": "ID",
+      "listingNumber": "Tin đăng #",
+      "moreReasons": "+{count} lý do khác",
+      "noReasons": "Không có lý do cụ thể"
     },
     "review": {
       "title": "Xem Xét Báo Cáo Vi Phạm",
@@ -1900,7 +1930,8 @@
       "export": "Xuất CSV",
       "allStatus": "Tất cả trạng thái",
       "allGateways": "Tất cả cổng",
-      "keyword": "Từ khóa"
+      "keyword": "Từ khóa",
+      "datePlaceholder": "YYYY-MM-DD"
     },
     "status": {
       "PENDING": "Chờ Xử Lý",

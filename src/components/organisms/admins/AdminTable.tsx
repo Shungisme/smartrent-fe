@@ -77,42 +77,42 @@ export const AdminTable: React.FC<AdminTableProps> = ({
     {
       id: 'firstName',
       type: 'search',
-      label: 'First Name',
-      placeholder: 'e.g. John',
+      label: t('filters.firstName'),
+      placeholder: t('filters.firstNamePlaceholder'),
       isFilterField: true,
     },
     {
       id: 'lastName',
       type: 'search',
-      label: 'Last Name',
-      placeholder: 'e.g. Smith',
+      label: t('filters.lastName'),
+      placeholder: t('filters.lastNamePlaceholder'),
       isFilterField: true,
     },
     {
       id: 'email',
       type: 'search',
-      label: 'Email',
-      placeholder: 'e.g. admin@smartrent.com',
+      label: t('filters.email'),
+      placeholder: t('filters.emailPlaceholder'),
       isFilterField: true,
     },
     {
       id: 'phoneNumber',
       type: 'search',
-      label: 'Phone Number',
-      placeholder: 'e.g. 0912345678',
+      label: t('filters.phoneNumber'),
+      placeholder: t('filters.phoneNumberPlaceholder'),
       isFilterField: true,
     },
     {
       id: 'adminId',
       type: 'search',
-      label: 'Admin ID',
-      placeholder: 'e.g. admin-123',
+      label: t('filters.adminId'),
+      placeholder: t('filters.adminIdPlaceholder'),
       isFilterField: true,
     },
     {
       id: 'role',
       type: 'select',
-      label: 'Role',
+      label: t('filters.role'),
       options: [
         { value: 'SA', label: roleLabels.SA },
         { value: 'UA', label: roleLabels.UA },
@@ -201,7 +201,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
     },
     {
       id: 'actions',
-      header: t('table.headers.actions') || 'Actions',
+      header: t('table.headers.actions'),
       accessor: () => '',
       render: (_, row) => (
         <div className='flex items-center gap-2'>
@@ -209,7 +209,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
             variant='ghost'
             size='sm'
             className='h-8 w-8 p-0'
-            title={t('table.actions.edit') || 'Edit'}
+            title={t('table.actions.edit')}
             onClick={() => {
               const admin = admins.find((a) => a.adminId === row.id)
               if (admin) onEdit(admin)
@@ -221,7 +221,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
             variant='ghost'
             size='sm'
             className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
-            title={t('table.actions.delete') || 'Delete'}
+            title={t('table.actions.delete')}
             onClick={() => {
               const admin = admins.find((a) => a.adminId === row.id)
               if (admin) onDelete(admin)
@@ -247,7 +247,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       sortable
       defaultSort={{ key: 'joinDate', direction: 'desc' }}
       loading={loading}
-      emptyMessage={loading ? 'Loading admins...' : 'No admins found'}
+      emptyMessage={loading ? t('table.loading') : t('table.noAdminsFound')}
       getRowKey={(row) => row.id}
     />
   )
