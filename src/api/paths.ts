@@ -87,8 +87,8 @@ export const PATHS = {
 
   // Listing endpoints (Admin)
   LISTING: {
-    ADMIN_LIST: '/v1/listings/admin/list', // POST get all listings for admin
-    ADMIN_DETAIL: '/v1/listings/:id/admin', // GET listing detail with admin info
+    ADMIN_LIST: '/v1/listings/admin/list', // POST get slim listing rows
+    ADMIN_DETAIL: '/v1/listings/admin/:id', // GET full listing detail
     ADMIN_VERIFY: '/v1/admin/listings/:listingId/status', // PUT verify/reject listing
   },
 

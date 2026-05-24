@@ -5,16 +5,17 @@ import StatsCard from '@/components/molecules/statsCard'
 import LineChartCard from '@/components/molecules/lineChartCard'
 import AreaChartCard from '@/components/molecules/areaChartCard'
 import PieChartCard from '@/components/molecules/pieChartCard'
-import { formatCurrency, type TimeRange } from '@/data/analyticsData'
+import { formatCurrency } from '@/utils/format'
 import { DashboardService } from '@/api/services/dashboard.service'
 import { MembershipPackageLevel } from '@/api/types/dashboard.type'
+import { type DateRangeValue } from '@/components/molecules/dateRangePicker'
 import { DollarSign, Package, Users, Loader2 } from 'lucide-react'
 
 type OverviewTabProps = {
-  timeRange: TimeRange
+  dateRange: DateRangeValue
 }
 
-const OverviewTab: React.FC<OverviewTabProps> = ({ timeRange }) => {
+const OverviewTab: React.FC<OverviewTabProps> = ({ dateRange }) => {
   const tOverview = useTranslations('admin.analytics.overview')
   const tRevenue = useTranslations('admin.analytics.revenue')
   const tPosts = useTranslations('admin.analytics.posts')
@@ -44,11 +45,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ timeRange }) => {
       Awaited<ReturnType<typeof DashboardService.getListingCreation>>['data']
     >(null)
 
-  const mapTimeRangeToDays = (range: TimeRange): number => {
-    if (range === 'month') return 30
-    return 7
-  }
-
   const formatXLabel = (label: string, granularity: 'DAY' | 'MONTH') => {
     if (granularity === 'MONTH') {
       const [year, month] = label.split('-')
@@ -61,7 +57,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ timeRange }) => {
     const fetchOverviewData = async () => {
       try {
         setLoading(true)
-        const days = mapTimeRangeToDays(timeRange)
+        const range = { from: dateRange.from, to: dateRange.to }
 
         const [
           revenueResponse,
@@ -70,11 +66,11 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ timeRange }) => {
           reportResponse,
           listingResponse,
         ] = await Promise.all([
-          DashboardService.getRevenueOverTime({ days }),
+          DashboardService.getRevenueOverTime(range),
           DashboardService.getMembershipDistribution(),
-          DashboardService.getUserGrowth(days),
-          DashboardService.getReportCount(days),
-          DashboardService.getListingCreation(days),
+          DashboardService.getUserGrowth(range),
+          DashboardService.getReportCount(range),
+          DashboardService.getListingCreation(range),
         ])
 
         if (!revenueResponse.success || !revenueResponse.data) {
@@ -125,7 +121,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ timeRange }) => {
     }
 
     fetchOverviewData()
-  }, [timeRange, tRevenue])
+  }, [dateRange.from, dateRange.to, tRevenue])
 
   const membershipColors: Record<MembershipPackageLevel, string> = {
     BASIC: '#94A3B8',

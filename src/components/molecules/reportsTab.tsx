@@ -4,14 +4,14 @@ import { toast } from 'sonner'
 import StatsCard from '@/components/molecules/statsCard'
 import LineChartCard from '@/components/molecules/lineChartCard'
 import { DashboardService } from '@/api/services/dashboard.service'
-import { type TimeRange } from '@/data/analyticsData'
+import { type DateRangeValue } from '@/components/molecules/dateRangePicker'
 import { AlertTriangle, Loader2 } from 'lucide-react'
 
 type ReportsTabProps = {
-  timeRange: TimeRange
+  dateRange: DateRangeValue
 }
 
-const ReportsTab: React.FC<ReportsTabProps> = ({ timeRange }) => {
+const ReportsTab: React.FC<ReportsTabProps> = ({ dateRange }) => {
   const t = useTranslations('admin.analytics.reports')
   const tRevenue = useTranslations('admin.analytics.revenue')
 
@@ -20,11 +20,6 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ timeRange }) => {
     useState<
       Awaited<ReturnType<typeof DashboardService.getReportCount>>['data']
     >(null)
-
-  const mapTimeRangeToDays = (range: TimeRange): number => {
-    if (range === 'month') return 30
-    return 7
-  }
 
   const formatXLabel = (label: string, granularity: 'DAY' | 'MONTH') => {
     if (granularity === 'MONTH') {
@@ -38,8 +33,10 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ timeRange }) => {
     const fetchReportCount = async () => {
       try {
         setLoading(true)
-        const days = mapTimeRangeToDays(timeRange)
-        const response = await DashboardService.getReportCount(days)
+        const response = await DashboardService.getReportCount({
+          from: dateRange.from,
+          to: dateRange.to,
+        })
 
         if (!response.success || !response.data) {
           throw new Error(
@@ -60,7 +57,7 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ timeRange }) => {
     }
 
     fetchReportCount()
-  }, [timeRange, tRevenue])
+  }, [dateRange.from, dateRange.to, tRevenue])
 
   if (loading) {
     return (

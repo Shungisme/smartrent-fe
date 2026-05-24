@@ -8,6 +8,20 @@ import { Popover } from '@/components/atoms/popover'
 import { Filter, Plus, X, Trash2 } from 'lucide-react'
 import type { FilterOption, FilterConfig } from './types'
 
+const parseRange = (value: string): { from: string; to: string } => {
+  if (!value) return { from: '', to: '' }
+  const idx = value.indexOf('..')
+  if (idx === -1) return { from: value, to: '' }
+  return { from: value.slice(0, idx), to: value.slice(idx + 2) }
+}
+
+const buildRangeValue = (from: string, to: string): string => {
+  const f = from.trim()
+  const t = to.trim()
+  if (!f && !t) return ''
+  return `${f}..${t}`
+}
+
 export interface FilterDialogProps {
   filterConfig: FilterConfig[]
   currentFilters: Record<string, any>
@@ -125,6 +139,7 @@ export function FilterDialog({
       onOpenChange={setOpen}
       trigger={triggerButton}
       align='start'
+      contentClassName='w-[calc(100vw-1rem)] sm:w-[560px]'
     >
       <div className='p-4 space-y-3'>
         {activeFilters.length === 0 ? (
@@ -142,7 +157,10 @@ export function FilterDialog({
           // Show all filter rows
           <>
             {activeFilters.map((filter, index) => (
-              <div key={index} className='flex gap-2 items-end'>
+              <div
+                key={index}
+                className='flex flex-col sm:flex-row gap-2 sm:items-end'
+              >
                 {/* Key Select */}
                 <div className='flex-1'>
                   <label className='block text-xs font-medium text-gray-700 mb-1'>
@@ -171,34 +189,104 @@ export function FilterDialog({
                   <label className='block text-xs font-medium text-gray-700 mb-1'>
                     {t('filterValue') || 'Value'}
                   </label>
-                  {filter.key && getOptionsForKey(filter.key).length > 0 ? (
-                    <select
-                      value={filter.value}
-                      onChange={(e) =>
-                        handleFilterValueChange(index, e.target.value)
-                      }
-                      className='w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
-                    >
-                      <option value=''>
-                        {t('selectField') || 'Select a value...'}
-                      </option>
-                      {getOptionsForKey(filter.key).map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <Input
-                      type='text'
-                      placeholder={t('enterValue') || 'Enter value...'}
-                      value={filter.value}
-                      onChange={(e) =>
-                        handleFilterValueChange(index, e.target.value)
-                      }
-                      className='rounded-lg border border-gray-200'
-                    />
-                  )}
+                  {(() => {
+                    const config = filter.key
+                      ? getFilterConfigByKey(filter.key)
+                      : undefined
+                    const options = filter.key
+                      ? getOptionsForKey(filter.key)
+                      : []
+                    if (options.length > 0) {
+                      return (
+                        <select
+                          value={filter.value}
+                          onChange={(e) =>
+                            handleFilterValueChange(index, e.target.value)
+                          }
+                          className='w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
+                        >
+                          <option value=''>
+                            {t('selectField') || 'Select a value...'}
+                          </option>
+                          {options.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      )
+                    }
+                    if (config?.type === 'date') {
+                      return (
+                        <Input
+                          type='date'
+                          value={filter.value}
+                          onChange={(e) =>
+                            handleFilterValueChange(index, e.target.value)
+                          }
+                          className='rounded-lg border border-gray-200'
+                        />
+                      )
+                    }
+                    if (
+                      config?.type === 'range' ||
+                      config?.type === 'date-range'
+                    ) {
+                      const isDate = config.type === 'date-range'
+                      const { from, to } = parseRange(filter.value)
+                      const inputType = isDate ? 'date' : 'number'
+                      return (
+                        <div className='flex items-center gap-1.5'>
+                          <Input
+                            type={inputType}
+                            placeholder={
+                              isDate ? undefined : t('rangeFrom') || 'From'
+                            }
+                            value={from}
+                            onChange={(e) =>
+                              handleFilterValueChange(
+                                index,
+                                buildRangeValue(e.target.value, to),
+                              )
+                            }
+                            className='rounded-lg border border-gray-200 flex-1 min-w-0'
+                          />
+                          <span className='text-xs text-gray-400 shrink-0'>
+                            →
+                          </span>
+                          <Input
+                            type={inputType}
+                            placeholder={
+                              isDate ? undefined : t('rangeTo') || 'To'
+                            }
+                            value={to}
+                            onChange={(e) =>
+                              handleFilterValueChange(
+                                index,
+                                buildRangeValue(from, e.target.value),
+                              )
+                            }
+                            className='rounded-lg border border-gray-200 flex-1 min-w-0'
+                          />
+                        </div>
+                      )
+                    }
+                    return (
+                      <Input
+                        type='text'
+                        placeholder={
+                          config?.placeholder ||
+                          t('enterValue') ||
+                          'Enter value...'
+                        }
+                        value={filter.value}
+                        onChange={(e) =>
+                          handleFilterValueChange(index, e.target.value)
+                        }
+                        className='rounded-lg border border-gray-200'
+                      />
+                    )
+                  })()}
                 </div>
 
                 {/* Remove Button */}
@@ -206,7 +294,7 @@ export function FilterDialog({
                   variant='ghost'
                   size='sm'
                   onClick={() => handleRemoveFilter(index)}
-                  className='h-10 w-10 p-0 text-red-600 hover:text-red-700 hover:bg-red-50'
+                  className='h-10 w-10 p-0 self-end sm:self-auto shrink-0 text-red-600 hover:text-red-700 hover:bg-red-50'
                 >
                   <X className='h-4 w-4' />
                 </Button>

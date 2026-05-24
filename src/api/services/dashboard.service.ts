@@ -7,16 +7,31 @@ import {
   TimeSeriesResponse,
 } from '@/api/types/dashboard.type'
 
+export interface DashboardTimeQuery {
+  days?: number
+  from?: string
+  to?: string
+}
+
+function buildParams(query?: DashboardTimeQuery) {
+  if (!query) return undefined
+  if (query.days != null) {
+    return { days: query.days }
+  }
+  const params: Record<string, string> = {}
+  if (query.from) params.from = query.from
+  if (query.to) params.to = query.to
+  return params
+}
+
 export class DashboardService {
-  static async getRevenueOverTime(params?: {
-    days?: number
-    from?: string
-    to?: string
-  }): Promise<ApiResponse<RevenueOverTimeResponse>> {
+  static async getRevenueOverTime(
+    query?: DashboardTimeQuery,
+  ): Promise<ApiResponse<RevenueOverTimeResponse>> {
     return apiRequest<RevenueOverTimeResponse>({
       method: 'GET',
       url: ENV.API.ADMIN_DASHBOARD.REVENUE,
-      params,
+      params: buildParams(query),
     })
   }
 
@@ -30,32 +45,32 @@ export class DashboardService {
   }
 
   static async getUserGrowth(
-    days: number = 7,
+    query?: DashboardTimeQuery,
   ): Promise<ApiResponse<TimeSeriesResponse>> {
     return apiRequest<TimeSeriesResponse>({
       method: 'GET',
       url: ENV.API.ADMIN_DASHBOARD.USERS_GROWTH,
-      params: { days },
+      params: buildParams(query),
     })
   }
 
   static async getReportCount(
-    days: number = 7,
+    query?: DashboardTimeQuery,
   ): Promise<ApiResponse<TimeSeriesResponse>> {
     return apiRequest<TimeSeriesResponse>({
       method: 'GET',
       url: ENV.API.ADMIN_DASHBOARD.REPORTS_COUNT,
-      params: { days },
+      params: buildParams(query),
     })
   }
 
   static async getListingCreation(
-    days: number = 7,
+    query?: DashboardTimeQuery,
   ): Promise<ApiResponse<TimeSeriesResponse>> {
     return apiRequest<TimeSeriesResponse>({
       method: 'GET',
       url: ENV.API.ADMIN_DASHBOARD.LISTINGS_CREATION,
-      params: { days },
+      params: buildParams(query),
     })
   }
 }

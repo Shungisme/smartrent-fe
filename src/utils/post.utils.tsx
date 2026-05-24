@@ -21,7 +21,8 @@ import {
   Circle,
 } from 'lucide-react'
 import {
-  AdminListingItem,
+  AdminListingSummary,
+  ListingResponseWithAdmin,
   VipType,
   ListingFilterRequest,
   ProductType,
@@ -77,14 +78,21 @@ export const getAmenityIcon = (iconName: string) => {
   return iconMap[iconName.toLowerCase()] || <Circle className='h-4 w-4' />
 }
 
-export const formatPrice = (price: number, priceUnit: string): string => {
-  const formatted = new Intl.NumberFormat('vi-VN').format(price)
+export const formatPrice = (
+  price: number | null | undefined,
+  priceUnit: string | null | undefined,
+): string => {
+  const formatted = new Intl.NumberFormat('vi-VN').format(price ?? 0)
   const unitMap: Record<string, string> = {
     VND_PER_MONTH: 'đ/tháng',
     VND_PER_YEAR: 'đ/năm',
     VND_TOTAL: 'đ',
+    MONTH: 'đ/tháng',
+    YEAR: 'đ/năm',
+    TOTAL: 'đ',
   }
-  return `${formatted}${unitMap[priceUnit] || 'đ'}`
+  const unit = priceUnit ? unitMap[priceUnit] : undefined
+  return `${formatted}${unit || 'đ'}`
 }
 
 export const formatDateTime = (
@@ -131,12 +139,6 @@ export const mapUIFiltersToAPI = (
     const parsed = Number(value)
     return Number.isFinite(parsed) ? parsed : undefined
   }
-  const bool = (key: string): boolean | undefined => {
-    const value = str(key)
-    if (value === 'true') return true
-    if (value === 'false') return false
-    return undefined
-  }
 
   // Search keyword (new `keyword` id, backward compatible with legacy `search`)
   const keyword = str('keyword') ?? str('search')
@@ -176,14 +178,58 @@ export const mapUIFiltersToAPI = (
     apiFilters.productType = productType as ProductType
   }
 
-  // Listing type mapping (accepts UI `for_rent`/`for_sale` or API `FOR_RENT`/`FOR_SALE`)
+  // Listing type mapping — UI sends new enum (RENT/SALE/SHARE); legacy values mapped too.
   const listingType = str('listingType')
   if (listingType) {
-    apiFilters.listingType =
-      listingType === 'for_rent' || listingType === 'FOR_RENT'
-        ? 'FOR_RENT'
-        : 'FOR_SALE'
+    const upper = listingType.toUpperCase()
+    if (upper === 'RENT' || upper === 'FOR_RENT') {
+      apiFilters.listingType = 'RENT'
+    } else if (upper === 'SALE' || upper === 'FOR_SALE') {
+      apiFilters.listingType = 'SALE'
+    } else if (upper === 'SHARE') {
+      apiFilters.listingType = 'SHARE'
+    }
   }
+
+  // Title-only search
+  const title = str('title')
+  if (title) {
+    apiFilters.title = title
+  }
+
+  // Owner search (name or phone)
+  const ownerSearch = str('ownerSearch')
+  if (ownerSearch) {
+    apiFilters.ownerSearch = ownerSearch
+  }
+
+  // Range filters — UI sends a "from..to" string; pass through if it contains content.
+  const isValidRange = (value: string | undefined): value is string => {
+    if (!value) return false
+    if (value === '..') return false
+    return value.includes('..') ? value.replace('..', '').length > 0 : true
+  }
+  const range = (key: string): string | undefined => {
+    const value = str(key)
+    return isValidRange(value) ? value : undefined
+  }
+  const priceRange = range('price')
+  if (priceRange) apiFilters.price = priceRange
+  const areaRange = range('area')
+  if (areaRange) apiFilters.area = areaRange
+  const bedroomsRange = range('bedroomsRange')
+  if (bedroomsRange) apiFilters.bedroomsRange = bedroomsRange
+  const bathroomsRange = range('bathroomsRange')
+  if (bathroomsRange) apiFilters.bathroomsRange = bathroomsRange
+  const roomCapacity = range('roomCapacity')
+  if (roomCapacity) apiFilters.roomCapacity = roomCapacity
+  const priceReductionPercent = range('priceReductionPercent')
+  if (priceReductionPercent)
+    apiFilters.priceReductionPercent = priceReductionPercent
+  const postDate = range('postDate')
+  if (postDate) apiFilters.postDate = postDate
+  const expiryDate = range('expiryDate')
+  if (expiryDate) apiFilters.expiryDate = expiryDate
 
   // VIP tier
   const vipType = str('vipType')
@@ -191,50 +237,14 @@ export const mapUIFiltersToAPI = (
     apiFilters.vipType = vipType as VipType
   }
 
-  // Owner
-  const userId = str('userId')
-  if (userId) {
-    apiFilters.userId = userId
+  // Exact-match numeric fields (use *Range strings for range matching)
+  const bedrooms = num('bedrooms')
+  if (bedrooms !== undefined) {
+    apiFilters.bedrooms = bedrooms
   }
-
-  // Boolean flags
-  const verified = bool('verified')
-  if (verified !== undefined) {
-    apiFilters.verified = verified
-  }
-  const isVerify = bool('isVerify')
-  if (isVerify !== undefined) {
-    apiFilters.isVerify = isVerify
-  }
-  const expired = bool('expired')
-  if (expired !== undefined) {
-    apiFilters.expired = expired
-  }
-
-  // Numeric range filters
-  const minPrice = num('minPrice')
-  if (minPrice !== undefined) {
-    apiFilters.minPrice = minPrice
-  }
-  const maxPrice = num('maxPrice')
-  if (maxPrice !== undefined) {
-    apiFilters.maxPrice = maxPrice
-  }
-  const minArea = num('minArea')
-  if (minArea !== undefined) {
-    apiFilters.minArea = minArea
-  }
-  const maxArea = num('maxArea')
-  if (maxArea !== undefined) {
-    apiFilters.maxArea = maxArea
-  }
-  const minBedrooms = num('minBedrooms')
-  if (minBedrooms !== undefined) {
-    apiFilters.minBedrooms = minBedrooms
-  }
-  const maxBedrooms = num('maxBedrooms')
-  if (maxBedrooms !== undefined) {
-    apiFilters.maxBedrooms = maxBedrooms
+  const bathrooms = num('bathrooms')
+  if (bathrooms !== undefined) {
+    apiFilters.bathrooms = bathrooms
   }
   const categoryId = num('categoryId')
   if (categoryId !== undefined) {
@@ -244,31 +254,81 @@ export const mapUIFiltersToAPI = (
   return apiFilters
 }
 
-export const mapApiDataToUI = (item: AdminListingItem): UIPostData => {
+const deriveStatusFromVerification = (
+  verificationStatus: string | null | undefined,
+  expired: boolean | null | undefined,
+): PostStatus => {
+  if (expired) return 'expired'
+  switch (verificationStatus) {
+    case 'APPROVED':
+      return 'approved'
+    case 'REJECTED':
+      return 'rejected'
+    default:
+      return 'pending'
+  }
+}
+
+const normalizeListingType = (
+  type: string | null | undefined,
+): 'for_rent' | 'for_sale' => {
+  if (!type) return 'for_rent'
+  const upper = type.toUpperCase()
+  return upper === 'SALE' || upper === 'FOR_SALE' ? 'for_sale' : 'for_rent'
+}
+
+/** Map slim list row → table view model. Detail-only fields stay empty/undefined. */
+export const mapSummaryToUI = (item: AdminListingSummary): UIPostData => {
+  const { date, time } = item.postDate
+    ? formatDateTime(item.postDate)
+    : { date: '', time: '' }
+  const { date: expiryDate } = item.expiryDate
+    ? formatDateTime(item.expiryDate)
+    : { date: '' }
+
+  const firstName = item.user?.firstName?.trim() || ''
+  const lastName = item.user?.lastName?.trim() || ''
+  const fullName = [firstName, lastName].filter(Boolean).join(' ')
+
+  return {
+    id: item.listingId.toString(),
+    title: item.title,
+    postCode: `POST-${item.listingId}`,
+    images: ['/images/no-image.png'],
+    listingType: normalizeListingType(item.listingType),
+    vipLevel: item.vipType ? getVipLevel(item.vipType) : undefined,
+    poster: {
+      name: fullName || 'Unknown User',
+      avatar: undefined,
+      userId: '',
+      phone: item.user?.contactPhoneNumber || '',
+    },
+    propertyInfo: {
+      type: item.productType || '',
+      area: item.area || 0,
+      district: '',
+      fullAddress: '',
+    },
+    price: formatPrice(item.price, item.priceUnit),
+    priceRaw: item.price ?? 0,
+    postedDate: date,
+    postedTime: time,
+    expiryDate,
+    status: deriveStatusFromVerification(
+      item.adminVerification?.verificationStatus,
+      item.expired,
+    ),
+    verified: item.verified ?? false,
+    isVerify: false,
+    rejectionReason: item.lastModerationReasonText || undefined,
+    verificationNotes: undefined,
+  }
+}
+
+/** Map full detail response → modal view model. */
+export const mapDetailToUI = (item: ListingResponseWithAdmin): UIPostData => {
   const { date, time } = formatDateTime(item.postDate)
   const { date: expiryDate } = formatDateTime(item.expiryDate)
-
-  // Determine status from adminVerification.verificationStatus
-  let status: PostStatus = 'pending'
-  if (item.expired) {
-    status = 'expired'
-  } else if (item.adminVerification?.verificationStatus) {
-    const verificationStatus = item.adminVerification.verificationStatus
-    switch (verificationStatus) {
-      case 'APPROVED':
-        status = 'approved'
-        break
-      case 'REJECTED':
-        status = 'rejected'
-        break
-      case 'PENDING':
-      default:
-        status = 'pending'
-        break
-    }
-  } else {
-    status = 'pending'
-  }
 
   return {
     id: item.listingId.toString(),
@@ -278,32 +338,33 @@ export const mapApiDataToUI = (item: AdminListingItem): UIPostData => {
       item.media && item.media.length > 0
         ? item.media.map((m) => m.url)
         : ['/images/no-image.png'],
-    listingType: item.listingType === 'FOR_RENT' ? 'for_rent' : 'for_sale',
+    listingType: normalizeListingType(item.listingType),
     vipLevel: getVipLevel(item.vipType),
     poster: {
       name: item.user
         ? `${item.user.firstName} ${item.user.lastName}`
         : 'Unknown User',
-      avatar: item.user?.avatarUrl || undefined,
-      userId: item.user?.userId || item.userId,
+      avatar: undefined,
+      userId: item.user?.userId || '',
       phone: item.user?.contactPhoneNumber || '',
     },
     propertyInfo: {
       type: item.productType,
       area: item.area || 0,
       district:
-        item.propertyInfo?.district ||
-        item.address?.legacyDistrictName ||
-        'N/A',
+        item.propertyInfo?.district || item.address?.legacyDistrictName || '',
       fullAddress:
-        item.propertyInfo?.fullAddress || item.address?.fullAddress || 'N/A',
+        item.propertyInfo?.fullAddress || item.address?.fullAddress || '',
     },
     price: formatPrice(item.price, item.priceUnit),
     priceRaw: item.price,
     postedDate: date,
     postedTime: time,
-    expiryDate: expiryDate,
-    status,
+    expiryDate,
+    status: deriveStatusFromVerification(
+      item.adminVerification?.verificationStatus,
+      item.expired,
+    ),
     verified: item.verified,
     isVerify: item.isVerify,
     rejectionReason: item.adminVerification?.rejectionReason,

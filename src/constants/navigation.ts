@@ -18,9 +18,7 @@ type PageKey =
   | 'transactions'
   | 'brokerPending'
   | 'premiumMembership'
-  | 'premiumPromotions'
   | 'premiumListingTypes'
-  | 'premiumPostBoosts'
   | 'analyticsUsers'
   | 'analyticsPosts'
   | 'analyticsRevenue'
@@ -43,17 +41,9 @@ const ROUTE_META: Record<string, { category: CategoryKey; page: PageKey }> = {
     category: 'monetization',
     page: 'premiumMembership',
   },
-  '/monetization/promotions': {
-    category: 'monetization',
-    page: 'premiumPromotions',
-  },
   '/monetization/listing-types': {
     category: 'monetization',
     page: 'premiumListingTypes',
-  },
-  '/monetization/post-boosts': {
-    category: 'monetization',
-    page: 'premiumPostBoosts',
   },
   '/insights/users': {
     category: 'insights',
@@ -84,12 +74,7 @@ const CATEGORY_ROUTES: Record<CategoryKey, string[]> = {
     '/management/roles',
     '/management/transactions',
   ],
-  monetization: [
-    '/monetization/membership',
-    '/monetization/promotions',
-    '/monetization/listing-types',
-    '/monetization/post-boosts',
-  ],
+  monetization: ['/monetization/membership', '/monetization/listing-types'],
   insights: [
     '/insights/users',
     '/insights/posts',
@@ -125,9 +110,7 @@ const LABELS = {
       transactions: 'Transactions',
       brokerPending: 'Pending Broker Applications',
       premiumMembership: 'Membership',
-      premiumPromotions: 'Promotions',
       premiumListingTypes: 'Listing Types',
-      premiumPostBoosts: 'Post Boosts',
       analyticsUsers: 'Users',
       analyticsPosts: 'Posts',
       analyticsRevenue: 'Revenue',
@@ -155,9 +138,7 @@ const LABELS = {
       transactions: 'Giao dịch',
       brokerPending: 'Đơn đăng ký môi giới chờ duyệt',
       premiumMembership: 'Thành viên',
-      premiumPromotions: 'Khuyến mãi',
       premiumListingTypes: 'Loại tin đăng',
-      premiumPostBoosts: 'Đẩy tin',
       analyticsUsers: 'Người dùng',
       analyticsPosts: 'Tin đăng',
       analyticsRevenue: 'Doanh thu',

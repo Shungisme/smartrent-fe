@@ -8,6 +8,7 @@ export interface PopoverProps {
   trigger: React.ReactNode
   children: React.ReactNode
   align?: 'start' | 'end' | 'center'
+  contentClassName?: string
 }
 
 export function Popover({
@@ -16,6 +17,7 @@ export function Popover({
   trigger,
   children,
   align = 'start',
+  contentClassName,
 }: PopoverProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -50,7 +52,8 @@ export function Popover({
           className={`
             absolute z-50 mt-1 rounded-lg border border-gray-200 bg-white shadow-md
             ${align === 'end' ? 'right-0' : 'left-0'}
-            min-w-[380px] max-h-[400px] overflow-y-auto
+            max-h-[80vh] overflow-y-auto
+            ${contentClassName ?? 'min-w-[380px] max-w-[calc(100vw-1rem)]'}
           `}
         >
           {children}

@@ -6,7 +6,11 @@ import { ListingService } from '@/api/services/listing.service'
 import { ListingStatisticsSummary } from '@/api/types/listing.type'
 import { Loader2 } from 'lucide-react'
 import { UIPostData } from '@/types/posts.type'
-import { mapApiDataToUI, mapUIFiltersToAPI } from '@/utils/post.utils'
+import {
+  mapSummaryToUI,
+  mapDetailToUI,
+  mapUIFiltersToAPI,
+} from '@/utils/post.utils'
 import { PostStats } from '@/components/molecules/posts/PostStats'
 import { PostTable } from '@/components/organisms/posts/PostTable'
 import { PostReviewModal } from '@/components/organisms/posts/PostReviewModal'
@@ -17,6 +21,7 @@ const PostVerification = () => {
   const [tableLoading, setTableLoading] = useState(false)
   const [selectedPost, setSelectedPost] = useState<UIPostData | null>(null)
   const [reviewModalOpen, setReviewModalOpen] = useState(false)
+  const [detailLoading, setDetailLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
   const [stats, setStats] = useState<ListingStatisticsSummary>({
     pendingVerification: 0,
@@ -30,13 +35,12 @@ const PostVerification = () => {
     diamondListings: 0,
   })
   const [filterValues, setFilterValues] = useState<Record<string, unknown>>({
-    moderationStatus: 'PENDING_REVIEW', // New moderation workflow
+    moderationStatus: 'PENDING_REVIEW',
     page: 1,
     pageSize: 20,
   })
   const [totalCount, setTotalCount] = useState(0)
 
-  // Fetch listings on mount and whenever filters/pagination change
   useEffect(() => {
     fetchListings()
   }, [filterValues])
@@ -49,13 +53,11 @@ const PostVerification = () => {
         setTableLoading(true)
       }
 
-      // Map UI filters (key:value pairs from FilterDialog) to API format
       const apiFilters = mapUIFiltersToAPI(filterValues)
-
       const response = await ListingService.getAdminListings(apiFilters)
 
       if (response.data) {
-        const uiData = response.data.listings.map(mapApiDataToUI)
+        const uiData = response.data.listings.map(mapSummaryToUI)
         setPosts(uiData)
         setStats(response.data.statistics)
         setTotalCount(response.data.totalCount || 0)
@@ -69,14 +71,36 @@ const PostVerification = () => {
     }
   }
 
-  // Handle filter changes from DataTable
   const handleFilterChange = (newFilters: Record<string, unknown>) => {
     setFilterValues(newFilters)
   }
 
-  const handleReview = (post: UIPostData) => {
-    setSelectedPost(post)
+  const handleReview = async (post: UIPostData) => {
     setReviewModalOpen(true)
+    setSelectedPost(null)
+    setDetailLoading(true)
+    try {
+      const response = await ListingService.getListingDetail(post.id)
+      if (response.success && response.data) {
+        setSelectedPost(mapDetailToUI(response.data))
+      } else {
+        toast.error(response.message || 'Failed to load listing detail.')
+        setReviewModalOpen(false)
+      }
+    } catch (error) {
+      console.error('Error fetching listing detail:', error)
+      toast.error('Failed to load listing detail. Please try again.')
+      setReviewModalOpen(false)
+    } finally {
+      setDetailLoading(false)
+    }
+  }
+
+  const handleReviewModalChange = (open: boolean) => {
+    setReviewModalOpen(open)
+    if (!open) {
+      setSelectedPost(null)
+    }
   }
 
   const handleApprove = async (notes: string) => {
@@ -87,16 +111,13 @@ const PostVerification = () => {
       setActionLoading(true)
       const response = await ListingService.approveListing(selectedPost.id)
 
-      // Check if request was successful
       if (response && response.code !== '9999') {
         toast.success('Listing has been approved successfully.')
 
-        // Refresh listings
         await fetchListings()
         setReviewModalOpen(false)
         setSelectedPost(null)
       } else {
-        // Handle error response
         const errorMessage =
           response.message || 'Failed to approve listing. Please try again.'
         toast.error(errorMessage)
@@ -119,29 +140,25 @@ const PostVerification = () => {
 
     try {
       setActionLoading(true)
-      // Calculate deadline: 7 days from now
       const deadline = new Date()
       deadline.setDate(deadline.getDate() + 7)
 
       const response = await ListingService.rejectListingWithReason(
         selectedPost.id,
         reason,
-        true, // ownerActionRequired
+        true,
         deadline.toISOString(),
       )
 
-      // Check if request was successful
       if (response && response.code !== '9999') {
         toast.success(
           'Listing has been rejected. Owner will be notified to fix and resubmit.',
         )
 
-        // Refresh listings
         await fetchListings()
         setReviewModalOpen(false)
         setSelectedPost(null)
       } else {
-        // Handle error response
         const errorMessage =
           response.message || 'Failed to reject listing. Please try again.'
         toast.error(errorMessage)
@@ -167,21 +184,18 @@ const PostVerification = () => {
       const response = await ListingService.requestListingRevision(
         selectedPost.id,
         reason,
-        true, // ownerActionRequired
+        true,
       )
 
-      // Check if request was successful
       if (response && response.code !== '9999') {
         toast.success(
           'Revision requested. Owner will be notified to update the listing.',
         )
 
-        // Refresh listings
         await fetchListings()
         setReviewModalOpen(false)
         setSelectedPost(null)
       } else {
-        // Handle error response
         const errorMessage =
           response.message || 'Failed to request revision. Please try again.'
         toast.error(errorMessage)
@@ -202,10 +216,8 @@ const PostVerification = () => {
         </div>
       ) : (
         <div className='space-y-6'>
-          {/* Stats Cards */}
-          <PostStats stats={stats} totalPosts={posts.length} />
+          <PostStats stats={stats} />
 
-          {/* DataTable Component */}
           <PostTable
             data={posts}
             loading={tableLoading}
@@ -217,11 +229,11 @@ const PostVerification = () => {
         </div>
       )}
 
-      {/* Review Modal */}
       <PostReviewModal
         open={reviewModalOpen}
-        onOpenChange={setReviewModalOpen}
+        onOpenChange={handleReviewModalChange}
         selectedPost={selectedPost}
+        loading={detailLoading}
         onApprove={handleApprove}
         onReject={handleReject}
         onRequestRevision={handleRequestRevision}

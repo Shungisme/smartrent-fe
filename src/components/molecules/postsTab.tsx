@@ -4,14 +4,14 @@ import { toast } from 'sonner'
 import StatsCard from '@/components/molecules/statsCard'
 import LineChartCard from '@/components/molecules/lineChartCard'
 import { DashboardService } from '@/api/services/dashboard.service'
-import { type TimeRange } from '@/data/analyticsData'
+import { type DateRangeValue } from '@/components/molecules/dateRangePicker'
 import { FileText, Loader2 } from 'lucide-react'
 
 type PostsTabProps = {
-  timeRange: TimeRange
+  dateRange: DateRangeValue
 }
 
-const PostsTab: React.FC<PostsTabProps> = ({ timeRange }) => {
+const PostsTab: React.FC<PostsTabProps> = ({ dateRange }) => {
   const t = useTranslations('admin.analytics.posts')
   const tRevenue = useTranslations('admin.analytics.revenue')
 
@@ -20,11 +20,6 @@ const PostsTab: React.FC<PostsTabProps> = ({ timeRange }) => {
     useState<
       Awaited<ReturnType<typeof DashboardService.getListingCreation>>['data']
     >(null)
-
-  const mapTimeRangeToDays = (range: TimeRange): number => {
-    if (range === 'month') return 30
-    return 7
-  }
 
   const formatXLabel = (label: string, granularity: 'DAY' | 'MONTH') => {
     if (granularity === 'MONTH') {
@@ -38,8 +33,10 @@ const PostsTab: React.FC<PostsTabProps> = ({ timeRange }) => {
     const fetchListingCreation = async () => {
       try {
         setLoading(true)
-        const days = mapTimeRangeToDays(timeRange)
-        const response = await DashboardService.getListingCreation(days)
+        const response = await DashboardService.getListingCreation({
+          from: dateRange.from,
+          to: dateRange.to,
+        })
 
         if (!response.success || !response.data) {
           throw new Error(
@@ -60,7 +57,7 @@ const PostsTab: React.FC<PostsTabProps> = ({ timeRange }) => {
     }
 
     fetchListingCreation()
-  }, [timeRange, tRevenue])
+  }, [dateRange.from, dateRange.to, tRevenue])
 
   if (loading) {
     return (

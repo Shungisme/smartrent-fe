@@ -1,5 +1,6 @@
 import React from 'react'
 import { Cell, Pie, PieChart } from 'recharts'
+import { useTranslations } from 'next-intl'
 import {
   Card,
   CardContent,
@@ -34,6 +35,7 @@ const PieChartCard: React.FC<PieChartCardProps> = ({
   showPercentage = true,
   height = 'h-64',
 }) => {
+  const t = useTranslations('common')
   const total = data.reduce((sum, item) => sum + item.value, 0)
 
   const segments = data.map((item) => ({
@@ -109,7 +111,7 @@ const PieChartCard: React.FC<PieChartCardProps> = ({
             ))}
 
             {segments.length === 0 && (
-              <p className='text-sm text-muted-foreground'>No data</p>
+              <p className='text-sm text-muted-foreground'>{t('noData')}</p>
             )}
           </div>
         </div>

@@ -1,20 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useTranslations } from 'next-intl'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/atoms/select'
 import OverviewTab from '@/components/molecules/overviewTab'
 import UsersTab from '@/components/molecules/usersTab'
 import PostsTab from '@/components/molecules/postsTab'
 import RevenueTabAnalytics from '@/components/molecules/revenueTabAnalytics'
 import ReportsTab from '@/components/molecules/reportsTab'
-import type { TimeRange } from '@/data/analyticsData'
+import DateRangePicker, {
+  defaultDateRange,
+  type DateRangeValue,
+} from '@/components/molecules/dateRangePicker'
 
 export type AnalyticsSection =
   | 'overview'
@@ -30,36 +25,21 @@ type AnalyticsSectionPageProps = {
 const AnalyticsSectionPage: React.FC<AnalyticsSectionPageProps> = ({
   section,
 }) => {
-  const t = useTranslations('admin.analytics')
-  const [timeRange, setTimeRange] = useState<TimeRange>('month')
+  const [dateRange, setDateRange] = useState<DateRangeValue>(() =>
+    defaultDateRange(30),
+  )
 
   return (
     <div className='space-y-6'>
-      <div className='flex flex-col gap-3 sm:flex-row'>
-        <Select
-          value={timeRange}
-          onValueChange={(value) => setTimeRange(value as TimeRange)}
-        >
-          <SelectTrigger className='w-full sm:w-[180px]'>
-            <SelectValue placeholder={t('filters.timeRange.label')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value='today'>
-              {t('filters.timeRange.today')}
-            </SelectItem>
-            <SelectItem value='week'>{t('filters.timeRange.week')}</SelectItem>
-            <SelectItem value='month'>
-              {t('filters.timeRange.month')}
-            </SelectItem>
-          </SelectContent>
-        </Select>
+      <div className='flex justify-stretch sm:justify-start'>
+        <DateRangePicker value={dateRange} onChange={setDateRange} />
       </div>
 
-      {section === 'overview' && <OverviewTab timeRange={timeRange} />}
-      {section === 'users' && <UsersTab timeRange={timeRange} />}
-      {section === 'posts' && <PostsTab timeRange={timeRange} />}
-      {section === 'revenue' && <RevenueTabAnalytics timeRange={timeRange} />}
-      {section === 'reports' && <ReportsTab timeRange={timeRange} />}
+      {section === 'overview' && <OverviewTab dateRange={dateRange} />}
+      {section === 'users' && <UsersTab dateRange={dateRange} />}
+      {section === 'posts' && <PostsTab dateRange={dateRange} />}
+      {section === 'revenue' && <RevenueTabAnalytics dateRange={dateRange} />}
+      {section === 'reports' && <ReportsTab dateRange={dateRange} />}
     </div>
   )
 }

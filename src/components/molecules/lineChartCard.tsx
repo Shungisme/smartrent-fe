@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
+import { useTranslations } from 'next-intl'
 import {
   Card,
   CardContent,
@@ -39,6 +40,7 @@ const LineChartCard: React.FC<LineChartCardProps> = ({
   showGrid = true,
   showLegend = true,
 }) => {
+  const t = useTranslations('common')
   const pointCount = Math.max(
     labels.length,
     ...datasets.map((dataset) => dataset.data.length),
@@ -153,7 +155,9 @@ const LineChartCard: React.FC<LineChartCardProps> = ({
         </div>
 
         {datasets.length === 0 && (
-          <p className='text-center text-sm text-muted-foreground'>No data</p>
+          <p className='text-center text-sm text-muted-foreground'>
+            {t('noData')}
+          </p>
         )}
       </CardContent>
     </Card>
