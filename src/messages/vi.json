@@ -38,7 +38,9 @@
     "apply": "Áp dụng",
     "actions": "Thao tác",
     "noData": "Không tìm thấy dữ liệu",
-    "tryAdjustFilters": "Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm."
+    "tryAdjustFilters": "Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm.",
+    "rangeFrom": "Từ",
+    "rangeTo": "Đến"
   },
   "homePage": {
     "title": "Tìm Ngôi Nhà Mơ Ước",
@@ -1353,13 +1355,10 @@
       },
       "tiers": {
         "normal": "Tin Thường",
-        "silver": "VIP 1",
-        "gold": "VIP 2",
-        "diamond": "VIP 3",
-        "regular": "Tin Thường",
-        "vip1": "VIP 1",
-        "vip2": "VIP 2",
-        "vip3": "VIP 3"
+        "silver": "Hạng Bạc",
+        "gold": "Hạng Vàng",
+        "diamond": "Hạng Kim Cương",
+        "regular": "Tin Thường"
       }
     }
   },
@@ -1402,10 +1401,18 @@
       "apartment": "Căn hộ",
       "office": "Văn phòng",
       "land": "Đất",
+      "studio": "Studio",
       "category": "Danh Mục",
       "forSale": "Bán",
       "forRent": "Cho Thuê",
+      "share": "Chia Sẻ",
       "pickDateRange": "Chọn khoảng thời gian",
+      "titleSearch": "Tiêu đề",
+      "titleSearchPlaceholder": "Tìm theo tiêu đề",
+      "ownerSearch": "Chủ tin",
+      "ownerSearchPlaceholder": "Tên hoặc số điện thoại",
+      "postDate": "Ngày Đăng",
+      "expiryDate": "Ngày Hết Hạn",
       "vipTier": "Hạng VIP",
       "vipNormal": "Thường",
       "vipSilver": "Bạc",
@@ -1418,18 +1425,10 @@
       "no": "Không",
       "ownerUserId": "ID Chủ Sở Hữu",
       "ownerUserIdPlaceholder": "vd. user-123",
-      "minPrice": "Giá Tối Thiểu (VND)",
-      "minPricePlaceholder": "vd. 5000000",
-      "maxPrice": "Giá Tối Đa (VND)",
-      "maxPricePlaceholder": "vd. 15000000",
-      "minArea": "Diện Tích Tối Thiểu (m²)",
-      "minAreaPlaceholder": "vd. 20",
-      "maxArea": "Diện Tích Tối Đa (m²)",
-      "maxAreaPlaceholder": "vd. 100",
-      "minBedrooms": "Số Phòng Ngủ Tối Thiểu",
-      "minBedroomsPlaceholder": "vd. 1",
-      "maxBedrooms": "Số Phòng Ngủ Tối Đa",
-      "maxBedroomsPlaceholder": "vd. 5"
+      "priceRange": "Giá (VND)",
+      "areaRange": "Diện Tích (m²)",
+      "bedroomsRange": "Số Phòng Ngủ",
+      "bathroomsRange": "Số Phòng Tắm"
     },
     "table": {
       "title": "Tiêu đề",
@@ -1448,6 +1447,8 @@
     },
     "review": {
       "title": "Xem Xét Bài Đăng",
+      "loading": "Đang tải chi tiết bài đăng...",
+      "noData": "Không có dữ liệu",
       "noImages": "Không có hình ảnh",
       "postInfo": "Thông Tin Bài Đăng",
       "postCode": "Mã Bài Đăng",

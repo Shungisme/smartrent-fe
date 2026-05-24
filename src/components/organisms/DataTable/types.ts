@@ -16,7 +16,9 @@ export interface Column<T = Record<string, unknown>> {
 export type FilterType =
   | 'search'
   | 'select'
+  | 'date'
   | 'date-range'
+  | 'range'
   | 'multi-select'
   | 'custom'
 

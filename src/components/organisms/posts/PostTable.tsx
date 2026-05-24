@@ -150,7 +150,9 @@ export const PostTable: React.FC<PostTableProps> = ({
               {getPropertyTypeLabel(row.propertyInfo.type)}
             </div>
             <div className='text-xs text-gray-500'>
-              {row.propertyInfo.area}m² • {row.propertyInfo.district}
+              {row.propertyInfo.area ? `${row.propertyInfo.area}m²` : ''}
+              {row.propertyInfo.area && row.propertyInfo.district ? ' • ' : ''}
+              {row.propertyInfo.district}
             </div>
           </div>
         </div>
@@ -215,6 +217,32 @@ export const PostTable: React.FC<PostTableProps> = ({
 
   const filters: FilterConfig[] = [
     {
+      id: 'title',
+      type: 'search',
+      label: t('filters.titleSearch'),
+      placeholder: t('filters.titleSearchPlaceholder'),
+      isFilterField: true,
+    },
+    {
+      id: 'ownerSearch',
+      type: 'search',
+      label: t('filters.ownerSearch'),
+      placeholder: t('filters.ownerSearchPlaceholder'),
+      isFilterField: true,
+    },
+    {
+      id: 'postDate',
+      type: 'date-range',
+      label: t('filters.postDate'),
+      isFilterField: true,
+    },
+    {
+      id: 'expiryDate',
+      type: 'date-range',
+      label: t('filters.expiryDate'),
+      isFilterField: true,
+    },
+    {
       id: 'moderationStatus',
       type: 'select',
       label: t('filters.status'),
@@ -233,12 +261,11 @@ export const PostTable: React.FC<PostTableProps> = ({
       type: 'select',
       label: t('filters.type'),
       options: [
-        { value: 'HOUSE', label: t('filters.house') },
-        { value: 'APARTMENT', label: t('filters.apartment') },
-        { value: 'OFFICE', label: t('filters.office') },
         { value: 'ROOM', label: t('propertyTypes.room') },
-        { value: 'LAND', label: t('filters.land') },
-        { value: 'OTHER', label: t('propertyTypes.other') },
+        { value: 'APARTMENT', label: t('filters.apartment') },
+        { value: 'HOUSE', label: t('filters.house') },
+        { value: 'OFFICE', label: t('filters.office') },
+        { value: 'STUDIO', label: t('filters.studio') },
       ],
       isFilterField: true,
     },
@@ -247,8 +274,9 @@ export const PostTable: React.FC<PostTableProps> = ({
       type: 'select',
       label: t('filters.category'),
       options: [
-        { value: 'for_sale', label: t('filters.forSale') },
-        { value: 'for_rent', label: t('filters.forRent') },
+        { value: 'RENT', label: t('filters.forRent') },
+        { value: 'SALE', label: t('filters.forSale') },
+        { value: 'SHARE', label: t('filters.share') },
       ],
       isFilterField: true,
     },
@@ -265,82 +293,27 @@ export const PostTable: React.FC<PostTableProps> = ({
       isFilterField: true,
     },
     {
-      id: 'verified',
-      type: 'select',
-      label: t('filters.verified'),
-      options: [
-        { value: 'true', label: t('filters.yes') },
-        { value: 'false', label: t('filters.no') },
-      ],
+      id: 'price',
+      type: 'range',
+      label: t('filters.priceRange'),
       isFilterField: true,
     },
     {
-      id: 'isVerify',
-      type: 'select',
-      label: t('filters.pendingVerification'),
-      options: [
-        { value: 'true', label: t('filters.yes') },
-        { value: 'false', label: t('filters.no') },
-      ],
+      id: 'area',
+      type: 'range',
+      label: t('filters.areaRange'),
       isFilterField: true,
     },
     {
-      id: 'expired',
-      type: 'select',
-      label: t('filters.expired'),
-      options: [
-        { value: 'true', label: t('filters.yes') },
-        { value: 'false', label: t('filters.no') },
-      ],
+      id: 'bedroomsRange',
+      type: 'range',
+      label: t('filters.bedroomsRange'),
       isFilterField: true,
     },
     {
-      id: 'userId',
-      type: 'search',
-      label: t('filters.ownerUserId'),
-      placeholder: t('filters.ownerUserIdPlaceholder'),
-      isFilterField: true,
-    },
-    {
-      id: 'minPrice',
-      type: 'search',
-      label: t('filters.minPrice'),
-      placeholder: t('filters.minPricePlaceholder'),
-      isFilterField: true,
-    },
-    {
-      id: 'maxPrice',
-      type: 'search',
-      label: t('filters.maxPrice'),
-      placeholder: t('filters.maxPricePlaceholder'),
-      isFilterField: true,
-    },
-    {
-      id: 'minArea',
-      type: 'search',
-      label: t('filters.minArea'),
-      placeholder: t('filters.minAreaPlaceholder'),
-      isFilterField: true,
-    },
-    {
-      id: 'maxArea',
-      type: 'search',
-      label: t('filters.maxArea'),
-      placeholder: t('filters.maxAreaPlaceholder'),
-      isFilterField: true,
-    },
-    {
-      id: 'minBedrooms',
-      type: 'search',
-      label: t('filters.minBedrooms'),
-      placeholder: t('filters.minBedroomsPlaceholder'),
-      isFilterField: true,
-    },
-    {
-      id: 'maxBedrooms',
-      type: 'search',
-      label: t('filters.maxBedrooms'),
-      placeholder: t('filters.maxBedroomsPlaceholder'),
+      id: 'bathroomsRange',
+      type: 'range',
+      label: t('filters.bathroomsRange'),
       isFilterField: true,
     },
   ]

@@ -44,6 +44,7 @@ interface PostReviewModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   selectedPost: UIPostData | null
+  loading?: boolean
   onApprove: (notes: string) => void
   onReject: (reason: string) => void
   onRequestRevision: (reason: string) => void
@@ -84,6 +85,7 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   open,
   onOpenChange,
   selectedPost,
+  loading = false,
   onApprove,
   onReject,
   onRequestRevision,
@@ -192,7 +194,34 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [lightboxOpen, selectedPost])
 
-  if (!selectedPost) return null
+  if (!selectedPost) {
+    if (!open) return null
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className='max-w-3xl w-[calc(100%-2rem)] mx-auto max-h-[90vh] overflow-hidden p-0 gap-0'>
+          <div className='flex max-h-[90vh] flex-col'>
+            <DialogHeader className='shrink-0 border-b border-border/60 px-6 py-4'>
+              <DialogTitle className='text-xl md:text-2xl font-semibold'>
+                {t('review.title')}
+              </DialogTitle>
+            </DialogHeader>
+            <div className='flex flex-1 items-center justify-center py-24'>
+              {loading ? (
+                <div className='flex flex-col items-center gap-3 text-muted-foreground'>
+                  <Loader2 className='h-8 w-8 animate-spin text-primary' />
+                  <span className='text-sm'>{t('review.loading')}</span>
+                </div>
+              ) : (
+                <span className='text-sm text-muted-foreground'>
+                  {t('review.noData')}
+                </span>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    )
+  }
 
   const images = selectedPost.images ?? []
   const visibleImages = images.slice(0, MAX_VISIBLE_THUMBS)

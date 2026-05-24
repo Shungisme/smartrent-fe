@@ -4,16 +4,17 @@ import { useTranslations } from 'next-intl'
 
 interface PostStatsProps {
   stats: ListingStatisticsSummary
-  totalPosts: number
 }
 
-export const PostStats: React.FC<PostStatsProps> = ({ stats, totalPosts }) => {
+export const PostStats: React.FC<PostStatsProps> = ({ stats }) => {
   const t = useTranslations('posts')
 
   return (
     <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
       <div className='rounded-xl border border-gray-100 bg-white p-6'>
-        <div className='text-2xl font-bold text-gray-900'>{totalPosts}</div>
+        <div className='text-2xl font-bold text-gray-900'>
+          {stats.totalListings ?? 0}
+        </div>
         <div className='mt-1 text-sm text-gray-400'>{t('stats.total')}</div>
       </div>
 

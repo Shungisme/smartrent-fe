@@ -38,7 +38,9 @@
     "apply": "Apply",
     "actions": "Actions",
     "noData": "No data found",
-    "tryAdjustFilters": "Try adjusting your filters or search terms."
+    "tryAdjustFilters": "Try adjusting your filters or search terms.",
+    "rangeFrom": "From",
+    "rangeTo": "To"
   },
   "homePage": {
     "title": "Find Your Dream Home",
@@ -1389,13 +1391,10 @@
       },
       "tiers": {
         "normal": "Regular Listing",
-        "silver": "VIP 1",
-        "gold": "VIP 2",
-        "diamond": "VIP 3",
-        "regular": "Regular Listing",
-        "vip1": "VIP 1",
-        "vip2": "VIP 2",
-        "vip3": "VIP 3"
+        "silver": "Silver",
+        "gold": "Gold",
+        "diamond": "Diamond",
+        "regular": "Regular Listing"
       }
     }
   },
@@ -1438,10 +1437,18 @@
       "apartment": "Apartment",
       "office": "Office",
       "land": "Land",
+      "studio": "Studio",
       "category": "Category",
       "forSale": "For Sale",
       "forRent": "For Rent",
+      "share": "Share",
       "pickDateRange": "Pick a date range",
+      "titleSearch": "Title",
+      "titleSearchPlaceholder": "Search by title",
+      "ownerSearch": "Owner",
+      "ownerSearchPlaceholder": "Name or phone number",
+      "postDate": "Posted Date",
+      "expiryDate": "Expiry Date",
       "vipTier": "VIP Tier",
       "vipNormal": "Normal",
       "vipSilver": "Silver",
@@ -1454,18 +1461,10 @@
       "no": "No",
       "ownerUserId": "Owner User ID",
       "ownerUserIdPlaceholder": "e.g. user-123",
-      "minPrice": "Min Price (VND)",
-      "minPricePlaceholder": "e.g. 5000000",
-      "maxPrice": "Max Price (VND)",
-      "maxPricePlaceholder": "e.g. 15000000",
-      "minArea": "Min Area (m²)",
-      "minAreaPlaceholder": "e.g. 20",
-      "maxArea": "Max Area (m²)",
-      "maxAreaPlaceholder": "e.g. 100",
-      "minBedrooms": "Min Bedrooms",
-      "minBedroomsPlaceholder": "e.g. 1",
-      "maxBedrooms": "Max Bedrooms",
-      "maxBedroomsPlaceholder": "e.g. 5"
+      "priceRange": "Price (VND)",
+      "areaRange": "Area (m²)",
+      "bedroomsRange": "Bedrooms",
+      "bathroomsRange": "Bathrooms"
     },
     "table": {
       "title": "Title",
@@ -1484,6 +1483,8 @@
     },
     "review": {
       "title": "Review Post",
+      "loading": "Loading listing detail...",
+      "noData": "No data available",
       "noImages": "No images provided",
       "postInfo": "Post Information",
       "postCode": "Post Code",
