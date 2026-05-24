@@ -1,5 +1,6 @@
 import React from 'react'
 import { ChevronUp, ChevronDown, ChevronsUpDown, SearchX } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { EmptyState } from '@/components/molecules/emptyState'
 import type { TableDesktopProps, Column } from './types'
 
@@ -10,13 +11,14 @@ export function TableDesktop<T = any>({
   onSort,
   actions,
   getRowKey,
-  emptyMessage = 'No data found',
+  emptyMessage,
   selectable,
   selectedRows = [],
   onRowSelect,
   onSelectAll,
   maxHeightClassName,
 }: TableDesktopProps<T>) {
+  const t = useTranslations('dataTable')
   const getValue = (row: T, column: Column<T>) => {
     if (typeof column.accessor === 'function') {
       return column.accessor(row)
@@ -83,7 +85,7 @@ export function TableDesktop<T = any>({
               {/* Actions column */}
               {actions && (
                 <th className='px-5 py-3.5 text-right text-xs font-semibold tracking-wide text-muted-foreground uppercase'>
-                  Actions
+                  {t('actions')}
                 </th>
               )}
             </tr>
@@ -101,8 +103,8 @@ export function TableDesktop<T = any>({
                 >
                   <EmptyState
                     icon={SearchX}
-                    title={emptyMessage}
-                    description='Try adjusting your filters or search terms.'
+                    title={emptyMessage ?? t('noData')}
+                    description={t('tryAdjustFilters')}
                   />
                 </td>
               </tr>

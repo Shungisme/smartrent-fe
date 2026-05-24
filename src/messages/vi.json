@@ -1,6 +1,7 @@
 {
   "common": {
-    "or": "Hoặc"
+    "or": "Hoặc",
+    "noData": "Không có dữ liệu"
   },
   "notFound": {
     "title": "404",
@@ -34,7 +35,10 @@
     "enterValue": "Nhập giá trị",
     "addFilter": "Thêm Bộ lọc",
     "cancel": "Hủy",
-    "apply": "Áp dụng"
+    "apply": "Áp dụng",
+    "actions": "Thao tác",
+    "noData": "Không tìm thấy dữ liệu",
+    "tryAdjustFilters": "Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm."
   },
   "homePage": {
     "title": "Tìm Ngôi Nhà Mơ Ước",
@@ -953,11 +957,25 @@
           "bar": "Biểu đồ cột",
           "area": "Biểu đồ khu vực"
         },
-        "timeRange": {
-          "label": "Khoảng thời gian",
-          "today": "Hôm nay",
-          "week": "Tuần này",
-          "month": "Tháng qua"
+        "dateRange": {
+          "label": "Khoảng ngày",
+          "from": "Từ ngày",
+          "to": "Đến ngày"
+        },
+        "dateRangePicker": {
+          "placeholder": "Chọn khoảng ngày",
+          "apply": "Áp dụng",
+          "clear": "Xóa",
+          "selectStart": "Chọn ngày bắt đầu",
+          "selectEnd": "Chọn ngày kết thúc",
+          "presets": {
+            "today": "Hôm nay",
+            "yesterday": "Hôm qua",
+            "last7": "7 ngày qua",
+            "last30": "30 ngày qua",
+            "thisMonth": "Tháng này",
+            "lastMonth": "Tháng trước"
+          }
         }
       },
       "overview": {
@@ -1272,34 +1290,26 @@
     }
   },
   "premium": {
-    "title": "Quản Lý Tính Năng Trả Phí & Khuyến Mãi",
-    "description": "Quản lý gói thành viên, mã khuyến mãi, loại tin đăng và gói đẩy tin",
+    "title": "Quản Lý Tính Năng Trả Phí",
+    "description": "Quản lý gói thành viên và loại tin đăng",
     "breadcrumb": {
       "menu": "Thực Đơn Điều Hướng",
-      "title": "Tính Năng Trả Phí & Khuyến Mãi",
+      "title": "Tính Năng Trả Phí",
       "overview": "Tổng Quan"
     },
     "tabs": {
       "overview": "Tổng Quan",
       "membership": "Thành Viên",
-      "promotions": "Khuyến Mãi",
-      "listingTypes": "Loại Tin Đăng",
-      "postBoosts": "Đẩy Tin"
+      "listingTypes": "Loại Tin Đăng"
     },
     "overview": {
       "activeMemberships": "Gói Thành Viên Hoạt Động",
       "packagesRunning": "Gói đang chạy",
-      "activePromos": "Khuyến Mãi Hoạt Động",
-      "totalUses": "tổng lượt dùng",
       "listingTypes": "Loại Tin Đăng",
       "regularVipTiers": "Regular + VIP tiers",
-      "boostPackages": "Gói Đẩy Tin",
-      "value": "giá trị",
       "membershipRevenue": "Doanh Thu Gói Thành Viên",
       "revenue": "Doanh thu",
-      "users": "Người dùng",
-      "recentPromoActivity": "Hoạt Động Khuyến Mãi Gần Đây",
-      "usage": "Đã dùng"
+      "users": "Người dùng"
     },
     "actions": {
       "edit": "Sửa",
@@ -1320,47 +1330,27 @@
         "noDiscount": "Không giảm giá"
       }
     },
-    "promotions": {
-      "description": "Quản lý mã khuyến mãi và chiến dịch giảm giá",
-      "createPromo": "Tạo Mã Khuyến Mãi",
-      "table": {
-        "code": "Mã",
-        "type": "Loại",
-        "target": "Đối Tượng",
-        "discount": "Giảm Giá",
-        "usage": "Đã Dùng",
-        "validUntil": "Hết Hạn",
-        "status": "Trạng Thái",
-        "actions": "Thao Tác"
-      },
-      "types": {
-        "percentage": "Phần Trăm",
-        "fixed_amount": "Số Tiền Cố Định",
-        "free_trial": "Dùng Thử Miễn Phí"
-      },
-      "targets": {
-        "all": "Tất Cả Người Dùng",
-        "new_users": "Người Dùng Mới",
-        "premium": "Premium",
-        "basic": "Basic"
-      },
-      "statuses": {
-        "active": "Hoạt Động",
-        "expired": "Hết Hạn",
-        "scheduled": "Đã Lên Lịch"
-      }
-    },
     "listingTypes": {
-      "description": "Quản lý giá cho các bậc tin đăng thường và VIP",
-      "dayPricing": "Giá Theo Ngày",
+      "description": "Xem giá và tính năng cho các bậc tin đăng thường và VIP",
+      "loading": "Đang tải bậc VIP...",
+      "empty": "Chưa có bậc VIP nào",
+      "level": "Cấp {level}",
+      "dayPricing": "Bảng Giá",
+      "perDay": "mỗi ngày",
       "days": "ngày",
-      "clickPricing": "Giá Theo Lượt Click",
-      "basePrice": "Giá cơ bản",
-      "perClick": "mỗi click",
-      "minClicks": "Tối thiểu",
-      "maxClicks": "Tối đa",
-      "clicks": "clicks",
-      "editPricing": "Chỉnh Sửa Giá",
+      "mediaLimits": "Giới hạn hình ảnh & video",
+      "maxImages": "Số ảnh tối đa",
+      "maxVideos": "Số video tối đa",
+      "capabilities": "Quyền lợi",
+      "features": "Tính Năng",
+      "active": "Đang Hoạt Động",
+      "inactive": "Không Hoạt Động",
+      "caps": {
+        "autoApprove": "Tự động duyệt tin",
+        "noAds": "Không hiển thị quảng cáo",
+        "priorityDisplay": "Ưu tiên hiển thị",
+        "hasShadowListing": "Tặng kèm tin thường"
+      },
       "tiers": {
         "normal": "Tin Thường",
         "silver": "VIP 1",
@@ -1371,17 +1361,6 @@
         "vip2": "VIP 2",
         "vip3": "VIP 3"
       }
-    },
-    "postBoosts": {
-      "description": "Quản lý gói đẩy tin và giá",
-      "addBoost": "Tạo Gói Đẩy Tin",
-      "boostsPerDay": "lượt đẩy/ngày",
-      "activePackage": "Gói Hoạt Động",
-      "inactivePackage": "Gói Không Hoạt Động",
-      "activate": "Kích Hoạt",
-      "deactivate": "Vô Hiệu Hóa",
-      "edit": "Chỉnh Sửa",
-      "delete": "Xóa"
     }
   },
   "posts": {
@@ -1426,7 +1405,31 @@
       "category": "Danh Mục",
       "forSale": "Bán",
       "forRent": "Cho Thuê",
-      "pickDateRange": "Chọn khoảng thời gian"
+      "pickDateRange": "Chọn khoảng thời gian",
+      "vipTier": "Hạng VIP",
+      "vipNormal": "Thường",
+      "vipSilver": "Bạc",
+      "vipGold": "Vàng",
+      "vipDiamond": "Kim Cương",
+      "verified": "Đã Xác Minh",
+      "pendingVerification": "Đang Chờ Xác Minh",
+      "expired": "Đã Hết Hạn",
+      "yes": "Có",
+      "no": "Không",
+      "ownerUserId": "ID Chủ Sở Hữu",
+      "ownerUserIdPlaceholder": "vd. user-123",
+      "minPrice": "Giá Tối Thiểu (VND)",
+      "minPricePlaceholder": "vd. 5000000",
+      "maxPrice": "Giá Tối Đa (VND)",
+      "maxPricePlaceholder": "vd. 15000000",
+      "minArea": "Diện Tích Tối Thiểu (m²)",
+      "minAreaPlaceholder": "vd. 20",
+      "maxArea": "Diện Tích Tối Đa (m²)",
+      "maxAreaPlaceholder": "vd. 100",
+      "minBedrooms": "Số Phòng Ngủ Tối Thiểu",
+      "minBedroomsPlaceholder": "vd. 1",
+      "maxBedrooms": "Số Phòng Ngủ Tối Đa",
+      "maxBedroomsPlaceholder": "vd. 5"
     },
     "table": {
       "title": "Tiêu đề",
@@ -1722,7 +1725,13 @@
       "search": "Tìm kiếm",
       "searchPlaceholder": "Tìm kiếm theo tiêu đề, nội dung...",
       "status": "Trạng Thái",
-      "category": "Danh Mục"
+      "category": "Danh Mục",
+      "title": "Tiêu đề",
+      "titlePlaceholder": "vd. thị trường",
+      "summary": "Tóm tắt",
+      "summaryPlaceholder": "vd. quý",
+      "tag": "Thẻ",
+      "tagPlaceholder": "vd. thị trường,đầu tư"
     },
     "messages": {
       "fetchError": "Không thể tải danh sách tin tức. Vui lòng thử lại.",

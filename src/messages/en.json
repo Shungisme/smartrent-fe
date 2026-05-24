@@ -1,6 +1,7 @@
 {
   "common": {
-    "or": "Or"
+    "or": "Or",
+    "noData": "No data"
   },
   "notFound": {
     "title": "404",
@@ -34,7 +35,10 @@
     "enterValue": "Enter value",
     "addFilter": "Add Filter",
     "cancel": "Cancel",
-    "apply": "Apply"
+    "apply": "Apply",
+    "actions": "Actions",
+    "noData": "No data found",
+    "tryAdjustFilters": "Try adjusting your filters or search terms."
   },
   "homePage": {
     "title": "Find Your Dream Home",
@@ -989,11 +993,25 @@
           "bar": "Bar Chart",
           "area": "Area Chart"
         },
-        "timeRange": {
-          "label": "Time Range",
-          "today": "Today",
-          "week": "This Week",
-          "month": "Past Month"
+        "dateRange": {
+          "label": "Date Range",
+          "from": "From",
+          "to": "To"
+        },
+        "dateRangePicker": {
+          "placeholder": "Select date range",
+          "apply": "Apply",
+          "clear": "Clear",
+          "selectStart": "Select start date",
+          "selectEnd": "Select end date",
+          "presets": {
+            "today": "Today",
+            "yesterday": "Yesterday",
+            "last7": "Last 7 days",
+            "last30": "Last 30 days",
+            "thisMonth": "This month",
+            "lastMonth": "Last month"
+          }
         }
       },
       "overview": {
@@ -1308,34 +1326,26 @@
     }
   },
   "premium": {
-    "title": "Paid Features & Promotions Management",
-    "description": "Manage membership packages, promotional codes, listing types, and boost packages",
+    "title": "Paid Features Management",
+    "description": "Manage membership packages and listing types",
     "breadcrumb": {
       "menu": "Navigation Menu",
-      "title": "Paid Features & Promotions",
+      "title": "Paid Features",
       "overview": "Overview"
     },
     "tabs": {
       "overview": "Overview",
       "membership": "Membership",
-      "promotions": "Promotions",
-      "listingTypes": "Listing Types",
-      "postBoosts": "Post Boosts"
+      "listingTypes": "Listing Types"
     },
     "overview": {
       "activeMemberships": "Active Memberships",
       "packagesRunning": "Packages running",
-      "activePromos": "Active Promos",
-      "totalUses": "total uses",
       "listingTypes": "Listing Types",
       "regularVipTiers": "Regular + VIP tiers",
-      "boostPackages": "Boost Packages",
-      "value": "value",
       "membershipRevenue": "Membership Package Revenue",
       "revenue": "Revenue",
-      "users": "Users",
-      "recentPromoActivity": "Recent Promotional Activity",
-      "usage": "Usage"
+      "users": "Users"
     },
     "actions": {
       "edit": "Edit",
@@ -1356,47 +1366,27 @@
         "noDiscount": "No discount"
       }
     },
-    "promotions": {
-      "description": "Manage promotional codes and discount campaigns",
-      "createPromo": "Create Promo Code",
-      "table": {
-        "code": "Code",
-        "type": "Type",
-        "target": "Target",
-        "discount": "Discount",
-        "usage": "Usage",
-        "validUntil": "Valid Until",
-        "status": "Status",
-        "actions": "Actions"
-      },
-      "types": {
-        "percentage": "Percentage",
-        "fixed_amount": "Fixed Amount",
-        "free_trial": "Free Trial"
-      },
-      "targets": {
-        "all": "All Users",
-        "new_users": "New Users",
-        "premium": "Premium",
-        "basic": "Basic"
-      },
-      "statuses": {
-        "active": "Active",
-        "expired": "Expired",
-        "scheduled": "Scheduled"
-      }
-    },
     "listingTypes": {
-      "description": "Manage pricing for regular and VIP listing tiers",
-      "dayPricing": "Day Pricing",
+      "description": "View pricing and features for regular and VIP listing tiers",
+      "loading": "Loading VIP tiers...",
+      "empty": "No VIP tiers available",
+      "level": "Level {level}",
+      "dayPricing": "Pricing",
+      "perDay": "per day",
       "days": "days",
-      "clickPricing": "Click Pricing",
-      "basePrice": "Base price",
-      "perClick": "per click",
-      "minClicks": "Min",
-      "maxClicks": "Max",
-      "clicks": "clicks",
-      "editPricing": "Edit Pricing",
+      "mediaLimits": "Media limits",
+      "maxImages": "Max images",
+      "maxVideos": "Max videos",
+      "capabilities": "Capabilities",
+      "features": "Features",
+      "active": "Active",
+      "inactive": "Inactive",
+      "caps": {
+        "autoApprove": "Auto-approve listings",
+        "noAds": "No advertisement banners",
+        "priorityDisplay": "Priority display",
+        "hasShadowListing": "Shadow listing bonus"
+      },
       "tiers": {
         "normal": "Regular Listing",
         "silver": "VIP 1",
@@ -1407,17 +1397,6 @@
         "vip2": "VIP 2",
         "vip3": "VIP 3"
       }
-    },
-    "postBoosts": {
-      "description": "Manage post boost packages and pricing",
-      "addBoost": "Create Boost Package",
-      "boostsPerDay": "boosts/day",
-      "activePackage": "Active Package",
-      "inactivePackage": "Inactive Package",
-      "activate": "Activate",
-      "deactivate": "Deactivate",
-      "edit": "Edit",
-      "delete": "Delete"
     }
   },
   "posts": {
@@ -1462,7 +1441,31 @@
       "category": "Category",
       "forSale": "For Sale",
       "forRent": "For Rent",
-      "pickDateRange": "Pick a date range"
+      "pickDateRange": "Pick a date range",
+      "vipTier": "VIP Tier",
+      "vipNormal": "Normal",
+      "vipSilver": "Silver",
+      "vipGold": "Gold",
+      "vipDiamond": "Diamond",
+      "verified": "Verified",
+      "pendingVerification": "Pending Verification",
+      "expired": "Expired",
+      "yes": "Yes",
+      "no": "No",
+      "ownerUserId": "Owner User ID",
+      "ownerUserIdPlaceholder": "e.g. user-123",
+      "minPrice": "Min Price (VND)",
+      "minPricePlaceholder": "e.g. 5000000",
+      "maxPrice": "Max Price (VND)",
+      "maxPricePlaceholder": "e.g. 15000000",
+      "minArea": "Min Area (m²)",
+      "minAreaPlaceholder": "e.g. 20",
+      "maxArea": "Max Area (m²)",
+      "maxAreaPlaceholder": "e.g. 100",
+      "minBedrooms": "Min Bedrooms",
+      "minBedroomsPlaceholder": "e.g. 1",
+      "maxBedrooms": "Max Bedrooms",
+      "maxBedroomsPlaceholder": "e.g. 5"
     },
     "table": {
       "title": "Title",
@@ -1758,7 +1761,13 @@
       "search": "Search",
       "searchPlaceholder": "Search by title, content...",
       "status": "Status",
-      "category": "Category"
+      "category": "Category",
+      "title": "Title",
+      "titlePlaceholder": "e.g. market",
+      "summary": "Summary",
+      "summaryPlaceholder": "e.g. quarterly",
+      "tag": "Tag",
+      "tagPlaceholder": "e.g. market,investment"
     },
     "messages": {
       "fetchError": "Unable to load news list. Please try again.",

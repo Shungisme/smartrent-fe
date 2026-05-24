@@ -1,5 +1,6 @@
 import React from 'react'
 import { SearchX } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { EmptyState } from '@/components/molecules/emptyState'
 import type { TableMobileProps, Column } from './types'
 
@@ -9,8 +10,9 @@ export function TableMobile<T = any>({
   actions,
   customRender,
   getRowKey,
-  emptyMessage = 'No data found',
+  emptyMessage,
 }: TableMobileProps<T>) {
+  const t = useTranslations('dataTable')
   const getValue = (row: T, column: Column<T>) => {
     if (typeof column.accessor === 'function') {
       return column.accessor(row)
@@ -26,8 +28,8 @@ export function TableMobile<T = any>({
       <div className='table-surface lg:hidden'>
         <EmptyState
           icon={SearchX}
-          title={emptyMessage}
-          description='Try adjusting your filters or search terms.'
+          title={emptyMessage ?? t('noData')}
+          description={t('tryAdjustFilters')}
         />
       </div>
     )

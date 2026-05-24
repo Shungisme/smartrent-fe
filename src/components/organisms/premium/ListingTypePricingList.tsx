@@ -1,24 +1,71 @@
 import React from 'react'
-import { Pencil } from 'lucide-react'
+import { Check, X, Sparkles } from 'lucide-react'
 import { Badge } from '@/components/atoms/badge'
-import { Button } from '@/components/atoms/button'
-import { Card } from '@/components/atoms/card'
-import { useTranslations } from 'next-intl'
-import { ListingTypePricing } from '@/types/premium.type'
+import { useLocale, useTranslations } from 'next-intl'
+import { VIPTier } from '@/api/types/vip-tier.type'
 import { cn } from '@/lib/utils'
 
 interface ListingTypePricingListProps {
-  listingTypes: ListingTypePricing[]
+  tiers: VIPTier[]
   loading: boolean
-  onEdit: (tier: ListingTypePricing) => void
+}
+
+const formatVND = (value: number) => `${value.toLocaleString('vi-VN')}đ`
+
+type TierStyle = {
+  accent: string
+  ring: string
+  title: string
+  price: string
+  badge: string
+}
+
+const tierStyles: Record<string, TierStyle> = {
+  NORMAL: {
+    accent: 'bg-slate-400',
+    ring: 'ring-slate-200',
+    title: 'text-slate-700',
+    price: 'text-slate-900',
+    badge: 'bg-slate-100 text-slate-700',
+  },
+  SILVER: {
+    accent: 'bg-sky-500',
+    ring: 'ring-sky-200',
+    title: 'text-sky-700',
+    price: 'text-sky-700',
+    badge: 'bg-sky-100 text-sky-700',
+  },
+  GOLD: {
+    accent: 'bg-amber-500',
+    ring: 'ring-amber-200',
+    title: 'text-amber-700',
+    price: 'text-amber-700',
+    badge: 'bg-amber-100 text-amber-700',
+  },
+  DIAMOND: {
+    accent: 'bg-gradient-to-r from-rose-500 to-orange-500',
+    ring: 'ring-rose-200',
+    title: 'text-rose-700',
+    price: 'text-rose-600',
+    badge:
+      'bg-gradient-to-r from-rose-500 to-orange-500 text-white border-transparent',
+  },
+}
+
+const fallbackStyle: TierStyle = {
+  accent: 'bg-slate-400',
+  ring: 'ring-slate-200',
+  title: 'text-slate-700',
+  price: 'text-slate-900',
+  badge: 'bg-slate-100 text-slate-700',
 }
 
 export const ListingTypePricingList: React.FC<ListingTypePricingListProps> = ({
-  listingTypes,
+  tiers,
   loading,
-  onEdit,
 }) => {
   const t = useTranslations('premium')
+  const locale = useLocale()
 
   if (loading) {
     return (
@@ -26,92 +73,210 @@ export const ListingTypePricingList: React.FC<ListingTypePricingListProps> = ({
         <div className='text-center'>
           <div className='mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-primary'></div>
           <p className='mt-4 text-sm text-muted-foreground'>
-            Loading VIP tiers...
+            {t('listingTypes.loading')}
           </p>
         </div>
       </div>
     )
   }
 
+  if (tiers.length === 0) {
+    return (
+      <div className='flex justify-center py-12'>
+        <p className='text-sm text-muted-foreground'>
+          {t('listingTypes.empty')}
+        </p>
+      </div>
+    )
+  }
+
+  const sortedTiers = [...tiers].sort(
+    (a, b) => (a.displayOrder ?? a.tierLevel) - (b.displayOrder ?? b.tierLevel),
+  )
+
   return (
-    <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
-      {listingTypes.map((listingType) => (
-        <Card key={listingType.tier} className='gap-5 p-6'>
-          <div className='flex items-start justify-between'>
-            <Badge className={cn('text-sm font-medium', listingType.color)}>
-              {listingType.name || t(`listingTypes.tiers.${listingType.tier}`)}
-            </Badge>
-            <label className='relative inline-flex cursor-pointer items-center'>
-              <input
-                type='checkbox'
-                className='peer sr-only'
-                checked={listingType.isActive}
-                readOnly
-              />
-              <div className="peer h-6 w-11 rounded-full bg-muted after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-border after:bg-card after:transition-all after:content-[''] peer-checked:bg-primary peer-checked:after:translate-x-full peer-checked:after:border-primary-foreground peer-focus:ring-4 peer-focus:ring-ring"></div>
-            </label>
-          </div>
+    <div className='grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4'>
+      {sortedTiers.map((tier) => {
+        const style = tierStyles[tier.tierCode] || fallbackStyle
+        const name = locale === 'vi' ? tier.tierName : tier.tierNameEn
+        const longerPricing = [
+          { days: 10, price: tier.price10Days },
+          { days: 15, price: tier.price15Days },
+          { days: 30, price: tier.price30Days },
+        ]
+        const capabilities = [
+          { key: 'autoApprove', enabled: tier.autoApprove },
+          { key: 'noAds', enabled: tier.noAds },
+          { key: 'priorityDisplay', enabled: tier.priorityDisplay },
+          { key: 'hasShadowListing', enabled: tier.hasShadowListing },
+        ] as const
 
-          {/* Day Pricing */}
-          <div className='flex flex-col gap-2'>
-            <h4 className='mb-2 text-sm font-semibold text-foreground'>
-              {t('listingTypes.dayPricing')}
-            </h4>
-            <div className='grid grid-cols-2 gap-3'>
-              {listingType.dayPricing.map((pricing) => (
-                <div
-                  key={pricing.days}
-                  className='rounded-lg border border-border p-3'
-                >
-                  <div className='text-xs text-muted-foreground'>
-                    {pricing.days} {t('listingTypes.days')}
-                  </div>
-                  <div className='font-semibold text-foreground'>
-                    {pricing.price}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Click Pricing */}
-          <div className='flex flex-col gap-2'>
-            <h4 className='mb-2 text-sm font-semibold text-foreground'>
-              {t('listingTypes.clickPricing')}
-            </h4>
-            <div className='rounded-lg border border-border p-3'>
-              <div className='flex items-center justify-between'>
-                <span className='text-sm text-muted-foreground'>
-                  {t('listingTypes.basePrice')}
-                </span>
-                <span className='font-semibold text-foreground'>
-                  {listingType.clickPricing.basePrice}/
-                  {t('listingTypes.perClick')}
-                </span>
-              </div>
-              <div className='mt-2 flex items-center justify-between'>
-                <span className='text-sm text-muted-foreground'>
-                  {t('listingTypes.minClicks')} - {t('listingTypes.maxClicks')}
-                </span>
-                <span className='text-sm text-foreground'>
-                  {listingType.clickPricing.minClicks} -{' '}
-                  {listingType.clickPricing.maxClicks.toLocaleString()}{' '}
-                  {t('listingTypes.clicks')}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <Button
-            variant='outline'
-            className='w-full'
-            onClick={() => onEdit(listingType)}
+        return (
+          <div
+            key={tier.tierId}
+            className={cn(
+              'relative flex flex-col overflow-hidden rounded-2xl bg-card shadow-sm ring-1 transition-all hover:-translate-y-0.5 hover:shadow-lg',
+              style.ring,
+            )}
           >
-            <Pencil className='mr-2 h-4 w-4' />
-            {t('listingTypes.editPricing')}
-          </Button>
-        </Card>
-      ))}
+            <div className={cn('h-1 w-full', style.accent)} />
+
+            <div className='flex flex-col gap-5 p-6'>
+              <div className='flex items-start justify-between gap-2'>
+                <div className='flex flex-col gap-1'>
+                  <span
+                    className={cn(
+                      'text-[11px] font-bold uppercase tracking-wider',
+                      style.title,
+                    )}
+                  >
+                    {name ||
+                      t(`listingTypes.tiers.${tier.tierCode.toLowerCase()}`)}
+                  </span>
+                  <span className='text-xs text-muted-foreground'>
+                    {t('listingTypes.level', { level: tier.tierLevel })}
+                  </span>
+                </div>
+                {tier.hasBadge && tier.badgeName ? (
+                  <Badge
+                    className={cn(
+                      'text-[10px] font-bold uppercase tracking-wide',
+                      style.badge,
+                    )}
+                  >
+                    {tier.badgeName}
+                  </Badge>
+                ) : (
+                  <Badge
+                    variant='outline'
+                    className={cn(
+                      'text-[10px]',
+                      tier.isActive
+                        ? 'border-green-200 bg-green-50 text-green-700'
+                        : 'border-gray-200 bg-gray-50 text-gray-600',
+                    )}
+                  >
+                    {tier.isActive
+                      ? t('listingTypes.active')
+                      : t('listingTypes.inactive')}
+                  </Badge>
+                )}
+              </div>
+
+              <div className='flex flex-col gap-1'>
+                <div className='flex items-baseline gap-1.5'>
+                  <span
+                    className={cn(
+                      'text-3xl font-bold tracking-tight',
+                      style.price,
+                    )}
+                  >
+                    {formatVND(tier.pricePerDay)}
+                  </span>
+                  <span className='text-sm text-muted-foreground'>
+                    /{t('listingTypes.perDay')}
+                  </span>
+                </div>
+                {tier.description && (
+                  <p className='text-xs leading-relaxed text-muted-foreground'>
+                    {tier.description}
+                  </p>
+                )}
+              </div>
+
+              <div className='flex flex-col gap-2'>
+                <div className='text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
+                  {t('listingTypes.dayPricing')}
+                </div>
+                <dl className='flex flex-col gap-1.5 text-sm'>
+                  {longerPricing.map((p) => (
+                    <div
+                      key={p.days}
+                      className='flex items-baseline justify-between gap-2'
+                    >
+                      <dt className='text-muted-foreground'>
+                        {p.days} {t('listingTypes.days')}
+                      </dt>
+                      <dd className='font-medium tabular-nums text-foreground'>
+                        {formatVND(p.price)}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+
+              <div className='flex flex-col gap-2'>
+                <div className='text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
+                  {t('listingTypes.mediaLimits')}
+                </div>
+                <dl className='flex flex-col gap-1.5 text-sm'>
+                  <div className='flex items-baseline justify-between gap-2'>
+                    <dt className='text-muted-foreground'>
+                      {t('listingTypes.maxImages')}
+                    </dt>
+                    <dd className='font-medium tabular-nums text-foreground'>
+                      {tier.maxImages}
+                    </dd>
+                  </div>
+                  <div className='flex items-baseline justify-between gap-2'>
+                    <dt className='text-muted-foreground'>
+                      {t('listingTypes.maxVideos')}
+                    </dt>
+                    <dd className='font-medium tabular-nums text-foreground'>
+                      {tier.maxVideos}
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+
+              <div className='flex flex-col gap-2'>
+                <div className='text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
+                  {t('listingTypes.capabilities')}
+                </div>
+                <ul className='flex flex-col gap-2 text-sm'>
+                  {capabilities.map((cap) => (
+                    <li key={cap.key} className='flex items-start gap-2'>
+                      {cap.enabled ? (
+                        <Check className='mt-0.5 h-4 w-4 shrink-0 text-emerald-600' />
+                      ) : (
+                        <X className='mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/40' />
+                      )}
+                      <span
+                        className={cn(
+                          cap.enabled
+                            ? 'text-foreground'
+                            : 'text-muted-foreground/60 line-through',
+                        )}
+                      >
+                        {t(`listingTypes.caps.${cap.key}`)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {tier.features && tier.features.length > 0 && (
+                <div className='flex flex-col gap-2 border-t border-border pt-4'>
+                  <div className='text-[10px] font-semibold uppercase tracking-wider text-muted-foreground'>
+                    {t('listingTypes.features')}
+                  </div>
+                  <ul className='flex flex-col gap-2 text-sm'>
+                    {tier.features.map((feature, index) => (
+                      <li
+                        key={index}
+                        className='flex items-start gap-2 text-foreground'
+                      >
+                        <Sparkles className='mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-500' />
+                        <span className='leading-relaxed'>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

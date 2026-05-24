@@ -5,7 +5,7 @@ import { Card } from '@/components/atoms/card'
 import StatsCard from '@/components/molecules/statsCard'
 import AreaChartCard from '@/components/molecules/areaChartCard'
 import PieChartCard, { PieChartData } from '@/components/molecules/pieChartCard'
-import { formatCurrency, type TimeRange } from '@/data/analyticsData'
+import { formatCurrency } from '@/utils/format'
 import { DashboardService } from '@/api/services/dashboard.service'
 import {
   MembershipDistributionResponse,
@@ -14,15 +14,16 @@ import {
   DashboardTransactionType,
   MembershipPackageLevel,
 } from '@/api/types/dashboard.type'
+import { type DateRangeValue } from '@/components/molecules/dateRangePicker'
 import { Loader2 } from 'lucide-react'
 import { DollarSign, Package, TrendingUp, Award } from 'lucide-react'
 
 type RevenueTabAnalyticsProps = {
-  timeRange: TimeRange
+  dateRange: DateRangeValue
 }
 
 const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
-  timeRange,
+  dateRange,
 }) => {
   const t = useTranslations('admin.analytics.revenue')
 
@@ -32,33 +33,15 @@ const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
     useState<MembershipDistributionResponse | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const buildDateRange = (range: TimeRange) => {
-    const to = new Date()
-    const from = new Date(to)
-
-    if (range === 'today') {
-      from.setDate(to.getDate())
-    } else if (range === 'week') {
-      from.setDate(to.getDate() - 6)
-    } else {
-      from.setDate(to.getDate() - 29)
-    }
-
-    const format = (value: Date) => value.toISOString().split('T')[0]
-
-    return {
-      from: format(from),
-      to: format(to),
-    }
-  }
-
   useEffect(() => {
     const fetchDashboardCharts = async () => {
       try {
         setLoading(true)
-        const { from, to } = buildDateRange(timeRange)
         const [revenueResponse, membershipResponse] = await Promise.all([
-          DashboardService.getRevenueOverTime({ from, to }),
+          DashboardService.getRevenueOverTime({
+            from: dateRange.from,
+            to: dateRange.to,
+          }),
           DashboardService.getMembershipDistribution(),
         ])
 
@@ -88,7 +71,7 @@ const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
     }
 
     fetchDashboardCharts()
-  }, [timeRange, t])
+  }, [dateRange.from, dateRange.to, t])
 
   const typeLabels: Record<DashboardTransactionType, string> = {
     MEMBERSHIP_PURCHASE: t('transactionTypes.membershipPurchase'),

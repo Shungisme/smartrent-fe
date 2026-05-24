@@ -16,9 +16,7 @@ const ACTIVE_MAP: Record<string, string> = {
   '/insights/revenue': 'analyticsRevenue',
   '/insights/reports': 'analyticsReports',
   '/monetization/membership': 'premiumMembership',
-  '/monetization/promotions': 'premiumPromotions',
   '/monetization/listing-types': 'premiumListingTypes',
-  '/monetization/post-boosts': 'premiumPostBoosts',
   '/moderation/broker-pending': 'brokerPending',
   '/moderation/reports': 'reports',
 }
