@@ -15,7 +15,7 @@ export interface DashboardTimeQuery {
 
 function buildParams(query?: DashboardTimeQuery) {
   if (!query) return undefined
-  if (query.days != null) {
+  if (query.days !== null && query.days !== undefined) {
     return { days: query.days }
   }
   const params: Record<string, string> = {}
