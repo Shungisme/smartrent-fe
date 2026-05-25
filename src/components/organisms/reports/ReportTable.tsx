@@ -3,10 +3,18 @@ import { useTranslations } from 'next-intl'
 import { DataTable, Column } from '@/components/organisms/DataTable'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
-import { Avatar } from '@/components/atoms/avatar'
+import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
 import { Eye } from 'lucide-react'
-import cn from 'classnames'
 import { ListingReport } from '@/api/types/listing-report.type'
+
+type BadgeVariant =
+  | 'default'
+  | 'secondary'
+  | 'destructive'
+  | 'outline'
+  | 'success'
+  | 'warning'
+  | 'info'
 
 interface ReportTableProps {
   data: ListingReport[]
@@ -14,23 +22,16 @@ interface ReportTableProps {
   onReview: (report: ListingReport) => void
 }
 
-const getInitials = (name: string) =>
-  name
-    ?.split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase() || ''
-
-const getStatusColor = (status: string) => {
+const getStatusVariant = (status: string): BadgeVariant => {
   switch (status) {
     case 'PENDING':
-      return 'bg-yellow-100 text-yellow-800'
+      return 'warning'
     case 'RESOLVED':
-      return 'bg-green-100 text-green-800'
+      return 'success'
     case 'REJECTED':
-      return 'bg-gray-100 text-gray-800'
+      return 'secondary'
     default:
-      return 'bg-gray-100 text-gray-800'
+      return 'secondary'
   }
 }
 
@@ -63,6 +64,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       id: 'reportId',
       accessor: 'reportId',
       header: t('table.id'),
+      defaultHidden: true,
       render: (_, row) => (
         <Badge variant='outline' className='font-mono text-xs'>
           #{row.reportId}
@@ -74,12 +76,12 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       accessor: 'listingId',
       header: t('review.reportedPost'),
       render: (_, row) => (
-        <div>
-          <div className='font-medium text-sm'>
+        <div className='leading-tight'>
+          <div className='text-sm font-medium text-foreground'>
             {t('table.listingNumber')}
             {row.listingId}
           </div>
-          <div className='text-xs text-gray-500'>{row.category}</div>
+          <div className='text-xs text-muted-foreground'>{row.category}</div>
         </div>
       ),
     },
@@ -88,15 +90,15 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       accessor: 'reporterName',
       header: t('review.reportedBy'),
       render: (_, row) => (
-        <div className='flex items-center gap-2'>
-          <Avatar className='h-8 w-8'>
-            <div className='flex h-full w-full items-center justify-center bg-blue-100 text-blue-700 font-semibold text-xs'>
-              {getInitials(row.reporterName)}
+        <div className='flex items-center gap-2.5'>
+          <InitialsAvatar name={row.reporterName || '?'} size='sm' />
+          <div className='leading-tight'>
+            <div className='text-sm font-medium text-foreground'>
+              {row.reporterName}
             </div>
-          </Avatar>
-          <div>
-            <div className='text-sm font-medium'>{row.reporterName}</div>
-            <div className='text-xs text-gray-500'>{row.reporterPhone}</div>
+            <div className='text-xs text-muted-foreground'>
+              {row.reporterPhone}
+            </div>
           </div>
         </div>
       ),
@@ -108,12 +110,12 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       render: (_, row) => (
         <div className='max-w-xs'>
           {row.reportReasons && row.reportReasons.length > 0 ? (
-            <div className='text-sm'>
-              <div className='font-medium text-gray-700'>
+            <div className='leading-tight'>
+              <div className='text-sm font-medium text-foreground'>
                 {row.reportReasons[0].reasonText}
               </div>
               {row.reportReasons.length > 1 && (
-                <div className='text-xs text-gray-500 mt-1'>
+                <div className='mt-0.5 text-xs text-muted-foreground'>
                   {t('table.moreReasons', {
                     count: row.reportReasons.length - 1,
                   })}
@@ -121,7 +123,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
               )}
             </div>
           ) : (
-            <span className='text-xs text-gray-400'>
+            <span className='text-xs text-muted-foreground/70'>
               {t('table.noReasons')}
             </span>
           )}
@@ -135,9 +137,9 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       render: (_, row) => {
         const { date, time } = formatDateTime(row.createdAt)
         return (
-          <div className='text-sm'>
-            <div>{date}</div>
-            <div className='text-xs text-gray-500'>{time}</div>
+          <div className='font-mono text-[13px] tabular-nums leading-tight'>
+            <div className='text-foreground'>{date}</div>
+            <div className='text-xs text-muted-foreground'>{time}</div>
           </div>
         )
       },
@@ -147,7 +149,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       accessor: 'status',
       header: t('review.currentStatus'),
       render: (_, row) => (
-        <Badge className={cn('text-xs', getStatusColor(row.status))}>
+        <Badge variant={getStatusVariant(row.status)}>
           {t(`statuses.${statusMap[row.status as keyof typeof statusMap]}`)}
         </Badge>
       ),
@@ -157,22 +159,20 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       accessor: () => '',
       header: t('review.actions'),
       render: (_, row) => (
-        <Button
-          variant='ghost'
-          size='sm'
-          onClick={() => onReview(row)}
-          className='h-8 w-8 p-0'
-          title={t('table.viewDetails')}
-        >
-          <Eye className='h-4 w-4' />
-        </Button>
+        <div className='flex items-center justify-end gap-0.5'>
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => onReview(row)}
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+            title={t('table.viewDetails')}
+          >
+            <Eye className='h-4 w-4' />
+          </Button>
+        </div>
       ),
     },
   ]
 
-  return (
-    <div className='bg-white rounded-xl border border-gray-100 p-4'>
-      <DataTable columns={columns} data={data} loading={loading} />
-    </div>
-  )
+  return <DataTable columns={columns} data={data} loading={loading} />
 }

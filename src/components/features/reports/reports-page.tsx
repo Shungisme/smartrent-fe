@@ -2,13 +2,16 @@
 
 import React, { useState, useEffect, useCallback } from 'react'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 import { ListingReport } from '@/api/types/listing-report.type'
 import { ListingService } from '@/api/services/listing.service'
 import { ReportStats } from '@/components/organisms/reports/ReportStats'
 import { ReportTable } from '@/components/organisms/reports/ReportTable'
 import { ReportReviewModal } from '@/components/organisms/reports/ReportReviewModal'
+import { PageHeader } from '@/components/molecules/pageHeader'
 
 const ViolationReportManagement = () => {
+  const t = useTranslations('reports')
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
@@ -107,6 +110,8 @@ const ViolationReportManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
+        <PageHeader title={t('title')} description={t('description')} />
+
         {/* Stats Cards */}
         <ReportStats stats={stats} />
 

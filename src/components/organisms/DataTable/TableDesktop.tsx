@@ -29,13 +29,13 @@ export function TableDesktop<T = any>({
   const renderSortIcon = (columnId: string) => {
     if (sortConfig.key === columnId) {
       if (sortConfig.direction === 'asc') {
-        return <ChevronUp className='h-4 w-4' />
+        return <ChevronUp className='h-3.5 w-3.5 text-foreground' />
       }
       if (sortConfig.direction === 'desc') {
-        return <ChevronDown className='h-4 w-4' />
+        return <ChevronDown className='h-3.5 w-3.5 text-foreground' />
       }
     }
-    return <ChevronsUpDown className='h-4 w-4 text-gray-400' />
+    return <ChevronsUpDown className='h-3.5 w-3.5 text-muted-foreground/50' />
   }
 
   const allSelected =
@@ -48,13 +48,11 @@ export function TableDesktop<T = any>({
           maxHeightClassName || 'h-[50vh] xl:h-[56vh] 2xl:h-[60vh]'
         }`}
       >
-        <table className='w-full min-w-[800px]'>
-          {/* Table Header */}
-          <thead className='sticky top-0 z-10 border-b border-border/70 bg-muted/65 backdrop-blur'>
+        <table className='w-full min-w-[800px] border-separate border-spacing-0'>
+          <thead className='sticky top-0 z-10 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80'>
             <tr>
-              {/* Selection checkbox */}
               {selectable && (
-                <th className='w-12 px-5 py-3.5 text-left'>
+                <th className='w-12 border-b border-border/70 px-5 py-3 text-left'>
                   <input
                     type='checkbox'
                     checked={allSelected}
@@ -64,34 +62,33 @@ export function TableDesktop<T = any>({
                 </th>
               )}
 
-              {/* Column headers */}
               {columns.map((column) => (
                 <th
                   key={column.id}
-                  className={`px-5 py-3.5 text-left text-xs font-semibold tracking-wide text-muted-foreground uppercase ${
-                    column.sortable ? 'cursor-pointer hover:bg-muted/80' : ''
+                  className={`border-b border-border/70 px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground ${
+                    column.sortable
+                      ? 'cursor-pointer select-none hover:text-foreground'
+                      : ''
                   } ${column.className || ''}`}
                   onClick={() =>
                     column.sortable && onSort(column.id as keyof T)
                   }
                 >
-                  <div className='flex items-center gap-2'>
+                  <div className='flex items-center gap-1.5'>
                     <span>{column.header}</span>
                     {column.sortable && renderSortIcon(column.id)}
                   </div>
                 </th>
               ))}
 
-              {/* Actions column */}
               {actions && (
-                <th className='px-5 py-3.5 text-right text-xs font-semibold tracking-wide text-muted-foreground uppercase'>
+                <th className='border-b border-border/70 px-5 py-3 text-right text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground'>
                   {t('actions')}
                 </th>
               )}
             </tr>
           </thead>
 
-          {/* Table Body */}
           <tbody>
             {data.length === 0 ? (
               <tr>
@@ -112,15 +109,17 @@ export function TableDesktop<T = any>({
               data.map((row, index) => {
                 const rowKey = getRowKey(row, index)
                 const isSelected = selectable && selectedRows.includes(row)
+                const isLast = index === data.length - 1
 
                 return (
                   <tr
                     key={rowKey}
-                    className={`border-b border-border/60 transition-colors hover:bg-accent/55 ${isSelected ? 'bg-primary/8' : ''}`}
+                    className={`group transition-colors hover:bg-muted/40 ${isSelected ? 'bg-primary/6' : ''}`}
                   >
-                    {/* Selection checkbox */}
                     {selectable && (
-                      <td className='px-5 py-4'>
+                      <td
+                        className={`px-5 py-3.5 ${isLast ? '' : 'border-b border-border/50'}`}
+                      >
                         <input
                           type='checkbox'
                           checked={isSelected}
@@ -130,7 +129,6 @@ export function TableDesktop<T = any>({
                       </td>
                     )}
 
-                    {/* Column data */}
                     {columns.map((column) => {
                       const value = getValue(row, column)
                       const cellContent = column.render
@@ -140,16 +138,17 @@ export function TableDesktop<T = any>({
                       return (
                         <td
                           key={column.id}
-                          className={`px-5 py-4 text-sm text-foreground ${column.className || ''}`}
+                          className={`px-5 py-3.5 align-middle text-sm text-foreground ${isLast ? '' : 'border-b border-border/50'} ${column.className || ''}`}
                         >
                           {cellContent as React.ReactNode}
                         </td>
                       )
                     })}
 
-                    {/* Actions */}
                     {actions && (
-                      <td className='px-5 py-4 text-right'>
+                      <td
+                        className={`px-5 py-3.5 text-right ${isLast ? '' : 'border-b border-border/50'}`}
+                      >
                         {actions(row, index)}
                       </td>
                     )}

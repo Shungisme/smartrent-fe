@@ -55,20 +55,20 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
 
   return (
     <Card className='p-6'>
-      <div className='mb-4 flex items-center justify-between'>
-        <h3 className='text-lg font-semibold text-gray-900'>
+      <div className='mb-4 flex items-center justify-between flex-wrap gap-2'>
+        <h3 className='text-base font-semibold tracking-tight text-foreground'>
           {t('charts.performanceChart.title')}
         </h3>
         <div className='flex items-center gap-4'>
           <div className='flex items-center gap-2'>
-            <div className='h-3 w-3 rounded bg-blue-500' />
-            <span className='text-sm text-gray-600'>
+            <div className='h-3 w-3 rounded-[3px] bg-[var(--chart-1)]' />
+            <span className='text-xs text-muted-foreground'>
               {t('charts.performanceChart.revenue')}
             </span>
           </div>
           <div className='flex items-center gap-2'>
-            <div className='h-0.5 w-6 bg-green-500' />
-            <span className='text-sm text-gray-600'>
+            <div className='h-0.5 w-6 bg-[var(--chart-2)]' />
+            <span className='text-xs text-muted-foreground'>
               {t('charts.performanceChart.avgValue')}
             </span>
           </div>
@@ -81,7 +81,6 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
           viewBox='0 0 120 100'
           preserveAspectRatio='none'
         >
-          {/* Grid lines */}
           {[0, 25, 50, 75, 100].map((y) => (
             <line
               key={y}
@@ -89,17 +88,16 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
               y1={y}
               x2='110'
               y2={y}
-              stroke='#e5e7eb'
+              stroke='var(--border)'
+              strokeOpacity='0.6'
               strokeWidth='0.2'
             />
           ))}
 
-          {/* Revenue bars */}
           {revenue.map((value, index) => {
             const x = 10 + (index * 100) / revenue.length
             const height = (value / maxRevenue) * 80
             const y = 100 - height
-
             return (
               <rect
                 key={`bar-${index}`}
@@ -107,14 +105,13 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
                 y={y}
                 width='6'
                 height={height}
-                fill='#3b82f6'
-                opacity='0.8'
+                fill='var(--chart-1)'
+                opacity='0.85'
                 rx='1'
               />
             )
           })}
 
-          {/* Average invoice line */}
           <polyline
             points={avgInvoice
               .map((value, index) => {
@@ -124,40 +121,37 @@ const PerformanceChart: React.FC<PerformanceChartProps> = ({
               })
               .join(' ')}
             fill='none'
-            stroke='#22c55e'
+            stroke='var(--chart-2)'
             strokeWidth='0.5'
             strokeLinecap='round'
             strokeLinejoin='round'
           />
 
-          {/* Dots on line */}
           {avgInvoice.map((value, index) => {
             const x = 10 + (index * 100) / avgInvoice.length + 3
             const y = 100 - (value / maxAvg) * 80
-
             return (
               <circle
                 key={`dot-${index}`}
                 cx={x}
                 cy={y}
                 r='0.8'
-                fill='#22c55e'
+                fill='var(--chart-2)'
               />
             )
           })}
         </svg>
 
-        {/* X-axis labels */}
         <div className='mt-2 flex justify-between px-2'>
           {monthLabels.map((label, index) => (
-            <span key={index} className='text-xs text-gray-500'>
+            <span key={index} className='text-xs text-muted-foreground'>
               {label}
             </span>
           ))}
         </div>
       </div>
 
-      <div className='mt-4 flex justify-between text-sm text-gray-600'>
+      <div className='mt-4 flex justify-between text-xs text-muted-foreground'>
         <span>{t('charts.performanceChart.revenueUnit')}</span>
         <span>{t('charts.performanceChart.avgUnit')}</span>
       </div>

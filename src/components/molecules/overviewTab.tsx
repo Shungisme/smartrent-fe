@@ -124,9 +124,9 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ dateRange }) => {
   }, [dateRange.from, dateRange.to, tRevenue])
 
   const membershipColors: Record<MembershipPackageLevel, string> = {
-    BASIC: '#94A3B8',
-    STANDARD: '#6366F1',
-    ADVANCED: '#F59E0B',
+    BASIC: 'var(--chart-5)',
+    STANDARD: 'var(--chart-1)',
+    ADVANCED: 'var(--chart-3)',
   }
 
   const membershipChartData = useMemo(
@@ -143,7 +143,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ dateRange }) => {
   if (loading) {
     return (
       <div className='flex h-64 items-center justify-center'>
-        <Loader2 className='h-8 w-8 animate-spin text-blue-600' />
+        <Loader2 className='h-8 w-8 animate-spin text-primary' />
       </div>
     )
   }
@@ -184,7 +184,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ dateRange }) => {
             labels={(revenueData?.dataPoints || []).map((item) =>
               formatXLabel(item.date, revenueData?.granularity || 'DAY'),
             )}
-            color='#6366F1'
+            color='var(--chart-1)'
             height='h-80'
             unit={tOverview('charts.unit')}
           />
@@ -207,7 +207,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ dateRange }) => {
               data: (userGrowthData?.dataPoints || []).map(
                 (item) => item.count,
               ),
-              color: '#2563EB',
+              color: 'var(--chart-1)',
               label: tOverview('charts.newUsers'),
             },
           ]}
@@ -223,7 +223,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ dateRange }) => {
           datasets={[
             {
               data: (reportData?.dataPoints || []).map((item) => item.count),
-              color: '#EF4444',
+              color: 'var(--chart-4)',
               label: tReports('charts.reports'),
             },
           ]}
@@ -239,7 +239,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ dateRange }) => {
           datasets={[
             {
               data: (listingData?.dataPoints || []).map((item) => item.count),
-              color: '#10B981',
+              color: 'var(--chart-2)',
               label: tPosts('charts.newPosts'),
             },
           ]}

@@ -30,12 +30,12 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
       accessor: 'name',
       render: (_, pkg) => (
         <div className='flex items-center gap-3'>
-          <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100'>
-            <Crown className='h-5 w-5 text-blue-600' />
+          <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-100 to-amber-200 text-amber-700 ring-1 ring-amber-200/70 dark:from-amber-500/15 dark:to-amber-500/5 dark:text-amber-300 dark:ring-amber-500/20'>
+            <Crown className='h-5 w-5' />
           </div>
-          <div>
-            <div className='font-semibold text-gray-900'>{pkg.name}</div>
-            <div className='text-xs text-gray-500'>{pkg.id}</div>
+          <div className='leading-tight'>
+            <div className='font-medium text-foreground'>{pkg.name}</div>
+            <div className='text-xs text-muted-foreground'>{pkg.id}</div>
           </div>
         </div>
       ),
@@ -45,9 +45,11 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
       header: t('membership.table.price'),
       accessor: 'price',
       render: (_, pkg) => (
-        <div>
-          <div className='font-semibold text-gray-900'>{pkg.price}</div>
-          <div className='text-xs text-gray-500'>
+        <div className='leading-tight'>
+          <div className='font-medium tabular-nums text-foreground'>
+            {pkg.price}
+          </div>
+          <div className='text-xs text-muted-foreground'>
             {pkg.activeUsers} {t('membership.table.activeUsers')}
           </div>
         </div>
@@ -80,9 +82,9 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
       accessor: 'discount',
       render: (_, pkg) =>
         pkg.discount > 0 ? (
-          <Badge className='bg-green-100 text-green-800'>{pkg.discount}%</Badge>
+          <Badge variant='success'>-{pkg.discount}%</Badge>
         ) : (
-          <span className='text-sm text-gray-400'>
+          <span className='text-sm text-muted-foreground/70'>
             {t('membership.table.noDiscount')}
           </span>
         ),
@@ -91,17 +93,25 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
       id: 'status',
       header: t('membership.table.status'),
       accessor: 'status',
-      render: (_, pkg) => (
-        <label className='relative inline-flex cursor-pointer items-center'>
-          <input
-            type='checkbox'
-            className='peer sr-only'
-            checked={pkg.status === 'active'}
-            onChange={() => onToggleStatus(pkg.id, pkg.status)}
-          />
-          <div className="h-6 w-11 rounded-full bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-['']"></div>
-        </label>
-      ),
+      render: (_, pkg) => {
+        const isActive = pkg.status === 'active'
+        return (
+          <label className='relative inline-flex cursor-pointer items-center'>
+            <input
+              type='checkbox'
+              className='peer sr-only'
+              checked={isActive}
+              onChange={() => onToggleStatus(pkg.id, pkg.status)}
+            />
+            <div
+              className={`h-5 w-9 rounded-full border transition-colors ${isActive ? 'border-primary bg-primary' : 'border-border bg-muted'} peer-focus-visible:ring-2 peer-focus-visible:ring-ring/30`}
+            />
+            <span
+              className={`pointer-events-none absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${isActive ? 'translate-x-4' : 'translate-x-0'}`}
+            />
+          </label>
+        )
+      },
     },
   ]
 
@@ -115,11 +125,11 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
       itemsPerPage={10}
       getRowKey={(row) => row.id}
       actions={(row) => (
-        <div className='flex items-center justify-center gap-2'>
+        <div className='flex items-center justify-end gap-0.5'>
           <Button
             variant='ghost'
             size='sm'
-            className='h-8 w-8 p-0'
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
             title={t('actions.edit')}
             onClick={() => onEdit(row.id)}
           >
@@ -128,7 +138,7 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
           <Button
             variant='ghost'
             size='sm'
-            className='h-8 w-8 p-0 text-red-600 hover:bg-red-50 hover:text-red-700'
+            className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
             title={t('actions.delete')}
             onClick={() => onDelete(row.id)}
           >

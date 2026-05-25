@@ -62,7 +62,7 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ dateRange }) => {
   if (loading) {
     return (
       <div className='flex h-64 items-center justify-center'>
-        <Loader2 className='h-8 w-8 animate-spin text-blue-600' />
+        <Loader2 className='h-8 w-8 animate-spin text-primary' />
       </div>
     )
   }
@@ -89,7 +89,7 @@ const ReportsTab: React.FC<ReportsTabProps> = ({ dateRange }) => {
           datasets={[
             {
               data: (data?.dataPoints || []).map((item) => item.count),
-              color: '#F97316',
+              color: 'var(--chart-4)',
               label: t('charts.reports'),
             },
           ]}

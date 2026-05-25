@@ -1,15 +1,13 @@
 import React from 'react'
-import Image from 'next/image'
 import {
   DataTable,
   Column,
   FilterConfig,
 } from '@/components/organisms/DataTable'
-import { Avatar } from '@/components/atoms/avatar'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
+import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
 import { Pencil, UserX, Trash2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 import { UserProfile } from '@/api/types/user.type'
 import { UserData } from '@/types/users.type'
@@ -69,6 +67,7 @@ export const UserTable: React.FC<UserTableProps> = ({
       id: 'id',
       header: t('table.headers.userId'),
       accessor: 'id',
+      defaultHidden: true,
       render: (value) => (
         <div className='text-sm font-medium text-gray-900'>
           {value as React.ReactNode}
@@ -82,16 +81,8 @@ export const UserTable: React.FC<UserTableProps> = ({
       sortable: true,
       render: (_, row) => (
         <div className='flex items-center gap-3'>
-          <Avatar className='w-10 h-10'>
-            <Image
-              src={row.avatar || '/images/default-image.jpg'}
-              alt={row.name}
-              width={40}
-              height={40}
-              className='w-full h-full object-cover'
-            />
-          </Avatar>
-          <span className='font-medium text-gray-900'>{row.name}</span>
+          <InitialsAvatar name={row.name} src={row.avatar} size='md' />
+          <span className='font-medium text-foreground'>{row.name}</span>
         </div>
       ),
     },
@@ -100,15 +91,7 @@ export const UserTable: React.FC<UserTableProps> = ({
       header: t('table.headers.type'),
       accessor: 'type',
       render: (value) => (
-        <Badge
-          variant={(value as string) === 'broker' ? 'default' : 'secondary'}
-          className={cn(
-            'px-3 py-1',
-            (value as string) === 'broker'
-              ? 'bg-blue-100 text-blue-800'
-              : 'bg-gray-100 text-gray-800',
-          )}
-        >
+        <Badge variant={(value as string) === 'broker' ? 'info' : 'secondary'}>
           {t(`table.userTypes.${value as string}`)}
         </Badge>
       ),
@@ -119,9 +102,9 @@ export const UserTable: React.FC<UserTableProps> = ({
       accessor: 'joinDate',
       sortable: true,
       render: (value) => (
-        <div className='text-sm text-gray-900'>
+        <span className='font-mono text-[13px] tabular-nums text-muted-foreground'>
           {formatDateTime(value as string | null)}
-        </div>
+        </span>
       ),
     },
     {
@@ -130,37 +113,42 @@ export const UserTable: React.FC<UserTableProps> = ({
       accessor: 'posts',
       render: (value) =>
         value !== null ? (
-          <Badge
-            variant='outline'
-            className='bg-green-50 text-green-800 border-green-200'
-          >
+          <Badge variant='success'>
             {value as React.ReactNode} {t('table.postsBadge')}
           </Badge>
         ) : (
-          <Badge
-            variant='outline'
-            className='bg-gray-50 text-gray-500 border-gray-200'
-          >
+          <span className='text-sm text-muted-foreground/70'>
             {t('table.notApplicable')}
-          </Badge>
+          </span>
         ),
     },
     {
       id: 'status',
       header: t('table.headers.status'),
       accessor: 'status',
-      render: (value) => (
-        <Badge
-          className={cn(
-            'px-3 py-1',
-            (value as string) === 'normal'
-              ? 'bg-black text-white'
-              : 'bg-red-600 text-white',
-          )}
-        >
-          {t(`table.statuses.${value as string}`)}
-        </Badge>
-      ),
+      render: (value) => {
+        const status = value as string
+        const variant: 'success' | 'destructive' | 'secondary' =
+          status === 'normal'
+            ? 'success'
+            : status === 'banned'
+              ? 'destructive'
+              : 'secondary'
+        return (
+          <Badge variant={variant} className='gap-1.5'>
+            <span
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                status === 'normal'
+                  ? 'bg-success'
+                  : status === 'banned'
+                    ? 'bg-destructive'
+                    : 'bg-muted-foreground/50'
+              }`}
+            />
+            {t(`table.statuses.${status}`)}
+          </Badge>
+        )
+      },
     },
     {
       id: 'actions',
@@ -170,11 +158,11 @@ export const UserTable: React.FC<UserTableProps> = ({
         const user = users.find((u) => u.userId === row.id)
 
         return (
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center justify-end gap-0.5'>
             <Button
               variant='ghost'
               size='sm'
-              className='h-8 w-8 p-0'
+              className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
               title={t('table.actions.edit')}
               onClick={() => {
                 if (user) onEdit(user)
@@ -186,7 +174,7 @@ export const UserTable: React.FC<UserTableProps> = ({
               <Button
                 variant='ghost'
                 size='sm'
-                className='h-8 w-8 p-0 text-orange-600 hover:text-orange-700'
+                className='h-8 w-8 p-0 text-muted-foreground hover:bg-warning/15 hover:text-warning-foreground'
                 title={t('table.actions.removeBroker')}
                 onClick={() => {
                   if (user) onRemoveBroker(user)
@@ -198,7 +186,7 @@ export const UserTable: React.FC<UserTableProps> = ({
             <Button
               variant='ghost'
               size='sm'
-              className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
+              className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
               title={t('table.actions.delete')}
               onClick={() => {
                 if (user) onDelete(user)

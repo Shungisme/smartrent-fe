@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslations } from 'next-intl'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/atoms/button'
+import { cn } from '@/lib/utils'
 import type { PaginationConfig } from './types'
 
 interface TablePaginationProps {
@@ -19,7 +20,6 @@ export function TablePagination({
 }: TablePaginationProps) {
   const t = useTranslations('pagination')
   const { currentPage, totalPages, totalItems, itemsPerPage } = pagination
-  const [goToPage, setGoToPage] = useState('')
 
   const startItem = (currentPage - 1) * itemsPerPage + 1
   const endItem = Math.min(currentPage * itemsPerPage, totalItems)
@@ -27,57 +27,26 @@ export function TablePagination({
   const canGoPrevious = currentPage > 1
   const canGoNext = currentPage < totalPages
 
-  const handleGoToPage = () => {
-    const pageNum = parseInt(goToPage, 10)
-    if (!isNaN(pageNum) && pageNum >= 1 && pageNum <= totalPages) {
-      onPageChange(pageNum)
-      setGoToPage('')
-    }
-  }
-
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      handleGoToPage()
-    }
-  }
-
-  // Generate page numbers to show
   const getPageNumbers = () => {
     const pages: (number | string)[] = []
     const maxPagesToShow = 5
 
     if (totalPages <= maxPagesToShow) {
-      // Show all pages
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i)
-      }
+      for (let i = 1; i <= totalPages; i++) pages.push(i)
     } else {
-      // Show first page
       pages.push(1)
+      if (currentPage > 3) pages.push('...')
 
-      if (currentPage > 3) {
-        pages.push('...')
-      }
-
-      // Show pages around current page
       for (
         let i = Math.max(2, currentPage - 1);
         i <= Math.min(totalPages - 1, currentPage + 1);
         i++
       ) {
-        if (!pages.includes(i)) {
-          pages.push(i)
-        }
+        if (!pages.includes(i)) pages.push(i)
       }
 
-      if (currentPage < totalPages - 2) {
-        pages.push('...')
-      }
-
-      // Show last page
-      if (!pages.includes(totalPages)) {
-        pages.push(totalPages)
-      }
+      if (currentPage < totalPages - 2) pages.push('...')
+      if (!pages.includes(totalPages)) pages.push(totalPages)
     }
 
     return pages
@@ -86,20 +55,24 @@ export function TablePagination({
   if (totalItems === 0) return null
 
   return (
-    <div className='flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-4 py-3 md:px-6'>
-      {/* Items info & per page selector */}
-      <div className='flex flex-col sm:flex-row items-center gap-3 text-sm text-gray-700'>
+    <div className='flex flex-col items-center justify-between gap-3 px-1 py-2 sm:flex-row'>
+      <div className='flex flex-col items-center gap-3 text-sm text-muted-foreground sm:flex-row'>
         <span>
-          {t('showing')} {startItem} {t('to')} {endItem} {t('of')} {totalItems}{' '}
+          {t('showing')}{' '}
+          <span className='font-medium text-foreground'>{startItem}</span>{' '}
+          {t('to')}{' '}
+          <span className='font-medium text-foreground'>{endItem}</span>{' '}
+          {t('of')}{' '}
+          <span className='font-medium text-foreground'>{totalItems}</span>{' '}
           {t('results')}
         </span>
 
         <div className='flex items-center gap-2'>
-          <span className='text-gray-500'>{t('show')}</span>
+          <span>{t('show')}</span>
           <select
             value={itemsPerPage}
             onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-            className='rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
+            className='h-8 rounded-md border border-border bg-card px-2 text-sm text-foreground shadow-xs focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30'
           >
             {itemsPerPageOptions.map((option) => (
               <option key={option} value={option}>
@@ -107,30 +80,31 @@ export function TablePagination({
               </option>
             ))}
           </select>
-          <span className='text-gray-500'>{t('perPage')}</span>
+          <span>{t('perPage')}</span>
         </div>
       </div>
 
-      {/* Pagination controls */}
-      <div className='flex items-center gap-2'>
-        {/* Previous button */}
+      <div className='flex items-center gap-1'>
         <Button
           variant='outline'
           size='sm'
           onClick={() => onPageChange(currentPage - 1)}
           disabled={!canGoPrevious}
           className='h-8 w-8 p-0'
+          aria-label='Previous page'
         >
           <ChevronLeft className='h-4 w-4' />
         </Button>
 
-        {/* Page numbers */}
         <div className='flex items-center gap-1'>
           {getPageNumbers().map((page, index) => {
             if (page === '...') {
               return (
-                <span key={`ellipsis-${index}`} className='px-2 text-gray-400'>
-                  ...
+                <span
+                  key={`ellipsis-${index}`}
+                  className='px-1 text-muted-foreground/70'
+                >
+                  …
                 </span>
               )
             }
@@ -139,55 +113,34 @@ export function TablePagination({
             const isActive = pageNum === currentPage
 
             return (
-              <Button
+              <button
                 key={pageNum}
-                variant={isActive ? 'default' : 'outline'}
-                size='sm'
+                type='button'
                 onClick={() => onPageChange(pageNum)}
-                className={` ${
+                aria-current={isActive ? 'page' : undefined}
+                className={cn(
+                  'inline-flex h-8 min-w-8 items-center justify-center rounded-md px-2.5 text-sm font-medium transition-colors',
                   isActive
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'hover:bg-gray-100'
-                }`}
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-foreground hover:bg-accent hover:text-accent-foreground',
+                )}
               >
                 {pageNum}
-              </Button>
+              </button>
             )
           })}
         </div>
 
-        {/* Next button */}
         <Button
           variant='outline'
           size='sm'
           onClick={() => onPageChange(currentPage + 1)}
           disabled={!canGoNext}
           className='h-8 w-8 p-0'
+          aria-label='Next page'
         >
           <ChevronRight className='h-4 w-4' />
         </Button>
-
-        {/* Go to page input */}
-        <div className='flex items-center gap-2 ml-2 border-l border-gray-300 pl-2'>
-          <span className='text-sm text-gray-500'>{t('goToPage')}</span>
-          <input
-            type='number'
-            min='1'
-            max={totalPages}
-            value={goToPage}
-            onChange={(e) => setGoToPage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className='w-18 rounded-md border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
-          />
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={handleGoToPage}
-            className='h-8 px-3 text-sm'
-          >
-            {t('go')}
-          </Button>
-        </div>
       </div>
     </div>
   )

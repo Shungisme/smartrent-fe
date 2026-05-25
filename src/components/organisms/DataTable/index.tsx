@@ -4,6 +4,7 @@ import { TableFilters } from './TableFilters'
 import { TableDesktop } from './TableDesktop'
 import { TableMobile } from './TableMobile'
 import { TablePagination } from './TablePagination'
+import { ViewsButton } from './ViewsButton'
 import { TableSkeleton } from '@/components/molecules/tableSkeleton'
 import type { DataTableProps } from './types'
 
@@ -48,6 +49,37 @@ function DataTableContent<T = any>({
     [setFilter],
   )
 
+  // Column visibility state — initialised from each column's defaultHidden flag
+  const initialHidden = React.useMemo(() => {
+    const map: Record<string, boolean> = {}
+    columns.forEach((c) => {
+      if (c.defaultHidden && !c.alwaysVisible) {
+        map[c.id] = true
+      }
+    })
+    return map
+  }, [columns])
+
+  const [hiddenColumns, setHiddenColumns] =
+    React.useState<Record<string, boolean>>(initialHidden)
+
+  const toggleColumn = React.useCallback((columnId: string) => {
+    setHiddenColumns((prev) => ({ ...prev, [columnId]: !prev[columnId] }))
+  }, [])
+
+  const showAllColumns = React.useCallback(() => {
+    setHiddenColumns({})
+  }, [])
+
+  const resetColumns = React.useCallback(() => {
+    setHiddenColumns(initialHidden)
+  }, [initialHidden])
+
+  const visibleColumns = React.useMemo(
+    () => columns.filter((c) => c.alwaysVisible || !hiddenColumns[c.id]),
+    [columns, hiddenColumns],
+  )
+
   // Default row key extractor
   const defaultGetRowKey = (row: T, index: number) => {
     if (typeof row === 'object' && row !== null && 'id' in row) {
@@ -67,22 +99,33 @@ function DataTableContent<T = any>({
 
   return (
     <div className='space-y-4'>
-      {/* Filters */}
-      {filters && filters.length > 0 && (
-        <TableFilters
-          filters={filters}
-          values={filterValues}
-          onChange={setFilter}
-          onChangeMultiple={handleChangeMultiple}
-          onClear={clearFilters}
-          mode={filterMode}
-        />
-      )}
+      {/* Filters + Views (grouped on the left) */}
+      {(filters && filters.length > 0) || columns.length > 0 ? (
+        <div className='flex flex-wrap items-center gap-2'>
+          {filters && filters.length > 0 && (
+            <TableFilters
+              filters={filters}
+              values={filterValues}
+              onChange={setFilter}
+              onChangeMultiple={handleChangeMultiple}
+              onClear={clearFilters}
+              mode={filterMode}
+            />
+          )}
+          <ViewsButton
+            columns={columns}
+            hiddenColumns={hiddenColumns}
+            onToggleColumn={toggleColumn}
+            onShowAll={showAllColumns}
+            onReset={resetColumns}
+          />
+        </div>
+      ) : null}
 
       {/* Loading state */}
       {loading ? (
         <TableSkeleton
-          columns={columns.length}
+          columns={visibleColumns.length}
           rows={Math.min(pagination.itemsPerPage || 8, 8)}
           selectable={selectable}
           actions={!!actions}
@@ -91,7 +134,7 @@ function DataTableContent<T = any>({
         <>
           {/* Desktop Table */}
           <TableDesktop
-            columns={columns}
+            columns={visibleColumns}
             data={paginatedData}
             sortConfig={sortConfig}
             onSort={handleSort}
@@ -108,7 +151,7 @@ function DataTableContent<T = any>({
           {/* Mobile Cards */}
           <TableMobile
             data={paginatedData}
-            columns={columns}
+            columns={visibleColumns}
             actions={actions}
             customRender={mobileCardRender}
             getRowKey={rowKeyExtractor}

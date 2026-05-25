@@ -1,7 +1,8 @@
 {
   "common": {
     "or": "Hoặc",
-    "noData": "Không có dữ liệu"
+    "noData": "Không có dữ liệu",
+    "total": "Tổng"
   },
   "notFound": {
     "title": "404",
@@ -40,7 +41,11 @@
     "noData": "Không tìm thấy dữ liệu",
     "tryAdjustFilters": "Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm.",
     "rangeFrom": "Từ",
-    "rangeTo": "Đến"
+    "rangeTo": "Đến",
+    "viewsButton": "Hiển thị",
+    "viewsTitle": "Bật/tắt cột",
+    "viewsShowAll": "Hiện tất cả",
+    "viewsReset": "Đặt lại"
   },
   "homePage": {
     "title": "Tìm Ngôi Nhà Mơ Ước",
@@ -1320,6 +1325,7 @@
   "premium": {
     "title": "Quản Lý Tính Năng Trả Phí",
     "description": "Quản lý gói thành viên và loại tin đăng",
+    "noMembershipPackages": "Chưa có gói thành viên nào",
     "breadcrumb": {
       "menu": "Thực Đơn Điều Hướng",
       "title": "Tính Năng Trả Phí",
@@ -1373,6 +1379,12 @@
       "features": "Tính Năng",
       "active": "Đang Hoạt Động",
       "inactive": "Không Hoạt Động",
+      "columns": {
+        "tier": "Bậc",
+        "badge": "Huy hiệu",
+        "pricePerDay": "Giá/ngày",
+        "status": "Trạng thái"
+      },
       "caps": {
         "autoApprove": "Tự động duyệt tin",
         "noAds": "Không hiển thị quảng cáo",

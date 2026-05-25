@@ -264,12 +264,37 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             type='button'
             onClick={() => handleNavigate('/management/users')}
             className={cn(
-              'min-w-0 flex-1 rounded-md px-3 py-1.5 text-left text-sm font-semibold text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
+              'group flex min-w-0 flex-1 items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent',
               collapsed && 'hidden',
             )}
+            aria-label='SmartRent Admin'
           >
-            SmartRent Admin
+            <span
+              aria-hidden
+              className='flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/70 text-[11px] font-bold tracking-tight text-primary-foreground shadow-sm ring-1 ring-primary/20'
+            >
+              SR
+            </span>
+            <span className='flex min-w-0 flex-col leading-tight'>
+              <span className='truncate text-sm font-semibold text-sidebar-foreground'>
+                SmartRent
+              </span>
+              <span className='truncate text-[11px] text-muted-foreground'>
+                Admin Console
+              </span>
+            </span>
           </button>
+
+          {collapsed && (
+            <button
+              type='button'
+              onClick={() => handleNavigate('/management/users')}
+              className='flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/70 text-[11px] font-bold text-primary-foreground shadow-sm ring-1 ring-primary/20'
+              aria-label='SmartRent Admin'
+            >
+              SR
+            </button>
+          )}
 
           {showCollapseToggle && (
             <button

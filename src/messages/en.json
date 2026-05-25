@@ -1,7 +1,8 @@
 {
   "common": {
     "or": "Or",
-    "noData": "No data"
+    "noData": "No data",
+    "total": "Total"
   },
   "notFound": {
     "title": "404",
@@ -40,7 +41,11 @@
     "noData": "No data found",
     "tryAdjustFilters": "Try adjusting your filters or search terms.",
     "rangeFrom": "From",
-    "rangeTo": "To"
+    "rangeTo": "To",
+    "viewsButton": "Views",
+    "viewsTitle": "Toggle columns",
+    "viewsShowAll": "Show all",
+    "viewsReset": "Reset"
   },
   "homePage": {
     "title": "Find Your Dream Home",
@@ -1356,6 +1361,7 @@
   "premium": {
     "title": "Paid Features Management",
     "description": "Manage membership packages and listing types",
+    "noMembershipPackages": "No membership packages yet",
     "breadcrumb": {
       "menu": "Navigation Menu",
       "title": "Paid Features",
@@ -1409,6 +1415,12 @@
       "features": "Features",
       "active": "Active",
       "inactive": "Inactive",
+      "columns": {
+        "tier": "Tier",
+        "badge": "Badge",
+        "pricePerDay": "Price/day",
+        "status": "Status"
+      },
       "caps": {
         "autoApprove": "Auto-approve listings",
         "noAds": "No advertisement banners",

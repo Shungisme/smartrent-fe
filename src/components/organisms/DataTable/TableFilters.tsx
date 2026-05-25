@@ -32,23 +32,20 @@ export function TableFilters({
   // If we have FilterDialog filters, show only the FilterDialog
   if (hasFilterDialog) {
     return (
-      <div className='flex gap-2 items-center'>
-        <FilterDialog
-          filterConfig={filterDialogFilters}
-          currentFilters={values}
-          onFilterChange={(newFilters) => {
-            // Use batch update if available, otherwise update individually
-            if (onChangeMultiple) {
-              onChangeMultiple(newFilters)
-            } else {
-              Object.entries(newFilters).forEach(([key, value]) => {
-                onChange(key, value)
-              })
-            }
-          }}
-          onClear={() => onClear?.()}
-        />
-      </div>
+      <FilterDialog
+        filterConfig={filterDialogFilters}
+        currentFilters={values}
+        onFilterChange={(newFilters) => {
+          if (onChangeMultiple) {
+            onChangeMultiple(newFilters)
+          } else {
+            Object.entries(newFilters).forEach(([key, value]) => {
+              onChange(key, value)
+            })
+          }
+        }}
+        onClear={() => onClear?.()}
+      />
     )
   }
 
@@ -76,7 +73,7 @@ export function TableFilters({
     if (filter.type === 'search') {
       return (
         <div key={filter.id} className='relative flex-1 min-w-[200px]'>
-          <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400' />
+          <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
           <Input
             type='text'
             placeholder={filter.placeholder || filter.label}
@@ -95,7 +92,7 @@ export function TableFilters({
           key={filter.id}
           value={stringValue}
           onChange={(e) => onChange(filter.id, e.target.value)}
-          className={`rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100 ${filter.className || ''}`}
+          className={`h-10 rounded-md border border-border bg-card px-3 text-sm text-foreground shadow-xs focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30 ${filter.className || ''}`}
         >
           <option value=''>{filter.label}</option>
           {filter.options?.map((option) => (
@@ -123,7 +120,7 @@ export function TableFilters({
               )
               onChange(filter.id, options)
             }}
-            className='rounded-lg border border-gray-100 bg-white px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
+            className='h-10 rounded-md border border-border bg-card px-3 text-sm text-foreground shadow-xs focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30'
           >
             {filter.options?.map((option) => (
               <option key={option.value} value={option.value}>
@@ -153,24 +150,20 @@ export function TableFilters({
   }
 
   return (
-    <div className='space-y-4 rounded-2xl border border-gray-200 bg-white p-4 md:p-6 shadow-sm'>
-      {/* Filters */}
-      <div className='flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3'>
-        {filters.map((filter) => renderFilter(filter))}
+    <div className='flex flex-col flex-wrap items-stretch gap-2 sm:flex-row sm:items-center'>
+      {filters.map((filter) => renderFilter(filter))}
 
-        {/* Clear filters button */}
-        {hasActiveFilters && onClear && (
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={onClear}
-            className='flex items-center gap-2'
-          >
-            <X className='h-4 w-4' />
-            {t('clearFilters')}
-          </Button>
-        )}
-      </div>
+      {hasActiveFilters && onClear && (
+        <Button
+          variant='ghost'
+          size='sm'
+          onClick={onClear}
+          className='flex items-center gap-2 text-muted-foreground'
+        >
+          <X className='h-4 w-4' />
+          {t('clearFilters')}
+        </Button>
+      )}
     </div>
   )
 }

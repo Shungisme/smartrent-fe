@@ -55,7 +55,7 @@
 .ProseMirror td,
 .news-editor-preview th,
 .news-editor-preview td {
-  border: 1px solid #d4d4d8;
+  border: 1px solid var(--border);
   min-width: 80px;
   padding: 0.55rem 0.75rem;
   vertical-align: top;
@@ -65,7 +65,7 @@
 
 .ProseMirror th,
 .news-editor-preview th {
-  background: #f4f4f5;
+  background: var(--muted);
   font-weight: 600;
 }
 
@@ -93,13 +93,13 @@
 
 /* Pagination visual polish (tiptap-pagination-plus) */
 .ProseMirror.rm-with-pagination {
-  background: #f4f4f5;
+  background: var(--muted);
   border-radius: 10px;
 }
 
 .ProseMirror.rm-with-pagination .rm-page-break {
-  background: #ffffff;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+  background: var(--card);
+  box-shadow: 0 2px 8px oklch(0.13 0.02 264 / 0.08);
 }
 
 @import 'tailwindcss';
@@ -125,8 +125,10 @@
   --accent-foreground: oklch(0.34 0.015 260);
   --destructive: oklch(0.61 0.211 27);
   --destructive-foreground: oklch(0.982 0.003 255);
-  --success: oklch(0.66 0.145 150);
-  --warning: oklch(0.74 0.152 80);
+  --success: oklch(0.62 0.135 150);
+  --success-foreground: oklch(0.32 0.08 150);
+  --warning: oklch(0.78 0.16 78);
+  --warning-foreground: oklch(0.42 0.118 60);
   --error: oklch(0.61 0.211 27);
   --border: oklch(0.906 0.008 255);
   --input: oklch(0.936 0.006 255);
@@ -200,7 +202,9 @@
   --destructive: oklch(0.71 0.162 22);
   --destructive-foreground: oklch(0.2 0.015 258);
   --success: oklch(0.74 0.122 154);
+  --success-foreground: oklch(0.9 0.06 154);
   --warning: oklch(0.79 0.115 82);
+  --warning-foreground: oklch(0.92 0.072 82);
   --error: oklch(0.71 0.162 22);
   --border: oklch(0.36 0.012 258);
   --input: oklch(0.36 0.012 258);
@@ -244,7 +248,9 @@
     --destructive: oklch(0.71 0.162 22);
     --destructive-foreground: oklch(0.2 0.015 258);
     --success: oklch(0.74 0.122 154);
+    --success-foreground: oklch(0.9 0.06 154);
     --warning: oklch(0.79 0.115 82);
+    --warning-foreground: oklch(0.92 0.072 82);
     --error: oklch(0.71 0.162 22);
     --border: oklch(0.36 0.012 258);
     --input: oklch(0.36 0.012 258);
@@ -287,7 +293,9 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-error: var(--error);
   --color-border: var(--border);
   --color-input: var(--input);

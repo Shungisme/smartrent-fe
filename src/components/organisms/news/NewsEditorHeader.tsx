@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/atoms/button'
 import { cn } from '@/lib/utils'
-import { Loader2, Eye, Save } from 'lucide-react'
+import { Loader2, Eye, Pencil, Save, FileText, Hash } from 'lucide-react'
 
 interface NewsEditorHeaderProps {
   wordCount: number
@@ -31,27 +31,29 @@ export const NewsEditorHeader: React.FC<NewsEditorHeaderProps> = ({
         className={cn(
           compact
             ? 'space-y-3'
-            : 'flex min-h-14 items-center justify-between gap-4',
+            : 'flex min-h-14 flex-wrap items-center justify-between gap-3',
         )}
       >
         <div
           className={cn(
-            'px-3 py-1.5 bg-white rounded-full shadow-sm border border-gray-200',
+            'inline-flex items-center gap-3 rounded-full border border-border/70 bg-card px-3 py-1.5 shadow-xs',
             compact && 'w-fit',
           )}
         >
-          <span className='text-sm font-medium text-gray-600'>
+          <span className='inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground'>
+            <FileText className='h-3.5 w-3.5' />
             {t('wordCount', { count: wordCount })}
           </span>
-          <span className='mx-2 text-gray-400'>•</span>
-          <span className='text-sm font-medium text-gray-600'>
+          <span className='h-3 w-px bg-border' aria-hidden />
+          <span className='inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground'>
+            <Hash className='h-3.5 w-3.5' />
             {t('characterCount', { count: characterCount })}
           </span>
         </div>
 
         <div
           className={cn(
-            'flex items-center gap-2 sm:gap-3',
+            'flex items-center gap-2',
             compact && 'grid grid-cols-1 gap-2',
           )}
         >
@@ -60,21 +62,20 @@ export const NewsEditorHeader: React.FC<NewsEditorHeaderProps> = ({
             variant='outline'
             size='sm'
             onClick={() => setPreviewMode(!previewMode)}
-            className='shadow-sm hover:shadow-md transition-shadow'
           >
-            <Eye className='h-4 w-4 mr-2' />
+            {previewMode ? (
+              <Pencil className='mr-1 h-4 w-4' />
+            ) : (
+              <Eye className='mr-1 h-4 w-4' />
+            )}
             {previewMode ? t('editButton') : t('previewButton')}
           </Button>
-          <Button
-            type='button'
-            variant='outline'
-            size='sm'
-            onClick={onSave}
-            disabled={loading}
-            className='shadow-sm hover:shadow-md transition-shadow hover:bg-blue-50'
-          >
-            {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin' />}
-            <Save className='h-4 w-4 mr-2' />
+          <Button type='button' size='sm' onClick={onSave} disabled={loading}>
+            {loading ? (
+              <Loader2 className='mr-1 h-4 w-4 animate-spin' />
+            ) : (
+              <Save className='mr-1 h-4 w-4' />
+            )}
             {t('saveButton')}
           </Button>
         </div>

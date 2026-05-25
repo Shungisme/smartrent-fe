@@ -67,10 +67,10 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
   const isInTable = editor.isActive('table')
 
   return (
-    <div className='border-b border-gray-200 bg-gradient-to-r from-slate-50 via-white to-slate-50 shadow-sm'>
+    <div className='border-b border-border/70 bg-muted/40'>
       <div className='flex flex-wrap gap-1.5 p-3'>
         {/* Text formatting */}
-        <div className='flex gap-1 pr-3 border-r border-gray-300'>
+        <div className='flex gap-1 pr-3 border-r border-border'>
           <Button
             type='button'
             variant='ghost'
@@ -78,7 +78,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().toggleBold().run()}
             className={
               editor.isActive('bold')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Bold (Ctrl+B)'
@@ -92,7 +92,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().toggleItalic().run()}
             className={
               editor.isActive('italic')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Italic (Ctrl+I)'
@@ -106,7 +106,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().toggleUnderline().run()}
             className={
               editor.isActive('underline')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Underline (Ctrl+U)'
@@ -120,7 +120,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().toggleStrike().run()}
             className={
               editor.isActive('strike')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Strikethrough'
@@ -134,7 +134,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().toggleCode().run()}
             className={
               editor.isActive('code')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Inline Code'
@@ -148,7 +148,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().toggleHighlight().run()}
             className={
               editor.isActive('highlight')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Highlight'
@@ -162,7 +162,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().toggleSubscript().run()}
             className={
               editor.isActive('subscript')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Subscript'
@@ -176,7 +176,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().toggleSuperscript().run()}
             className={
               editor.isActive('superscript')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Superscript'
@@ -208,7 +208,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
         </div>
 
         {/* Headings */}
-        <div className='flex gap-1 pr-3 border-r border-gray-300'>
+        <div className='flex gap-1 pr-3 border-r border-border'>
           <Button
             type='button'
             variant='ghost'
@@ -218,7 +218,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             }
             className={
               editor.isActive('heading', { level: 1 })
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Heading 1'
@@ -234,7 +234,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             }
             className={
               editor.isActive('heading', { level: 2 })
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Heading 2'
@@ -250,7 +250,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             }
             className={
               editor.isActive('heading', { level: 3 })
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Heading 3'
@@ -260,7 +260,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
         </div>
 
         {/* Lists */}
-        <div className='flex gap-1 pr-3 border-r border-gray-300'>
+        <div className='flex gap-1 pr-3 border-r border-border'>
           <Button
             type='button'
             variant='ghost'
@@ -268,7 +268,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             className={
               editor.isActive('bulletList')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Bullet List'
@@ -282,7 +282,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             className={
               editor.isActive('orderedList')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Numbered List'
@@ -296,7 +296,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().toggleTaskList().run()}
             className={
               editor.isActive('taskList')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Task List'
@@ -306,7 +306,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
         </div>
 
         {/* Alignment */}
-        <div className='flex gap-1 pr-3 border-r border-gray-300'>
+        <div className='flex gap-1 pr-3 border-r border-border'>
           <Button
             type='button'
             variant='ghost'
@@ -314,7 +314,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().setTextAlign('left').run()}
             className={
               editor.isActive({ textAlign: 'left' })
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Align Left'
@@ -328,7 +328,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().setTextAlign('center').run()}
             className={
               editor.isActive({ textAlign: 'center' })
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Align Center'
@@ -342,7 +342,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().setTextAlign('right').run()}
             className={
               editor.isActive({ textAlign: 'right' })
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Align Right'
@@ -356,7 +356,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().setTextAlign('justify').run()}
             className={
               editor.isActive({ textAlign: 'justify' })
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Justify'
@@ -366,7 +366,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
         </div>
 
         {/* Other */}
-        <div className='flex gap-1 pr-3 border-r border-gray-300'>
+        <div className='flex gap-1 pr-3 border-r border-border'>
           <Button
             type='button'
             variant='ghost'
@@ -388,7 +388,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={setLink}
             className={
               editor.isActive('link')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Insert Link'
@@ -402,7 +402,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
             className={
               editor.isActive('blockquote')
-                ? 'bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 shadow-sm ring-1 ring-blue-200'
+                ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                 : ''
             }
             title='Quote'
@@ -421,7 +421,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
         </div>
 
         {/* Table */}
-        <div className='flex gap-1 pr-3 border-r border-gray-300'>
+        <div className='flex gap-1 pr-3 border-r border-border'>
           <Button
             type='button'
             variant='ghost'

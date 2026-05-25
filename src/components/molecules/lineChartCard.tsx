@@ -1,12 +1,8 @@
 import React, { useMemo } from 'react'
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 import { useTranslations } from 'next-intl'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/atoms/card'
+import { Activity } from 'lucide-react'
+import { ChartCard } from '@/components/molecules/chartCard'
 import {
   ChartConfig,
   ChartContainer,
@@ -15,7 +11,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/atoms/chart'
-import { cn } from '@/lib/utils'
 
 export type LineChartDataset = {
   data: number[]
@@ -25,6 +20,7 @@ export type LineChartDataset = {
 
 type LineChartCardProps = {
   title: string
+  description?: React.ReactNode
   datasets: LineChartDataset[]
   labels: string[]
   height?: string
@@ -34,6 +30,7 @@ type LineChartCardProps = {
 
 const LineChartCard: React.FC<LineChartCardProps> = ({
   title,
+  description,
   datasets,
   labels,
   height = 'h-64',
@@ -53,11 +50,9 @@ const LineChartCard: React.FC<LineChartCardProps> = ({
         const point: Record<string, string | number | null> = {
           label: labels[index] ?? `${index + 1}`,
         }
-
         datasets.forEach((dataset, datasetIndex) => {
           point[`series${datasetIndex}`] = dataset.data[index] ?? null
         })
-
         return point
       }),
     [datasets, labels, pointCount],
@@ -70,97 +65,105 @@ const LineChartCard: React.FC<LineChartCardProps> = ({
           label: dataset.label,
           color: dataset.color,
         }
-
         return accumulator
       }, {}),
     [datasets],
   )
 
   const formatTick = (value: string | number) => {
-    if (typeof value !== 'number') {
-      return value
-    }
-
-    if (Math.abs(value) < 1000) {
-      return value.toLocaleString('vi-VN')
-    }
-
+    if (typeof value !== 'number') return value
+    if (Math.abs(value) < 1000) return value.toLocaleString('vi-VN')
     return new Intl.NumberFormat('vi-VN', {
       notation: 'compact',
       maximumFractionDigits: 1,
     }).format(value)
   }
 
+  const hasData = datasets.some((d) => d.data.some((v) => v > 0))
+
   return (
-    <Card className='py-4'>
-      <CardHeader className='pb-0'>
-        <CardTitle className='text-base md:text-lg'>{title}</CardTitle>
-      </CardHeader>
+    <ChartCard
+      title={title}
+      description={description}
+      bodyHeight={height}
+      empty={
+        !hasData ? (
+          <div className='flex h-full flex-col items-center justify-center gap-2 text-muted-foreground'>
+            <Activity className='h-6 w-6 opacity-50' />
+            <span className='text-xs'>{t('noData')}</span>
+          </div>
+        ) : undefined
+      }
+    >
+      <ChartContainer config={chartConfig} className='h-full w-full'>
+        <LineChart
+          data={chartData}
+          margin={{ top: 8, right: 12, left: 0, bottom: 0 }}
+        >
+          {showGrid && (
+            <CartesianGrid
+              vertical={false}
+              strokeDasharray='3 3'
+              stroke='var(--border)'
+              strokeOpacity={0.6}
+            />
+          )}
 
-      <CardContent className='space-y-2'>
-        <div className={cn('w-full', height)}>
-          <ChartContainer config={chartConfig} className='h-full w-full'>
-            <LineChart
-              data={chartData}
-              margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
-            >
-              {showGrid && (
-                <CartesianGrid vertical={false} strokeDasharray='3 3' />
-              )}
+          <XAxis
+            dataKey='label'
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            minTickGap={24}
+            stroke='var(--muted-foreground)'
+            fontSize={11}
+          />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            width={42}
+            tickMargin={8}
+            tickFormatter={formatTick}
+            stroke='var(--muted-foreground)'
+            fontSize={11}
+          />
 
-              <XAxis
-                dataKey='label'
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                minTickGap={24}
+          <ChartTooltip
+            cursor={{
+              stroke: 'var(--border)',
+              strokeWidth: 1,
+              strokeDasharray: '3 3',
+            }}
+            content={<ChartTooltipContent />}
+          />
+
+          {showLegend && datasets.length > 1 && (
+            <ChartLegend content={<ChartLegendContent />} />
+          )}
+
+          {datasets.map((_, datasetIndex) => {
+            const dataKey = `series${datasetIndex}`
+            return (
+              <Line
+                key={dataKey}
+                type='monotone'
+                dataKey={dataKey}
+                stroke={`var(--color-${dataKey})`}
+                strokeWidth={2}
+                dot={{ r: 0 }}
+                activeDot={{
+                  r: 5,
+                  fill: `var(--color-${dataKey})`,
+                  strokeWidth: 2,
+                  stroke: 'var(--background)',
+                }}
+                connectNulls
               />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                width={42}
-                tickMargin={8}
-                tickFormatter={formatTick}
-              />
-
-              <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-
-              {showLegend && datasets.length > 1 && (
-                <ChartLegend content={<ChartLegendContent />} />
-              )}
-
-              {datasets.map((_, datasetIndex) => {
-                const dataKey = `series${datasetIndex}`
-
-                return (
-                  <Line
-                    key={dataKey}
-                    type='monotone'
-                    dataKey={dataKey}
-                    stroke={`var(--color-${dataKey})`}
-                    strokeWidth={2.5}
-                    dot={{
-                      r: 3,
-                      fill: `var(--color-${dataKey})`,
-                      strokeWidth: 2,
-                      stroke: 'var(--background)',
-                    }}
-                    activeDot={{ r: 5 }}
-                    connectNulls
-                  />
-                )
-              })}
-            </LineChart>
-          </ChartContainer>
-        </div>
-
-        {datasets.length === 0 && (
-          <p className='text-center text-sm text-muted-foreground'>
-            {t('noData')}
-          </p>
-        )}
-      </CardContent>
-    </Card>
+            )
+          })}
+        </LineChart>
+      </ChartContainer>
+    </ChartCard>
   )
 }
 

@@ -128,7 +128,8 @@ const NewsEditor = () => {
     content: '',
     editorProps: {
       attributes: {
-        class: 'prose prose-sm max-w-none focus:outline-none min-h-[420px] p-6',
+        class:
+          'prose prose-sm max-w-none focus:outline-none min-h-[420px] p-6 text-foreground dark:prose-invert',
       },
     },
   })
@@ -359,88 +360,84 @@ const NewsEditor = () => {
 
   if (loading) {
     return (
-      <div className='flex items-center justify-center h-screen'>
-        <Loader2 className='h-8 w-8 animate-spin text-blue-600' />
+      <div className='flex h-[60vh] items-center justify-center'>
+        <Loader2 className='h-8 w-8 animate-spin text-primary' />
       </div>
     )
   }
 
   return (
     <div>
-      <div>
-        <input
-          ref={contentImageInputRef}
-          type='file'
-          accept='image/*'
-          onChange={handleContentImageSelected}
-          className='hidden'
+      <input
+        ref={contentImageInputRef}
+        type='file'
+        accept='image/*'
+        onChange={handleContentImageSelected}
+        className='hidden'
+      />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <NewsEditorHeader
+          wordCount={wordCount}
+          characterCount={characterCount}
+          previewMode={previewMode}
+          setPreviewMode={setPreviewMode}
+          onSave={handleSubmit(onSubmit)}
+          loading={saveLoading}
         />
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <NewsEditorHeader
-            wordCount={wordCount}
-            characterCount={characterCount}
-            previewMode={previewMode}
-            setPreviewMode={setPreviewMode}
-            onSave={handleSubmit(onSubmit)}
-            loading={saveLoading}
-          />
 
-          <div className='grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8'>
-            <div className='order-1 space-y-6 lg:col-span-8'>
-              <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 px-8 py-4 border border-gray-100'>
-                <input
-                  {...register('title', { required: true })}
-                  type='text'
-                  placeholder={t('form.titlePlaceholder')}
-                  className='w-full text-4xl font-bold border-none focus:outline-none focus:ring-0 placeholder-gray-300 text-gray-900'
-                />
-              </div>
-
-              <div className='bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden border border-gray-100'>
-                {!previewMode ? (
-                  <>
-                    <NewsEditorMenuBar
-                      editor={editor}
-                      onSelectImage={() =>
-                        contentImageInputRef.current?.click()
-                      }
-                      isUploadingImage={uploadingContentImage}
-                    />
-                    <div className='min-h-[50vh] max-h-[50vh] overflow-y-auto'>
-                      <EditorContent editor={editor} />
-                    </div>
-                  </>
-                ) : (
-                  <div className='p-10 bg-gradient-to-br from-gray-50 to-white'>
-                    <div className='max-w-4xl mx-auto bg-white p-12 rounded-lg shadow-xl'>
-                      <h2 className='text-4xl font-bold mb-6 text-gray-900 border-b-4 border-blue-500 pb-4 inline-block'>
-                        {watch('title')}
-                      </h2>
-                      <div
-                        className='news-editor-preview prose prose-lg max-w-none mt-8'
-                        dangerouslySetInnerHTML={{
-                          __html: editor?.getHTML() || '',
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className='order-2 space-y-4 lg:col-span-4'>
-              <NewsMetaForm
-                register={register}
-                watch={watch}
-                setValue={setValue}
-                errors={errors}
-                onThumbnailSelect={handleThumbnailSelect}
-                isUploadingThumbnail={uploadingThumbnail}
+        <div className='grid grid-cols-1 gap-6 lg:grid-cols-12'>
+          <div className='order-1 space-y-4 lg:col-span-8'>
+            <div className='rounded-xl border border-border/70 bg-card px-6 py-4 shadow-sm transition-shadow hover:shadow-md'>
+              <input
+                {...register('title', { required: true })}
+                type='text'
+                placeholder={t('form.titlePlaceholder')}
+                className='w-full border-none bg-transparent text-3xl font-semibold tracking-tight text-foreground placeholder:text-muted-foreground/40 focus:outline-none focus:ring-0 sm:text-4xl'
               />
             </div>
+
+            <div className='overflow-hidden rounded-xl border border-border/70 bg-card shadow-sm transition-shadow hover:shadow-md'>
+              {!previewMode ? (
+                <>
+                  <NewsEditorMenuBar
+                    editor={editor}
+                    onSelectImage={() => contentImageInputRef.current?.click()}
+                    isUploadingImage={uploadingContentImage}
+                  />
+                  <div className='min-h-[50vh] max-h-[50vh] overflow-y-auto'>
+                    <EditorContent editor={editor} />
+                  </div>
+                </>
+              ) : (
+                <div className='bg-muted/40 p-6 sm:p-10'>
+                  <div className='mx-auto max-w-4xl rounded-xl border border-border/60 bg-card p-8 shadow-sm sm:p-12'>
+                    <h2 className='mb-6 inline-block border-b-2 border-primary pb-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl'>
+                      {watch('title')}
+                    </h2>
+                    <div
+                      className='news-editor-preview prose prose-lg mt-6 max-w-none dark:prose-invert'
+                      dangerouslySetInnerHTML={{
+                        __html: editor?.getHTML() || '',
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </form>
-      </div>
+
+          <div className='order-2 space-y-4 lg:col-span-4'>
+            <NewsMetaForm
+              register={register}
+              watch={watch}
+              setValue={setValue}
+              errors={errors}
+              onThumbnailSelect={handleThumbnailSelect}
+              isUploadingThumbnail={uploadingThumbnail}
+            />
+          </div>
+        </div>
+      </form>
     </div>
   )
 }

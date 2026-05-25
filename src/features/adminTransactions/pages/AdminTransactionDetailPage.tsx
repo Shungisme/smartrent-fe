@@ -22,11 +22,14 @@ import {
 } from '../utils/formatters'
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
-  PENDING: 'bg-yellow-100 text-yellow-800',
-  SUCCESS: 'bg-green-100 text-green-800',
-  FAILED: 'bg-red-100 text-red-800',
-  CANCELLED: 'bg-gray-100 text-gray-800',
-  REFUNDED: 'bg-blue-100 text-blue-800',
+  PENDING:
+    'bg-warning/18 text-warning-foreground ring-1 ring-inset ring-warning/30',
+  SUCCESS:
+    'bg-success/15 text-success-foreground ring-1 ring-inset ring-success/30',
+  FAILED:
+    'bg-destructive/12 text-destructive ring-1 ring-inset ring-destructive/25',
+  CANCELLED: 'bg-muted text-muted-foreground ring-1 ring-inset ring-border',
+  REFUNDED: 'bg-primary/12 text-primary ring-1 ring-inset ring-primary/25',
 }
 
 /** A titled card section with a leading accent icon. */
@@ -87,8 +90,8 @@ export const AdminTransactionDetailPage = () => {
 
   if (error || !transaction) {
     return (
-      <div className='rounded-xl border border-red-200 bg-red-50 p-6'>
-        <p className='text-red-800'>
+      <div className='rounded-xl border border-destructive/30 bg-destructive/8 p-6'>
+        <p className='text-sm text-destructive'>
           {error ? t('detail.loadError') : t('detail.notFound')}
         </p>
       </div>
@@ -102,31 +105,44 @@ export const AdminTransactionDetailPage = () => {
     <div className='space-y-6'>
       {/* Header */}
       <div className='flex flex-wrap items-start justify-between gap-4'>
-        <div className='min-w-0'>
-          <h1 className='text-2xl font-bold text-foreground md:text-3xl'>
+        <div className='min-w-0 space-y-1.5'>
+          <div className='text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground'>
+            {t('detail.transactionInfo')}
+          </div>
+          <h1 className='text-xl font-semibold tracking-tight text-foreground sm:text-[1.5rem] sm:leading-[1.2]'>
             {t('detail.title')}
           </h1>
-          <p className='mt-1 font-mono text-sm text-muted-foreground'>
+          <p className='font-mono text-sm text-muted-foreground'>
             {transaction.transactionCode}
           </p>
         </div>
         <span
           className={cn(
-            'rounded-full px-4 py-1.5 text-sm font-medium',
+            'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium',
             STATUS_BADGE_CLASS[transaction.status] ??
               STATUS_BADGE_CLASS.PENDING,
           )}
         >
+          <span
+            className={cn(
+              'inline-block h-1.5 w-1.5 rounded-full',
+              transaction.status === 'SUCCESS' && 'bg-success',
+              transaction.status === 'PENDING' && 'bg-warning',
+              transaction.status === 'FAILED' && 'bg-destructive',
+              transaction.status === 'CANCELLED' && 'bg-muted-foreground/60',
+              transaction.status === 'REFUNDED' && 'bg-primary',
+            )}
+          />
           {t(`status.${transaction.status}`)}
         </span>
       </div>
 
       {/* Amount highlight */}
-      <div className='rounded-xl border border-border/70 bg-card p-6 shadow-sm'>
-        <p className='text-xs font-medium text-muted-foreground'>
+      <div className='rounded-xl border border-border/70 bg-gradient-to-br from-primary/5 via-card to-card p-6 shadow-sm'>
+        <p className='text-xs font-medium uppercase tracking-wider text-muted-foreground'>
           {t('detail.amount')}
         </p>
-        <p className='mt-1 text-3xl font-bold text-primary'>
+        <p className='mt-1.5 text-3xl font-semibold tracking-tight text-foreground tabular-nums'>
           {formatVND(transaction.amount)}
         </p>
       </div>
@@ -296,12 +312,14 @@ export const AdminTransactionDetailPage = () => {
 
       {/* Failure Reason */}
       {transaction.failureReason && (
-        <div className='rounded-xl border border-red-200 bg-red-50 p-6'>
-          <div className='mb-2 flex items-center gap-2 text-base font-semibold text-red-900'>
+        <div className='rounded-xl border border-destructive/25 bg-destructive/6 p-6'>
+          <div className='mb-2 flex items-center gap-2 text-sm font-semibold text-destructive'>
             <AlertTriangle className='h-4 w-4' />
             {t('detail.failureReason')}
           </div>
-          <p className='text-sm text-red-700'>{transaction.failureReason}</p>
+          <p className='text-sm text-foreground/80'>
+            {transaction.failureReason}
+          </p>
         </div>
       )}
 
