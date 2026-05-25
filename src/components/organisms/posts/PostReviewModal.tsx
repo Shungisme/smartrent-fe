@@ -9,7 +9,7 @@ import {
 } from '@/components/atoms/dialog'
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
-import { Avatar } from '@/components/atoms/avatar'
+import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
 import {
   CheckCircle,
   XCircle,
@@ -198,14 +198,14 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
     if (!open) return null
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='max-w-3xl w-[calc(100%-2rem)] mx-auto max-h-[90vh] overflow-hidden p-0 gap-0'>
-          <div className='flex max-h-[90vh] flex-col'>
+        <DialogContent className='flex max-w-3xl w-[calc(100%-2rem)] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0'>
+          <>
             <DialogHeader className='shrink-0 border-b border-border/60 px-6 py-4'>
               <DialogTitle className='text-xl md:text-2xl font-semibold'>
                 {t('review.title')}
               </DialogTitle>
             </DialogHeader>
-            <div className='flex flex-1 items-center justify-center py-24'>
+            <div className='flex min-h-0 flex-1 items-center justify-center py-24'>
               {loading ? (
                 <div className='flex flex-col items-center gap-3 text-muted-foreground'>
                   <Loader2 className='h-8 w-8 animate-spin text-primary' />
@@ -217,7 +217,7 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                 </span>
               )}
             </div>
-          </div>
+          </>
         </DialogContent>
       </Dialog>
     )
@@ -231,29 +231,31 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='max-w-3xl w-[calc(100%-2rem)] mx-auto max-h-[90vh] overflow-hidden p-0 gap-0'>
-          <div className='flex max-h-[90vh] flex-col'>
+        <DialogContent className='flex max-w-3xl w-[calc(100%-2rem)] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0'>
+          <>
             <DialogHeader className='shrink-0 border-b border-border/60 px-6 py-4'>
               <DialogTitle className='text-xl md:text-2xl font-semibold'>
                 {t('review.title')}
               </DialogTitle>
             </DialogHeader>
 
-            <div className='flex-1 overflow-y-auto px-6 py-5'>
+            <div className='min-h-0 flex-1 overflow-y-auto px-6 py-5'>
               <div className='space-y-5'>
                 {/* Hero: title, code, listing type, status & price */}
-                <div className='rounded-xl border border-border/70 bg-card p-4 shadow-sm md:p-5'>
+                <div className='rounded-xl border border-border/70 bg-gradient-to-br from-primary/5 via-card to-card p-5 shadow-sm md:p-6'>
                   <div className='flex items-start justify-between gap-4'>
-                    <div className='min-w-0 space-y-1.5'>
-                      <Badge variant='secondary' className='font-normal'>
-                        {t(`listingTypes.${selectedPost.listingType}`)}
-                      </Badge>
+                    <div className='min-w-0 space-y-2'>
+                      <div className='flex flex-wrap items-center gap-1.5'>
+                        <Badge variant='secondary' className='font-normal'>
+                          {t(`listingTypes.${selectedPost.listingType}`)}
+                        </Badge>
+                        <span className='font-mono text-xs text-muted-foreground'>
+                          {selectedPost.postCode}
+                        </span>
+                      </div>
                       <h3 className='text-lg font-semibold leading-snug text-foreground md:text-xl'>
                         {selectedPost.title}
                       </h3>
-                      <p className='font-mono text-xs text-muted-foreground'>
-                        {selectedPost.postCode}
-                      </p>
                     </div>
                     <Badge
                       variant='outline'
@@ -265,8 +267,8 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                       {_getStatusLabel(selectedPost.status)}
                     </Badge>
                   </div>
-                  <div className='mt-4 border-t border-border/60 pt-4'>
-                    <span className='text-2xl font-bold text-primary md:text-3xl'>
+                  <div className='mt-5 flex items-baseline gap-2 border-t border-border/60 pt-4'>
+                    <span className='text-2xl font-semibold tracking-tight text-foreground tabular-nums md:text-3xl'>
                       {selectedPost.price}
                     </span>
                   </div>
@@ -418,18 +420,11 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
 
                 {/* Poster */}
                 <div className='flex items-center gap-3 rounded-lg border border-border/70 bg-muted/30 p-4'>
-                  <Avatar className='h-10 w-10 md:h-12 md:w-12'>
-                    <Image
-                      src={
-                        selectedPost.poster.avatar ||
-                        '/images/default-image.jpg'
-                      }
-                      alt={selectedPost.poster.name}
-                      width={48}
-                      height={48}
-                      className='h-full w-full object-cover'
-                    />
-                  </Avatar>
+                  <InitialsAvatar
+                    name={selectedPost.poster.name}
+                    src={selectedPost.poster.avatar}
+                    size='lg'
+                  />
                   <div className='min-w-0'>
                     <div className='text-xs text-muted-foreground'>
                       {t('review.postedBy')}
@@ -516,23 +511,22 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
 
             {/* Action Buttons */}
             {isPending && (
-              <div className='shrink-0 border-t border-border/60 bg-card px-6 py-4'>
-                <div className='grid gap-2.5 sm:grid-cols-3'>
+              <div className='shrink-0 border-t border-border/60 bg-card/95 px-6 py-4 backdrop-blur supports-[backdrop-filter]:bg-card/80'>
+                <div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end'>
                   <Button
-                    size='lg'
-                    onClick={() => onApprove(verificationNotes)}
+                    variant='outline'
+                    onClick={() => onRequestRevision(rejectionReason)}
                     disabled={actionLoading}
-                    className='bg-success text-white shadow-sm hover:bg-success/90'
+                    className='border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground'
                   >
                     {actionLoading ? (
                       <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                     ) : (
-                      <CheckCircle className='mr-2 h-4 w-4' />
+                      <RotateCcw className='mr-2 h-4 w-4' />
                     )}
-                    {t('review.approveButton')}
+                    {t('review.requestRevisionButton')}
                   </Button>
                   <Button
-                    size='lg'
                     variant='outline'
                     onClick={() => onReject(rejectionReason)}
                     disabled={actionLoading}
@@ -546,23 +540,20 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                     {t('review.rejectButton')}
                   </Button>
                   <Button
-                    size='lg'
-                    variant='outline'
-                    onClick={() => onRequestRevision(rejectionReason)}
+                    onClick={() => onApprove(verificationNotes)}
                     disabled={actionLoading}
-                    className='border-warning/40 text-warning hover:border-warning/60 hover:bg-warning/10 hover:text-warning'
                   >
                     {actionLoading ? (
                       <Loader2 className='mr-2 h-4 w-4 animate-spin' />
                     ) : (
-                      <RotateCcw className='mr-2 h-4 w-4' />
+                      <CheckCircle className='mr-2 h-4 w-4' />
                     )}
-                    {t('review.requestRevisionButton')}
+                    {t('review.approveButton')}
                   </Button>
                 </div>
               </div>
             )}
-          </div>
+          </>
         </DialogContent>
       </Dialog>
 

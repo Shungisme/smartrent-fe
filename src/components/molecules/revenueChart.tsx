@@ -59,7 +59,7 @@ const RevenueChart: React.FC<RevenueChartProps> = ({
 
   return (
     <Card className='p-6'>
-      <h3 className='mb-4 text-lg font-semibold text-gray-900'>
+      <h3 className='mb-4 text-base font-semibold tracking-tight text-foreground'>
         {t('charts.revenueChart.title')}
       </h3>
       <div className='relative h-64'>
@@ -76,7 +76,8 @@ const RevenueChart: React.FC<RevenueChartProps> = ({
               y1={y}
               x2='100'
               y2={y}
-              stroke='#e5e7eb'
+              stroke='var(--border)'
+              strokeOpacity='0.6'
               strokeWidth='0.2'
             />
           ))}
@@ -84,38 +85,39 @@ const RevenueChart: React.FC<RevenueChartProps> = ({
           {/* Area gradient */}
           <defs>
             <linearGradient id='areaGradient' x1='0' x2='0' y1='0' y2='1'>
-              <stop offset='0%' stopColor='#3b82f6' stopOpacity='0.3' />
-              <stop offset='100%' stopColor='#3b82f6' stopOpacity='0.05' />
+              <stop offset='0%' stopColor='var(--chart-1)' stopOpacity='0.32' />
+              <stop
+                offset='100%'
+                stopColor='var(--chart-1)'
+                stopOpacity='0.02'
+              />
             </linearGradient>
           </defs>
 
-          {/* Area fill */}
           <polygon
             points={`0,100 ${points} 100,100`}
             fill='url(#areaGradient)'
           />
 
-          {/* Line */}
           <polyline
             points={points}
             fill='none'
-            stroke='#3b82f6'
+            stroke='var(--chart-1)'
             strokeWidth='0.5'
             strokeLinecap='round'
             strokeLinejoin='round'
           />
         </svg>
 
-        {/* X-axis labels */}
         <div className='mt-2 flex justify-between px-1'>
           {monthLabels.map((label, index) => (
-            <span key={index} className='text-xs text-gray-500'>
+            <span key={index} className='text-xs text-muted-foreground'>
               {label}
             </span>
           ))}
         </div>
       </div>
-      <div className='mt-4 text-sm text-gray-600'>
+      <div className='mt-4 text-sm text-muted-foreground'>
         {t('charts.revenueChart.unit')}
       </div>
     </Card>

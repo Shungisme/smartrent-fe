@@ -15,6 +15,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { toast } from 'sonner'
 import { User, LogOut, Settings, ChevronDown, Menu } from 'lucide-react'
 import { NotificationBell } from './NotificationBell'
+import ThemeSwitch from '@/components/molecules/themeSwitch'
 
 type AdminHeaderProps = {
   leftContent?: React.ReactNode
@@ -67,7 +68,10 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
         </div>
 
         {/* Right - Notifications & Profile */}
-        <div className='flex shrink-0 items-center gap-2.5'>
+        <div className='flex shrink-0 items-center gap-1.5'>
+          {/* Theme toggle */}
+          <ThemeSwitch />
+
           {/* Notification Bell */}
           <NotificationBell />
 

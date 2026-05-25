@@ -1,13 +1,12 @@
 import React from 'react'
-import Image from 'next/image'
 import {
   DataTable,
   Column,
   FilterConfig,
 } from '@/components/organisms/DataTable'
-import { Avatar } from '@/components/atoms/avatar'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
+import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
 import { Pencil, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
@@ -32,16 +31,19 @@ const formatDateTime = (value?: string | null): string => {
   return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`
 }
 
+// Subtle tinted role pills — quiet enough for a dense table, semantic enough to scan.
 const getRoleBadgeClass = (role: string): string => {
   const classes: Record<AdminRole, string> = {
-    SA: 'bg-red-100 text-red-800 border-red-200',
-    UA: 'bg-orange-100 text-orange-800 border-orange-200',
-    CM: 'bg-purple-100 text-purple-800 border-purple-200',
-    SPA: 'bg-blue-100 text-blue-800 border-blue-200',
-    FA: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-    MA: 'bg-pink-100 text-pink-800 border-pink-200',
+    SA: 'border-rose-200/70 bg-rose-50 text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300',
+    UA: 'border-orange-200/70 bg-orange-50 text-orange-700 dark:border-orange-500/30 dark:bg-orange-500/10 dark:text-orange-300',
+    CM: 'border-purple-200/70 bg-purple-50 text-purple-700 dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-300',
+    SPA: 'border-blue-200/70 bg-blue-50 text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300',
+    FA: 'border-emerald-200/70 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300',
+    MA: 'border-pink-200/70 bg-pink-50 text-pink-700 dark:border-pink-500/30 dark:bg-pink-500/10 dark:text-pink-300',
   }
-  return classes[role as AdminRole] || 'bg-gray-100 text-gray-800'
+  return (
+    classes[role as AdminRole] || 'border-border bg-muted text-foreground/80'
+  )
 }
 
 interface AdminTableProps {
@@ -141,6 +143,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       id: 'id',
       header: t('table.headers.adminId'),
       accessor: 'id',
+      defaultHidden: true,
       render: (value) => (
         <div className='text-sm font-medium text-gray-900'>
           {value as React.ReactNode}
@@ -154,18 +157,14 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       sortable: true,
       render: (_, row) => (
         <div className='flex items-center gap-3'>
-          <Avatar className='w-10 h-10'>
-            <Image
-              src={row.avatar || '/images/default-image.jpg'}
-              alt={row.name}
-              width={40}
-              height={40}
-              className='w-full h-full object-cover'
-            />
-          </Avatar>
-          <div className='flex flex-col'>
-            <span className='font-medium text-gray-900'>{row.name}</span>
-            <span className='text-sm text-gray-500'>{row.email}</span>
+          <InitialsAvatar name={row.name} src={row.avatar} size='md' />
+          <div className='min-w-0 flex-col leading-tight'>
+            <div className='truncate font-medium text-foreground'>
+              {row.name}
+            </div>
+            <div className='truncate text-xs text-muted-foreground'>
+              {row.email}
+            </div>
           </div>
         </div>
       ),
@@ -174,19 +173,19 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       id: 'role',
       header: t('table.headers.role'),
       accessor: 'role',
-      render: (value) =>
-        (value as string[]).map((role: string) => (
-          <Badge
-            key={role}
-            variant='outline'
-            className={cn(
-              'px-3 py-1 font-medium mr-1',
-              getRoleBadgeClass(role),
-            )}
-          >
-            {roleLabels[role as AdminRole] || role}
-          </Badge>
-        )),
+      render: (value) => (
+        <div className='flex flex-wrap items-center gap-1'>
+          {(value as string[]).map((role: string) => (
+            <Badge
+              key={role}
+              variant='outline'
+              className={cn('font-medium', getRoleBadgeClass(role))}
+            >
+              {roleLabels[role as AdminRole] || role}
+            </Badge>
+          ))}
+        </div>
+      ),
     },
     {
       id: 'joinDate',
@@ -194,9 +193,9 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       accessor: 'joinDate',
       sortable: true,
       render: (value) => (
-        <div className='text-sm text-gray-900'>
+        <span className='font-mono text-[13px] tabular-nums text-muted-foreground'>
           {formatDateTime(value as string | null)}
-        </div>
+        </span>
       ),
     },
     {
@@ -204,11 +203,11 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       header: t('table.headers.actions'),
       accessor: () => '',
       render: (_, row) => (
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center justify-end gap-0.5'>
           <Button
             variant='ghost'
             size='sm'
-            className='h-8 w-8 p-0'
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
             title={t('table.actions.edit')}
             onClick={() => {
               const admin = admins.find((a) => a.adminId === row.id)
@@ -220,7 +219,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
           <Button
             variant='ghost'
             size='sm'
-            className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
+            className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
             title={t('table.actions.delete')}
             onClick={() => {
               const admin = admins.find((a) => a.adminId === row.id)

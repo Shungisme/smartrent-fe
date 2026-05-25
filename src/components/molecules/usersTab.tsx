@@ -62,7 +62,7 @@ const UsersTab: React.FC<UsersTabProps> = ({ dateRange }) => {
   if (loading) {
     return (
       <div className='flex h-64 items-center justify-center'>
-        <Loader2 className='h-8 w-8 animate-spin text-blue-600' />
+        <Loader2 className='h-8 w-8 animate-spin text-primary' />
       </div>
     )
   }
@@ -89,7 +89,7 @@ const UsersTab: React.FC<UsersTabProps> = ({ dateRange }) => {
           datasets={[
             {
               data: (data?.dataPoints || []).map((item) => item.count),
-              color: '#2563EB',
+              color: 'var(--chart-1)',
               label: t('charts.newUsers'),
             },
           ]}

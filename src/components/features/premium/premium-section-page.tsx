@@ -14,7 +14,8 @@ import { VIPTier } from '@/api/types/vip-tier.type'
 import { MembershipPackage } from '@/types/premium.type'
 import { PremiumStats } from '@/components/molecules/premium/PremiumStats'
 import { MembershipTable } from '../../organisms/premium/MembershipTable'
-import { ListingTypePricingList } from '@/components/organisms/premium/ListingTypePricingList'
+import { ListingTypeTable } from '@/components/organisms/premium/ListingTypeTable'
+import { PageHeader } from '@/components/molecules/pageHeader'
 
 export type PremiumSection = 'overview' | 'membership' | 'listing-types'
 
@@ -127,19 +128,28 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
 
   return (
     <div className='space-y-6'>
-      {section === 'overview' && <PremiumStats stats={stats} />}
+      {section === 'overview' && (
+        <>
+          <PageHeader title={t('title')} description={t('description')} />
+          <PremiumStats stats={stats} />
+        </>
+      )}
 
       {section === 'membership' && (
         <>
-          <div className='flex justify-stretch sm:justify-end'>
-            <Button
-              className='w-full bg-blue-600 text-white hover:bg-blue-700 sm:w-auto'
-              onClick={() => setMembershipModalOpen(true)}
-            >
-              <Plus className='h-4 w-4' />
-              {t('membership.addPackage')}
-            </Button>
-          </div>
+          <PageHeader
+            title={t('title')}
+            description={t('membership.description')}
+            actions={
+              <Button
+                className='w-full sm:w-auto'
+                onClick={() => setMembershipModalOpen(true)}
+              >
+                <Plus className='h-4 w-4' />
+                {t('membership.addPackage')}
+              </Button>
+            }
+          />
 
           <MembershipTable
             memberships={displayMemberships}
@@ -152,7 +162,13 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
       )}
 
       {section === 'listing-types' && (
-        <ListingTypePricingList tiers={apiVIPTiers} loading={vipTiersLoading} />
+        <>
+          <PageHeader
+            title={t('title')}
+            description={t('listingTypes.description')}
+          />
+          <ListingTypeTable tiers={apiVIPTiers} loading={vipTiersLoading} />
+        </>
       )}
 
       <AddMembershipModal

@@ -62,7 +62,7 @@ const PostsTab: React.FC<PostsTabProps> = ({ dateRange }) => {
   if (loading) {
     return (
       <div className='flex h-64 items-center justify-center'>
-        <Loader2 className='h-8 w-8 animate-spin text-blue-600' />
+        <Loader2 className='h-8 w-8 animate-spin text-primary' />
       </div>
     )
   }
@@ -90,7 +90,7 @@ const PostsTab: React.FC<PostsTabProps> = ({ dateRange }) => {
           datasets={[
             {
               data: (data?.dataPoints || []).map((item) => item.count),
-              color: '#22C55E',
+              color: 'var(--chart-2)',
               label: t('charts.newPosts'),
             },
           ]}

@@ -110,10 +110,10 @@ export const formatDateTime = (
 
 export const getStatusColor = (status: PostStatus): string => {
   const colors = {
-    pending: 'bg-yellow-50 text-yellow-800 border-yellow-200',
-    approved: 'bg-green-50 text-green-700 border-green-200',
-    rejected: 'bg-red-50 text-red-700 border-red-200',
-    expired: 'bg-gray-50 text-gray-700 border-gray-200',
+    pending: 'border-warning/30 bg-warning/15 text-warning-foreground',
+    approved: 'border-success/30 bg-success/12 text-success-foreground',
+    rejected: 'border-destructive/30 bg-destructive/10 text-destructive',
+    expired: 'border-border bg-muted text-foreground/70',
   }
   return colors[status]
 }

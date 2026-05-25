@@ -89,9 +89,9 @@ const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
   }
 
   const levelColors: Record<MembershipPackageLevel, string> = {
-    BASIC: '#94A3B8',
-    STANDARD: '#6366F1',
-    ADVANCED: '#F59E0B',
+    BASIC: 'var(--chart-5)',
+    STANDARD: 'var(--chart-1)',
+    ADVANCED: 'var(--chart-3)',
   }
 
   const membershipChartData: PieChartData[] = useMemo(
@@ -117,7 +117,7 @@ const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
   if (loading) {
     return (
       <div className='flex h-64 items-center justify-center'>
-        <Loader2 className='h-8 w-8 animate-spin text-blue-600' />
+        <Loader2 className='h-8 w-8 animate-spin text-primary' />
       </div>
     )
   }
@@ -159,7 +159,7 @@ const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
             title={t('charts.revenueOverTime')}
             data={revenuePoints.map((point) => point.totalAmount)}
             labels={revenuePoints.map((point) => point.date)}
-            color='#6366F1'
+            color='var(--chart-1)'
             height='h-80'
             unit={t('charts.unit')}
           />

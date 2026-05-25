@@ -24,6 +24,7 @@ import {
 import { Role } from '@/api/types/role.type'
 import { useTranslations } from 'next-intl'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
+import { PageHeader } from '@/components/molecules/pageHeader'
 
 type RoleRow = {
   id: string
@@ -96,6 +97,7 @@ const RoleManagement = () => {
       id: 'id',
       header: t('table.headers.roleId'),
       accessor: 'id',
+      defaultHidden: true,
       render: (value) => (
         <span className='font-mono'>{value as React.ReactNode}</span>
       ),
@@ -111,11 +113,11 @@ const RoleManagement = () => {
       header: t('table.headers.actions'),
       accessor: () => '',
       render: (_, row) => (
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center justify-end gap-0.5'>
           <Button
             variant='ghost'
             size='sm'
-            className='h-8 w-8 p-0'
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
             title={t('table.actions.edit')}
             onClick={() => {
               const role = roles.find((r) => r.roleId === row.id)
@@ -131,7 +133,7 @@ const RoleManagement = () => {
           <Button
             variant='ghost'
             size='sm'
-            className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
+            className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
             title={t('table.actions.delete')}
             onClick={() => {
               const role = roles.find((r) => r.roleId === row.id)
@@ -170,19 +172,23 @@ const RoleManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
-        <div className='flex items-center justify-stretch sm:justify-end'>
-          <Button
-            className='w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white'
-            onClick={() => {
-              setShowCreate(true)
-              setForm({ roleId: '', roleName: '' })
-              setFormError(null)
-            }}
-          >
-            <Plus className='h-4 w-4' />
-            {t('createNewRole')}
-          </Button>
-        </div>
+        <PageHeader
+          title={t('title')}
+          description={t('subtitle')}
+          actions={
+            <Button
+              className='w-full sm:w-auto'
+              onClick={() => {
+                setShowCreate(true)
+                setForm({ roleId: '', roleName: '' })
+                setFormError(null)
+              }}
+            >
+              <Plus className='h-4 w-4' />
+              {t('createNewRole')}
+            </Button>
+          }
+        />
         <DataTable
           data={transformedRoles}
           columns={columns}
@@ -251,7 +257,7 @@ const RoleManagement = () => {
                 />
               </div>
               {formError && (
-                <div className='text-red-600 text-sm'>{formError}</div>
+                <div className='text-sm text-destructive'>{formError}</div>
               )}
               <div className='flex gap-3'>
                 <Button
@@ -263,11 +269,7 @@ const RoleManagement = () => {
                 >
                   {t('create.cancel')}
                 </Button>
-                <Button
-                  type='submit'
-                  disabled={formLoading}
-                  className='flex-1 bg-blue-600 hover:bg-blue-700'
-                >
+                <Button type='submit' disabled={formLoading} className='flex-1'>
                   {formLoading ? t('create.creating') : t('create.create')}
                 </Button>
               </div>
@@ -324,7 +326,7 @@ const RoleManagement = () => {
                 />
               </div>
               {formError && (
-                <div className='text-red-600 text-sm'>{formError}</div>
+                <div className='text-sm text-destructive'>{formError}</div>
               )}
               <div className='flex gap-3'>
                 <Button
@@ -336,11 +338,7 @@ const RoleManagement = () => {
                 >
                   {t('edit.cancel')}
                 </Button>
-                <Button
-                  type='submit'
-                  disabled={formLoading}
-                  className='flex-1 bg-blue-600 hover:bg-blue-700'
-                >
+                <Button type='submit' disabled={formLoading} className='flex-1'>
                   {formLoading ? t('edit.saving') : t('edit.save')}
                 </Button>
               </div>
@@ -363,7 +361,7 @@ const RoleManagement = () => {
                 <span className='font-semibold'>{showDelete?.roleName}</span>
               </p>
               {formError && (
-                <div className='text-red-600 text-sm'>{formError}</div>
+                <div className='text-sm text-destructive'>{formError}</div>
               )}
               <div className='flex gap-3 pt-4'>
                 <Button
@@ -376,6 +374,7 @@ const RoleManagement = () => {
                   {t('delete.cancel')}
                 </Button>
                 <Button
+                  variant='destructive'
                   disabled={formLoading}
                   onClick={async () => {
                     setFormLoading(true)
@@ -395,7 +394,7 @@ const RoleManagement = () => {
                       setFormLoading(false)
                     }
                   }}
-                  className='flex-1 bg-red-600 hover:bg-red-700'
+                  className='flex-1'
                 >
                   {formLoading ? t('delete.deleting') : t('delete.delete')}
                 </Button>

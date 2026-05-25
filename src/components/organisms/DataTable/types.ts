@@ -10,6 +10,8 @@ export interface Column<T = Record<string, unknown>> {
   mobileLabel?: string // Label hiển thị trên mobile card
   hideOnMobile?: boolean // Ẩn column này trên mobile
   className?: string // Custom CSS class cho column
+  defaultHidden?: boolean // Ẩn column này mặc định; admin có thể bật lại từ nút Views
+  alwaysVisible?: boolean // Cấm ẩn (ví dụ: cột actions)
 }
 
 // Filter configuration types

@@ -1,27 +1,72 @@
+'use client'
+
 import React from 'react'
-import { Button } from '@/components/atoms/button'
 import { useTheme } from 'next-themes'
-import { useTranslations } from 'next-intl'
 import { Moon, Sun } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
-const ThemeSwitch = () => {
-  const { theme, setTheme } = useTheme()
-  const t = useTranslations('homePage.settings.theme')
+interface ThemeSwitchProps {
+  className?: string
+}
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light'
-    setTheme(newTheme)
+const ThemeSwitch: React.FC<ThemeSwitchProps> = ({ className }) => {
+  const { theme, resolvedTheme, setTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // During SSR we don't know the theme; render a neutral placeholder.
+  if (!mounted) {
+    return (
+      <button
+        type='button'
+        aria-label='Toggle theme'
+        className={cn(
+          'inline-flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-muted-foreground/60 transition-colors',
+          className,
+        )}
+      >
+        <Sun className='h-4 w-4' />
+      </button>
+    )
   }
 
+  const isDark = (theme === 'system' ? resolvedTheme : theme) === 'dark'
+
+  const toggle = () => setTheme(isDark ? 'light' : 'dark')
+
   return (
-    <Button variant='outline' size='sm' onClick={toggleTheme} className='gap-2'>
-      {theme === 'light' ? (
-        <Moon className='h-4 w-4' />
-      ) : (
-        <Sun className='h-4 w-4' />
+    <button
+      type='button'
+      onClick={toggle}
+      aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+      aria-pressed={isDark}
+      className={cn(
+        'group inline-flex h-8 w-8 items-center justify-center rounded-lg border border-transparent text-foreground/70 transition-all hover:border-border/70 hover:bg-accent hover:text-foreground',
+        className,
       )}
-      {theme === 'light' ? t('dark') : t('light')}
-    </Button>
+    >
+      <span className='relative block h-4 w-4'>
+        <Sun
+          className={cn(
+            'absolute inset-0 h-4 w-4 transition-all',
+            isDark
+              ? 'rotate-90 scale-0 opacity-0'
+              : 'rotate-0 scale-100 opacity-100',
+          )}
+        />
+        <Moon
+          className={cn(
+            'absolute inset-0 h-4 w-4 transition-all',
+            isDark
+              ? 'rotate-0 scale-100 opacity-100'
+              : '-rotate-90 scale-0 opacity-0',
+          )}
+        />
+      </span>
+    </button>
   )
 }
 

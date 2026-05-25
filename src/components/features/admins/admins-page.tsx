@@ -10,6 +10,7 @@ import { AdminTable } from '@/components/organisms/admins/AdminTable'
 import { AdminCreateDialog } from '@/components/organisms/admins/AdminCreateDialog'
 import { AdminEditDialog } from '@/components/organisms/admins/AdminEditDialog'
 import { AdminDeleteDialog } from '@/components/organisms/admins/AdminDeleteDialog'
+import { PageHeader } from '@/components/molecules/pageHeader'
 
 const AdminManagement = () => {
   const t = useTranslations('admin.admins')
@@ -97,15 +98,19 @@ const AdminManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
-        <div className='flex justify-stretch sm:justify-end'>
-          <Button
-            className='w-full sm:w-auto'
-            onClick={() => setCreateDialogOpen(true)}
-          >
-            <Plus className='h-4 w-4' />
-            {t('createNewAdmin')}
-          </Button>
-        </div>
+        <PageHeader
+          title={t('title')}
+          description={t('subtitle')}
+          actions={
+            <Button
+              className='w-full sm:w-auto'
+              onClick={() => setCreateDialogOpen(true)}
+            >
+              <Plus className='h-4 w-4' />
+              {t('createNewAdmin')}
+            </Button>
+          }
+        />
 
         {/* DataTable Component */}
         <AdminTable

@@ -12,6 +12,7 @@ import { UserTable } from '@/components/organisms/users/UserTable'
 import { UserCreateDialog } from '@/components/organisms/users/UserCreateDialog'
 import { UserEditDialog } from '@/components/organisms/users/UserEditDialog'
 import { UserDeleteDialog } from '@/components/organisms/users/UserDeleteDialog'
+import { PageHeader } from '@/components/molecules/pageHeader'
 
 const UserManagement = () => {
   // Modal states
@@ -120,17 +121,16 @@ const UserManagement = () => {
   // Show error state
   if (error) {
     return (
-      <div>
-        <div className='flex items-center justify-center py-12'>
-          <div className='text-center'>
-            <p className='text-red-600 mb-4'>{error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
-            >
-              Retry
-            </button>
-          </div>
+      <div className='flex items-center justify-center py-12'>
+        <div className='max-w-sm space-y-3 rounded-xl border border-destructive/25 bg-destructive/6 p-6 text-center'>
+          <p className='text-sm text-destructive'>{error}</p>
+          <Button
+            variant='outline'
+            size='sm'
+            onClick={() => window.location.reload()}
+          >
+            Retry
+          </Button>
         </div>
       </div>
     )
@@ -139,15 +139,19 @@ const UserManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
-        <div className='flex items-center justify-stretch sm:justify-end'>
-          <Button
-            className='w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white'
-            onClick={() => setShowCreate(true)}
-          >
-            <Plus className='h-4 w-4' />
-            {t('create.button') || 'Create User'}
-          </Button>
-        </div>
+        <PageHeader
+          title={t('title')}
+          description={t('subtitle')}
+          actions={
+            <Button
+              className='w-full sm:w-auto'
+              onClick={() => setShowCreate(true)}
+            >
+              <Plus className='h-4 w-4' />
+              {t('create.button') || 'Create User'}
+            </Button>
+          }
+        />
 
         {/* User Table Component */}
         <UserTable
