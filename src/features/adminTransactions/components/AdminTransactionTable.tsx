@@ -208,14 +208,14 @@ export const AdminTransactionTable = ({
       id: 'fromDate',
       type: 'search',
       label: t('filters.fromDate'),
-      placeholder: 'YYYY-MM-DD',
+      placeholder: t('filters.datePlaceholder'),
       isFilterField: true,
     },
     {
       id: 'toDate',
       type: 'search',
       label: t('filters.toDate'),
-      placeholder: 'YYYY-MM-DD',
+      placeholder: t('filters.datePlaceholder'),
       isFilterField: true,
     },
   ]

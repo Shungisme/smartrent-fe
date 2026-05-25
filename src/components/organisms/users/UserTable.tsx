@@ -164,7 +164,7 @@ export const UserTable: React.FC<UserTableProps> = ({
     },
     {
       id: 'actions',
-      header: t('table.headers.actions') || 'Actions',
+      header: t('table.headers.actions'),
       accessor: () => '',
       render: (_, row) => {
         const user = users.find((u) => u.userId === row.id)
@@ -175,7 +175,7 @@ export const UserTable: React.FC<UserTableProps> = ({
               variant='ghost'
               size='sm'
               className='h-8 w-8 p-0'
-              title={t('table.actions.edit') || 'Edit'}
+              title={t('table.actions.edit')}
               onClick={() => {
                 if (user) onEdit(user)
               }}
@@ -187,7 +187,7 @@ export const UserTable: React.FC<UserTableProps> = ({
                 variant='ghost'
                 size='sm'
                 className='h-8 w-8 p-0 text-orange-600 hover:text-orange-700'
-                title={t('table.actions.removeBroker') || 'Remove Broker'}
+                title={t('table.actions.removeBroker')}
                 onClick={() => {
                   if (user) onRemoveBroker(user)
                 }}
@@ -199,7 +199,7 @@ export const UserTable: React.FC<UserTableProps> = ({
               variant='ghost'
               size='sm'
               className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
-              title={t('table.actions.delete') || 'Delete'}
+              title={t('table.actions.delete')}
               onClick={() => {
                 if (user) onDelete(user)
               }}
@@ -216,45 +216,45 @@ export const UserTable: React.FC<UserTableProps> = ({
     {
       id: 'firstName',
       type: 'search',
-      label: 'First Name',
-      placeholder: 'e.g. John',
+      label: t('filters.firstName'),
+      placeholder: t('filters.firstNamePlaceholder'),
       isFilterField: true,
     },
     {
       id: 'lastName',
       type: 'search',
-      label: 'Last Name',
-      placeholder: 'e.g. Smith',
+      label: t('filters.lastName'),
+      placeholder: t('filters.lastNamePlaceholder'),
       isFilterField: true,
     },
     {
       id: 'email',
       type: 'search',
-      label: 'Email',
-      placeholder: 'e.g. user@gmail.com',
+      label: t('filters.email'),
+      placeholder: t('filters.emailPlaceholder'),
       isFilterField: true,
     },
     {
       id: 'phoneNumber',
       type: 'search',
-      label: 'Phone Number',
-      placeholder: 'e.g. 0912345678',
+      label: t('filters.phoneNumber'),
+      placeholder: t('filters.phoneNumberPlaceholder'),
       isFilterField: true,
     },
     {
       id: 'userId',
       type: 'search',
-      label: 'User ID',
-      placeholder: 'e.g. user-123',
+      label: t('filters.userId'),
+      placeholder: t('filters.userIdPlaceholder'),
       isFilterField: true,
     },
     {
       id: 'isBroker',
       type: 'select',
-      label: 'User Type',
+      label: t('filters.userType'),
       options: [
-        { value: 'true', label: 'Broker' },
-        { value: 'false', label: 'Normal User' },
+        { value: 'true', label: t('filters.broker') },
+        { value: 'false', label: t('filters.normalUser') },
       ],
       isFilterField: true,
     },
@@ -273,7 +273,7 @@ export const UserTable: React.FC<UserTableProps> = ({
       sortable
       defaultSort={{ key: 'joinDate', direction: 'desc' }}
       loading={loading}
-      emptyMessage={loading ? 'Loading users...' : 'No users found'}
+      emptyMessage={loading ? t('table.loading') : t('table.noUsersFound')}
       getRowKey={(row) => row.id}
     />
   )

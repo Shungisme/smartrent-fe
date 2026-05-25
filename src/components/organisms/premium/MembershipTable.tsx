@@ -110,7 +110,7 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
       data={memberships}
       columns={columns}
       loading={loading}
-      emptyMessage='No membership packages found'
+      emptyMessage={t('noMembershipPackages')}
       pagination
       itemsPerPage={10}
       getRowKey={(row) => row.id}
