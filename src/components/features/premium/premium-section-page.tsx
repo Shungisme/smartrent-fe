@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { Plus } from 'lucide-react'
-import AddMembershipModal, {
-  type MembershipFormData,
-} from '@/components/molecules/addMembershipModal'
-import { Button } from '@/components/atoms/button'
-import { getMembershipPackages } from '@/api/services/membership.service'
+import { toast } from 'sonner'
+import {
+  getMembershipPackages,
+  updateMembershipPackage,
+  deleteMembershipPackage,
+} from '@/api/services/membership.service'
 import { MembershipPackage as APIMembershipPackage } from '@/api/types/membership.type'
 import { VIPTierService } from '@/api/services/vip-tier.service'
 import { VIPTier } from '@/api/types/vip-tier.type'
@@ -15,6 +15,8 @@ import { MembershipPackage } from '@/types/premium.type'
 import { PremiumStats } from '@/components/molecules/premium/PremiumStats'
 import { MembershipTable } from '../../organisms/premium/MembershipTable'
 import { ListingTypeTable } from '@/components/organisms/premium/ListingTypeTable'
+import { EditMembershipDialog } from '@/components/organisms/premium/EditMembershipDialog'
+import { DeleteMembershipDialog } from '@/components/organisms/premium/DeleteMembershipDialog'
 import { PageHeader } from '@/components/molecules/pageHeader'
 
 export type PremiumSection = 'overview' | 'membership' | 'listing-types'
@@ -30,7 +32,6 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
     [],
   )
   const [membershipsLoading, setMembershipsLoading] = useState(true)
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [membershipsError, setMembershipsError] = useState<string | null>(null)
 
@@ -39,40 +40,48 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [vipTiersError, setVIPTiersError] = useState<string | null>(null)
 
+  const [editTarget, setEditTarget] = useState<APIMembershipPackage | null>(
+    null,
+  )
+  const [editSaving, setEditSaving] = useState(false)
+  const [deleteTarget, setDeleteTarget] = useState<APIMembershipPackage | null>(
+    null,
+  )
+  const [deleteSubmitting, setDeleteSubmitting] = useState(false)
+
   const needsMemberships = section === 'overview' || section === 'membership'
   const needsVIPTiers = section === 'overview' || section === 'listing-types'
+
+  const fetchMemberships = React.useCallback(async () => {
+    setMembershipsLoading(true)
+    setMembershipsError(null)
+    try {
+      const response = await getMembershipPackages()
+      if (response.success && response.data) {
+        setApiMemberships(
+          response.data.data as unknown as APIMembershipPackage[],
+        )
+      } else {
+        setMembershipsError(
+          response.message || 'Failed to load membership packages',
+        )
+      }
+    } catch (err: unknown) {
+      const error = err as { message?: string }
+      setMembershipsError(error.message || 'An error occurred')
+      console.error('Error fetching memberships:', err)
+    } finally {
+      setMembershipsLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
     if (!needsMemberships) {
       setMembershipsLoading(false)
       return
     }
-
-    const fetchMemberships = async () => {
-      setMembershipsLoading(true)
-      setMembershipsError(null)
-      try {
-        const response = await getMembershipPackages()
-        if (response.success && response.data) {
-          setApiMemberships(
-            response.data.data as unknown as APIMembershipPackage[],
-          )
-        } else {
-          setMembershipsError(
-            response.message || 'Failed to load membership packages',
-          )
-        }
-      } catch (err: unknown) {
-        const error = err as { message?: string }
-        setMembershipsError(error.message || 'An error occurred')
-        console.error('Error fetching memberships:', err)
-      } finally {
-        setMembershipsLoading(false)
-      }
-    }
-
     fetchMemberships()
-  }, [needsMemberships])
+  }, [needsMemberships, fetchMemberships])
 
   useEffect(() => {
     if (!needsVIPTiers) {
@@ -115,10 +124,87 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
 
   const displayMemberships = transformedMemberships
 
-  const [membershipModalOpen, setMembershipModalOpen] = useState(false)
+  const findApiPackage = (id: string) =>
+    apiMemberships.find((p) => p.membershipId.toString() === id) ?? null
 
-  const handleMembershipSubmit = (data: MembershipFormData) => {
-    console.log('Creating membership package:', data)
+  const handleEdit = (id: string) => {
+    const pkg = findApiPackage(id)
+    if (pkg) setEditTarget(pkg)
+  }
+
+  const handleDelete = (id: string) => {
+    const pkg = findApiPackage(id)
+    if (pkg) setDeleteTarget(pkg)
+  }
+
+  const handleToggleStatus = async (id: string, currentStatus: string) => {
+    const pkg = findApiPackage(id)
+    if (!pkg) return
+    try {
+      const response = await updateMembershipPackage(pkg.membershipId, {
+        packageName: pkg.packageName,
+        salePrice: pkg.salePrice,
+        discountPercentage: pkg.discountPercentage,
+        isActive: currentStatus !== 'active',
+      })
+      if (response.success) {
+        toast.success(t('membership.toasts.updateSuccess'))
+        await fetchMemberships()
+      } else {
+        toast.error(response.message || t('membership.toasts.updateError'))
+      }
+    } catch (err) {
+      console.error('Toggle status error:', err)
+      toast.error(t('membership.toasts.updateError'))
+    }
+  }
+
+  const handleEditSubmit = async (data: {
+    packageName: string
+    salePrice: number
+    discountPercentage: number
+    isActive: boolean
+  }) => {
+    if (!editTarget) return
+    setEditSaving(true)
+    try {
+      const response = await updateMembershipPackage(
+        editTarget.membershipId,
+        data,
+      )
+      if (response.success) {
+        toast.success(t('membership.toasts.updateSuccess'))
+        setEditTarget(null)
+        await fetchMemberships()
+      } else {
+        toast.error(response.message || t('membership.toasts.updateError'))
+      }
+    } catch (err) {
+      console.error('Update membership error:', err)
+      toast.error(t('membership.toasts.updateError'))
+    } finally {
+      setEditSaving(false)
+    }
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return
+    setDeleteSubmitting(true)
+    try {
+      const response = await deleteMembershipPackage(deleteTarget.membershipId)
+      if (response.success) {
+        toast.success(t('membership.toasts.deleteSuccess'))
+        setDeleteTarget(null)
+        await fetchMemberships()
+      } else {
+        toast.error(response.message || t('membership.toasts.deleteError'))
+      }
+    } catch (err) {
+      console.error('Delete membership error:', err)
+      toast.error(t('membership.toasts.deleteError'))
+    } finally {
+      setDeleteSubmitting(false)
+    }
   }
 
   const stats = {
@@ -140,23 +226,14 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
           <PageHeader
             title={t('title')}
             description={t('membership.description')}
-            actions={
-              <Button
-                className='w-full sm:w-auto'
-                onClick={() => setMembershipModalOpen(true)}
-              >
-                <Plus className='h-4 w-4' />
-                {t('membership.addPackage')}
-              </Button>
-            }
           />
 
           <MembershipTable
             memberships={displayMemberships}
             loading={membershipsLoading}
-            onEdit={(id: string) => console.log('Edit', id)}
-            onDelete={(id: string) => console.log('Delete', id)}
-            onToggleStatus={() => {}}
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            onToggleStatus={handleToggleStatus}
           />
         </>
       )}
@@ -171,10 +248,24 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
         </>
       )}
 
-      <AddMembershipModal
-        open={membershipModalOpen}
-        onOpenChange={setMembershipModalOpen}
-        onSubmit={handleMembershipSubmit}
+      <EditMembershipDialog
+        open={!!editTarget}
+        pkg={editTarget}
+        loading={editSaving}
+        onOpenChange={(open) => {
+          if (!open) setEditTarget(null)
+        }}
+        onSubmit={handleEditSubmit}
+      />
+
+      <DeleteMembershipDialog
+        open={!!deleteTarget}
+        packageName={deleteTarget?.packageName}
+        loading={deleteSubmitting}
+        onOpenChange={(open) => {
+          if (!open) setDeleteTarget(null)
+        }}
+        onConfirm={handleDeleteConfirm}
       />
     </div>
   )

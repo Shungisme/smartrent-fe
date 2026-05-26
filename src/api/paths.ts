@@ -70,12 +70,10 @@ export const PATHS = {
 
   // Membership endpoints
   MEMBERSHIP: {
-    INITIATE_PURCHASE: '/v1/memberships/initiate-purchase',
-    GET_PACKAGES: '/v1/memberships/packages',
-    GET_PACKAGE_BY_ID: '/v1/memberships/packages/:membershipId',
-    MY_MEMBERSHIP: '/v1/memberships/my-membership',
-    HISTORY: '/v1/memberships/history',
-    CANCEL: '/v1/memberships/:userMembershipId',
+    GET_PACKAGES: '/v1/admin/memberships/packages',
+    GET_PACKAGE_BY_ID: '/v1/admin/memberships/packages/:membershipId',
+    UPDATE_PACKAGE: '/v1/admin/memberships/packages/:membershipId',
+    DELETE_PACKAGE: '/v1/admin/memberships/packages/:membershipId',
   },
 
   // VIP Tier endpoints
