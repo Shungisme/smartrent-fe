@@ -70,41 +70,40 @@ export const PostTable: React.FC<PostTableProps> = ({
       accessor: (row) => row.title,
       sortable: true,
       render: (_, row) => (
-        <div className='flex gap-3'>
-          <div className='relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg'>
+        <div className='flex min-w-0 items-start gap-3 text-left'>
+          <div className='relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted'>
             <Image
               src={row.images[0]}
               alt={row.title}
-              width={64}
-              height={64}
+              width={56}
+              height={56}
               className='h-full w-full object-cover'
             />
             {row.images.length > 1 && (
-              <div className='absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-xs text-white'>
+              <div className='absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white'>
                 +{row.images.length - 1}
               </div>
             )}
           </div>
-          <div className='flex-1 min-w-0'>
-            <div className='font-medium text-gray-900 truncate'>
-              {row.title.length > 50
-                ? `${row.title.substring(0, 50)}...`
-                : row.title}
+          <div className='min-w-0 flex-1 space-y-1'>
+            <div
+              className='line-clamp-2 max-w-[20rem] break-words text-sm font-medium leading-snug text-foreground'
+              title={row.title}
+            >
+              {row.title}
             </div>
-            <div className='mt-0.5 text-xs text-gray-400'>{row.postCode}</div>
-            <div className='mt-1 flex flex-wrap gap-1'>
+            <div className='font-mono text-[11px] text-muted-foreground'>
+              {row.postCode}
+            </div>
+            <div className='flex flex-wrap gap-1'>
               {row.vipLevel && (
-                <Badge className='bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-2 py-0'>
+                <Badge className='border-transparent bg-gradient-to-r from-amber-400 to-orange-500 px-2 py-0 text-[10px] font-semibold text-white'>
                   VIP{row.vipLevel}
                 </Badge>
               )}
               <Badge
-                className={cn(
-                  'text-xs px-2 py-0',
-                  row.listingType === 'for_sale'
-                    ? 'bg-blue-100 text-blue-800'
-                    : 'bg-purple-100 text-purple-800',
-                )}
+                variant={row.listingType === 'for_sale' ? 'info' : 'secondary'}
+                className={cn('px-2 py-0 text-[10px]')}
               >
                 {row.listingType === 'for_sale'
                   ? t('listingTypes.for_sale')
