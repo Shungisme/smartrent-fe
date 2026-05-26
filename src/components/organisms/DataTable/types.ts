@@ -131,6 +131,11 @@ export interface DataTableContextValue<T = Record<string, unknown>> {
   // Filters
   filters: Record<string, unknown>
   setFilter: (key: string, value: unknown) => void
+  /**
+   * Replace all filterable keys at once (used by FilterDialog Apply).
+   * Pagination keys (page/pageSize) are preserved automatically.
+   */
+  replaceFilters: (newFilters: Record<string, unknown>) => void
   clearFilters: () => void
 
   // Sorting

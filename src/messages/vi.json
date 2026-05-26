@@ -27,14 +27,14 @@
     "page": "Trang"
   },
   "dataTable": {
-    "clearFilters": "Xóa Bộ Lọc",
+    "clearFilters": "Xóa tất cả",
     "filterButton": "Bộ lọc",
     "filterKey": "Trường",
     "selectField": "Chọn một trường",
     "selectValue": "Chọn một giá trị",
     "filterValue": "Giá trị",
     "enterValue": "Nhập giá trị",
-    "addFilter": "Thêm Bộ lọc",
+    "addFilter": "Thêm bộ lọc",
     "cancel": "Hủy",
     "apply": "Áp dụng",
     "actions": "Thao tác",
@@ -42,10 +42,18 @@
     "tryAdjustFilters": "Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm.",
     "rangeFrom": "Từ",
     "rangeTo": "Đến",
+    "filterDialogHint": "Tinh chỉnh kết quả bằng một hoặc nhiều điều kiện",
+    "filtersApplied": "Đã áp dụng {count} bộ lọc",
+    "noFiltersTitle": "Chưa có bộ lọc nào",
+    "noFiltersHint": "Thêm bộ lọc để thu hẹp danh sách kết quả.",
+    "pickFieldFirst": "Hãy chọn trường trước",
     "viewsButton": "Hiển thị",
-    "viewsTitle": "Bật/tắt cột",
+    "viewsTitle": "Tùy chỉnh cột",
     "viewsShowAll": "Hiện tất cả",
-    "viewsReset": "Đặt lại"
+    "viewsReset": "Đặt lại mặc định",
+    "viewsCount": "{visible}/{total} đang hiển thị",
+    "viewsSearchPlaceholder": "Tìm cột…",
+    "viewsNoMatch": "Không có cột nào khớp."
   },
   "homePage": {
     "title": "Tìm Ngôi Nhà Mơ Ước",

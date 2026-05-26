@@ -5,7 +5,15 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Popover } from '@/components/atoms/popover'
-import { Filter, Plus, X, Trash2 } from 'lucide-react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/atoms/select'
+import { ArrowRight, Filter, Plus, SlidersHorizontal, X } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import type { FilterOption, FilterConfig } from './types'
 
 const parseRange = (value: string): { from: string; to: string } => {
@@ -43,8 +51,6 @@ export function FilterDialog({
     Object.entries(currentFilters)
       .filter(
         ([key, value]) =>
-          // Only pre-populate rows for configured filter fields.
-          // Pagination keys (page/pageSize) and other non-filter keys are excluded.
           filterConfig.some((f) => f.id === key) &&
           value !== undefined &&
           value !== null &&
@@ -62,8 +68,7 @@ export function FilterDialog({
   }
 
   const handleRemoveFilter = (index: number) => {
-    const newFilters = activeFilters.filter((_, i) => i !== index)
-    setActiveFilters(newFilters)
+    setActiveFilters(activeFilters.filter((_, i) => i !== index))
   }
 
   const handleFilterKeyChange = (index: number, newKey: string) => {
@@ -79,22 +84,17 @@ export function FilterDialog({
     setActiveFilters(newFilters)
   }
 
-  const getFilterConfigByKey = (key: string): FilterConfig | undefined => {
-    return filterConfig.find((f) => f.id === key)
-  }
+  const getFilterConfigByKey = (key: string): FilterConfig | undefined =>
+    filterConfig.find((f) => f.id === key)
 
-  const getOptionsForKey = (key: string): FilterOption[] => {
-    const config = getFilterConfigByKey(key)
-    return config?.options || []
-  }
+  const getOptionsForKey = (key: string): FilterOption[] =>
+    getFilterConfigByKey(key)?.options || []
 
-  const isKeyValid = (key: string): boolean => {
-    return filterConfig.some((f) => f.id === key)
-  }
+  const isKeyValid = (key: string): boolean =>
+    filterConfig.some((f) => f.id === key)
 
   const handleApplyFilters = () => {
     const newFilters: Record<string, string | string[]> = {}
-
     activeFilters.forEach(({ key, value }) => {
       if (key && value && isKeyValid(key)) {
         const config = getFilterConfigByKey(key)
@@ -105,7 +105,6 @@ export function FilterDialog({
         }
       }
     })
-
     onFilterChange(newFilters)
     setOpen(false)
   }
@@ -115,7 +114,13 @@ export function FilterDialog({
     onClear()
   }
 
-  const hasFilters = activeFilters.some((f) => f.key && f.value)
+  const activeCount = activeFilters.filter((f) => f.key && f.value).length
+  const hasFilters = activeCount > 0
+
+  // Compute remaining (un-used) fields so user doesn't see duplicates.
+  const usedKeys = new Set(
+    activeFilters.map((f) => f.key).filter((k): k is string => !!k),
+  )
 
   const triggerButton = (
     <Button
@@ -126,8 +131,8 @@ export function FilterDialog({
       <Filter className='h-4 w-4' />
       {t('filterButton') || 'Filter'}
       {hasFilters && (
-        <span className='ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-primary-foreground bg-primary rounded-full'>
-          {activeFilters.filter((f) => f.key && f.value).length}
+        <span className='ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary-foreground/20 px-1.5 text-[11px] font-semibold text-primary-foreground'>
+          {activeCount}
         </span>
       )}
     </Button>
@@ -139,208 +144,288 @@ export function FilterDialog({
       onOpenChange={setOpen}
       trigger={triggerButton}
       align='start'
-      contentClassName='w-[calc(100vw-1rem)] sm:w-[560px]'
+      contentClassName='w-[calc(100vw-1rem)] sm:w-[600px] overflow-hidden'
     >
-      <div className='p-4 space-y-3'>
-        {activeFilters.length === 0 ? (
-          // Show only "Add Filter" button when no filters
-          <Button
-            variant='outline'
-            size='sm'
-            onClick={handleAddFilter}
-            className='flex items-center gap-2 w-full'
-          >
-            <Plus className='h-4 w-4' />
-            {t('addFilter') || 'Add Filter'}
-          </Button>
-        ) : (
-          // Show all filter rows
-          <>
-            {activeFilters.map((filter, index) => (
-              <div
-                key={index}
-                className='flex flex-col sm:flex-row gap-2 sm:items-end'
-              >
-                {/* Key Select */}
-                <div className='flex-1'>
-                  <label className='block text-xs font-medium text-foreground mb-1'>
-                    {t('filterKey') || 'Field'}
-                  </label>
-                  <select
-                    value={filter.key}
-                    onChange={(e) =>
-                      handleFilterKeyChange(index, e.target.value)
-                    }
-                    className='w-full rounded-lg border border-input bg-card text-foreground px-3 py-2 text-sm focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-ring'
-                  >
-                    <option value=''>
-                      {t('selectField') || 'Select a field...'}
-                    </option>
-                    {filterConfig.map((config) => (
-                      <option key={config.id} value={config.id}>
-                        {config.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+      {/* Header */}
+      <div className='flex items-center justify-between border-b border-border/60 px-4 py-3'>
+        <div className='flex items-center gap-2'>
+          <span className='flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary'>
+            <SlidersHorizontal className='h-3.5 w-3.5' />
+          </span>
+          <div className='leading-tight'>
+            <div className='text-sm font-semibold text-foreground'>
+              {t('filterButton') || 'Filter'}
+            </div>
+            <div className='text-[11px] text-muted-foreground'>
+              {hasFilters
+                ? t.has('filtersApplied')
+                  ? t('filtersApplied', { count: activeCount })
+                  : `${activeCount} filter${activeCount > 1 ? 's' : ''} applied`
+                : t.has('filterDialogHint')
+                  ? t('filterDialogHint')
+                  : 'Refine results with one or more conditions'}
+            </div>
+          </div>
+        </div>
+        <button
+          type='button'
+          onClick={() => setOpen(false)}
+          className='flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground'
+          aria-label={t('cancel') || 'Close'}
+        >
+          <X className='h-4 w-4' />
+        </button>
+      </div>
 
-                {/* Value Input/Select */}
-                <div className='flex-1'>
-                  <label className='block text-xs font-medium text-foreground mb-1'>
-                    {t('filterValue') || 'Value'}
-                  </label>
-                  {(() => {
-                    const config = filter.key
-                      ? getFilterConfigByKey(filter.key)
-                      : undefined
-                    const options = filter.key
-                      ? getOptionsForKey(filter.key)
-                      : []
-                    if (options.length > 0) {
-                      return (
-                        <select
-                          value={filter.value}
-                          onChange={(e) =>
-                            handleFilterValueChange(index, e.target.value)
-                          }
-                          className='w-full rounded-lg border border-input bg-card text-foreground px-3 py-2 text-sm focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-ring'
+      {/* Body */}
+      <div className='max-h-[60vh] overflow-y-auto px-4 py-3'>
+        {activeFilters.length === 0 ? (
+          <div className='flex flex-col items-center gap-3 py-8 text-center'>
+            <span className='flex h-10 w-10 items-center justify-center rounded-full bg-muted'>
+              <Filter className='h-4 w-4 text-muted-foreground' />
+            </span>
+            <div className='space-y-1'>
+              <div className='text-sm font-medium text-foreground'>
+                {t.has('noFiltersTitle')
+                  ? t('noFiltersTitle')
+                  : 'No filters yet'}
+              </div>
+              <div className='text-xs text-muted-foreground'>
+                {t.has('noFiltersHint')
+                  ? t('noFiltersHint')
+                  : 'Add a filter to narrow down the results.'}
+              </div>
+            </div>
+            <Button
+              size='sm'
+              onClick={handleAddFilter}
+              className='mt-1 gap-1.5'
+            >
+              <Plus className='h-3.5 w-3.5' />
+              {t('addFilter') || 'Add filter'}
+            </Button>
+          </div>
+        ) : (
+          <div className='space-y-2.5'>
+            {activeFilters.map((filter, index) => {
+              const config = filter.key
+                ? getFilterConfigByKey(filter.key)
+                : undefined
+              const options = filter.key ? getOptionsForKey(filter.key) : []
+              const isRange =
+                config?.type === 'range' || config?.type === 'date-range'
+
+              return (
+                <div
+                  key={index}
+                  className='group rounded-xl border border-border/70 bg-card/40 p-2.5 transition-colors hover:border-border'
+                >
+                  <div className='flex items-stretch gap-2'>
+                    {/* Field selector */}
+                    <div className='flex-1 min-w-0'>
+                      <Select
+                        value={filter.key}
+                        onValueChange={(value) =>
+                          handleFilterKeyChange(index, value)
+                        }
+                      >
+                        <SelectTrigger
+                          size='sm'
+                          className={cn(
+                            'w-full',
+                            !filter.key &&
+                              'text-muted-foreground data-[placeholder]:text-muted-foreground',
+                          )}
                         >
-                          <option value=''>
-                            {t('selectField') || 'Select a value...'}
-                          </option>
-                          {options.map((option) => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                      )
-                    }
-                    if (config?.type === 'date') {
-                      return (
+                          <SelectValue
+                            placeholder={t('selectField') || 'Select a field…'}
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {filterConfig.map((conf) => {
+                            const disabled =
+                              conf.id !== filter.key && usedKeys.has(conf.id)
+                            return (
+                              <SelectItem
+                                key={conf.id}
+                                value={conf.id}
+                                disabled={disabled}
+                              >
+                                {conf.label}
+                              </SelectItem>
+                            )
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Operator arrow (visual cue) */}
+                    <div className='flex items-center text-muted-foreground/60'>
+                      <ArrowRight className='h-3.5 w-3.5' />
+                    </div>
+
+                    {/* Value */}
+                    <div className='flex-1 min-w-0'>
+                      {!filter.key ? (
+                        <div className='flex h-9 items-center rounded-md border border-dashed border-border/60 bg-muted/30 px-3 text-xs text-muted-foreground'>
+                          {t.has('pickFieldFirst')
+                            ? t('pickFieldFirst')
+                            : 'Pick a field first'}
+                        </div>
+                      ) : options.length > 0 ? (
+                        <Select
+                          value={filter.value}
+                          onValueChange={(value) =>
+                            handleFilterValueChange(index, value)
+                          }
+                        >
+                          <SelectTrigger
+                            size='sm'
+                            className={cn(
+                              'w-full',
+                              !filter.value && 'text-muted-foreground',
+                            )}
+                          >
+                            <SelectValue
+                              placeholder={
+                                t('selectValue') ||
+                                t('selectField') ||
+                                'Select a value…'
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {options.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : config?.type === 'date' ? (
                         <Input
                           type='date'
                           value={filter.value}
                           onChange={(e) =>
                             handleFilterValueChange(index, e.target.value)
                           }
-                          className='rounded-lg border border-input'
+                          className='h-9'
                         />
-                      )
-                    }
-                    if (
-                      config?.type === 'range' ||
-                      config?.type === 'date-range'
-                    ) {
-                      const isDate = config.type === 'date-range'
-                      const { from, to } = parseRange(filter.value)
-                      const inputType = isDate ? 'date' : 'number'
-                      return (
-                        <div className='flex items-center gap-1.5'>
-                          <Input
-                            type={inputType}
-                            placeholder={
-                              isDate ? undefined : t('rangeFrom') || 'From'
-                            }
-                            value={from}
-                            onChange={(e) =>
-                              handleFilterValueChange(
-                                index,
-                                buildRangeValue(e.target.value, to),
-                              )
-                            }
-                            className='rounded-lg border border-input flex-1 min-w-0'
-                          />
-                          <span className='text-xs text-muted-foreground shrink-0'>
-                            →
-                          </span>
-                          <Input
-                            type={inputType}
-                            placeholder={
-                              isDate ? undefined : t('rangeTo') || 'To'
-                            }
-                            value={to}
-                            onChange={(e) =>
-                              handleFilterValueChange(
-                                index,
-                                buildRangeValue(from, e.target.value),
-                              )
-                            }
-                            className='rounded-lg border border-input flex-1 min-w-0'
-                          />
-                        </div>
-                      )
-                    }
-                    return (
-                      <Input
-                        type='text'
-                        placeholder={
-                          config?.placeholder ||
-                          t('enterValue') ||
-                          'Enter value...'
-                        }
-                        value={filter.value}
-                        onChange={(e) =>
-                          handleFilterValueChange(index, e.target.value)
-                        }
-                        className='rounded-lg border border-input'
-                      />
-                    )
-                  })()}
+                      ) : isRange ? (
+                        (() => {
+                          const isDate = config?.type === 'date-range'
+                          const { from, to } = parseRange(filter.value)
+                          const inputType = isDate ? 'date' : 'number'
+                          return (
+                            <div className='flex items-center gap-1.5'>
+                              <Input
+                                type={inputType}
+                                placeholder={
+                                  isDate ? undefined : t('rangeFrom') || 'From'
+                                }
+                                value={from}
+                                onChange={(e) =>
+                                  handleFilterValueChange(
+                                    index,
+                                    buildRangeValue(e.target.value, to),
+                                  )
+                                }
+                                className='h-9 flex-1 min-w-0'
+                              />
+                              <span className='text-[11px] font-medium text-muted-foreground/70 shrink-0'>
+                                –
+                              </span>
+                              <Input
+                                type={inputType}
+                                placeholder={
+                                  isDate ? undefined : t('rangeTo') || 'To'
+                                }
+                                value={to}
+                                onChange={(e) =>
+                                  handleFilterValueChange(
+                                    index,
+                                    buildRangeValue(from, e.target.value),
+                                  )
+                                }
+                                className='h-9 flex-1 min-w-0'
+                              />
+                            </div>
+                          )
+                        })()
+                      ) : (
+                        <Input
+                          type='text'
+                          placeholder={
+                            config?.placeholder ||
+                            t('enterValue') ||
+                            'Enter value…'
+                          }
+                          value={filter.value}
+                          onChange={(e) =>
+                            handleFilterValueChange(index, e.target.value)
+                          }
+                          className='h-9'
+                        />
+                      )}
+                    </div>
+
+                    {/* Remove */}
+                    <button
+                      type='button'
+                      onClick={() => handleRemoveFilter(index)}
+                      className='flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive'
+                      aria-label='Remove filter'
+                    >
+                      <X className='h-4 w-4' />
+                    </button>
+                  </div>
                 </div>
+              )
+            })}
 
-                {/* Remove Button */}
-                <Button
-                  variant='ghost'
-                  size='sm'
-                  onClick={() => handleRemoveFilter(index)}
-                  className='h-10 w-10 p-0 self-end sm:self-auto shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10'
-                >
-                  <X className='h-4 w-4' />
-                </Button>
-              </div>
-            ))}
-
-            {/* Add Filter Button */}
-            <div className='pt-2 border-t border-border/60'>
-              <Button
-                variant='outline'
-                size='sm'
-                onClick={handleAddFilter}
-                className='flex items-center gap-2 w-full'
-              >
-                <Plus className='h-4 w-4' />
-                {t('addFilter') || 'Add Filter'}
-              </Button>
-            </div>
-
-            {/* Actions */}
-            <div className='flex gap-2 justify-end pt-2 border-t border-border/60'>
-              {hasFilters && (
-                <Button
-                  variant='outline'
-                  size='sm'
-                  onClick={handleClearFilters}
-                  className='flex items-center gap-2 text-destructive hover:text-destructive hover:bg-destructive/10'
-                >
-                  <Trash2 className='h-4 w-4' />
-                  {t('clearFilters') || 'Clear'}
-                </Button>
-              )}
-              <Button
-                variant='outline'
-                size='sm'
-                onClick={() => setOpen(false)}
-              >
-                {t('cancel') || 'Cancel'}
-              </Button>
-              <Button size='sm' onClick={handleApplyFilters}>
-                {t('apply') || 'Apply'}
-              </Button>
-            </div>
-          </>
+            {/* Add another */}
+            <button
+              type='button'
+              onClick={handleAddFilter}
+              disabled={usedKeys.size >= filterConfig.length}
+              className='group flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-border/60 px-3 py-2.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary disabled:opacity-50 disabled:hover:border-border/60 disabled:hover:bg-transparent disabled:hover:text-muted-foreground'
+            >
+              <Plus className='h-3.5 w-3.5' />
+              {t('addFilter') || 'Add filter'}
+            </button>
+          </div>
         )}
       </div>
+
+      {/* Footer */}
+      {activeFilters.length > 0 && (
+        <div className='flex items-center justify-between gap-2 border-t border-border/60 bg-muted/30 px-4 py-3'>
+          <button
+            type='button'
+            onClick={handleClearFilters}
+            disabled={!hasFilters}
+            className='text-xs font-medium text-muted-foreground transition-colors hover:text-destructive disabled:opacity-40 disabled:hover:text-muted-foreground'
+          >
+            {t('clearFilters') || 'Clear all'}
+          </button>
+          <div className='flex items-center gap-2'>
+            <Button
+              variant='ghost'
+              size='sm'
+              onClick={() => setOpen(false)}
+              className='h-8'
+            >
+              {t('cancel') || 'Cancel'}
+            </Button>
+            <Button size='sm' onClick={handleApplyFilters} className='h-8'>
+              {t('apply') || 'Apply'}
+            </Button>
+          </div>
+        </div>
+      )}
     </Popover>
   )
 }

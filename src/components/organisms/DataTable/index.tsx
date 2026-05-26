@@ -26,6 +26,7 @@ function DataTableContent<T = any>({
     paginatedData,
     filters: filterValues,
     setFilter,
+    replaceFilters,
     clearFilters,
     sortConfig,
     handleSort,
@@ -38,15 +39,15 @@ function DataTableContent<T = any>({
     loading,
   } = useDataTable<T>()
 
-  // Handler for batch filter updates (from FilterDialog)
+  // Handler for batch filter updates (from FilterDialog).
+  // Uses replaceFilters so keys that are no longer in `newFilters` are
+  // actually removed from state — otherwise stale filter conditions
+  // (e.g. an old firstName) keep leaking into API queries.
   const handleChangeMultiple = React.useCallback(
     (newFilters: Record<string, unknown>) => {
-      // Update all filters from FilterDialog
-      Object.entries(newFilters).forEach(([key, value]) => {
-        setFilter(key, value)
-      })
+      replaceFilters(newFilters)
     },
-    [setFilter],
+    [replaceFilters],
   )
 
   // Column visibility state — initialised from each column's defaultHidden flag

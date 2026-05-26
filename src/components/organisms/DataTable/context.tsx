@@ -170,6 +170,27 @@ export function DataTableProvider<T = any>({
     }
   }, [filterMode, onFilterChange, itemsPerPage])
 
+  // Replace all filter values at once. Used when applying a full set of
+  // filters from the FilterDialog so that keys no longer present are
+  // actually removed from state (not just overwritten).
+  const replaceFilters = useCallback(
+    (newFilters: Record<string, any>) => {
+      const next: Record<string, any> = {
+        ...newFilters,
+        page: 1,
+        pageSize: itemsPerPage,
+      }
+
+      setFilters(next)
+      setCurrentPage(1)
+
+      if (filterMode === 'api' && onFilterChange) {
+        onFilterChange(next)
+      }
+    },
+    [filterMode, onFilterChange, itemsPerPage],
+  )
+
   // Sort handler
   const handleSort = useCallback(
     (key: keyof T) => {
@@ -283,6 +304,7 @@ export function DataTableProvider<T = any>({
     paginatedData,
     filters,
     setFilter,
+    replaceFilters,
     clearFilters,
     sortConfig,
     handleSort,
