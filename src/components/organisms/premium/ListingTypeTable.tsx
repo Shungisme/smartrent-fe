@@ -7,46 +7,13 @@ import { DataTable, type Column } from '@/components/organisms/DataTable'
 import { Badge } from '@/components/atoms/badge'
 import { cn } from '@/lib/utils'
 import { VIPTier } from '@/api/types/vip-tier.type'
+import { formatCurrency } from '@/utils/format'
+import { TIER_STYLES, FALLBACK_TIER_STYLE } from '@/utils/premium.utils'
 
 interface ListingTypeTableProps {
   tiers: VIPTier[]
   loading: boolean
 }
-
-const formatVND = (value: number) => `${value.toLocaleString('vi-VN')}đ`
-
-// Calm tinted swatches for each tier. Quiet enough for a dense table.
-const TIER_STYLES: Record<
-  string,
-  { chip: string; icon: string; badge: string }
-> = {
-  NORMAL: {
-    chip: 'bg-slate-100 text-slate-700 dark:bg-slate-500/15 dark:text-slate-300',
-    icon: 'text-slate-500',
-    badge:
-      'border-slate-200/70 bg-slate-50 text-slate-700 dark:border-slate-500/30 dark:bg-slate-500/10 dark:text-slate-300',
-  },
-  SILVER: {
-    chip: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300',
-    icon: 'text-sky-500',
-    badge:
-      'border-sky-200/70 bg-sky-50 text-sky-700 dark:border-sky-500/30 dark:bg-sky-500/10 dark:text-sky-300',
-  },
-  GOLD: {
-    chip: 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300',
-    icon: 'text-amber-500',
-    badge:
-      'border-amber-200/70 bg-amber-50 text-amber-700 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300',
-  },
-  DIAMOND: {
-    chip: 'bg-gradient-to-br from-rose-100 to-orange-100 text-rose-700 dark:from-rose-500/15 dark:to-orange-500/15 dark:text-rose-300',
-    icon: 'text-rose-500',
-    badge:
-      'border-transparent bg-gradient-to-r from-rose-500 to-orange-500 text-white',
-  },
-}
-
-const FALLBACK = TIER_STYLES.NORMAL
 
 export const ListingTypeTable: React.FC<ListingTypeTableProps> = ({
   tiers,
@@ -70,7 +37,7 @@ export const ListingTypeTable: React.FC<ListingTypeTableProps> = ({
       header: t('listingTypes.columns.tier'),
       accessor: (row) => row.tierName,
       render: (_, tier) => {
-        const style = TIER_STYLES[tier.tierCode] || FALLBACK
+        const style = TIER_STYLES[tier.tierCode] || FALLBACK_TIER_STYLE
         const name = locale === 'vi' ? tier.tierName : tier.tierNameEn
         return (
           <div className='flex items-center gap-3'>
@@ -99,7 +66,7 @@ export const ListingTypeTable: React.FC<ListingTypeTableProps> = ({
       header: t('listingTypes.columns.badge'),
       accessor: (row) => row.badgeName ?? '',
       render: (_, tier) => {
-        const style = TIER_STYLES[tier.tierCode] || FALLBACK
+        const style = TIER_STYLES[tier.tierCode] || FALLBACK_TIER_STYLE
         if (tier.hasBadge && tier.badgeName) {
           return (
             <Badge
@@ -123,7 +90,7 @@ export const ListingTypeTable: React.FC<ListingTypeTableProps> = ({
       sortable: true,
       render: (value) => (
         <div className='font-mono text-sm font-medium tabular-nums text-foreground'>
-          {formatVND(value as number)}
+          {formatCurrency(value as number)}
         </div>
       ),
     },
@@ -143,7 +110,7 @@ export const ListingTypeTable: React.FC<ListingTypeTableProps> = ({
                 {row.d} {t('listingTypes.days')}
               </div>
               <div className='col-span-2 text-right font-mono font-medium tabular-nums text-foreground'>
-                {formatVND(row.p)}
+                {formatCurrency(row.p)}
               </div>
             </React.Fragment>
           ))}

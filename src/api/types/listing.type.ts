@@ -212,6 +212,8 @@ export interface AdminListingSummary {
   price: number | null
   priceUnit: string | null
   area: number | null
+  /** Image URLs for the listing — typically the first few used for previews. */
+  images?: string[] | null
   adminVerification: AdminVerificationSummary
   moderationStatus: ModerationStatus | null
   revisionCount: number | null

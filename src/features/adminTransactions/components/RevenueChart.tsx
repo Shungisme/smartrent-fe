@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl'
 import { RevenueSeries } from '../types/transaction.type'
-import { formatVND } from '../utils/formatters'
+import { formatCurrency } from '@/utils/format'
 
 interface RevenueChartProps {
   data: RevenueSeries[] | undefined
@@ -61,7 +61,7 @@ export const RevenueChart = ({
                   />
                 </div>
                 <span className='text-sm font-semibold text-gray-900 w-32 text-right'>
-                  {formatVND(item.revenue)}
+                  {formatCurrency(item.revenue)}
                 </span>
               </div>
               <div className='flex items-center justify-between pl-28'>
@@ -79,7 +79,7 @@ export const RevenueChart = ({
         <div>
           <p className='text-sm text-gray-600'>{t('chart.total')}</p>
           <p className='text-lg font-bold text-gray-900'>
-            {formatVND(data.reduce((sum, item) => sum + item.revenue, 0))}
+            {formatCurrency(data.reduce((sum, item) => sum + item.revenue, 0))}
           </p>
         </div>
         <div>
@@ -93,7 +93,7 @@ export const RevenueChart = ({
         <div>
           <p className='text-sm text-gray-600'>{t('chart.average')}</p>
           <p className='text-lg font-bold text-gray-900'>
-            {formatVND(
+            {formatCurrency(
               data.reduce((sum, item) => sum + item.revenue, 0) / data.length,
             )}
           </p>

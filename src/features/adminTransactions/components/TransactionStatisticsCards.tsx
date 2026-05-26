@@ -14,7 +14,7 @@ import {
 import { useTranslations } from 'next-intl'
 import { StatCard } from '@/components/molecules/statCard'
 import { TransactionStatistics } from '../types/transaction.type'
-import { formatVND } from '../utils/formatters'
+import { formatCurrency } from '@/utils/format'
 
 interface TransactionStatisticsCardsProps {
   statistics: TransactionStatistics | undefined
@@ -40,7 +40,7 @@ export const TransactionStatisticsCards = ({
   }> = [
     {
       label: t('stats.totalRevenue'),
-      value: formatVND(statistics.totalRevenue),
+      value: formatCurrency(statistics.totalRevenue),
       icon: Wallet,
     },
     {
@@ -75,7 +75,7 @@ export const TransactionStatisticsCards = ({
     },
     {
       label: t('stats.average'),
-      value: formatVND(statistics.averageSuccessfulAmount),
+      value: formatCurrency(statistics.averageSuccessfulAmount),
       icon: Coins,
     },
   ]

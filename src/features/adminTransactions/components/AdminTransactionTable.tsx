@@ -14,12 +14,12 @@ import {
   PaymentGateway,
   PaymentStatus,
 } from '../types/transaction.type'
+import { getPaymentGatewayLabel } from '../utils/formatters'
 import {
+  formatCurrency,
   formatDateTime,
   formatPhoneNumber,
-  formatVND,
-  getPaymentGatewayLabel,
-} from '../utils/formatters'
+} from '@/utils/format'
 
 interface AdminTransactionTableProps {
   transactions: AdminTransaction[]
@@ -145,7 +145,7 @@ export const AdminTransactionTable = ({
       accessor: (row) => row.amount,
       className: 'text-right',
       render: (_, row) => (
-        <span className='font-medium'>{formatVND(row.amount)}</span>
+        <span className='font-medium'>{formatCurrency(row.amount)}</span>
       ),
     },
     {

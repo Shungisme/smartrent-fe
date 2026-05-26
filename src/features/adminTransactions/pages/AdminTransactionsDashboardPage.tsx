@@ -8,7 +8,7 @@ import {
 } from '../hooks/useAdminTransactions'
 import { TransactionStatisticsCards } from '../components/TransactionStatisticsCards'
 import { RevenueChart } from '../components/RevenueChart'
-import { getDateRange } from '../utils/formatters'
+import { getDateRange } from '@/utils/format'
 
 /**
  * Admin Transactions Dashboard

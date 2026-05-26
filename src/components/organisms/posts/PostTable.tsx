@@ -12,7 +12,31 @@ import { Avatar } from '@/components/atoms/avatar'
 import { Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PostStatus, UIPostData } from '@/types/posts.type'
-import { getPropertyIcon, getStatusColor } from '@/utils/post.utils' // We might need to adjust utils to not use translations or pass them
+import { getPropertyIcon, getStatusColor } from '@/utils/post.utils'
+import { TIER_STYLES, FALLBACK_TIER_STYLE } from '@/utils/premium.utils'
+
+const TIER_LABEL_OVERRIDES: Record<string, string> = {
+  NORMAL: 'Thường',
+  SILVER: 'Bạc',
+  GOLD: 'Vàng',
+  DIAMOND: 'Kim cương',
+}
+
+const VipTypeBadge: React.FC<{ vipType: string }> = ({ vipType }) => {
+  const style = TIER_STYLES[vipType] ?? FALLBACK_TIER_STYLE
+  const label = TIER_LABEL_OVERRIDES[vipType] ?? vipType
+  return (
+    <Badge
+      variant='outline'
+      className={cn(
+        'px-2 py-0 text-[10px] font-semibold uppercase tracking-wide',
+        style.badge,
+      )}
+    >
+      {label}
+    </Badge>
+  )
+}
 
 // Re-implementing helper functions that need translations inside the component or pass t
 // Since utils cannot use hooks directly unless valid custom hook.
@@ -96,11 +120,7 @@ export const PostTable: React.FC<PostTableProps> = ({
               {row.postCode}
             </div>
             <div className='flex flex-wrap gap-1'>
-              {row.vipLevel && (
-                <Badge className='border-transparent bg-gradient-to-r from-amber-400 to-orange-500 px-2 py-0 text-[10px] font-semibold text-white'>
-                  VIP{row.vipLevel}
-                </Badge>
-              )}
+              {row.vipType && <VipTypeBadge vipType={row.vipType} />}
               <Badge
                 variant={row.listingType === 'for_sale' ? 'info' : 'secondary'}
                 className={cn('px-2 py-0 text-[10px]')}

@@ -11,8 +11,8 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { TransactionTimeline } from '../types/transaction.type'
-import { formatDateTime } from '../utils/formatters'
 import { cn } from '@/lib/utils'
+import { formatDateTime } from '@/utils/format'
 
 interface TransactionTimelineProps {
   timeline: TransactionTimeline[] | undefined
