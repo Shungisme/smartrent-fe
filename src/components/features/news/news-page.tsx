@@ -126,8 +126,9 @@ const NewsManagement = () => {
   const handleFilterChange = (newFilters: Record<string, unknown>) => {
     setFilterValues((prev) => ({
       ...newFilters,
-      page: 1,
-      pageSize: prev.pageSize,
+      page: (newFilters.page as number | undefined) ?? 1,
+      pageSize:
+        (newFilters.pageSize as number | undefined) ?? prev.pageSize ?? 20,
     }))
   }
 

@@ -25,7 +25,7 @@ const AdminManagement = () => {
   // Filters/pagination state (controlled by DataTable in API mode)
   const [filterValues, setFilterValues] = useState<Record<string, unknown>>({
     page: 1,
-    pageSize: 10,
+    pageSize: 20,
   })
   const [totalItems, setTotalItems] = useState(0)
 
@@ -54,9 +54,6 @@ const AdminManagement = () => {
         }
         if (filterValues.phoneNumber) {
           filterArray.push(`phoneNumber:${filterValues.phoneNumber}`)
-        }
-        if (filterValues.adminId) {
-          filterArray.push(`adminId:${filterValues.adminId}`)
         }
         if (filterValues.role) {
           const roleValue = Array.isArray(filterValues.role)
@@ -90,8 +87,11 @@ const AdminManagement = () => {
   const handleFilterChange = (newFilters: Record<string, unknown>) => {
     setFilterValues({
       ...newFilters,
-      page: 1,
-      pageSize: filterValues.pageSize,
+      page: (newFilters.page as number | undefined) ?? 1,
+      pageSize:
+        (newFilters.pageSize as number | undefined) ??
+        (filterValues.pageSize as number | undefined) ??
+        20,
     })
   }
 

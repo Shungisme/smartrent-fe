@@ -4,6 +4,56 @@ import { useTranslations } from 'next-intl'
 import { EmptyState } from '@/components/molecules/emptyState'
 import type { TableDesktopProps, Column } from './types'
 
+// Shared width for every table's actions column. Sized for ~3 icon buttons
+// (h-8 w-8 each + gap + horizontal padding) so every page lines up.
+const ACTIONS_COLUMN_WIDTH = '7.5rem'
+
+const isActionsColumn = <T,>(column: Column<T>) => column.id === 'actions'
+
+const toCssLength = (
+  value: string | number | undefined,
+): string | undefined => {
+  if (value === undefined) return undefined
+  return typeof value === 'number' ? `${value}px` : value
+}
+
+const buildColumnStyle = <T,>(column: Column<T>): React.CSSProperties => {
+  const style: React.CSSProperties = {}
+  const width = toCssLength(column.width)
+  const maxWidth = toCssLength(column.maxWidth)
+  const minWidth = toCssLength(column.minWidth)
+  if (width) style.width = width
+  if (maxWidth) style.maxWidth = maxWidth
+  if (minWidth) style.minWidth = minWidth
+
+  // Apply the shared actions column width unless explicitly overridden.
+  if (isActionsColumn(column)) {
+    if (!width) style.width = ACTIONS_COLUMN_WIDTH
+    if (!minWidth) style.minWidth = ACTIONS_COLUMN_WIDTH
+  }
+
+  return style
+}
+
+const resolveAlign = <T,>(column: Column<T>): 'left' | 'center' | 'right' => {
+  if (column.align) return column.align
+  if (isActionsColumn(column)) return 'center'
+  return 'left'
+}
+
+const alignClass = (align: 'left' | 'center' | 'right') => {
+  if (align === 'center') return 'text-center'
+  if (align === 'right') return 'text-right'
+  return 'text-left'
+}
+
+const buildContentWrapperStyle = <T,>(
+  column: Column<T>,
+): React.CSSProperties | undefined => {
+  if (column.maxWidth === undefined) return undefined
+  return { maxWidth: toCssLength(column.maxWidth) }
+}
+
 export function TableDesktop<T = any>({
   columns,
   data,
@@ -41,6 +91,11 @@ export function TableDesktop<T = any>({
   const allSelected =
     selectable && data.length > 0 && selectedRows.length === data.length
 
+  const actionsStyle: React.CSSProperties = {
+    width: ACTIONS_COLUMN_WIDTH,
+    minWidth: ACTIONS_COLUMN_WIDTH,
+  }
+
   return (
     <div className='table-surface hidden lg:block'>
       <div
@@ -62,27 +117,36 @@ export function TableDesktop<T = any>({
                 </th>
               )}
 
-              {columns.map((column) => (
-                <th
-                  key={column.id}
-                  className={`border-b border-border/70 px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground ${
-                    column.sortable
-                      ? 'cursor-pointer select-none hover:text-foreground'
-                      : ''
-                  } ${column.className || ''}`}
-                  onClick={() =>
-                    column.sortable && onSort(column.id as keyof T)
-                  }
-                >
-                  <div className='flex items-center gap-1.5'>
-                    <span>{column.header}</span>
-                    {column.sortable && renderSortIcon(column.id)}
-                  </div>
-                </th>
-              ))}
+              {columns.map((column) => {
+                const align = resolveAlign(column)
+                return (
+                  <th
+                    key={column.id}
+                    style={buildColumnStyle(column)}
+                    className={`border-b border-border/70 px-5 py-3 ${alignClass(align)} text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground ${
+                      column.sortable
+                        ? 'cursor-pointer select-none hover:text-foreground'
+                        : ''
+                    } ${column.className || ''}`}
+                    onClick={() =>
+                      column.sortable && onSort(column.id as keyof T)
+                    }
+                  >
+                    <div
+                      className={`flex items-center gap-1.5 ${align === 'center' ? 'justify-center' : align === 'right' ? 'justify-end' : ''}`}
+                    >
+                      <span>{column.header}</span>
+                      {column.sortable && renderSortIcon(column.id)}
+                    </div>
+                  </th>
+                )
+              })}
 
               {actions && (
-                <th className='border-b border-border/70 px-5 py-3 text-right text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground'>
+                <th
+                  style={actionsStyle}
+                  className='border-b border-border/70 px-4 py-3 text-center text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground'
+                >
                   {t('actions')}
                 </th>
               )}
@@ -134,20 +198,36 @@ export function TableDesktop<T = any>({
                       const cellContent = column.render
                         ? column.render(value, row)
                         : value
+                      const wrapperStyle = buildContentWrapperStyle(column)
+                      const align = resolveAlign(column)
 
                       return (
                         <td
                           key={column.id}
-                          className={`px-5 py-3.5 align-middle text-sm text-foreground ${isLast ? '' : 'border-b border-border/50'} ${column.className || ''}`}
+                          style={buildColumnStyle(column)}
+                          className={`px-5 py-3.5 align-middle text-sm text-foreground ${alignClass(align)} ${isLast ? '' : 'border-b border-border/50'} ${column.className || ''}`}
+                          title={
+                            column.maxWidth !== undefined &&
+                            typeof cellContent === 'string'
+                              ? cellContent
+                              : undefined
+                          }
                         >
-                          {cellContent as React.ReactNode}
+                          {wrapperStyle ? (
+                            <div style={wrapperStyle} className='truncate'>
+                              {cellContent as React.ReactNode}
+                            </div>
+                          ) : (
+                            (cellContent as React.ReactNode)
+                          )}
                         </td>
                       )
                     })}
 
                     {actions && (
                       <td
-                        className={`px-5 py-3.5 text-right ${isLast ? '' : 'border-b border-border/50'}`}
+                        style={actionsStyle}
+                        className={`px-4 py-3.5 text-center ${isLast ? '' : 'border-b border-border/50'}`}
                       >
                         {actions(row, index)}
                       </td>

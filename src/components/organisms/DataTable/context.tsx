@@ -48,7 +48,7 @@ export function DataTableProvider<T = any>({
   onSortChange,
   onPageChange,
   defaultSort,
-  itemsPerPage: initialItemsPerPage = 10,
+  itemsPerPage: initialItemsPerPage = 20,
   totalItems: externalTotalItems,
   loading = false,
 }: DataTableProviderProps<T>) {

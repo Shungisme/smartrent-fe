@@ -183,7 +183,7 @@ export function DataTable<T = any>(props: DataTableProps<T>) {
     onSortChange,
     onPageChange,
     defaultSort,
-    itemsPerPage = 10,
+    itemsPerPage = 20,
     totalItems,
     loading = false,
     ...contentProps

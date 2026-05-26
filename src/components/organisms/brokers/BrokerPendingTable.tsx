@@ -103,15 +103,15 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
         const isApproved = row.brokerVerificationStatus === 'APPROVED'
 
         return (
-          <div className='flex flex-col gap-2'>
-            <div className='flex flex-wrap items-center gap-2'>
+          <div className='flex flex-col items-center gap-1.5'>
+            <div className='flex items-center justify-center gap-0.5'>
               {isPending && (
                 <Button
                   size='sm'
                   variant='ghost'
                   onClick={() => onApprove(row)}
                   disabled={isBusy}
-                  className='h-8 w-8 p-0 text-green-600 hover:text-green-700'
+                  className='h-8 w-8 p-0 text-muted-foreground hover:bg-success/10 hover:text-success-foreground'
                   title={t('actions.approve')}
                 >
                   {action === 'approve' ? (
@@ -128,7 +128,7 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
                   variant='ghost'
                   onClick={() => onReject(row)}
                   disabled={isBusy}
-                  className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
+                  className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
                   title={t('actions.reject')}
                 >
                   {action === 'reject' ? (
@@ -145,7 +145,7 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
                   variant='ghost'
                   onClick={() => onRemove(row)}
                   disabled={isBusy}
-                  className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
+                  className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
                   title={t('actions.removeBroker')}
                 >
                   {action === 'remove' ? (
@@ -161,7 +161,7 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
               href={BROKER_REGISTRY_URL}
               target='_blank'
               rel='noopener noreferrer'
-              className='text-xs font-medium text-blue-600 hover:text-blue-700'
+              className='whitespace-nowrap text-[11px] font-medium text-primary hover:underline'
             >
               {t('table.verifyLink')}
             </a>

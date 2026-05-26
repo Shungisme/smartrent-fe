@@ -105,13 +105,6 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       isFilterField: true,
     },
     {
-      id: 'adminId',
-      type: 'search',
-      label: t('filters.adminId'),
-      placeholder: t('filters.adminIdPlaceholder'),
-      isFilterField: true,
-    },
-    {
       id: 'role',
       type: 'select',
       label: t('filters.role'),
@@ -203,7 +196,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       header: t('table.headers.actions'),
       accessor: () => '',
       render: (_, row) => (
-        <div className='flex items-center justify-end gap-0.5'>
+        <div className='flex items-center justify-center gap-0.5'>
           <Button
             variant='ghost'
             size='sm'

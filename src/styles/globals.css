@@ -381,6 +381,10 @@
   }
 
   html {
+    /* Compact admin density: root rem = 12.8px (80% of the 16px browser default).
+       Tailwind's rem-based sizing scales everything — type, padding, gap — so
+       the UI lands at the same density as a 80% browser zoom. */
+    font-size: 80%;
     font-feature-settings:
       'rlig' 1,
       'calt' 1;

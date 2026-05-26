@@ -12,6 +12,14 @@ export interface Column<T = Record<string, unknown>> {
   className?: string // Custom CSS class cho column
   defaultHidden?: boolean // Ẩn column này mặc định; admin có thể bật lại từ nút Views
   alwaysVisible?: boolean // Cấm ẩn (ví dụ: cột actions)
+  /** Fixed width. Number = px, string = any CSS length ('8rem', '120px'). */
+  width?: string | number
+  /** Max width. Useful to clip long text cells. Number treated as px. */
+  maxWidth?: string | number
+  /** Min width. Number treated as px. */
+  minWidth?: string | number
+  /** Horizontal alignment of header text and cell content. Default: 'left'. */
+  align?: 'left' | 'center' | 'right'
 }
 
 // Filter configuration types

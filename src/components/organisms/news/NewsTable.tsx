@@ -198,12 +198,12 @@ export const NewsTable: React.FC<NewsTableProps> = ({
       header: t('table.columns.actions'),
       accessor: () => '',
       render: (_, row) => (
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center justify-center gap-0.5'>
           <Button
             variant='ghost'
             size='sm'
             onClick={() => onPreview(row)}
-            className='h-8 w-8 p-0'
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
             title={t('actions.preview')}
           >
             <Eye className='h-4 w-4' />
@@ -212,7 +212,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
             variant='ghost'
             size='sm'
             onClick={() => onEdit(row)}
-            className='h-8 w-8 p-0'
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
             title={t('actions.edit')}
           >
             <Edit className='h-4 w-4' />
@@ -221,7 +221,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
             variant='ghost'
             size='sm'
             onClick={() => onDelete(row)}
-            className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
+            className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
             title={t('actions.delete')}
           >
             <Trash2 className='h-4 w-4' />

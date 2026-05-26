@@ -202,15 +202,17 @@ export const PostTable: React.FC<PostTableProps> = ({
       header: t('table.actions'),
       accessor: () => '',
       render: (_, row) => (
-        <Button
-          variant='ghost'
-          size='sm'
-          onClick={() => onReview(row)}
-          className='h-8 w-8 p-0'
-          title={t('table.reviewButton')}
-        >
-          <Eye className='h-4 w-4' />
-        </Button>
+        <div className='flex items-center justify-center gap-0.5'>
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => onReview(row)}
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+            title={t('table.reviewButton')}
+          >
+            <Eye className='h-4 w-4' />
+          </Button>
+        </div>
       ),
     },
   ]
