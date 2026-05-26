@@ -57,22 +57,22 @@ const ValidationCard: React.FC<{
   issues,
   issuesLabel,
 }) => (
-  <div className='rounded-lg border border-gray-200 p-3'>
+  <div className='rounded-lg border border-border/70 p-3'>
     <div className='flex items-center justify-between gap-2'>
-      <span className='text-sm font-medium text-gray-900'>{title}</span>
+      <span className='text-sm font-medium text-foreground'>{title}</span>
       <Badge
         variant='outline'
         className={cn(
           'text-xs',
           valid
-            ? 'bg-green-50 text-green-700 border-green-200'
-            : 'bg-red-50 text-red-700 border-red-200',
+            ? 'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30'
+            : 'bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30',
         )}
       >
         {valid ? validLabel : invalidLabel}
       </Badge>
     </div>
-    <div className='mt-2 text-xs text-gray-500'>
+    <div className='mt-2 text-xs text-muted-foreground'>
       {scoreLabel}: <span className='font-semibold'>{scorePct}%</span>
       {stats?.map((s) => (
         <span key={s.label} className='ml-2'>
@@ -82,8 +82,10 @@ const ValidationCard: React.FC<{
     </div>
     {issues.length > 0 && (
       <div className='mt-2'>
-        <div className='text-xs font-medium text-gray-700'>{issuesLabel}</div>
-        <ul className='mt-1 list-inside list-disc space-y-0.5 text-xs text-gray-600'>
+        <div className='text-xs font-medium text-foreground/80'>
+          {issuesLabel}
+        </div>
+        <ul className='mt-1 list-inside list-disc space-y-0.5 text-xs text-muted-foreground'>
           {issues.map((issue, i) => (
             <li key={i}>{issue}</li>
           ))}
@@ -138,16 +140,16 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
   }
 
   return (
-    <div className='rounded-xl border border-blue-200 bg-blue-50/40 p-4'>
+    <div className='rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10 p-4'>
       {/* Header */}
       <div className='flex flex-wrap items-center justify-between gap-3'>
         <div className='flex items-center gap-2'>
-          <Sparkles className='h-5 w-5 text-blue-600' />
+          <Sparkles className='h-5 w-5 text-primary' />
           <div>
-            <div className='text-sm font-semibold text-gray-900'>
+            <div className='text-sm font-semibold text-foreground'>
               {t('aiAnalysis.title')}
             </div>
-            <div className='text-xs text-gray-500'>
+            <div className='text-xs text-muted-foreground'>
               {t('aiAnalysis.disclaimer')}
             </div>
           </div>
@@ -157,7 +159,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
 
       {/* Loading */}
       {loading && (
-        <div className='mt-4 flex items-center gap-2 text-sm text-gray-600'>
+        <div className='mt-4 flex items-center gap-2 text-sm text-muted-foreground'>
           <Loader2 className='h-4 w-4 animate-spin' />
           {t('aiAnalysis.analyzing')}
         </div>
@@ -165,7 +167,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
 
       {/* Error */}
       {error && !loading && (
-        <div className='mt-4 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700'>
+        <div className='mt-4 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 dark:bg-destructive/20 p-3 text-sm text-destructive'>
           <XCircle className='mt-0.5 h-4 w-4 flex-shrink-0' />
           <span>{error}</span>
         </div>
@@ -188,7 +190,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
               <div className='text-2xl font-bold'>
                 {toPercent(result.score)}%
               </div>
-              <div className='mt-1 h-1.5 w-full rounded-full bg-white/60'>
+              <div className='mt-1 h-1.5 w-full rounded-full bg-background/60'>
                 <div
                   className={cn(
                     'h-1.5 rounded-full',
@@ -199,8 +201,8 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
               </div>
             </div>
 
-            <div className='rounded-lg border border-gray-200 bg-white p-3'>
-              <div className='text-xs font-medium text-gray-500'>
+            <div className='rounded-lg border border-border/70 bg-card p-3'>
+              <div className='text-xs font-medium text-muted-foreground'>
                 {t('aiAnalysis.suggestedStatus')}
               </div>
               <Badge
@@ -214,14 +216,14 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
               </Badge>
             </div>
 
-            <div className='rounded-lg border border-gray-200 bg-white p-3'>
-              <div className='text-xs font-medium text-gray-500'>
+            <div className='rounded-lg border border-border/70 bg-card p-3'>
+              <div className='text-xs font-medium text-muted-foreground'>
                 {t('aiAnalysis.confidence')}
               </div>
-              <div className='text-2xl font-bold text-gray-900'>
+              <div className='text-2xl font-bold text-foreground'>
                 {toPercent(result.confidence)}%
               </div>
-              <div className='mt-1 text-[11px] text-gray-400'>
+              <div className='mt-1 text-[11px] text-muted-foreground/80'>
                 {t('aiAnalysis.model')}: {result.model_used} ·{' '}
                 {result.processing_time_seconds.toFixed(1)}
                 {t('aiAnalysis.seconds')}
@@ -230,18 +232,18 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
           </div>
 
           {/* Reason */}
-          <div className='rounded-lg border border-gray-200 bg-white p-3'>
-            <div className='text-xs font-medium text-gray-700'>
+          <div className='rounded-lg border border-border/70 bg-card p-3'>
+            <div className='text-xs font-medium text-foreground/80'>
               {t('aiAnalysis.reasonTitle')}
             </div>
-            <p className='mt-1 text-sm text-gray-600'>
+            <p className='mt-1 text-sm text-muted-foreground'>
               {result.reason.details || t('aiAnalysis.noIssues')}
             </p>
             <div className='mt-2 flex flex-wrap gap-1.5'>
               {result.reason.blurriness_issue && (
                 <Badge
                   variant='outline'
-                  className='bg-red-50 text-red-700 border-red-200 text-xs'
+                  className='bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30 text-xs'
                 >
                   {t('aiAnalysis.flags.blurriness')}
                 </Badge>
@@ -249,7 +251,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
               {result.reason.inconsistent_info && (
                 <Badge
                   variant='outline'
-                  className='bg-red-50 text-red-700 border-red-200 text-xs'
+                  className='bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30 text-xs'
                 >
                   {t('aiAnalysis.flags.inconsistent')}
                 </Badge>
@@ -257,7 +259,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
               {result.reason.watermark_or_phone && (
                 <Badge
                   variant='outline'
-                  className='bg-red-50 text-red-700 border-red-200 text-xs'
+                  className='bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30 text-xs'
                 >
                   {t('aiAnalysis.flags.watermark')}
                 </Badge>
@@ -265,7 +267,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
               {result.reason.stock_photo && (
                 <Badge
                   variant='outline'
-                  className='bg-red-50 text-red-700 border-red-200 text-xs'
+                  className='bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30 text-xs'
                 >
                   {t('aiAnalysis.flags.stockPhoto')}
                 </Badge>
@@ -276,7 +278,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
           {/* Violation codes */}
           {result.violation_codes.length > 0 && (
             <div>
-              <div className='mb-1.5 text-xs font-medium text-gray-700'>
+              <div className='mb-1.5 text-xs font-medium text-foreground/80'>
                 {t('aiAnalysis.violationCodes')}
               </div>
               <div className='flex flex-wrap gap-1.5'>
@@ -284,7 +286,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                   <Badge
                     key={code}
                     variant='outline'
-                    className='bg-red-50 text-red-700 border-red-200 text-xs'
+                    className='bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30 text-xs'
                   >
                     {code}
                   </Badge>
@@ -295,7 +297,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
 
           {/* Validations */}
           <div>
-            <div className='mb-1.5 text-xs font-medium text-gray-700'>
+            <div className='mb-1.5 text-xs font-medium text-foreground/80'>
               {t('aiAnalysis.validations')}
             </div>
             <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
@@ -380,18 +382,18 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
           {/* Violations */}
           {result.violations.length > 0 && (
             <div>
-              <div className='mb-1.5 flex items-center gap-1.5 text-xs font-medium text-gray-700'>
-                <AlertTriangle className='h-4 w-4 text-red-500' />
+              <div className='mb-1.5 flex items-center gap-1.5 text-xs font-medium text-foreground/80'>
+                <AlertTriangle className='h-4 w-4 text-destructive' />
                 {t('aiAnalysis.violations')}
               </div>
               <div className='space-y-2'>
                 {result.violations.map((v, i) => (
                   <div
                     key={i}
-                    className='rounded-lg border border-red-200 bg-red-50 p-3'
+                    className='rounded-lg border border-destructive/30 bg-destructive/10 dark:bg-destructive/20 p-3'
                   >
                     <div className='flex items-center justify-between gap-2'>
-                      <span className='text-sm font-medium text-gray-900'>
+                      <span className='text-sm font-medium text-foreground'>
                         {v.category}
                       </span>
                       <Badge
@@ -401,9 +403,11 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                         {levelLabel(v.severity)}
                       </Badge>
                     </div>
-                    <p className='mt-1 text-sm text-gray-700'>{v.message}</p>
+                    <p className='mt-1 text-sm text-foreground/80'>
+                      {v.message}
+                    </p>
                     {v.field && (
-                      <p className='mt-0.5 text-xs text-gray-500'>
+                      <p className='mt-0.5 text-xs text-muted-foreground'>
                         {t('aiAnalysis.field')}: {v.field}
                       </p>
                     )}
@@ -416,18 +420,18 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
           {/* Suggestions */}
           {result.suggestions.length > 0 && (
             <div>
-              <div className='mb-1.5 flex items-center gap-1.5 text-xs font-medium text-gray-700'>
-                <Lightbulb className='h-4 w-4 text-yellow-500' />
+              <div className='mb-1.5 flex items-center gap-1.5 text-xs font-medium text-foreground/80'>
+                <Lightbulb className='h-4 w-4 text-warning-foreground' />
                 {t('aiAnalysis.suggestions')}
               </div>
               <div className='space-y-2'>
                 {result.suggestions.map((s, i) => (
                   <div
                     key={i}
-                    className='rounded-lg border border-yellow-200 bg-yellow-50 p-3'
+                    className='rounded-lg border border-warning/30 bg-warning/10 dark:bg-warning/20 p-3'
                   >
                     <div className='flex items-center justify-between gap-2'>
-                      <span className='text-sm font-medium text-gray-900'>
+                      <span className='text-sm font-medium text-foreground'>
                         {s.category}
                       </span>
                       <Badge
@@ -437,9 +441,11 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                         {levelLabel(s.priority)}
                       </Badge>
                     </div>
-                    <p className='mt-1 text-sm text-gray-700'>{s.message}</p>
+                    <p className='mt-1 text-sm text-foreground/80'>
+                      {s.message}
+                    </p>
                     {s.field && (
-                      <p className='mt-0.5 text-xs text-gray-500'>
+                      <p className='mt-0.5 text-xs text-muted-foreground'>
                         {t('aiAnalysis.field')}: {s.field}
                       </p>
                     )}
@@ -452,8 +458,8 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
       )}
 
       {/* Footer: advisory note (when result) + run / re-run action */}
-      <div className='mt-4 flex items-center justify-between gap-3 border-t border-blue-200/70 pt-3'>
-        <div className='flex items-center gap-1.5 text-xs text-gray-400'>
+      <div className='mt-4 flex items-center justify-between gap-3 border-t border-primary/20 pt-3'>
+        <div className='flex items-center gap-1.5 text-xs text-muted-foreground/80'>
           {result && !loading && (
             <>
               <CheckCircle2 className='h-3.5 w-3.5' />
@@ -466,7 +472,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
           size='sm'
           onClick={runAnalysis}
           disabled={loading || serviceAvailable === false}
-          className='bg-blue-600 text-sm hover:bg-blue-700'
+          className='text-sm'
         >
           {loading ? (
             <Loader2 className='mr-2 h-4 w-4 animate-spin' />

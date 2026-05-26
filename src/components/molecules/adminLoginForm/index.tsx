@@ -2,8 +2,8 @@ import { NextPage } from 'next'
 import { PasswordField } from '../passwordField'
 import { EmailField } from '../emailField'
 import { Button } from '@/components/atoms/button'
-import { Typography } from '@/components/atoms/typography'
 import { useTranslations } from 'next-intl'
+import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -80,38 +80,36 @@ const AdminLoginForm: NextPage<AdminLoginFormProps> = (props) => {
   }
 
   return (
-    <div className='space-y-6'>
-      <div className='space-y-3 text-center'>
-        <Typography variant='h2' className='!mb-2'>
-          Admin Login
-        </Typography>
-        <Typography variant='muted'>
-          Sign in to access the admin dashboard
-        </Typography>
-      </div>
+    <form onSubmit={handleFormSubmit} className='space-y-5'>
+      <EmailField
+        name='email'
+        control={control}
+        label={t('homePage.auth.common.email')}
+        error={errors.email?.message}
+      />
 
-      <form onSubmit={handleFormSubmit} className='space-y-4'>
-        <EmailField
-          name='email'
-          control={control}
-          label={t('homePage.auth.common.email')}
-          error={errors.email?.message}
-        />
+      <PasswordField
+        name='password'
+        control={control}
+        label={t('homePage.auth.common.password')}
+        error={errors.password?.message}
+      />
 
-        <PasswordField
-          name='password'
-          control={control}
-          label={t('homePage.auth.common.password')}
-          error={errors.password?.message}
-        />
-
-        <Button type='submit' disabled={isSubmitting} className='w-full'>
-          {isSubmitting
-            ? t('homePage.auth.login.submittingButton')
-            : t('homePage.auth.login.submitButton')}
-        </Button>
-      </form>
-    </div>
+      <Button
+        type='submit'
+        disabled={isSubmitting}
+        className='h-11 w-full text-sm font-medium'
+      >
+        {isSubmitting ? (
+          <>
+            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+            {t('homePage.auth.login.submittingButton')}
+          </>
+        ) : (
+          t('homePage.auth.login.submitButton')
+        )}
+      </Button>
+    </form>
   )
 }
 

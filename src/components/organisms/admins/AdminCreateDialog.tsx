@@ -187,7 +187,7 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
               {t('create.roles')} * ({t('create.selectRoles')})
             </Label>
             {rolesLoading ? (
-              <p className='text-sm text-gray-500'>Loading roles...</p>
+              <p className='text-sm text-muted-foreground'>Loading roles...</p>
             ) : (
               <div className='space-y-2 mt-2'>
                 {roles.map((role) => (
@@ -210,7 +210,7 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
                           })
                         }
                       }}
-                      className='rounded border-gray-300'
+                      className='rounded border-border text-primary focus:ring-primary'
                     />
                     <span className='text-sm'>{role.roleName}</span>
                   </label>
@@ -232,7 +232,7 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
             <Button
               type='submit'
               disabled={loading || formData.roles.length === 0}
-              className='flex-1 bg-blue-600 hover:bg-blue-700'
+              className='flex-1'
             >
               {loading ? t('create.creating') : t('create.create')}
             </Button>

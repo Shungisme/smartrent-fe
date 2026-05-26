@@ -45,13 +45,13 @@ export function TableMobile<T = any>({
           return (
             <div
               key={rowKey}
-              className='rounded-2xl border border-gray-200 bg-white p-4 space-y-3'
+              className='rounded-2xl border border-border/70 bg-card p-4 space-y-3 shadow-xs'
             >
               {customRender(row, index)}
 
               {/* Actions */}
               {actions && (
-                <div className='pt-3 border-t border-gray-100'>
+                <div className='pt-3 border-t border-border/60'>
                   {actions(row, index)}
                 </div>
               )}
@@ -63,7 +63,7 @@ export function TableMobile<T = any>({
         return (
           <div
             key={rowKey}
-            className='rounded-2xl border border-gray-200 bg-white p-4 space-y-4'
+            className='rounded-2xl border border-border/70 bg-card p-4 space-y-4 shadow-xs'
           >
             {/* Render each visible column as a row */}
             {visibleColumns.map((column) => {
@@ -87,12 +87,12 @@ export function TableMobile<T = any>({
                   className='flex justify-between items-start gap-3'
                 >
                   {/* Column label */}
-                  <div className='text-xs font-medium text-gray-500 flex-shrink-0'>
+                  <div className='text-xs font-medium text-muted-foreground flex-shrink-0'>
                     {column.mobileLabel || column.header}
                   </div>
 
                   {/* Column value */}
-                  <div className='text-sm text-gray-900 flex flex-col items-end flex-1'>
+                  <div className='text-sm text-foreground min-w-0 flex-1 text-right'>
                     {cellContent as React.ReactNode}
                   </div>
                 </div>
@@ -101,7 +101,7 @@ export function TableMobile<T = any>({
 
             {/* Actions */}
             {actions && (
-              <div className='pt-3 border-t border-gray-100'>
+              <div className='pt-3 border-t border-border/60'>
                 {actions(row, index)}
               </div>
             )}

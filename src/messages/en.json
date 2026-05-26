@@ -27,14 +27,14 @@
     "page": "Page"
   },
   "dataTable": {
-    "clearFilters": "Clear Filters",
+    "clearFilters": "Clear all",
     "filterButton": "Filter",
     "filterKey": "Field",
     "selectField": "Select a field",
     "selectValue": "Select a value",
     "filterValue": "Value",
     "enterValue": "Enter value",
-    "addFilter": "Add Filter",
+    "addFilter": "Add filter",
     "cancel": "Cancel",
     "apply": "Apply",
     "actions": "Actions",
@@ -42,10 +42,18 @@
     "tryAdjustFilters": "Try adjusting your filters or search terms.",
     "rangeFrom": "From",
     "rangeTo": "To",
+    "filterDialogHint": "Refine results with one or more conditions",
+    "filtersApplied": "{count} filter applied",
+    "noFiltersTitle": "No filters yet",
+    "noFiltersHint": "Add a filter to narrow down the results.",
+    "pickFieldFirst": "Pick a field first",
     "viewsButton": "Views",
     "viewsTitle": "Toggle columns",
     "viewsShowAll": "Show all",
-    "viewsReset": "Reset"
+    "viewsReset": "Reset to defaults",
+    "viewsCount": "{visible} of {total} visible",
+    "viewsSearchPlaceholder": "Search columns…",
+    "viewsNoMatch": "No columns match your search."
   },
   "homePage": {
     "title": "Find Your Dream Home",
@@ -213,6 +221,27 @@
         "phoneNumberPlaceholder": "Enter phone number",
         "emailOrPhone": "Email or Phone Number",
         "emailOrPhonePlaceholder": "Enter email or phone number"
+      },
+      "brand": {
+        "badge": "Admin Console",
+        "headline": "Run SmartRent with clarity and control.",
+        "subheadline": "Manage users, listings, premium tiers and revenue from a single calm workspace.",
+        "secure": "Secure connection",
+        "rights": "All rights reserved.",
+        "features": {
+          "security": {
+            "title": "Enterprise-grade security",
+            "desc": "JWT auth, role-based access and full audit trail across the platform."
+          },
+          "insights": {
+            "title": "Real-time insights",
+            "desc": "Track revenue, users and listing performance with live charts."
+          },
+          "automation": {
+            "title": "Smart workflows",
+            "desc": "Auto-approval rules, AI moderation and instant notifications."
+          }
+        }
       },
       "validation": {
         "firstNameMinLength": "First name must be at least 2 characters",

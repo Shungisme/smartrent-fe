@@ -27,14 +27,14 @@
     "page": "Trang"
   },
   "dataTable": {
-    "clearFilters": "Xóa Bộ Lọc",
+    "clearFilters": "Xóa tất cả",
     "filterButton": "Bộ lọc",
     "filterKey": "Trường",
     "selectField": "Chọn một trường",
     "selectValue": "Chọn một giá trị",
     "filterValue": "Giá trị",
     "enterValue": "Nhập giá trị",
-    "addFilter": "Thêm Bộ lọc",
+    "addFilter": "Thêm bộ lọc",
     "cancel": "Hủy",
     "apply": "Áp dụng",
     "actions": "Thao tác",
@@ -42,10 +42,18 @@
     "tryAdjustFilters": "Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm.",
     "rangeFrom": "Từ",
     "rangeTo": "Đến",
+    "filterDialogHint": "Tinh chỉnh kết quả bằng một hoặc nhiều điều kiện",
+    "filtersApplied": "Đã áp dụng {count} bộ lọc",
+    "noFiltersTitle": "Chưa có bộ lọc nào",
+    "noFiltersHint": "Thêm bộ lọc để thu hẹp danh sách kết quả.",
+    "pickFieldFirst": "Hãy chọn trường trước",
     "viewsButton": "Hiển thị",
-    "viewsTitle": "Bật/tắt cột",
+    "viewsTitle": "Tùy chỉnh cột",
     "viewsShowAll": "Hiện tất cả",
-    "viewsReset": "Đặt lại"
+    "viewsReset": "Đặt lại mặc định",
+    "viewsCount": "{visible}/{total} đang hiển thị",
+    "viewsSearchPlaceholder": "Tìm cột…",
+    "viewsNoMatch": "Không có cột nào khớp."
   },
   "homePage": {
     "title": "Tìm Ngôi Nhà Mơ Ước",
@@ -213,6 +221,27 @@
         "phoneNumberPlaceholder": "Nhập số điện thoại",
         "emailOrPhone": "Email hoặc Số điện thoại",
         "emailOrPhonePlaceholder": "Nhập email hoặc số điện thoại"
+      },
+      "brand": {
+        "badge": "Bảng điều khiển quản trị",
+        "headline": "Vận hành SmartRent với sự rõ ràng và kiểm soát.",
+        "subheadline": "Quản lý người dùng, tin đăng, gói cao cấp và doanh thu trong một không gian làm việc duy nhất.",
+        "secure": "Kết nối bảo mật",
+        "rights": "Bảo lưu mọi quyền.",
+        "features": {
+          "security": {
+            "title": "Bảo mật cấp doanh nghiệp",
+            "desc": "Xác thực JWT, phân quyền theo vai trò và nhật ký truy cập đầy đủ."
+          },
+          "insights": {
+            "title": "Phân tích theo thời gian thực",
+            "desc": "Theo dõi doanh thu, người dùng và hiệu suất tin đăng trực tiếp."
+          },
+          "automation": {
+            "title": "Quy trình thông minh",
+            "desc": "Tự động duyệt tin đăng, kiểm duyệt AI và thông báo nhanh."
+          }
+        }
       },
       "validation": {
         "firstNameMinLength": "Tên phải có ít nhất 2 ký tự",
@@ -896,7 +925,7 @@
           "joinDate": "Ngày Tham Gia",
           "posts": "Bài Đăng",
           "status": "Trạng Thái",
-          "actions": "Hành Động"
+          "actions": "Thao tác"
         },
         "userTypes": {
           "broker": "Môi giới",
@@ -1164,7 +1193,7 @@
           "admin": "Admin",
           "role": "Vai Trò",
           "joinDate": "Ngày Tham Gia",
-          "actions": "Thao Tác"
+          "actions": "Thao tác"
         },
         "roles": {
           "SA": "Super Admin",
@@ -1223,7 +1252,7 @@
         "headers": {
           "roleId": "ID Vai Trò",
           "roleName": "Tên Vai Trò",
-          "actions": "Thao Tác"
+          "actions": "Thao tác"
         },
         "actions": {
           "edit": "Chỉnh sửa",
@@ -1358,7 +1387,7 @@
         "features": "Tính Năng",
         "discount": "Giảm Giá",
         "status": "Trạng Thái",
-        "actions": "Thao Tác",
+        "actions": "Thao tác",
         "activeUsers": "người dùng đang dùng",
         "moreFeatures": "thêm {count} tính năng",
         "noDiscount": "Không giảm giá"
@@ -1476,7 +1505,7 @@
       "price": "Giá",
       "postedDate": "Ngày Đăng",
       "status": "Trạng Thái",
-      "actions": "Thao Tác",
+      "actions": "Thao tác",
       "noPostsFound": "Không tìm thấy bài đăng phù hợp",
       "viewDetails": "Xem Chi Tiết",
       "posts": "bài đăng",
@@ -1657,7 +1686,7 @@
       "content": "Nội Dung Báo Cáo",
       "reportTime": "Thời Gian Báo Cáo",
       "status": "Trạng Thái",
-      "actions": "Thao Tác",
+      "actions": "Thao tác",
       "noReportsFound": "Không tìm thấy báo cáo phù hợp",
       "viewDetails": "Xem Chi Tiết",
       "id": "ID",
@@ -1687,7 +1716,7 @@
       "resolve": "Xử Lý",
       "requestRevision": "Yêu Cầu Sửa Đổi",
       "dismiss": "Bỏ Qua",
-      "actions": "Thao Tác",
+      "actions": "Thao tác",
       "description": "Mô tả",
       "propertyType": "Loại Bất Động Sản",
       "price": "Giá",
@@ -1923,7 +1952,7 @@
       "amount": "Số Tiền",
       "status": "Trạng Thái",
       "created": "Ngày Tạo",
-      "actions": "Hành Động",
+      "actions": "Thao tác",
       "noData": "Không có giao dịch nào",
       "viewDetails": "Chi tiết",
       "gatewayPrefix": "Cổng"

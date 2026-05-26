@@ -83,11 +83,11 @@ const NumberInput: React.FC<NumberInputProps> = ({
 
   const variantClasses = {
     default:
-      'border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500',
+      'border border-input bg-card text-foreground hover:border-border focus-within:ring-2 focus-within:ring-ring focus-within:border-primary/60',
     outline:
-      'border-2 border-gray-300 dark:border-gray-600 bg-transparent hover:border-gray-400 dark:hover:border-gray-500 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500',
+      'border border-border bg-transparent text-foreground hover:border-border focus-within:ring-2 focus-within:ring-ring focus-within:border-primary/60',
     ghost:
-      'border-0 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 focus-within:ring-2 focus-within:ring-blue-500',
+      'border-0 bg-muted text-foreground hover:bg-accent focus-within:ring-2 focus-within:ring-ring',
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,8 +140,8 @@ const NumberInput: React.FC<NumberInputProps> = ({
       {label && (
         <label
           className={cn(
-            'text-sm font-semibold text-gray-700 dark:text-gray-300',
-            error && 'text-red-600 dark:text-red-400',
+            'text-sm font-semibold text-foreground',
+            error && 'text-destructive',
           )}
         >
           {label}
@@ -155,7 +155,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
           <div className='absolute left-3 top-1/2 transform -translate-y-1/2 z-10'>
             <div
               className={cn(
-                'text-gray-400 group-focus-within:text-blue-500 transition-colors',
+                'text-muted-foreground group-focus-within:text-primary transition-colors',
                 iconSizeClasses[size],
               )}
             >
@@ -167,9 +167,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
         {/* Unit on the left */}
         {unit && unitPosition === 'left' && (
           <div className='absolute left-3 top-1/2 transform -translate-y-1/2 z-10'>
-            <span className='text-sm text-gray-500 dark:text-gray-400'>
-              {unit}
-            </span>
+            <span className='text-sm text-muted-foreground'>{unit}</span>
           </div>
         )}
 
@@ -184,7 +182,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
             unit && unitPosition === 'left' && 'pl-12',
             unit && unitPosition === 'right' && 'pr-12',
             error &&
-              'border-red-500 focus-within:ring-red-500 focus-within:border-red-500',
+              'border-destructive focus-within:ring-destructive/30 focus-within:border-destructive',
             disabled && 'opacity-50 cursor-not-allowed',
             fullWidth && 'w-full',
           )}
@@ -193,7 +191,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
           <button
             type='button'
             className={cn(
-              'hover:bg-gray-100 dark:hover:bg-gray-700 rounded-l-xl transition-colors flex items-center justify-center',
+              'hover:bg-accent text-muted-foreground hover:text-foreground rounded-l-xl transition-colors flex items-center justify-center',
               buttonSizeClasses[size],
               disabled && 'cursor-not-allowed opacity-50',
             )}
@@ -212,7 +210,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
             placeholder={placeholder}
             disabled={disabled}
             className={cn(
-              'flex-1 h-full px-3 border-0 focus:ring-0 bg-transparent text-center text-gray-900 dark:text-gray-100 font-medium',
+              'flex-1 h-full px-3 border-0 focus:ring-0 bg-transparent text-center text-foreground font-medium',
               'focus:outline-none',
             )}
           />
@@ -221,7 +219,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
           <button
             type='button'
             className={cn(
-              'hover:bg-gray-100 dark:hover:bg-gray-700 rounded-r-xl transition-colors flex items-center justify-center',
+              'hover:bg-accent text-muted-foreground hover:text-foreground rounded-r-xl transition-colors flex items-center justify-center',
               buttonSizeClasses[size],
               disabled && 'cursor-not-allowed opacity-50',
             )}
@@ -235,9 +233,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
         {/* Unit on the right */}
         {unit && unitPosition === 'right' && (
           <div className='absolute right-3 top-1/2 transform -translate-y-1/2 z-10'>
-            <span className='text-sm text-gray-500 dark:text-gray-400'>
-              {unit}
-            </span>
+            <span className='text-sm text-muted-foreground'>{unit}</span>
           </div>
         )}
 
@@ -246,7 +242,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
           <div className='absolute right-3 top-1/2 transform -translate-y-1/2 z-10'>
             <div
               className={cn(
-                'text-gray-400 group-focus-within:text-blue-500 transition-colors',
+                'text-muted-foreground group-focus-within:text-primary transition-colors',
                 iconSizeClasses[size],
               )}
             >
@@ -261,9 +257,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
         <p
           className={cn(
             'text-xs',
-            error
-              ? 'text-red-600 dark:text-red-400'
-              : 'text-gray-500 dark:text-gray-400',
+            error ? 'text-destructive' : 'text-muted-foreground',
           )}
         >
           {error || helperText}

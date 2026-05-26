@@ -80,7 +80,7 @@ export const NewsPreviewModal: React.FC<NewsPreviewModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='flex max-w-4xl w-[calc(100%-2rem)] max-h-[90vh] flex-col p-0 gap-0 overflow-hidden'>
+      <DialogContent className='flex w-[80vw] max-w-[1200px] max-h-[90vh] flex-col p-0 gap-0 overflow-hidden'>
         <DialogHeader className='shrink-0 border-b border-border/60 px-6 py-4'>
           <DialogTitle className='text-base font-semibold'>
             {t('previewModal.title')}

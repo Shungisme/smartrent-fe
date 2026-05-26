@@ -4,60 +4,12 @@ import { Badge } from '@/components/atoms/badge'
 import { useLocale, useTranslations } from 'next-intl'
 import { VIPTier } from '@/api/types/vip-tier.type'
 import { cn } from '@/lib/utils'
+import { formatCurrency } from '@/utils/format'
+import { tierStyles, fallbackStyle } from '@/utils/premium.utils'
 
 interface ListingTypePricingListProps {
   tiers: VIPTier[]
   loading: boolean
-}
-
-const formatVND = (value: number) => `${value.toLocaleString('vi-VN')}đ`
-
-type TierStyle = {
-  accent: string
-  ring: string
-  title: string
-  price: string
-  badge: string
-}
-
-const tierStyles: Record<string, TierStyle> = {
-  NORMAL: {
-    accent: 'bg-slate-400',
-    ring: 'ring-slate-200',
-    title: 'text-slate-700',
-    price: 'text-slate-900',
-    badge: 'bg-slate-100 text-slate-700',
-  },
-  SILVER: {
-    accent: 'bg-sky-500',
-    ring: 'ring-sky-200',
-    title: 'text-sky-700',
-    price: 'text-sky-700',
-    badge: 'bg-sky-100 text-sky-700',
-  },
-  GOLD: {
-    accent: 'bg-amber-500',
-    ring: 'ring-amber-200',
-    title: 'text-amber-700',
-    price: 'text-amber-700',
-    badge: 'bg-amber-100 text-amber-700',
-  },
-  DIAMOND: {
-    accent: 'bg-gradient-to-r from-rose-500 to-orange-500',
-    ring: 'ring-rose-200',
-    title: 'text-rose-700',
-    price: 'text-rose-600',
-    badge:
-      'bg-gradient-to-r from-rose-500 to-orange-500 text-white border-transparent',
-  },
-}
-
-const fallbackStyle: TierStyle = {
-  accent: 'bg-slate-400',
-  ring: 'ring-slate-200',
-  title: 'text-slate-700',
-  price: 'text-slate-900',
-  badge: 'bg-slate-100 text-slate-700',
 }
 
 export const ListingTypePricingList: React.FC<ListingTypePricingListProps> = ({
@@ -152,8 +104,8 @@ export const ListingTypePricingList: React.FC<ListingTypePricingListProps> = ({
                     className={cn(
                       'text-[10px]',
                       tier.isActive
-                        ? 'border-green-200 bg-green-50 text-green-700'
-                        : 'border-gray-200 bg-gray-50 text-gray-600',
+                        ? 'border-success/30 bg-success/10 text-success-foreground dark:bg-success/20'
+                        : 'border-border/70 bg-muted/50 text-muted-foreground',
                     )}
                   >
                     {tier.isActive
@@ -171,7 +123,7 @@ export const ListingTypePricingList: React.FC<ListingTypePricingListProps> = ({
                       style.price,
                     )}
                   >
-                    {formatVND(tier.pricePerDay)}
+                    {formatCurrency(tier.pricePerDay)}
                   </span>
                   <span className='text-sm text-muted-foreground'>
                     /{t('listingTypes.perDay')}
@@ -198,7 +150,7 @@ export const ListingTypePricingList: React.FC<ListingTypePricingListProps> = ({
                         {p.days} {t('listingTypes.days')}
                       </dt>
                       <dd className='font-medium tabular-nums text-foreground'>
-                        {formatVND(p.price)}
+                        {formatCurrency(p.price)}
                       </dd>
                     </div>
                   ))}

@@ -159,7 +159,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       accessor: () => '',
       header: t('review.actions'),
       render: (_, row) => (
-        <div className='flex items-center justify-end gap-0.5'>
+        <div className='flex items-center justify-center gap-0.5'>
           <Button
             variant='ghost'
             size='sm'

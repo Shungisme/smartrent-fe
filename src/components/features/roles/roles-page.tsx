@@ -37,7 +37,7 @@ const RoleManagement = () => {
   const [loading, setLoading] = useState(true)
   const [filterValues, setFilterValues] = useState<Record<string, unknown>>({
     page: 1,
-    pageSize: 10,
+    pageSize: 20,
   })
   const [totalItems, setTotalItems] = useState(0)
   const [showCreate, setShowCreate] = useState(false)
@@ -53,9 +53,6 @@ const RoleManagement = () => {
       // Build filter array from filterValues (filter=key:value format)
       const filterArray: string[] = []
 
-      if (filterValues.roleId) {
-        filterArray.push(`roleId:${filterValues.roleId}`)
-      }
       if (filterValues.roleName) {
         filterArray.push(`roleName:${filterValues.roleName}`)
       }
@@ -113,7 +110,7 @@ const RoleManagement = () => {
       header: t('table.headers.actions'),
       accessor: () => '',
       render: (_, row) => (
-        <div className='flex items-center justify-end gap-0.5'>
+        <div className='flex items-center justify-center gap-0.5'>
           <Button
             variant='ghost'
             size='sm'
@@ -153,13 +150,6 @@ const RoleManagement = () => {
   }))
 
   const filterConfig: FilterConfig[] = [
-    {
-      id: 'roleId',
-      type: 'search',
-      label: t('table.headers.roleId') || 'Role ID',
-      placeholder: 'e.g. ADMIN',
-      isFilterField: true,
-    },
     {
       id: 'roleName',
       type: 'search',

@@ -29,22 +29,29 @@ interface NewsTableProps {
 
 const getStatusColor = (status: NewsStatus): string => {
   const colors: Record<NewsStatus, string> = {
-    DRAFT: 'bg-yellow-50 text-yellow-800 border-yellow-200',
-    PUBLISHED: 'bg-green-50 text-green-700 border-green-200',
-    ARCHIVED: 'bg-gray-50 text-gray-700 border-gray-200',
+    DRAFT:
+      'bg-warning/10 text-warning-foreground border-warning/30 dark:bg-warning/20',
+    PUBLISHED:
+      'bg-success/10 text-success-foreground border-success/30 dark:bg-success/20',
+    ARCHIVED: 'bg-muted text-muted-foreground border-border/70',
   }
   return colors[status]
 }
 
 const getCategoryColor = (category: NewsCategory): string => {
   const colors: Record<NewsCategory, string> = {
-    NEWS: 'bg-blue-50 text-blue-700 border-blue-200',
-    BLOG: 'bg-purple-50 text-purple-700 border-purple-200',
-    POLICY: 'bg-orange-50 text-orange-700 border-orange-200',
-    MARKET: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    PROJECT: 'bg-cyan-50 text-cyan-700 border-cyan-200',
-    INVESTMENT: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-    GUIDE: 'bg-pink-50 text-pink-700 border-pink-200',
+    NEWS: 'border-blue-200/70 bg-blue-50 text-blue-700 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-300',
+    BLOG: 'border-purple-200/70 bg-purple-50 text-purple-700 dark:border-purple-500/30 dark:bg-purple-500/10 dark:text-purple-300',
+    POLICY:
+      'border-orange-200/70 bg-orange-50 text-orange-700 dark:border-orange-500/30 dark:bg-orange-500/10 dark:text-orange-300',
+    MARKET:
+      'border-emerald-200/70 bg-emerald-50 text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300',
+    PROJECT:
+      'border-cyan-200/70 bg-cyan-50 text-cyan-700 dark:border-cyan-500/30 dark:bg-cyan-500/10 dark:text-cyan-300',
+    INVESTMENT:
+      'border-indigo-200/70 bg-indigo-50 text-indigo-700 dark:border-indigo-500/30 dark:bg-indigo-500/10 dark:text-indigo-300',
+    GUIDE:
+      'border-pink-200/70 bg-pink-50 text-pink-700 dark:border-pink-500/30 dark:bg-pink-500/10 dark:text-pink-300',
   }
   return colors[category]
 }
@@ -92,7 +99,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
 
         return (
           <div className='flex gap-3'>
-            <div className='relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100'>
+            <div className='relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-muted'>
               {safeThumbnailSrc ? (
                 <Image
                   src={safeThumbnailSrc}
@@ -103,15 +110,15 @@ export const NewsTable: React.FC<NewsTableProps> = ({
                 />
               ) : (
                 <div className='flex h-full w-full items-center justify-center'>
-                  <FileText className='h-6 w-6 text-gray-400' />
+                  <FileText className='h-6 w-6 text-muted-foreground' />
                 </div>
               )}
             </div>
             <div className='flex-1 min-w-0'>
-              <div className='font-medium text-gray-900 line-clamp-2'>
+              <div className='font-medium text-foreground line-clamp-2'>
                 {row.title}
               </div>
-              <div className='mt-1 text-xs text-gray-500 line-clamp-1'>
+              <div className='mt-1 text-xs text-muted-foreground line-clamp-1'>
                 {row.slug}
               </div>
               <div className='mt-1 flex flex-wrap gap-1'>
@@ -145,8 +152,8 @@ export const NewsTable: React.FC<NewsTableProps> = ({
       accessor: (row) => row.authorName || t('notAvailable'),
       render: (_, row) => (
         <div className='flex items-center gap-2'>
-          <User className='h-4 w-4 text-gray-400' />
-          <span className='text-sm text-gray-700'>
+          <User className='h-4 w-4 text-muted-foreground' />
+          <span className='text-sm text-foreground/80'>
             {row.authorName || t('notAvailable')}
           </span>
         </div>
@@ -159,14 +166,14 @@ export const NewsTable: React.FC<NewsTableProps> = ({
       accessor: () => '',
       render: (_, row) => (
         <div className='flex flex-col gap-1 text-sm'>
-          <div className='flex items-center gap-1 text-gray-600'>
+          <div className='flex items-center gap-1 text-muted-foreground'>
             <Eye className='h-3.5 w-3.5' />
             <span>
               {row.viewCount.toLocaleString()} {t('table.views')}
             </span>
           </div>
           {row.tags.length > 0 && (
-            <div className='flex items-center gap-1 text-gray-500'>
+            <div className='flex items-center gap-1 text-muted-foreground'>
               <Tag className='h-3.5 w-3.5' />
               <span className='text-xs truncate'>
                 {row.tags.length} {t('table.tags')}
@@ -184,9 +191,9 @@ export const NewsTable: React.FC<NewsTableProps> = ({
       sortable: true,
       render: (_, row) => (
         <div className='text-sm'>
-          <div className='text-gray-900'>{formatDate(row.createdAt)}</div>
+          <div className='text-foreground'>{formatDate(row.createdAt)}</div>
           {row.publishedAt && (
-            <div className='text-xs text-gray-500'>
+            <div className='text-xs text-muted-foreground'>
               {t('table.published')}: {formatDate(row.publishedAt)}
             </div>
           )}
@@ -198,12 +205,12 @@ export const NewsTable: React.FC<NewsTableProps> = ({
       header: t('table.columns.actions'),
       accessor: () => '',
       render: (_, row) => (
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center justify-center gap-0.5'>
           <Button
             variant='ghost'
             size='sm'
             onClick={() => onPreview(row)}
-            className='h-8 w-8 p-0'
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
             title={t('actions.preview')}
           >
             <Eye className='h-4 w-4' />
@@ -212,7 +219,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
             variant='ghost'
             size='sm'
             onClick={() => onEdit(row)}
-            className='h-8 w-8 p-0'
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
             title={t('actions.edit')}
           >
             <Edit className='h-4 w-4' />
@@ -221,7 +228,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
             variant='ghost'
             size='sm'
             onClick={() => onDelete(row)}
-            className='h-8 w-8 p-0 text-red-600 hover:text-red-700'
+            className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
             title={t('actions.delete')}
           >
             <Trash2 className='h-4 w-4' />

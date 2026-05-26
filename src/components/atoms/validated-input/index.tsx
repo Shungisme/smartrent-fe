@@ -108,11 +108,11 @@ const ValidatedInput = <
 
   const variantClasses = {
     default:
-      'border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+      'border border-input bg-card text-foreground hover:border-border focus:ring-2 focus:ring-ring focus:border-primary/60',
     outline:
-      'border-2 border-gray-300 dark:border-gray-600 bg-transparent hover:border-gray-400 dark:hover:border-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+      'border border-border bg-transparent text-foreground hover:border-border focus:ring-2 focus:ring-ring focus:border-primary/60',
     ghost:
-      'border-0 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-blue-500',
+      'border-0 bg-muted text-foreground hover:bg-accent focus:ring-2 focus:ring-ring',
   }
 
   // Auto-determine inputMode based on type
@@ -151,8 +151,8 @@ const ValidatedInput = <
           {label && (
             <label
               className={cn(
-                'text-sm font-semibold text-gray-700 dark:text-gray-300',
-                fieldState.error && 'text-red-600 dark:text-red-400',
+                'text-sm font-semibold text-foreground',
+                fieldState.error && 'text-destructive',
               )}
             >
               {label}
@@ -166,7 +166,7 @@ const ValidatedInput = <
               <div className='absolute left-3 top-1/2 transform -translate-y-1/2 z-10'>
                 <div
                   className={cn(
-                    'text-gray-400 group-focus-within:text-blue-500 transition-colors',
+                    'text-muted-foreground group-focus-within:text-primary transition-colors',
                     iconSizeClasses[size],
                   )}
                 >
@@ -178,7 +178,7 @@ const ValidatedInput = <
             {/* Unit on the left */}
             {unit && unitPosition === 'left' && (
               <div className='absolute left-3 top-1/2 transform -translate-y-1/2 z-10'>
-                <span className='text-sm text-gray-500 dark:text-gray-400 font-medium'>
+                <span className='text-sm text-muted-foreground font-medium'>
                   {unit}
                 </span>
               </div>
@@ -204,7 +204,7 @@ const ValidatedInput = <
                 unit && unitPosition === 'left' && unitPaddingClasses[size],
                 unit && unitPosition === 'right' && unitPaddingClasses[size],
                 fieldState.error &&
-                  'border-red-500 focus:ring-red-500 focus:border-red-500',
+                  'border-destructive focus:ring-destructive/30 focus:border-destructive',
                 disabled && 'opacity-50 cursor-not-allowed',
                 // Mobile optimizations
                 'text-base', // Prevents zoom on iOS
@@ -215,7 +215,7 @@ const ValidatedInput = <
             {/* Unit on the right */}
             {unit && unitPosition === 'right' && (
               <div className='absolute right-3 top-1/2 transform -translate-y-1/2 z-10'>
-                <span className='text-sm text-gray-500 dark:text-gray-400 font-medium'>
+                <span className='text-sm text-muted-foreground font-medium'>
                   {unit}
                 </span>
               </div>
@@ -226,7 +226,7 @@ const ValidatedInput = <
               <div className='absolute right-3 top-1/2 transform -translate-y-1/2 z-10'>
                 <div
                   className={cn(
-                    'text-gray-400 group-focus-within:text-blue-500 transition-colors',
+                    'text-muted-foreground group-focus-within:text-primary transition-colors',
                     iconSizeClasses[size],
                   )}
                 >
@@ -242,8 +242,8 @@ const ValidatedInput = <
               className={cn(
                 'text-xs',
                 fieldState.error?.message
-                  ? 'text-red-600 dark:text-red-400'
-                  : 'text-gray-500 dark:text-gray-400',
+                  ? 'text-destructive'
+                  : 'text-muted-foreground',
               )}
             >
               {fieldState.error?.message || helperText}

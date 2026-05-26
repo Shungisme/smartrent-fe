@@ -29,7 +29,7 @@ const UserManagement = () => {
   // Filters/pagination state (controlled by DataTable in API mode)
   const [filterValues, setFilterValues] = useState<Record<string, unknown>>({
     page: 1,
-    pageSize: 10,
+    pageSize: 20,
   })
   const [totalItems, setTotalItems] = useState(0)
 
@@ -51,9 +51,6 @@ const UserManagement = () => {
       }
       if (filterValues.phoneNumber) {
         filterArray.push(`phoneNumber:${filterValues.phoneNumber}`)
-      }
-      if (filterValues.userId) {
-        filterArray.push(`userId:${filterValues.userId}`)
       }
       if (filterValues.isBroker) {
         filterArray.push(`isBroker:${filterValues.isBroker}`)
@@ -87,8 +84,11 @@ const UserManagement = () => {
   const handleFilterChange = (newFilters: Record<string, unknown>) => {
     setFilterValues((prev) => ({
       ...newFilters,
-      page: 1, // Reset to first page when filters change
-      pageSize: prev.pageSize,
+      // DataTable resets page to 1 inside setFilter when filters change; for
+      // page-only updates (pagination clicks) the new page comes through here.
+      page: (newFilters.page as number | undefined) ?? 1,
+      pageSize:
+        (newFilters.pageSize as number | undefined) ?? prev.pageSize ?? 20,
     }))
   }
 

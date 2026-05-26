@@ -198,10 +198,10 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
     if (!open) return null
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='flex max-w-3xl w-[calc(100%-2rem)] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0'>
+        <DialogContent className='flex w-[80vw] max-w-[1200px] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0'>
           <>
             <DialogHeader className='shrink-0 border-b border-border/60 px-6 py-4'>
-              <DialogTitle className='text-xl md:text-2xl font-semibold'>
+              <DialogTitle className='text-base font-semibold'>
                 {t('review.title')}
               </DialogTitle>
             </DialogHeader>
@@ -231,10 +231,10 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='flex max-w-3xl w-[calc(100%-2rem)] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0'>
+        <DialogContent className='flex w-[80vw] max-w-[1200px] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0'>
           <>
             <DialogHeader className='shrink-0 border-b border-border/60 px-6 py-4'>
-              <DialogTitle className='text-xl md:text-2xl font-semibold'>
+              <DialogTitle className='text-base font-semibold'>
                 {t('review.title')}
               </DialogTitle>
             </DialogHeader>
@@ -246,7 +246,7 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                   <div className='flex items-start justify-between gap-4'>
                     <div className='min-w-0 space-y-2'>
                       <div className='flex flex-wrap items-center gap-1.5'>
-                        <Badge variant='secondary' className='font-normal'>
+                        <Badge variant='secondary' className='font-normal px-0'>
                           {t(`listingTypes.${selectedPost.listingType}`)}
                         </Badge>
                         <span className='font-mono text-xs text-muted-foreground'>

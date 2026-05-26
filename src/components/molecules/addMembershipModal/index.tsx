@@ -172,7 +172,7 @@ export default function AddMembershipModal({
                 onChange={(e) =>
                   setFormData({ ...formData, isActive: e.target.checked })
                 }
-                className='h-4 w-4 rounded border-gray-300'
+                className='h-4 w-4 rounded border-border text-primary focus:ring-primary'
               />
               <Label htmlFor='package-active'>Active</Label>
             </div>
@@ -182,12 +182,7 @@ export default function AddMembershipModal({
           <Button variant='outline' onClick={handleCancel}>
             Cancel
           </Button>
-          <Button
-            className='bg-blue-600 hover:bg-blue-700'
-            onClick={handleSubmit}
-          >
-            Create Package
-          </Button>
+          <Button onClick={handleSubmit}>Create Package</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -44,7 +44,7 @@ export const BrokerRejectDialog: React.FC<BrokerRejectDialogProps> = ({
         </DialogHeader>
 
         <div className='space-y-2'>
-          <label className='text-sm font-medium text-gray-700'>
+          <label className='text-sm font-medium text-foreground'>
             {t('modal.reasonLabel')}
           </label>
           <Textarea
@@ -56,10 +56,12 @@ export const BrokerRejectDialog: React.FC<BrokerRejectDialogProps> = ({
             aria-invalid={!!error}
           />
           <div className='flex items-center justify-between text-xs'>
-            <span className={error ? 'text-red-600' : 'text-gray-500'}>
+            <span
+              className={error ? 'text-destructive' : 'text-muted-foreground'}
+            >
               {error ?? ' '}
             </span>
-            <span className='text-gray-400'>
+            <span className='text-muted-foreground/80'>
               {reason.length}/{maxLength}
             </span>
           </div>

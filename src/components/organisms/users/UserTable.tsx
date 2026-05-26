@@ -69,7 +69,7 @@ export const UserTable: React.FC<UserTableProps> = ({
       accessor: 'id',
       defaultHidden: true,
       render: (value) => (
-        <div className='text-sm font-medium text-gray-900'>
+        <div className='text-sm font-medium text-foreground'>
           {value as React.ReactNode}
         </div>
       ),
@@ -158,7 +158,7 @@ export const UserTable: React.FC<UserTableProps> = ({
         const user = users.find((u) => u.userId === row.id)
 
         return (
-          <div className='flex items-center justify-end gap-0.5'>
+          <div className='flex items-center justify-center gap-0.5'>
             <Button
               variant='ghost'
               size='sm'
@@ -227,13 +227,6 @@ export const UserTable: React.FC<UserTableProps> = ({
       type: 'search',
       label: t('filters.phoneNumber'),
       placeholder: t('filters.phoneNumberPlaceholder'),
-      isFilterField: true,
-    },
-    {
-      id: 'userId',
-      type: 'search',
-      label: t('filters.userId'),
-      placeholder: t('filters.userIdPlaceholder'),
       isFilterField: true,
     },
     {

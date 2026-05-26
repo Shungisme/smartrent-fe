@@ -14,12 +14,12 @@ import {
   PaymentGateway,
   PaymentStatus,
 } from '../types/transaction.type'
+import { getPaymentGatewayLabel } from '../utils/formatters'
 import {
+  formatCurrency,
   formatDateTime,
   formatPhoneNumber,
-  formatVND,
-  getPaymentGatewayLabel,
-} from '../utils/formatters'
+} from '@/utils/format'
 
 interface AdminTransactionTableProps {
   transactions: AdminTransaction[]
@@ -31,11 +31,14 @@ interface AdminTransactionTableProps {
 }
 
 const STATUS_BADGE_CLASS: Record<PaymentStatus, string> = {
-  PENDING: 'bg-yellow-100 text-yellow-800',
-  SUCCESS: 'bg-green-100 text-green-800',
-  FAILED: 'bg-red-100 text-red-800',
-  CANCELLED: 'bg-gray-100 text-gray-800',
-  REFUNDED: 'bg-blue-100 text-blue-800',
+  PENDING:
+    'bg-warning/10 text-warning-foreground dark:bg-warning/20 border-warning/30',
+  SUCCESS:
+    'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30',
+  FAILED:
+    'bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30',
+  CANCELLED: 'bg-muted text-foreground/80',
+  REFUNDED: 'bg-primary/10 text-primary dark:bg-primary/20 border-primary/30',
 }
 
 /**
@@ -145,7 +148,7 @@ export const AdminTransactionTable = ({
       accessor: (row) => row.amount,
       className: 'text-right',
       render: (_, row) => (
-        <span className='font-medium'>{formatVND(row.amount)}</span>
+        <span className='font-medium'>{formatCurrency(row.amount)}</span>
       ),
     },
     {

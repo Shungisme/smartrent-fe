@@ -29,11 +29,25 @@ export function Popover({
     if (!isOpen) return
 
     function handleClickOutside(event: MouseEvent) {
+      const target = event.target as Element | null
+      if (!target) return
+
+      // Ignore clicks inside any Radix-managed portal (Select, Dialog, Popover,
+      // DropdownMenu, etc.) — they render outside our DOM tree but are
+      // conceptually part of this popover.
+      if (
+        target.closest(
+          '[data-radix-popper-content-wrapper], [data-radix-portal], [data-slot="select-content"], [data-slot="dropdown-menu-content"]',
+        )
+      ) {
+        return
+      }
+
       if (
         containerRef.current &&
-        !containerRef.current.contains(event.target as Node) &&
+        !containerRef.current.contains(target) &&
         contentRef.current &&
-        !contentRef.current.contains(event.target as Node)
+        !contentRef.current.contains(target)
       ) {
         onOpenChange(false)
       }

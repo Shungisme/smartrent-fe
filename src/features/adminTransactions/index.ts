@@ -39,14 +39,8 @@ export type {
 
 // Utils
 export {
-  formatVND,
-  formatDateTime,
-  formatDate,
   getPaymentStatusLabel,
   getPaymentStatusColor,
   getPaymentGatewayLabel,
   getPaymentTypeLabel,
-  formatPhoneNumber,
-  truncateText,
-  getDateRange,
 } from './utils/formatters'

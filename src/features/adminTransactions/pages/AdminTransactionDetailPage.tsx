@@ -14,12 +14,12 @@ import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { useAdminTransactionDetail } from '../hooks/useAdminTransactions'
 import { TransactionTimelineComponent } from '../components/TransactionTimeline'
+import { getPaymentGatewayLabel } from '../utils/formatters'
 import {
+  formatCurrency,
   formatDateTime,
   formatPhoneNumber,
-  formatVND,
-  getPaymentGatewayLabel,
-} from '../utils/formatters'
+} from '@/utils/format'
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
   PENDING:
@@ -143,7 +143,7 @@ export const AdminTransactionDetailPage = () => {
           {t('detail.amount')}
         </p>
         <p className='mt-1.5 text-3xl font-semibold tracking-tight text-foreground tabular-nums'>
-          {formatVND(transaction.amount)}
+          {formatCurrency(transaction.amount)}
         </p>
       </div>
 

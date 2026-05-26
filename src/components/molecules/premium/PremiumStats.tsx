@@ -16,18 +16,18 @@ export const PremiumStats: React.FC<PremiumStatsProps> = ({ stats }) => {
       <Card className='p-6'>
         <div className='flex items-start justify-between'>
           <div>
-            <div className='text-sm text-gray-500'>
+            <div className='text-sm text-muted-foreground'>
               {t('overview.activeMemberships')}
             </div>
-            <div className='mt-2 text-3xl font-bold text-gray-900'>
+            <div className='mt-2 text-3xl font-bold text-foreground'>
               {stats.activeMemberships}
             </div>
-            <div className='mt-1 text-xs text-gray-500'>
+            <div className='mt-1 text-xs text-muted-foreground'>
               {t('overview.packagesRunning')}
             </div>
           </div>
-          <div className='rounded-lg bg-blue-100 p-3'>
-            <Crown className='h-6 w-6 text-blue-600' />
+          <div className='rounded-lg bg-primary/10 p-3 dark:bg-primary/20'>
+            <Crown className='h-6 w-6 text-primary' />
           </div>
         </div>
       </Card>
@@ -35,18 +35,18 @@ export const PremiumStats: React.FC<PremiumStatsProps> = ({ stats }) => {
       <Card className='p-6'>
         <div className='flex items-start justify-between'>
           <div>
-            <div className='text-sm text-gray-500'>
+            <div className='text-sm text-muted-foreground'>
               {t('overview.listingTypes')}
             </div>
-            <div className='mt-2 text-3xl font-bold text-gray-900'>
+            <div className='mt-2 text-3xl font-bold text-foreground'>
               {stats.listingTypes}
             </div>
-            <div className='mt-1 text-xs text-gray-500'>
+            <div className='mt-1 text-xs text-muted-foreground'>
               {t('overview.regularVipTiers')}
             </div>
           </div>
-          <div className='rounded-lg bg-purple-100 p-3'>
-            <Layers className='h-6 w-6 text-purple-600' />
+          <div className='rounded-lg bg-chart-1/10 p-3 dark:bg-chart-1/20'>
+            <Layers className='h-6 w-6 text-chart-1' />
           </div>
         </div>
       </Card>

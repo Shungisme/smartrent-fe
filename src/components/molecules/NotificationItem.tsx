@@ -53,13 +53,13 @@ function getNotificationIcon(type: NotificationType) {
 function getNotificationColor(type: NotificationType) {
   switch (type) {
     case NotificationType.NEW_REPORT:
-      return 'text-red-600 bg-red-100'
+      return 'text-destructive bg-destructive/10 dark:bg-destructive/20'
     case NotificationType.LISTING_RESUBMITTED:
-      return 'text-blue-600 bg-blue-100'
+      return 'text-primary bg-primary/10 dark:bg-primary/20'
     case NotificationType.BROKER_REGISTRATION_RECEIVED:
-      return 'text-emerald-600 bg-emerald-100'
+      return 'text-success bg-success/10 dark:bg-success/20'
     default:
-      return 'text-gray-600 bg-gray-100'
+      return 'text-muted-foreground bg-muted'
   }
 }
 
@@ -111,9 +111,9 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
       onClick={handleClick}
       className={classNames(
         'flex items-start gap-3 p-4 cursor-pointer transition-colors',
-        'hover:bg-gray-50 border-b border-gray-100 last:border-b-0',
+        'hover:bg-accent/60',
         {
-          'bg-blue-50/30': !notification.isRead,
+          'bg-primary/5': !notification.isRead,
         },
       )}
     >
@@ -128,20 +128,20 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
       <div className='flex-1 min-w-0'>
         <div className='flex items-start justify-between gap-2'>
           <h4
-            className={classNames('text-sm font-medium text-gray-900', {
+            className={classNames('text-sm font-medium text-foreground', {
               'font-semibold': !notification.isRead,
             })}
           >
             {notification.title}
           </h4>
           {!notification.isRead && (
-            <div className='w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-1.5' />
+            <div className='w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-1.5' />
           )}
         </div>
-        <p className='text-sm text-gray-600 mt-0.5 line-clamp-2'>
+        <p className='text-sm text-muted-foreground mt-0.5 line-clamp-2'>
           {notification.message}
         </p>
-        <span className='text-xs text-gray-400 mt-1 block'>
+        <span className='text-xs text-muted-foreground/80 mt-1 block'>
           {formatRelativeTime(notification.createdAt)}
         </span>
       </div>

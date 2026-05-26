@@ -8,7 +8,7 @@ export type UIPostData = {
   postCode: string
   images: string[]
   listingType: 'for_sale' | 'for_rent'
-  vipLevel?: number
+  vipType?: string
   poster: {
     name: string
     avatar?: string

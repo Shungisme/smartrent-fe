@@ -30,16 +30,6 @@ import {
 } from '@/api/types/listing.type'
 import { PostStatus, UIPostData } from '@/types/posts.type'
 
-export const getVipLevel = (vipType: VipType): number | undefined => {
-  const levels: Record<VipType, number | undefined> = {
-    NORMAL: undefined,
-    SILVER: 1,
-    GOLD: 2,
-    DIAMOND: 3,
-  }
-  return levels[vipType]
-}
-
 export const getPropertyIcon = (type: string) => {
   const iconMap: Record<string, React.ReactElement> = {
     HOUSE: <Home className='h-4 w-4' />,
@@ -294,9 +284,12 @@ export const mapSummaryToUI = (item: AdminListingSummary): UIPostData => {
     id: item.listingId.toString(),
     title: item.title,
     postCode: `POST-${item.listingId}`,
-    images: ['/images/no-image.png'],
+    images:
+      item.images && item.images.length > 0
+        ? item.images
+        : ['/images/no-image.png'],
     listingType: normalizeListingType(item.listingType),
-    vipLevel: item.vipType ? getVipLevel(item.vipType) : undefined,
+    vipType: item.vipType || undefined,
     poster: {
       name: fullName || 'Unknown User',
       avatar: undefined,
@@ -339,7 +332,7 @@ export const mapDetailToUI = (item: ListingResponseWithAdmin): UIPostData => {
         ? item.media.map((m) => m.url)
         : ['/images/no-image.png'],
     listingType: normalizeListingType(item.listingType),
-    vipLevel: getVipLevel(item.vipType),
+    vipType: item.vipType || undefined,
     poster: {
       name: item.user
         ? `${item.user.firstName} ${item.user.lastName}`

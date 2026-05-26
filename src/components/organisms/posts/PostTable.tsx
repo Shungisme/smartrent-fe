@@ -12,7 +12,31 @@ import { Avatar } from '@/components/atoms/avatar'
 import { Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PostStatus, UIPostData } from '@/types/posts.type'
-import { getPropertyIcon, getStatusColor } from '@/utils/post.utils' // We might need to adjust utils to not use translations or pass them
+import { getPropertyIcon, getStatusColor } from '@/utils/post.utils'
+import { TIER_STYLES, FALLBACK_TIER_STYLE } from '@/utils/premium.utils'
+
+const TIER_LABEL_OVERRIDES: Record<string, string> = {
+  NORMAL: 'Thường',
+  SILVER: 'Bạc',
+  GOLD: 'Vàng',
+  DIAMOND: 'Kim cương',
+}
+
+const VipTypeBadge: React.FC<{ vipType: string }> = ({ vipType }) => {
+  const style = TIER_STYLES[vipType] ?? FALLBACK_TIER_STYLE
+  const label = TIER_LABEL_OVERRIDES[vipType] ?? vipType
+  return (
+    <Badge
+      variant='outline'
+      className={cn(
+        'px-2 py-0 text-[10px] font-semibold uppercase tracking-wide',
+        style.badge,
+      )}
+    >
+      {label}
+    </Badge>
+  )
+}
 
 // Re-implementing helper functions that need translations inside the component or pass t
 // Since utils cannot use hooks directly unless valid custom hook.
@@ -70,41 +94,36 @@ export const PostTable: React.FC<PostTableProps> = ({
       accessor: (row) => row.title,
       sortable: true,
       render: (_, row) => (
-        <div className='flex gap-3'>
-          <div className='relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg'>
+        <div className='flex min-w-0 items-start gap-3 text-left'>
+          <div className='relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted'>
             <Image
               src={row.images[0]}
               alt={row.title}
-              width={64}
-              height={64}
+              width={56}
+              height={56}
               className='h-full w-full object-cover'
             />
             {row.images.length > 1 && (
-              <div className='absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-xs text-white'>
+              <div className='absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white'>
                 +{row.images.length - 1}
               </div>
             )}
           </div>
-          <div className='flex-1 min-w-0'>
-            <div className='font-medium text-gray-900 truncate'>
-              {row.title.length > 50
-                ? `${row.title.substring(0, 50)}...`
-                : row.title}
+          <div className='min-w-0 flex-1 space-y-1'>
+            <div
+              className='line-clamp-2 max-w-[20rem] break-words text-sm font-medium leading-snug text-foreground'
+              title={row.title}
+            >
+              {row.title}
             </div>
-            <div className='mt-0.5 text-xs text-gray-400'>{row.postCode}</div>
-            <div className='mt-1 flex flex-wrap gap-1'>
-              {row.vipLevel && (
-                <Badge className='bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-2 py-0'>
-                  VIP{row.vipLevel}
-                </Badge>
-              )}
+            <div className='font-mono text-[11px] text-muted-foreground'>
+              {row.postCode}
+            </div>
+            <div className='flex flex-wrap gap-1'>
+              {row.vipType && <VipTypeBadge vipType={row.vipType} />}
               <Badge
-                className={cn(
-                  'text-xs px-2 py-0',
-                  row.listingType === 'for_sale'
-                    ? 'bg-blue-100 text-blue-800'
-                    : 'bg-purple-100 text-purple-800',
-                )}
+                variant={row.listingType === 'for_sale' ? 'info' : 'secondary'}
+                className={cn('px-2 py-0 text-[10px]')}
               >
                 {row.listingType === 'for_sale'
                   ? t('listingTypes.for_sale')
@@ -123,15 +142,17 @@ export const PostTable: React.FC<PostTableProps> = ({
       render: (_, row) => (
         <div className='flex items-center gap-2'>
           <Avatar className='h-10 w-10'>
-            <div className='h-full w-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold'>
+            <div className='h-full w-full bg-muted flex items-center justify-center text-foreground font-semibold'>
               {row.poster.name.charAt(0).toUpperCase()}
             </div>
           </Avatar>
           <div>
-            <div className='text-sm font-medium text-gray-900'>
+            <div className='text-sm font-medium text-foreground'>
               {row.poster.name}
             </div>
-            <div className='text-xs text-gray-500'>{row.poster.phone}</div>
+            <div className='text-xs text-muted-foreground'>
+              {row.poster.phone}
+            </div>
           </div>
         </div>
       ),
@@ -141,15 +162,15 @@ export const PostTable: React.FC<PostTableProps> = ({
       header: t('table.propertyInfo'),
       accessor: (row) => row.propertyInfo.type,
       render: (_, row) => (
-        <div className='flex items-center gap-2 text-sm text-gray-700'>
-          <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100'>
+        <div className='flex items-center gap-2 text-sm text-foreground'>
+          <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-muted'>
             {getPropertyIcon(row.propertyInfo.type)}
           </div>
           <div>
             <div className='font-medium'>
               {getPropertyTypeLabel(row.propertyInfo.type)}
             </div>
-            <div className='text-xs text-gray-500'>
+            <div className='text-xs text-muted-foreground'>
               {row.propertyInfo.area ? `${row.propertyInfo.area}m²` : ''}
               {row.propertyInfo.area && row.propertyInfo.district ? ' • ' : ''}
               {row.propertyInfo.district}
@@ -164,7 +185,7 @@ export const PostTable: React.FC<PostTableProps> = ({
       header: t('table.price'),
       accessor: 'price',
       render: (value) => (
-        <div className='text-sm font-semibold text-gray-900'>
+        <div className='text-sm font-semibold text-foreground'>
           {value as React.ReactNode}
         </div>
       ),
@@ -175,9 +196,11 @@ export const PostTable: React.FC<PostTableProps> = ({
       accessor: 'postedDate',
       sortable: true,
       render: (_, row) => (
-        <div className='text-sm text-gray-500'>
+        <div className='text-sm text-muted-foreground'>
           <div>{row.postedDate}</div>
-          <div className='text-xs text-gray-400'>{row.postedTime}</div>
+          <div className='text-xs text-muted-foreground/80'>
+            {row.postedTime}
+          </div>
         </div>
       ),
     },
@@ -202,15 +225,17 @@ export const PostTable: React.FC<PostTableProps> = ({
       header: t('table.actions'),
       accessor: () => '',
       render: (_, row) => (
-        <Button
-          variant='ghost'
-          size='sm'
-          onClick={() => onReview(row)}
-          className='h-8 w-8 p-0'
-          title={t('table.reviewButton')}
-        >
-          <Eye className='h-4 w-4' />
-        </Button>
+        <div className='flex items-center justify-center gap-0.5'>
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => onReview(row)}
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+            title={t('table.reviewButton')}
+          >
+            <Eye className='h-4 w-4' />
+          </Button>
+        </div>
       ),
     },
   ]
