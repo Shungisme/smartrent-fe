@@ -49,10 +49,10 @@ export const AiServiceStatusBadge: React.FC<AiServiceStatusBadgeProps> = ({
 
   const dotColor =
     state === 'online'
-      ? 'bg-green-500'
+      ? 'bg-success'
       : state === 'offline'
-        ? 'bg-red-500'
-        : 'bg-gray-400'
+        ? 'bg-destructive'
+        : 'bg-muted-foreground'
 
   const label =
     state === 'online'
@@ -64,7 +64,7 @@ export const AiServiceStatusBadge: React.FC<AiServiceStatusBadgeProps> = ({
   return (
     <div
       className={cn(
-        'inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-700',
+        'inline-flex items-center gap-2 rounded-full border border-border/70 bg-card px-3 py-1 text-xs font-medium text-foreground',
         className,
       )}
       title={
@@ -76,7 +76,7 @@ export const AiServiceStatusBadge: React.FC<AiServiceStatusBadgeProps> = ({
       }
     >
       {state === 'checking' ? (
-        <Loader2 className='h-3 w-3 animate-spin text-gray-400' />
+        <Loader2 className='h-3 w-3 animate-spin text-muted-foreground' />
       ) : (
         <span className={cn('h-2 w-2 rounded-full', dotColor)} />
       )}
@@ -85,7 +85,7 @@ export const AiServiceStatusBadge: React.FC<AiServiceStatusBadgeProps> = ({
         <button
           type='button'
           onClick={check}
-          className='ml-0.5 text-gray-400 transition-colors hover:text-gray-700'
+          className='ml-0.5 text-muted-foreground transition-colors hover:text-foreground'
           aria-label={t('aiAnalysis.refreshStatus')}
         >
           <RefreshCw className='h-3 w-3' />

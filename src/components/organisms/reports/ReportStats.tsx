@@ -15,27 +15,35 @@ export const ReportStats: React.FC<ReportStatsProps> = ({ stats }) => {
 
   return (
     <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
-      <div className='rounded-xl border border-gray-100 bg-white p-6'>
-        <div className='text-2xl font-bold text-gray-900'>{stats.total}</div>
-        <div className='mt-1 text-sm text-gray-400'>{t('stats.total')}</div>
+      <div className='rounded-xl border border-border/70 bg-card p-6 shadow-xs'>
+        <div className='text-2xl font-bold text-foreground'>{stats.total}</div>
+        <div className='mt-1 text-sm text-muted-foreground'>
+          {t('stats.total')}
+        </div>
       </div>
-      <div className='rounded-xl border border-gray-100 bg-white p-6'>
-        <div className='text-2xl font-bold text-yellow-600'>
+      <div className='rounded-xl border border-border/70 bg-card p-6 shadow-xs'>
+        <div className='text-2xl font-bold text-warning-foreground'>
           {stats.pending}
         </div>
-        <div className='mt-1 text-sm text-gray-400'>{t('stats.pending')}</div>
+        <div className='mt-1 text-sm text-muted-foreground'>
+          {t('stats.pending')}
+        </div>
       </div>
-      <div className='rounded-xl border border-gray-100 bg-white p-6'>
-        <div className='text-2xl font-bold text-green-600'>
+      <div className='rounded-xl border border-border/70 bg-card p-6 shadow-xs'>
+        <div className='text-2xl font-bold text-success-foreground'>
           {stats.resolved}
         </div>
-        <div className='mt-1 text-sm text-gray-400'>{t('stats.resolved')}</div>
+        <div className='mt-1 text-sm text-muted-foreground'>
+          {t('stats.resolved')}
+        </div>
       </div>
-      <div className='rounded-xl border border-gray-100 bg-white p-6'>
-        <div className='text-2xl font-bold text-gray-500'>
+      <div className='rounded-xl border border-border/70 bg-card p-6 shadow-xs'>
+        <div className='text-2xl font-bold text-muted-foreground'>
           {stats.dismissed}
         </div>
-        <div className='mt-1 text-sm text-gray-400'>{t('stats.dismissed')}</div>
+        <div className='mt-1 text-sm text-muted-foreground'>
+          {t('stats.dismissed')}
+        </div>
       </div>
     </div>
   )

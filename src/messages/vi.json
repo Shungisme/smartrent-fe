@@ -214,6 +214,27 @@
         "emailOrPhone": "Email hoặc Số điện thoại",
         "emailOrPhonePlaceholder": "Nhập email hoặc số điện thoại"
       },
+      "brand": {
+        "badge": "Bảng điều khiển quản trị",
+        "headline": "Vận hành SmartRent với sự rõ ràng và kiểm soát.",
+        "subheadline": "Quản lý người dùng, tin đăng, gói cao cấp và doanh thu trong một không gian làm việc duy nhất.",
+        "secure": "Kết nối bảo mật",
+        "rights": "Bảo lưu mọi quyền.",
+        "features": {
+          "security": {
+            "title": "Bảo mật cấp doanh nghiệp",
+            "desc": "Xác thực JWT, phân quyền theo vai trò và nhật ký truy cập đầy đủ."
+          },
+          "insights": {
+            "title": "Phân tích theo thời gian thực",
+            "desc": "Theo dõi doanh thu, người dùng và hiệu suất tin đăng trực tiếp."
+          },
+          "automation": {
+            "title": "Quy trình thông minh",
+            "desc": "Tự động duyệt tin đăng, kiểm duyệt AI và thông báo nhanh."
+          }
+        }
+      },
       "validation": {
         "firstNameMinLength": "Tên phải có ít nhất 2 ký tự",
         "lastNameMinLength": "Họ phải có ít nhất 2 ký tự",

@@ -142,15 +142,17 @@ export const PostTable: React.FC<PostTableProps> = ({
       render: (_, row) => (
         <div className='flex items-center gap-2'>
           <Avatar className='h-10 w-10'>
-            <div className='h-full w-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold'>
+            <div className='h-full w-full bg-muted flex items-center justify-center text-foreground font-semibold'>
               {row.poster.name.charAt(0).toUpperCase()}
             </div>
           </Avatar>
           <div>
-            <div className='text-sm font-medium text-gray-900'>
+            <div className='text-sm font-medium text-foreground'>
               {row.poster.name}
             </div>
-            <div className='text-xs text-gray-500'>{row.poster.phone}</div>
+            <div className='text-xs text-muted-foreground'>
+              {row.poster.phone}
+            </div>
           </div>
         </div>
       ),
@@ -160,15 +162,15 @@ export const PostTable: React.FC<PostTableProps> = ({
       header: t('table.propertyInfo'),
       accessor: (row) => row.propertyInfo.type,
       render: (_, row) => (
-        <div className='flex items-center gap-2 text-sm text-gray-700'>
-          <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100'>
+        <div className='flex items-center gap-2 text-sm text-foreground'>
+          <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-muted'>
             {getPropertyIcon(row.propertyInfo.type)}
           </div>
           <div>
             <div className='font-medium'>
               {getPropertyTypeLabel(row.propertyInfo.type)}
             </div>
-            <div className='text-xs text-gray-500'>
+            <div className='text-xs text-muted-foreground'>
               {row.propertyInfo.area ? `${row.propertyInfo.area}m²` : ''}
               {row.propertyInfo.area && row.propertyInfo.district ? ' • ' : ''}
               {row.propertyInfo.district}
@@ -183,7 +185,7 @@ export const PostTable: React.FC<PostTableProps> = ({
       header: t('table.price'),
       accessor: 'price',
       render: (value) => (
-        <div className='text-sm font-semibold text-gray-900'>
+        <div className='text-sm font-semibold text-foreground'>
           {value as React.ReactNode}
         </div>
       ),
@@ -194,9 +196,11 @@ export const PostTable: React.FC<PostTableProps> = ({
       accessor: 'postedDate',
       sortable: true,
       render: (_, row) => (
-        <div className='text-sm text-gray-500'>
+        <div className='text-sm text-muted-foreground'>
           <div>{row.postedDate}</div>
-          <div className='text-xs text-gray-400'>{row.postedTime}</div>
+          <div className='text-xs text-muted-foreground/80'>
+            {row.postedTime}
+          </div>
         </div>
       ),
     },

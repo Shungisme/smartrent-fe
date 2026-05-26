@@ -214,6 +214,27 @@
         "emailOrPhone": "Email or Phone Number",
         "emailOrPhonePlaceholder": "Enter email or phone number"
       },
+      "brand": {
+        "badge": "Admin Console",
+        "headline": "Run SmartRent with clarity and control.",
+        "subheadline": "Manage users, listings, premium tiers and revenue from a single calm workspace.",
+        "secure": "Secure connection",
+        "rights": "All rights reserved.",
+        "features": {
+          "security": {
+            "title": "Enterprise-grade security",
+            "desc": "JWT auth, role-based access and full audit trail across the platform."
+          },
+          "insights": {
+            "title": "Real-time insights",
+            "desc": "Track revenue, users and listing performance with live charts."
+          },
+          "automation": {
+            "title": "Smart workflows",
+            "desc": "Auto-approval rules, AI moderation and instant notifications."
+          }
+        }
+      },
       "validation": {
         "firstNameMinLength": "First name must be at least 2 characters",
         "lastNameMinLength": "Last name must be at least 2 characters",

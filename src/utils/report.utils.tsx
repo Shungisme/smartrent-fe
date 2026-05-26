@@ -11,13 +11,13 @@ export const getInitials = (name: string) =>
 export const getStatusColor = (status: string) => {
   switch (status) {
     case 'PENDING':
-      return 'bg-yellow-100 text-yellow-800'
+      return 'bg-warning/10 text-warning-foreground dark:bg-warning/20 border-warning/30'
     case 'RESOLVED':
-      return 'bg-green-100 text-green-800'
+      return 'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30'
     case 'REJECTED':
-      return 'bg-gray-100 text-gray-800'
+      return 'bg-muted text-foreground/80'
     default:
-      return 'bg-gray-100 text-gray-800'
+      return 'bg-muted text-foreground/80'
   }
 }
 

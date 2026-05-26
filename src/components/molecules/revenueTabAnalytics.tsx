@@ -176,28 +176,28 @@ const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
 
       {/* Revenue Breakdown by Transaction Type */}
       <Card className='p-6'>
-        <h3 className='mb-4 text-lg font-semibold text-gray-900'>
+        <h3 className='mb-4 text-lg font-semibold text-foreground'>
           {t('table.title')}
         </h3>
         <div className='overflow-x-auto'>
           <table className='w-full'>
             <thead>
-              <tr className='border-b border-gray-200'>
-                <th className='pb-3 text-left text-sm font-semibold text-gray-700'>
+              <tr className='border-b border-border/70'>
+                <th className='pb-3 text-left text-sm font-semibold text-foreground/80'>
                   {t('table.type')}
                 </th>
-                <th className='pb-3 text-right text-sm font-semibold text-gray-700'>
+                <th className='pb-3 text-right text-sm font-semibold text-foreground/80'>
                   {t('table.revenue')}
                 </th>
-                <th className='pb-3 text-right text-sm font-semibold text-gray-700'>
+                <th className='pb-3 text-right text-sm font-semibold text-foreground/80'>
                   {t('table.percentage')}
                 </th>
-                <th className='pb-3 text-right text-sm font-semibold text-gray-700'>
+                <th className='pb-3 text-right text-sm font-semibold text-foreground/80'>
                   {t('table.transactions')}
                 </th>
               </tr>
             </thead>
-            <tbody className='divide-y divide-gray-100'>
+            <tbody className='divide-y divide-border/60'>
               {(revenueData?.revenueByType || []).map((item) => {
                 const percentage =
                   (revenueData?.grandTotal || 0) > 0
@@ -207,42 +207,42 @@ const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
                 return (
                   <tr
                     key={item.transactionType}
-                    className='group hover:bg-gray-50'
+                    className='group hover:bg-muted/50'
                   >
                     <td className='py-4'>
                       <div className='flex items-center gap-3'>
-                        <span className='font-medium text-gray-900'>
+                        <span className='font-medium text-foreground'>
                           {typeLabels[item.transactionType]}
                         </span>
                       </div>
                     </td>
-                    <td className='py-4 text-right font-medium text-gray-900'>
+                    <td className='py-4 text-right font-medium text-foreground'>
                       {formatCurrency(item.totalAmount)}
                     </td>
                     <td className='py-4 text-right'>
-                      <span className='inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700'>
+                      <span className='inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary dark:bg-primary/20 border-primary/30'>
                         {percentage.toFixed(1)}%
                       </span>
                     </td>
-                    <td className='py-4 text-right text-gray-600'>
+                    <td className='py-4 text-right text-muted-foreground'>
                       {item.transactionCount}
                     </td>
                   </tr>
                 )
               })}
             </tbody>
-            <tfoot className='border-t-2 border-gray-300'>
+            <tfoot className='border-t-2 border-border'>
               <tr>
-                <td className='pt-4 font-semibold text-gray-900'>
+                <td className='pt-4 font-semibold text-foreground'>
                   {t('table.total')}
                 </td>
-                <td className='pt-4 text-right font-semibold text-gray-900'>
+                <td className='pt-4 text-right font-semibold text-foreground'>
                   {formatCurrency(revenueData?.grandTotal || 0)}
                 </td>
-                <td className='pt-4 text-right font-semibold text-gray-900'>
+                <td className='pt-4 text-right font-semibold text-foreground'>
                   100%
                 </td>
-                <td className='pt-4 text-right font-semibold text-gray-900'>
+                <td className='pt-4 text-right font-semibold text-foreground'>
                   {revenueData?.totalTransactions || 0}
                 </td>
               </tr>

@@ -139,11 +139,11 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
                   isVerified: e.target.checked,
                 }))
               }
-              className='rounded border-gray-300'
+              className='rounded border-border text-primary focus:ring-primary'
             />
             <span className='text-sm'>{t('edit.verified') || 'Verified'}</span>
           </label>
-          {error && <div className='text-red-600 text-sm'>{error}</div>}
+          {error && <div className='text-destructive text-sm'>{error}</div>}
           <div className='flex justify-end gap-2 pt-4'>
             <Button
               type='button'
@@ -153,11 +153,7 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
             >
               {t('edit.cancel') || 'Cancel'}
             </Button>
-            <Button
-              type='submit'
-              disabled={loading}
-              className='bg-blue-600 hover:bg-blue-700'
-            >
+            <Button type='submit' disabled={loading}>
               {loading
                 ? t('edit.saving') || 'Saving...'
                 : t('edit.save') || 'Save'}

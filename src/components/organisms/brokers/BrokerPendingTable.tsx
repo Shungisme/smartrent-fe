@@ -55,10 +55,10 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
       render: (_, row) => (
         <div className='space-y-3'>
           <div>
-            <div className='text-sm font-semibold text-gray-900'>
+            <div className='text-sm font-semibold text-foreground'>
               {row.firstName} {row.lastName}
             </div>
-            <div className='text-xs text-gray-500'>{row.userId}</div>
+            <div className='text-xs text-muted-foreground'>{row.userId}</div>
           </div>
           <BrokerDocumentViewer user={row} onImageError={onDocError} />
         </div>
@@ -69,7 +69,7 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
       header: t('table.headers.email'),
       accessor: 'email',
       render: (value) => (
-        <div className='text-sm text-gray-700'>{value as string}</div>
+        <div className='text-sm text-foreground'>{value as string}</div>
       ),
     },
     {
@@ -77,7 +77,7 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
       header: t('table.headers.phone'),
       accessor: (row) => `${row.phoneCode} ${row.phoneNumber}`,
       render: (_, row) => (
-        <div className='text-sm text-gray-700'>
+        <div className='text-sm text-foreground'>
           {row.phoneCode} {row.phoneNumber}
         </div>
       ),
@@ -87,7 +87,7 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
       header: t('table.headers.registeredAt'),
       accessor: 'brokerRegisteredAt',
       render: (value) => (
-        <div className='text-sm text-gray-700'>
+        <div className='text-sm text-foreground'>
           {formatRegistrationDate(value as string | null)}
         </div>
       ),

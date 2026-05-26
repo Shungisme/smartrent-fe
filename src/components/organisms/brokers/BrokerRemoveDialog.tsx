@@ -34,7 +34,7 @@ export const BrokerRemoveDialog: React.FC<BrokerRemoveDialogProps> = ({
           <DialogTitle>{t('confirmRemove.title')}</DialogTitle>
         </DialogHeader>
 
-        <p className='text-sm text-gray-600'>
+        <p className='text-sm text-muted-foreground'>
           {t('confirmRemove.description')}
         </p>
 

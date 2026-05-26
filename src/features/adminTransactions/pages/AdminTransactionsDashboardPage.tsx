@@ -33,10 +33,12 @@ export const AdminTransactionsDashboardPage = () => {
     <div className='space-y-6'>
       {/* Header */}
       <div className='mb-8'>
-        <h1 className='text-3xl font-bold text-gray-900'>
+        <h1 className='text-3xl font-bold text-foreground'>
           {t('dashboard.title')}
         </h1>
-        <p className='mt-2 text-gray-600'>{t('dashboard.description')}</p>
+        <p className='mt-2 text-muted-foreground'>
+          {t('dashboard.description')}
+        </p>
       </div>
 
       {/* Date Range Quick Select */}
@@ -45,8 +47,8 @@ export const AdminTransactionsDashboardPage = () => {
           onClick={() => setDateRangeType('week')}
           className={`px-4 py-2 rounded-md font-medium transition-colors ${
             dateRangeType === 'week'
-              ? 'bg-primary text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-muted text-foreground/80 hover:bg-muted/80'
           }`}
         >
           {t('dashboard.week')}
@@ -55,8 +57,8 @@ export const AdminTransactionsDashboardPage = () => {
           onClick={() => setDateRangeType('month')}
           className={`px-4 py-2 rounded-md font-medium transition-colors ${
             dateRangeType === 'month'
-              ? 'bg-primary text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-muted text-foreground/80 hover:bg-muted/80'
           }`}
         >
           {t('dashboard.month')}
@@ -65,8 +67,8 @@ export const AdminTransactionsDashboardPage = () => {
           onClick={() => setDateRangeType('quarter')}
           className={`px-4 py-2 rounded-md font-medium transition-colors ${
             dateRangeType === 'quarter'
-              ? 'bg-primary text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-muted text-foreground/80 hover:bg-muted/80'
           }`}
         >
           {t('dashboard.quarter')}

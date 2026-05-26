@@ -21,7 +21,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div className='flex items-center justify-between mt-6'>
-      <div className='text-sm text-gray-700'>
+      <div className='text-sm text-muted-foreground'>
         Hiển thị <span className='font-medium'>{startItem}</span> đến{' '}
         <span className='font-medium'>{endItem}</span> trong tổng số{' '}
         <span className='font-medium'>{totalItems}</span> người dùng

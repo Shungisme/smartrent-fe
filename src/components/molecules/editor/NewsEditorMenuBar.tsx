@@ -184,7 +184,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
             <SuperscriptIcon className='h-4 w-4' />
           </Button>
           <label
-            className='flex h-8 w-8 cursor-pointer items-center justify-center rounded-md hover:bg-gray-100'
+            className='flex h-8 w-8 cursor-pointer items-center justify-center rounded-md hover:bg-accent text-foreground'
             title='Text Color'
           >
             <input

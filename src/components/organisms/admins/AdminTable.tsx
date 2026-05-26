@@ -138,7 +138,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       accessor: 'id',
       defaultHidden: true,
       render: (value) => (
-        <div className='text-sm font-medium text-gray-900'>
+        <div className='text-sm font-medium text-foreground'>
           {value as React.ReactNode}
         </div>
       ),

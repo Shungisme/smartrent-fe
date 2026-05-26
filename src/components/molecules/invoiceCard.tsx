@@ -20,9 +20,11 @@ type InvoiceCardProps = {
 
 const getStatusColor = (status: InvoiceStatus): string => {
   const colors: Record<InvoiceStatus, string> = {
-    paid: 'bg-green-100 text-green-800 border-green-200',
-    unpaid: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    overdue: 'bg-red-100 text-red-800 border-red-200',
+    paid: 'bg-success/10 text-success-foreground border-success/30 dark:bg-success/20',
+    unpaid:
+      'bg-warning/10 text-warning-foreground border-warning/30 dark:bg-warning/20',
+    overdue:
+      'bg-destructive/10 text-destructive border-destructive/30 dark:bg-destructive/20',
   }
   return colors[status]
 }
@@ -36,13 +38,13 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({ invoice, className }) => {
   return (
     <div
       className={cn(
-        'flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 transition-all hover:border-blue-300 hover:shadow-md',
+        'flex items-center justify-between rounded-lg border border-border/70 bg-card p-4 transition-all hover:border-primary/50 hover:shadow-md',
         className,
       )}
     >
       <div className='flex-1'>
         <div className='flex items-center gap-3'>
-          <span className='font-mono text-sm font-medium text-gray-900'>
+          <span className='font-mono text-sm font-medium text-foreground'>
             {invoice.id}
           </span>
           <Badge
@@ -52,15 +54,15 @@ const InvoiceCard: React.FC<InvoiceCardProps> = ({ invoice, className }) => {
             {getStatusLabel(invoice.status)}
           </Badge>
         </div>
-        <p className='mt-1 text-sm font-medium text-gray-700'>
+        <p className='mt-1 text-sm font-medium text-foreground'>
           {invoice.customerName}
         </p>
-        <p className='mt-0.5 text-xs text-gray-500'>
+        <p className='mt-0.5 text-xs text-muted-foreground'>
           {t('dueDate')} {invoice.dueDate}
         </p>
       </div>
       <div className='text-right'>
-        <p className='text-lg font-bold text-gray-900'>{invoice.amount}</p>
+        <p className='text-lg font-bold text-foreground'>{invoice.amount}</p>
       </div>
     </div>
   )

@@ -170,7 +170,7 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
           <div className='space-y-2'>
             <Label>{t('edit.roles') || 'Roles'}</Label>
             {rolesLoading ? (
-              <p className='text-sm text-gray-500'>Loading roles...</p>
+              <p className='text-sm text-muted-foreground'>Loading roles...</p>
             ) : (
               <div className='space-y-2 mt-2'>
                 {roles.map((role) => (
@@ -193,7 +193,7 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
                           }))
                         }
                       }}
-                      className='rounded border-gray-300'
+                      className='rounded border-border text-primary focus:ring-primary'
                     />
                     <span className='text-sm'>{role.roleName}</span>
                   </label>
@@ -201,7 +201,7 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
               </div>
             )}
           </div>
-          {error && <div className='text-red-600 text-sm'>{error}</div>}
+          {error && <div className='text-destructive text-sm'>{error}</div>}
           <div className='flex justify-end gap-2'>
             <Button
               type='button'
@@ -211,11 +211,7 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
             >
               {t('edit.cancel') || 'Cancel'}
             </Button>
-            <Button
-              type='submit'
-              disabled={loading}
-              className='bg-blue-600 hover:bg-blue-700'
-            >
+            <Button type='submit' disabled={loading}>
               {loading
                 ? t('edit.saving') || 'Saving...'
                 : t('edit.save') || 'Save'}

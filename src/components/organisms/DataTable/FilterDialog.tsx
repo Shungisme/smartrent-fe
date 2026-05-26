@@ -126,7 +126,7 @@ export function FilterDialog({
       <Filter className='h-4 w-4' />
       {t('filterButton') || 'Filter'}
       {hasFilters && (
-        <span className='ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-600 rounded-full'>
+        <span className='ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-primary-foreground bg-primary rounded-full'>
           {activeFilters.filter((f) => f.key && f.value).length}
         </span>
       )}
@@ -163,7 +163,7 @@ export function FilterDialog({
               >
                 {/* Key Select */}
                 <div className='flex-1'>
-                  <label className='block text-xs font-medium text-gray-700 mb-1'>
+                  <label className='block text-xs font-medium text-foreground mb-1'>
                     {t('filterKey') || 'Field'}
                   </label>
                   <select
@@ -171,7 +171,7 @@ export function FilterDialog({
                     onChange={(e) =>
                       handleFilterKeyChange(index, e.target.value)
                     }
-                    className='w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
+                    className='w-full rounded-lg border border-input bg-card text-foreground px-3 py-2 text-sm focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-ring'
                   >
                     <option value=''>
                       {t('selectField') || 'Select a field...'}
@@ -186,7 +186,7 @@ export function FilterDialog({
 
                 {/* Value Input/Select */}
                 <div className='flex-1'>
-                  <label className='block text-xs font-medium text-gray-700 mb-1'>
+                  <label className='block text-xs font-medium text-foreground mb-1'>
                     {t('filterValue') || 'Value'}
                   </label>
                   {(() => {
@@ -203,7 +203,7 @@ export function FilterDialog({
                           onChange={(e) =>
                             handleFilterValueChange(index, e.target.value)
                           }
-                          className='w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-100'
+                          className='w-full rounded-lg border border-input bg-card text-foreground px-3 py-2 text-sm focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-ring'
                         >
                           <option value=''>
                             {t('selectField') || 'Select a value...'}
@@ -224,7 +224,7 @@ export function FilterDialog({
                           onChange={(e) =>
                             handleFilterValueChange(index, e.target.value)
                           }
-                          className='rounded-lg border border-gray-200'
+                          className='rounded-lg border border-input'
                         />
                       )
                     }
@@ -249,9 +249,9 @@ export function FilterDialog({
                                 buildRangeValue(e.target.value, to),
                               )
                             }
-                            className='rounded-lg border border-gray-200 flex-1 min-w-0'
+                            className='rounded-lg border border-input flex-1 min-w-0'
                           />
-                          <span className='text-xs text-gray-400 shrink-0'>
+                          <span className='text-xs text-muted-foreground shrink-0'>
                             →
                           </span>
                           <Input
@@ -266,7 +266,7 @@ export function FilterDialog({
                                 buildRangeValue(from, e.target.value),
                               )
                             }
-                            className='rounded-lg border border-gray-200 flex-1 min-w-0'
+                            className='rounded-lg border border-input flex-1 min-w-0'
                           />
                         </div>
                       )
@@ -283,7 +283,7 @@ export function FilterDialog({
                         onChange={(e) =>
                           handleFilterValueChange(index, e.target.value)
                         }
-                        className='rounded-lg border border-gray-200'
+                        className='rounded-lg border border-input'
                       />
                     )
                   })()}
@@ -294,7 +294,7 @@ export function FilterDialog({
                   variant='ghost'
                   size='sm'
                   onClick={() => handleRemoveFilter(index)}
-                  className='h-10 w-10 p-0 self-end sm:self-auto shrink-0 text-red-600 hover:text-red-700 hover:bg-red-50'
+                  className='h-10 w-10 p-0 self-end sm:self-auto shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10'
                 >
                   <X className='h-4 w-4' />
                 </Button>
@@ -302,7 +302,7 @@ export function FilterDialog({
             ))}
 
             {/* Add Filter Button */}
-            <div className='pt-2 border-t'>
+            <div className='pt-2 border-t border-border/60'>
               <Button
                 variant='outline'
                 size='sm'
@@ -315,13 +315,13 @@ export function FilterDialog({
             </div>
 
             {/* Actions */}
-            <div className='flex gap-2 justify-end pt-2 border-t'>
+            <div className='flex gap-2 justify-end pt-2 border-t border-border/60'>
               {hasFilters && (
                 <Button
                   variant='outline'
                   size='sm'
                   onClick={handleClearFilters}
-                  className='flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50'
+                  className='flex items-center gap-2 text-destructive hover:text-destructive hover:bg-destructive/10'
                 >
                   <Trash2 className='h-4 w-4' />
                   {t('clearFilters') || 'Clear'}

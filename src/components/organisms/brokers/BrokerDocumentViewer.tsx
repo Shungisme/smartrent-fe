@@ -43,9 +43,9 @@ export const BrokerDocumentViewer: React.FC<BrokerDocumentViewerProps> = ({
             href={doc.url}
             target='_blank'
             rel='noopener noreferrer'
-            className='group flex items-center gap-2 rounded-md border border-gray-200 bg-white p-2 transition-colors hover:border-blue-400'
+            className='group flex items-center gap-2 rounded-md border border-border/70 bg-card p-2 transition-colors hover:border-primary/50'
           >
-            <div className='relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-md bg-gray-100'>
+            <div className='relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-md bg-muted'>
               <Image
                 src={doc.url}
                 alt={doc.label}
@@ -56,16 +56,16 @@ export const BrokerDocumentViewer: React.FC<BrokerDocumentViewerProps> = ({
                 onError={() => onImageError?.()}
               />
             </div>
-            <span className='text-xs font-medium text-gray-600 group-hover:text-blue-600'>
+            <span className='text-xs font-medium text-muted-foreground group-hover:text-primary'>
               {doc.label}
             </span>
           </a>
         ) : (
           <div
             key={doc.key}
-            className='flex flex-col gap-1 rounded-md border border-dashed border-gray-200 bg-gray-50 p-2 text-xs text-gray-500'
+            className='flex flex-col gap-1 rounded-md border border-dashed border-border/70 bg-muted/50 p-2 text-xs text-muted-foreground'
           >
-            <span className='font-medium text-gray-600'>{doc.label}</span>
+            <span className='font-medium text-foreground'>{doc.label}</span>
             <span>{t('documents.notSubmitted')}</span>
           </div>
         ),

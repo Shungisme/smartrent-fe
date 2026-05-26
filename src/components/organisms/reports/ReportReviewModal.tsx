@@ -49,13 +49,13 @@ const getInitials = (name: string) =>
 const getStatusColor = (status: string) => {
   switch (status) {
     case 'PENDING':
-      return 'bg-yellow-100 text-yellow-800'
+      return 'bg-warning/10 text-warning-foreground dark:bg-warning/20 border-warning/30'
     case 'RESOLVED':
-      return 'bg-green-100 text-green-800'
+      return 'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30'
     case 'REJECTED':
-      return 'bg-gray-100 text-gray-800'
+      return 'bg-muted text-muted-foreground border-border/70'
     default:
-      return 'bg-gray-100 text-gray-800'
+      return 'bg-muted text-muted-foreground border-border/70'
   }
 }
 
@@ -246,14 +246,14 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
           {report && (
             <div className='space-y-4 md:space-y-6'>
               {/* Report Info Alert */}
-              <div className='rounded-lg bg-yellow-50 border border-yellow-200 p-3 md:p-4'>
+              <div className='rounded-lg bg-warning/10 dark:bg-warning/20 border border-warning/30 p-3 md:p-4'>
                 <div className='flex items-start gap-2 md:gap-3'>
-                  <AlertTriangle className='h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0' />
+                  <AlertTriangle className='h-5 w-5 text-warning-foreground mt-0.5 flex-shrink-0' />
                   <div className='flex-1'>
-                    <h4 className='text-sm md:text-base font-medium text-yellow-900'>
+                    <h4 className='text-sm md:text-base font-medium text-warning-foreground'>
                       Report #{report.reportId} - {report.category}
                     </h4>
-                    <p className='mt-1 text-xs md:text-sm text-yellow-800'>
+                    <p className='mt-1 text-xs md:text-sm text-warning-foreground/90'>
                       Reported by <strong>{report.reporterName}</strong>
                       {report.createdAt && (
                         <>
@@ -280,22 +280,22 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
               {/* Report Reasons */}
               {report.reportReasons && report.reportReasons.length > 0 && (
                 <div className='flex flex-col gap-2'>
-                  <h3 className='text-base md:text-lg font-semibold text-gray-900 mb-2'>
+                  <h3 className='text-base md:text-lg font-semibold text-foreground mb-2'>
                     {t('review.reportReasons')}
                   </h3>
                   <div className='space-y-2'>
                     {report.reportReasons.map((reason, idx) => (
                       <div
                         key={reason.reasonId}
-                        className='flex items-start gap-2 rounded-lg border border-gray-200 bg-gray-50 p-3'
+                        className='flex items-start gap-2 rounded-lg border border-border/70 bg-muted/50 p-3'
                       >
                         <div className='flex-shrink-0 mt-0.5'>
-                          <div className='flex h-6 w-6 items-center justify-center rounded-full bg-red-100 text-red-700 text-xs font-semibold'>
+                          <div className='flex h-6 w-6 items-center justify-center rounded-full bg-destructive/10 text-destructive dark:bg-destructive/20 text-xs font-semibold'>
                             {idx + 1}
                           </div>
                         </div>
                         <div className='flex-1'>
-                          <p className='text-sm text-gray-900 font-medium'>
+                          <p className='text-sm text-foreground font-medium'>
                             {reason.reasonText}
                           </p>
                         </div>
@@ -308,11 +308,11 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
               {/* Additional Feedback */}
               {report.otherFeedback && (
                 <div className='flex flex-col gap-2'>
-                  <h3 className='text-base md:text-lg font-semibold text-gray-900 mb-2'>
+                  <h3 className='text-base md:text-lg font-semibold text-foreground mb-2'>
                     {t('review.additionalFeedback')}
                   </h3>
-                  <div className='rounded-lg border border-gray-200 bg-gray-50 p-3 md:p-4'>
-                    <p className='text-sm text-gray-700 leading-relaxed whitespace-pre-wrap'>
+                  <div className='rounded-lg border border-border/70 bg-muted/50 p-3 md:p-4'>
+                    <p className='text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap'>
                       {report.otherFeedback}
                     </p>
                   </div>
@@ -321,23 +321,23 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
 
               {/* Reporter Info */}
               <div className='flex flex-col gap-2'>
-                <h3 className='text-base md:text-lg font-semibold text-gray-900 mb-2'>
+                <h3 className='text-base md:text-lg font-semibold text-foreground mb-2'>
                   {t('review.reporterInfo')}
                 </h3>
-                <div className='flex items-center gap-3 rounded-lg border border-gray-200 p-3 md:p-4'>
+                <div className='flex items-center gap-3 rounded-lg border border-border/70 p-3 md:p-4'>
                   <Avatar className='h-12 w-12'>
-                    <div className='flex h-full w-full items-center justify-center bg-blue-100 text-blue-700 font-semibold text-lg'>
+                    <div className='flex h-full w-full items-center justify-center bg-primary/10 text-primary dark:bg-primary/20 font-semibold text-lg'>
                       {getInitials(report.reporterName)}
                     </div>
                   </Avatar>
                   <div className='flex-1'>
-                    <div className='font-medium text-gray-900 text-base'>
+                    <div className='font-medium text-foreground text-base'>
                       {report.reporterName}
                     </div>
-                    <div className='text-sm text-gray-600 mt-0.5'>
+                    <div className='text-sm text-muted-foreground mt-0.5'>
                       {report.reporterEmail}
                     </div>
-                    <div className='text-sm text-gray-600'>
+                    <div className='text-sm text-muted-foreground'>
                       {report.reporterPhone}
                     </div>
                   </div>
@@ -346,19 +346,19 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
 
               {/* Listing Details */}
               <div className='flex flex-col gap-2'>
-                <h3 className='text-base md:text-lg font-semibold text-gray-900 mb-2'>
+                <h3 className='text-base md:text-lg font-semibold text-foreground mb-2'>
                   {t('review.reportedPost')}
                 </h3>
 
                 {loadingListing ? (
-                  <div className='flex items-center justify-center p-8 border border-gray-200 rounded-lg'>
-                    <Loader2 className='h-6 w-6 animate-spin text-blue-600' />
-                    <span className='ml-2 text-sm text-gray-600'>
+                  <div className='flex items-center justify-center p-8 border border-border/70 rounded-lg'>
+                    <Loader2 className='h-6 w-6 animate-spin text-primary' />
+                    <span className='ml-2 text-sm text-muted-foreground'>
                       Loading listing details...
                     </span>
                   </div>
                 ) : listingDetails ? (
-                  <div className='rounded-lg border border-gray-200 p-4 space-y-4'>
+                  <div className='rounded-lg border border-border/70 p-4 space-y-4'>
                     {/* Images Gallery */}
                     {listingDetails.media &&
                       listingDetails.media.length > 0 && (
@@ -388,10 +388,10 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
 
                     {/* Basic Info */}
                     <div>
-                      <h4 className='text-lg font-semibold text-gray-900'>
+                      <h4 className='text-lg font-semibold text-foreground'>
                         {listingDetails.title}
                       </h4>
-                      <p className='text-sm text-gray-500 mt-1'>
+                      <p className='text-sm text-muted-foreground mt-1'>
                         Listing ID: #{listingDetails.listingId}
                       </p>
                     </div>
@@ -399,10 +399,10 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                     {/* Description */}
                     {listingDetails.description && (
                       <div>
-                        <div className='text-sm font-medium text-gray-700 mb-1'>
+                        <div className='text-sm font-medium text-foreground/80 mb-1'>
                           {t('review.description')}
                         </div>
-                        <div className='text-sm text-gray-600 whitespace-pre-wrap'>
+                        <div className='text-sm text-muted-foreground whitespace-pre-wrap'>
                           {listingDetails.description}
                         </div>
                       </div>
@@ -411,11 +411,11 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                     {/* Property Details Grid */}
                     <div className='grid grid-cols-2 gap-3 md:gap-4'>
                       <div>
-                        <div className='text-xs text-gray-500'>
+                        <div className='text-xs text-muted-foreground'>
                           {t('review.propertyType')}
                         </div>
                         <div className='flex items-center gap-2 mt-1'>
-                          <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-gray-100'>
+                          <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-muted'>
                             {getPropertyIcon(listingDetails.productType)}
                           </div>
                           <span className='text-sm font-medium'>
@@ -424,10 +424,10 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                         </div>
                       </div>
                       <div>
-                        <div className='text-xs text-gray-500'>
+                        <div className='text-xs text-muted-foreground'>
                           {t('review.price')}
                         </div>
-                        <div className='text-sm font-semibold text-gray-900 mt-1'>
+                        <div className='text-sm font-semibold text-foreground mt-1'>
                           {formatPrice(
                             listingDetails.price,
                             listingDetails.priceUnit,
@@ -436,7 +436,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                       </div>
                       {listingDetails.area && (
                         <div>
-                          <div className='text-xs text-gray-500'>
+                          <div className='text-xs text-muted-foreground'>
                             {t('review.area')}
                           </div>
                           <div className='text-sm font-medium mt-1'>
@@ -447,7 +447,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                       {listingDetails.bedrooms !== null &&
                         listingDetails.bedrooms !== undefined && (
                           <div>
-                            <div className='text-xs text-gray-500'>
+                            <div className='text-xs text-muted-foreground'>
                               {t('review.bedrooms')}
                             </div>
                             <div className='text-sm font-medium mt-1'>
@@ -458,7 +458,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                       {listingDetails.bathrooms !== null &&
                         listingDetails.bathrooms !== undefined && (
                           <div>
-                            <div className='text-xs text-gray-500'>
+                            <div className='text-xs text-muted-foreground'>
                               {t('review.bathrooms')}
                             </div>
                             <div className='text-sm font-medium mt-1'>
@@ -468,7 +468,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                         )}
                       {listingDetails.direction && (
                         <div>
-                          <div className='text-xs text-gray-500'>
+                          <div className='text-xs text-muted-foreground'>
                             {t('review.direction')}
                           </div>
                           <div className='text-sm font-medium mt-1'>
@@ -481,10 +481,10 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                     {/* Address */}
                     {listingDetails.address && (
                       <div>
-                        <div className='text-xs text-gray-500'>
+                        <div className='text-xs text-muted-foreground'>
                           {t('review.location')}
                         </div>
-                        <div className='text-sm text-gray-700 mt-1'>
+                        <div className='text-sm text-foreground/80 mt-1'>
                           {listingDetails.address.fullAddress}
                         </div>
                       </div>
@@ -492,15 +492,15 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
 
                     {/* Listing Status */}
                     <div className='flex items-center gap-2 pt-2 border-t'>
-                      <span className='text-xs text-gray-500'>
+                      <span className='text-xs text-muted-foreground'>
                         {t('review.listingStatus')}
                       </span>
                       <Badge
                         className={cn(
                           'text-xs',
                           listingDetails.verified
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-yellow-100 text-yellow-800',
+                            ? 'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30'
+                            : 'bg-warning/10 text-warning-foreground dark:bg-warning/20 border-warning/30',
                         )}
                       >
                         {listingDetails.verified
@@ -508,14 +508,14 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                           : t('review.pendingVerification')}
                       </Badge>
                       {listingDetails.expired && (
-                        <Badge className='text-xs bg-gray-100 text-gray-800'>
+                        <Badge className='text-xs bg-muted text-muted-foreground border-border/70'>
                           {t('review.expired')}
                         </Badge>
                       )}
                     </div>
                   </div>
                 ) : (
-                  <div className='rounded-lg border border-gray-200 p-4 text-center text-sm text-gray-500'>
+                  <div className='rounded-lg border border-border/70 p-4 text-center text-sm text-muted-foreground'>
                     {t('review.couldNotLoad')}
                   </div>
                 )}
@@ -524,16 +524,16 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
               {/* Admin Notes (if resolved) */}
               {report.adminNotes && report.status !== 'PENDING' && (
                 <div>
-                  <h3 className='text-base md:text-lg font-semibold text-gray-900 mb-2'>
+                  <h3 className='text-base md:text-lg font-semibold text-foreground mb-2'>
                     {t('review.adminNotesLabel')}
                   </h3>
-                  <div className='rounded-lg border border-gray-200 bg-gray-50 p-3 md:p-4'>
-                    <p className='text-sm text-gray-700 leading-relaxed whitespace-pre-wrap'>
+                  <div className='rounded-lg border border-border/70 bg-muted/50 p-3 md:p-4'>
+                    <p className='text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap'>
                       {report.adminNotes}
                     </p>
                   </div>
                   {report.resolvedAt && (
-                    <p className='text-xs text-gray-500 mt-2'>
+                    <p className='text-xs text-muted-foreground mt-2'>
                       {t('review.resolvedOn')}{' '}
                       {formatDateTime(report.resolvedAt).date} {t('review.at')}{' '}
                       {formatDateTime(report.resolvedAt).time}
@@ -549,17 +549,17 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                 <div>
                   <label
                     htmlFor='action-reason'
-                    className='text-sm font-medium text-gray-700 block mb-2'
+                    className='text-sm font-medium text-foreground/80 block mb-2'
                   >
                     {t('review.adminNotesLabel')}{' '}
-                    <span className='text-red-500'>*</span>
+                    <span className='text-destructive'>*</span>
                   </label>
                   <textarea
                     id='action-reason'
                     value={actionReason}
                     onChange={(e) => setActionReason(e.target.value)}
                     placeholder={t('review.adminNotesPlaceholder')}
-                    className='w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100'
+                    className='w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-ring'
                     rows={3}
                   />
                 </div>
@@ -572,7 +572,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                     <Button
                       onClick={handleResolve}
                       disabled={actionLoading}
-                      className='flex-1 bg-green-600 hover:bg-green-700 text-sm'
+                      className='flex-1 bg-success text-success-foreground hover:bg-success/90 text-sm'
                     >
                       {actionLoading ? (
                         <Loader2 className='mr-2 h-4 w-4 animate-spin' />
@@ -585,7 +585,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                       <Button
                         onClick={handleRequestRevision}
                         disabled={actionLoading}
-                        className='flex-1 bg-orange-600 hover:bg-orange-700 text-white text-sm'
+                        className='flex-1 bg-warning text-warning-foreground hover:bg-warning/90 text-sm'
                       >
                         {actionLoading ? (
                           <Loader2 className='mr-2 h-4 w-4 animate-spin' />
@@ -599,7 +599,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                       onClick={handleDismiss}
                       disabled={actionLoading}
                       variant='outline'
-                      className='flex-1 border-red-300 text-red-600 hover:bg-red-50 text-sm'
+                      className='flex-1 border-destructive/40 text-destructive hover:bg-destructive/10 text-sm'
                     >
                       {actionLoading ? (
                         <Loader2 className='mr-2 h-4 w-4 animate-spin' />

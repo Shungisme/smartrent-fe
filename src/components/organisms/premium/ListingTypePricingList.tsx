@@ -104,8 +104,8 @@ export const ListingTypePricingList: React.FC<ListingTypePricingListProps> = ({
                     className={cn(
                       'text-[10px]',
                       tier.isActive
-                        ? 'border-green-200 bg-green-50 text-green-700'
-                        : 'border-gray-200 bg-gray-50 text-gray-600',
+                        ? 'border-success/30 bg-success/10 text-success-foreground dark:bg-success/20'
+                        : 'border-border/70 bg-muted/50 text-muted-foreground',
                     )}
                   >
                     {tier.isActive

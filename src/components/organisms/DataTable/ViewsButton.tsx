@@ -52,7 +52,7 @@ export function ViewsButton<T = Record<string, unknown>>({
       contentClassName='w-[260px]'
     >
       <div className='p-3 space-y-2'>
-        <div className='text-xs font-semibold text-gray-700 uppercase tracking-wide pb-2 border-b'>
+        <div className='text-xs font-semibold text-foreground uppercase tracking-wide pb-2 border-b border-border/60'>
           {t('viewsTitle')}
         </div>
 
@@ -62,7 +62,7 @@ export function ViewsButton<T = Record<string, unknown>>({
             return (
               <label
                 key={column.id}
-                className='flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-50 cursor-pointer text-sm'
+                className='flex items-center gap-2 px-2 py-1.5 rounded hover:bg-accent cursor-pointer text-sm'
               >
                 <input
                   type='checkbox'
@@ -70,13 +70,13 @@ export function ViewsButton<T = Record<string, unknown>>({
                   onChange={() => onToggleColumn(column.id)}
                   className='h-4 w-4 rounded border-border text-primary focus:ring-primary'
                 />
-                <span className='text-gray-700'>{column.header}</span>
+                <span className='text-foreground'>{column.header}</span>
               </label>
             )
           })}
         </div>
 
-        <div className='flex gap-2 justify-end pt-2 border-t'>
+        <div className='flex gap-2 justify-end pt-2 border-t border-border/60'>
           <Button variant='ghost' size='sm' onClick={onShowAll}>
             {t('viewsShowAll')}
           </Button>

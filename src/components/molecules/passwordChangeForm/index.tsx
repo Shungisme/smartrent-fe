@@ -186,13 +186,13 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
                   <div
                     className={cn(
                       'h-2 w-2 rounded-full',
-                      req.met ? 'bg-green-500' : 'bg-gray-300',
+                      req.met ? 'bg-success' : 'bg-border',
                     )}
                   />
                   <Typography
                     variant='small'
                     className={cn(
-                      req.met ? 'text-green-600' : 'text-muted-foreground',
+                      req.met ? 'text-success' : 'text-muted-foreground',
                     )}
                   >
                     {req.text}

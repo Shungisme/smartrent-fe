@@ -148,11 +148,7 @@ export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
             >
               {t('create.cancel') || 'Cancel'}
             </Button>
-            <Button
-              type='submit'
-              className='bg-blue-600 hover:bg-blue-700'
-              disabled={loading}
-            >
+            <Button type='submit' disabled={loading}>
               {loading
                 ? t('create.creating') || 'Creating...'
                 : t('create.create') || 'Create'}

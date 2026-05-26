@@ -32,10 +32,10 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   const hasUnread = unreadCount > 0
 
   return (
-    <div className='w-full max-h-[min(70vh,600px)] sm:w-96 bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col'>
+    <div className='w-full max-h-[min(70vh,600px)] sm:w-96 bg-popover text-popover-foreground rounded-lg shadow-lg border border-border/70 flex flex-col'>
       {/* Header */}
-      <div className='flex items-center justify-between p-4 border-b border-gray-200'>
-        <h3 className='text-lg font-semibold text-gray-900'>
+      <div className='flex items-center justify-between p-4 border-b border-border/70'>
+        <h3 className='text-lg font-semibold text-foreground'>
           {t('title', { defaultValue: 'Notifications' })}
         </h3>
         {hasUnread && (
@@ -43,7 +43,7 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
             variant='ghost'
             size='sm'
             onClick={onMarkAllAsRead}
-            className='text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50'
+            className='text-xs text-primary hover:text-primary hover:bg-primary/10'
           >
             <CheckCheck className='h-4 w-4 mr-1' />
             {t('markAllRead', { defaultValue: 'Mark all as read' })}
@@ -55,19 +55,19 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
       <div className='flex-1 overflow-y-auto'>
         {loading ? (
           <div className='flex items-center justify-center py-12'>
-            <Loader2 className='h-6 w-6 animate-spin text-gray-400' />
+            <Loader2 className='h-6 w-6 animate-spin text-muted-foreground' />
           </div>
         ) : !hasNotifications ? (
           <div className='flex flex-col items-center justify-center py-12 px-4'>
-            <div className='w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3'>
-              <Bell className='h-8 w-8 text-gray-400' />
+            <div className='w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-3'>
+              <Bell className='h-8 w-8 text-muted-foreground' />
             </div>
-            <p className='text-sm text-gray-500 text-center'>
+            <p className='text-sm text-muted-foreground text-center'>
               {t('empty', { defaultValue: 'No notifications yet' })}
             </p>
           </div>
         ) : (
-          <div className='divide-y divide-gray-100'>
+          <div className='divide-y divide-border/60'>
             {notifications.map((notification) => (
               <NotificationItem
                 key={notification.id}
@@ -82,11 +82,11 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
 
       {/* Footer - optional, can add "View all" link */}
       {hasNotifications && (
-        <div className='p-3 border-t border-gray-200 bg-gray-50'>
+        <div className='p-3 border-t border-border/70 bg-muted/50'>
           <Button
             variant='ghost'
             size='sm'
-            className='w-full text-sm text-gray-600 hover:text-gray-900'
+            className='w-full text-sm text-muted-foreground hover:text-foreground'
             onClick={onClose}
           >
             {t('viewAll', { defaultValue: 'View all notifications' })}

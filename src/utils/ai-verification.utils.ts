@@ -64,9 +64,12 @@ export const getScoreBand = (score: number): ScoreBand => {
 export const getScoreColorClasses = (score: number): string => {
   const band = getScoreBand(score)
   const map: Record<ScoreBand, string> = {
-    approve: 'bg-green-50 text-green-700 border-green-200',
-    review: 'bg-yellow-50 text-yellow-800 border-yellow-200',
-    reject: 'bg-red-50 text-red-700 border-red-200',
+    approve:
+      'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30',
+    review:
+      'bg-warning/10 text-warning-foreground dark:bg-warning/20 border-warning/30',
+    reject:
+      'bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30',
   }
   return map[band]
 }
@@ -74,32 +77,37 @@ export const getScoreColorClasses = (score: number): string => {
 export const getScoreBarColor = (score: number): string => {
   const band = getScoreBand(score)
   const map: Record<ScoreBand, string> = {
-    approve: 'bg-green-500',
-    review: 'bg-yellow-500',
-    reject: 'bg-red-500',
+    approve: 'bg-success',
+    review: 'bg-warning',
+    reject: 'bg-destructive',
   }
   return map[band]
 }
 
 export const getSuggestedStatusColor = (status: AiSuggestedStatus): string => {
   const map: Record<AiSuggestedStatus, string> = {
-    APPROVED: 'bg-green-50 text-green-700 border-green-200',
-    REJECTED: 'bg-red-50 text-red-700 border-red-200',
-    NEEDS_REVIEW: 'bg-yellow-50 text-yellow-800 border-yellow-200',
+    APPROVED:
+      'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30',
+    REJECTED:
+      'bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30',
+    NEEDS_REVIEW:
+      'bg-warning/10 text-warning-foreground dark:bg-warning/20 border-warning/30',
   }
-  return map[status] || 'bg-gray-50 text-gray-700 border-gray-200'
+  return map[status] || 'bg-muted/50 text-foreground/80 border-border/70'
 }
 
 export const getSeverityColor = (level: AiSeverity | AiPriority): string => {
   const map: Record<string, string> = {
-    critical: 'bg-red-100 text-red-800 border-red-300',
-    high: 'bg-red-50 text-red-700 border-red-200',
-    medium: 'bg-yellow-50 text-yellow-800 border-yellow-200',
-    low: 'bg-blue-50 text-blue-700 border-blue-200',
+    critical:
+      'bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30',
+    high: 'bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30',
+    medium:
+      'bg-warning/10 text-warning-foreground dark:bg-warning/20 border-warning/30',
+    low: 'bg-primary/10 text-primary dark:bg-primary/20 border-primary/30',
   }
   return (
     map[String(level).toLowerCase()] ||
-    'bg-gray-50 text-gray-700 border-gray-200'
+    'bg-muted/50 text-foreground/80 border-border/70'
   )
 }
 
