@@ -164,6 +164,7 @@ export const AdminTransactionTable = ({
           {t(`status.${row.status}`)}
         </span>
       ),
+      minWidth: 120,
     },
     {
       id: 'createdAt',

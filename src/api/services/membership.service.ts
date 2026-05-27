@@ -6,6 +6,7 @@ import {
   PaymentInitiationResponse,
   MembershipPackage,
   MembershipPackageList,
+  UpdateMembershipPackageRequest,
   UserMembership,
   MembershipHistoryList,
 } from '@/api/types/membership.type'
@@ -119,6 +120,56 @@ export class MembershipService {
   }
 
   /**
+   * Update membership package (Admin operation)
+   * PUT /v1/memberships/packages/{membershipId}
+   *
+   * Updates an existing membership package. Features (benefits) cannot be edited
+   * here — only packageName, salePrice, discountPercentage, isActive.
+   *
+   * @param membershipId - The ID of the membership package to update
+   * @param data - Patch payload
+   */
+  static async updateMembershipPackage(
+    membershipId: number,
+    data: UpdateMembershipPackageRequest,
+  ): Promise<ApiResponse<string>> {
+    const url = ENV.API.MEMBERSHIP.UPDATE_PACKAGE.replace(
+      ':membershipId',
+      membershipId.toString(),
+    )
+
+    const response = await apiRequest<string>({
+      method: 'PUT',
+      url,
+      data,
+    })
+
+    return response
+  }
+
+  /**
+   * Delete membership package (Admin operation)
+   * DELETE /v1/memberships/packages/{membershipId}
+   *
+   * @param membershipId - The ID of the membership package to delete
+   */
+  static async deleteMembershipPackage(
+    membershipId: number,
+  ): Promise<ApiResponse<void>> {
+    const url = ENV.API.MEMBERSHIP.DELETE_PACKAGE.replace(
+      ':membershipId',
+      membershipId.toString(),
+    )
+
+    const response = await apiRequest<void>({
+      method: 'DELETE',
+      url,
+    })
+
+    return response
+  }
+
+  /**
    * Cancel membership
    * DELETE /v1/memberships/{userMembershipId}
    *
@@ -149,6 +200,8 @@ export const {
   initiatePurchase,
   getMembershipPackages,
   getMembershipPackageById,
+  updateMembershipPackage,
+  deleteMembershipPackage,
   getMyMembership,
   getMembershipHistory,
   cancelMembership,

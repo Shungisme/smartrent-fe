@@ -1427,6 +1427,35 @@
         "activeUsers": "active users",
         "moreFeatures": "{count} more features",
         "noDiscount": "No discount"
+      },
+      "edit": {
+        "title": "Edit membership package",
+        "fields": {
+          "packageName": "Package name",
+          "salePrice": "Sale price (đ)",
+          "discountPercentage": "Discount (%)",
+          "isActive": "Active"
+        },
+        "placeholders": {
+          "packageName": "e.g. Premium 12 Months"
+        },
+        "cancel": "Cancel",
+        "save": "Save changes",
+        "saving": "Saving…"
+      },
+      "delete": {
+        "title": "Delete membership package",
+        "description": "This action cannot be undone. Are you sure you want to delete this package?",
+        "descriptionNamed": "This action cannot be undone. Are you sure you want to delete the package \"{name}\"?",
+        "cancel": "Cancel",
+        "confirm": "Delete package",
+        "deleting": "Deleting…"
+      },
+      "toasts": {
+        "updateSuccess": "Package updated successfully",
+        "updateError": "Could not update the package. Please try again.",
+        "deleteSuccess": "Package deleted successfully",
+        "deleteError": "Could not delete the package. Please try again."
       }
     },
     "listingTypes": {

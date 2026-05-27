@@ -1391,6 +1391,35 @@
         "activeUsers": "người dùng đang dùng",
         "moreFeatures": "thêm {count} tính năng",
         "noDiscount": "Không giảm giá"
+      },
+      "edit": {
+        "title": "Chỉnh sửa gói thành viên",
+        "fields": {
+          "packageName": "Tên gói",
+          "salePrice": "Giá bán (đ)",
+          "discountPercentage": "Giảm giá (%)",
+          "isActive": "Đang hoạt động"
+        },
+        "placeholders": {
+          "packageName": "Ví dụ: Premium 12 tháng"
+        },
+        "cancel": "Hủy",
+        "save": "Lưu thay đổi",
+        "saving": "Đang lưu…"
+      },
+      "delete": {
+        "title": "Xóa gói thành viên",
+        "description": "Hành động này không thể hoàn tác. Bạn có chắc chắn muốn xóa gói này?",
+        "descriptionNamed": "Hành động này không thể hoàn tác. Bạn có chắc chắn muốn xóa gói \"{name}\"?",
+        "cancel": "Hủy",
+        "confirm": "Xóa gói",
+        "deleting": "Đang xóa…"
+      },
+      "toasts": {
+        "updateSuccess": "Cập nhật gói thành công",
+        "updateError": "Không thể cập nhật gói. Vui lòng thử lại.",
+        "deleteSuccess": "Đã xóa gói thành công",
+        "deleteError": "Không thể xóa gói. Vui lòng thử lại."
       }
     },
     "listingTypes": {

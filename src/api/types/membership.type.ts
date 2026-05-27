@@ -79,6 +79,14 @@ export interface PaymentInitiationResponse {
   provider: PaymentProvider
 }
 
+// Request body for updating an admin membership package
+export interface UpdateMembershipPackageRequest {
+  packageName: string
+  salePrice: number
+  discountPercentage: number
+  isActive: boolean
+}
+
 // Type aliases for clearer API responses
 export type MembershipPackageList = MembershipPackage[]
 export type MembershipHistoryList = UserMembership[]
