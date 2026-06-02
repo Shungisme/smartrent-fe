@@ -14,6 +14,7 @@ import {
 import { PostStats } from '@/components/molecules/posts/PostStats'
 import { PostTable } from '@/components/organisms/posts/PostTable'
 import { PostReviewModal } from '@/components/organisms/posts/PostReviewModal'
+import { AiSchedulerControl } from '@/components/molecules/aiServiceStatus/AiSchedulerControl'
 
 const PostVerification = () => {
   const [posts, setPosts] = useState<UIPostData[]>([])
@@ -216,6 +217,8 @@ const PostVerification = () => {
         </div>
       ) : (
         <div className='space-y-6'>
+          <AiSchedulerControl />
+
           <PostStats stats={stats} />
 
           <PostTable

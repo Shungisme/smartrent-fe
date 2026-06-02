@@ -1581,6 +1581,18 @@
       "rejectButton": "Từ Chối Bài Đăng",
       "requestRevisionButton": "Yêu Cầu Sửa Đổi"
     },
+    "aiScheduler": {
+      "title": "Tự động kiểm duyệt AI",
+      "description": "Khi bật, các tin đang chờ sẽ được AI phân tích tự động mỗi 5 phút. Khi tạm dừng, các tin sẽ chờ duyệt thủ công.",
+      "restartNote": "Cài đặt thời gian chạy — sẽ tự bật lại khi máy chủ khởi động lại.",
+      "statusOn": "Đang hoạt động",
+      "statusOff": "Tạm dừng",
+      "loading": "Đang tải bộ lập lịch...",
+      "retry": "Thử lại",
+      "enabledToast": "Đã bật tự động kiểm duyệt AI. Các tin sẽ được xử lý tự động.",
+      "disabledToast": "Đã tạm dừng tự động kiểm duyệt AI. Các tin sẽ cần duyệt thủ công.",
+      "toggleError": "Cập nhật bộ lập lịch thất bại. Vui lòng thử lại."
+    },
     "aiAnalysis": {
       "title": "Phân tích AI",
       "disclaimer": "Hỗ trợ kiểm duyệt bằng AI. AI không đưa ra quyết định cuối cùng.",

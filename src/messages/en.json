@@ -1617,6 +1617,18 @@
       "rejectButton": "Reject Post",
       "requestRevisionButton": "Request Revision"
     },
+    "aiScheduler": {
+      "title": "AI Auto-Moderation",
+      "description": "When enabled, pending listings are automatically analyzed by AI every 5 minutes. When paused, listings wait for manual review.",
+      "restartNote": "Runtime setting — resets to enabled when the server restarts.",
+      "statusOn": "Active",
+      "statusOff": "Paused",
+      "loading": "Loading scheduler...",
+      "retry": "Retry",
+      "enabledToast": "AI auto-moderation enabled. Listings will be processed automatically.",
+      "disabledToast": "AI auto-moderation paused. Listings will require manual review.",
+      "toggleError": "Failed to update the scheduler. Please try again."
+    },
     "aiAnalysis": {
       "title": "AI Analysis",
       "disclaimer": "AI-assisted moderation. The AI does not make the final decision.",

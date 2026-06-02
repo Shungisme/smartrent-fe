@@ -4,6 +4,7 @@ import {
   AiVerificationRequest,
   AiVerificationResult,
   AiServiceStatus,
+  AiSchedulerStatus,
   ApiResponse,
 } from '@/api/types/ai-verification.type'
 
@@ -45,6 +46,38 @@ export class AiVerificationService {
     return apiRequest<AiServiceStatus>({
       method: 'GET',
       url: PATHS.AI_VERIFICATION.SERVICE_STATUS,
+    })
+  }
+
+  /**
+   * Read whether the background AI auto-moderation cronjob is enabled.
+   * GET /v1/ai/listings/scheduler/status
+   *
+   * Admin only (Bearer token + X-Admin-Id added by the axios interceptor).
+   */
+  static async getSchedulerStatus(): Promise<ApiResponse<AiSchedulerStatus>> {
+    return apiRequest<AiSchedulerStatus>({
+      method: 'GET',
+      url: PATHS.AI_VERIFICATION.SCHEDULER_STATUS,
+    })
+  }
+
+  /**
+   * Enable or disable the AI auto-moderation scheduler at runtime.
+   * PUT /v1/ai/listings/scheduler/toggle?enabled={true|false}
+   *
+   * Admin only. The toggle is an in-memory runtime flag on the backend and
+   * resets to enabled on server restart.
+   *
+   * @param enabled - true to resume batch processing, false to pause it
+   */
+  static async toggleScheduler(
+    enabled: boolean,
+  ): Promise<ApiResponse<AiSchedulerStatus>> {
+    return apiRequest<AiSchedulerStatus>({
+      method: 'PUT',
+      url: PATHS.AI_VERIFICATION.SCHEDULER_TOGGLE,
+      params: { enabled },
     })
   }
 }

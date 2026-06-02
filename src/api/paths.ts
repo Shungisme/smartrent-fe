@@ -94,6 +94,8 @@ export const PATHS = {
   AI_VERIFICATION: {
     VERIFY: '/v1/ai/listings/verify', // POST run AI moderation on a listing payload
     SERVICE_STATUS: '/v1/ai/listings/service-status', // GET Python AI service reachability
+    SCHEDULER_STATUS: '/v1/ai/listings/scheduler/status', // GET auto-moderation cronjob enabled state (admin)
+    SCHEDULER_TOGGLE: '/v1/ai/listings/scheduler/toggle', // PUT enable/disable auto-moderation scheduler (admin)
   },
 
   // News endpoints

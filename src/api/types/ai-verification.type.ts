@@ -141,3 +141,24 @@ export interface AiServiceStatus {
   available: boolean
   checked_at: string
 }
+
+// ---------------------------------------------------------------------------
+// Admin scheduler control
+//   GET /v1/ai/listings/scheduler/status
+//   PUT /v1/ai/listings/scheduler/toggle?enabled={true|false}
+//
+// Requires an admin Bearer token + X-Admin-Id header (injected automatically by
+// the axios request interceptor). Roles allowed: SA, UA, SPA.
+//
+// NOTE: backend fields here are camelCase (Spring Boot DTO), unlike the
+// snake_case Python verification payload above.
+// ---------------------------------------------------------------------------
+
+export interface AiSchedulerStatus {
+  aiSchedulerEnabled: boolean
+  checkedAt?: string
+  /** Present on toggle responses. */
+  updatedAt?: string
+  /** Admin id that performed the toggle; present on toggle responses. */
+  updatedBy?: string
+}
