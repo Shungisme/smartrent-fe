@@ -83,3 +83,13 @@ export const getDateRange = (
 
   return { fromDate, toDate }
 }
+
+export const getPaymentGatewayLabel = (gateway: string): string => {
+  const labels: Record<string, string> = {
+    VNPAY: 'VNPay',
+    ZALOPAY: 'ZaloPay',
+    MOMO: 'MoMo',
+    SEPAY: 'SePay',
+  }
+  return labels[gateway] ?? gateway
+}

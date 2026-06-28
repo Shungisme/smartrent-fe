@@ -12,13 +12,13 @@ import {
 import { useParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
-import { useAdminTransactionDetail } from '../hooks/useAdminTransactions'
-import { TransactionTimelineComponent } from '../components/TransactionTimeline'
-import { getPaymentGatewayLabel } from '../utils/formatters'
+import { useAdminTransactionDetail } from '@/hooks/useTransactions'
+import { TransactionTimelineComponent } from '@/components/organisms/transactions/TransactionTimeline'
 import {
   formatCurrency,
   formatDateTime,
   formatPhoneNumber,
+  getPaymentGatewayLabel,
 } from '@/utils/format'
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
@@ -26,13 +26,14 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
     'bg-warning/18 text-warning-foreground ring-1 ring-inset ring-warning/30',
   SUCCESS:
     'bg-success/15 text-success-foreground ring-1 ring-inset ring-success/30',
+  COMPLETED:
+    'bg-success/15 text-success-foreground ring-1 ring-inset ring-success/30',
   FAILED:
     'bg-destructive/12 text-destructive ring-1 ring-inset ring-destructive/25',
   CANCELLED: 'bg-muted text-muted-foreground ring-1 ring-inset ring-border',
   REFUNDED: 'bg-primary/12 text-primary ring-1 ring-inset ring-primary/25',
 }
 
-/** A titled card section with a leading accent icon. */
 const SectionCard: React.FC<{
   icon: LucideIcon
   title: string
@@ -47,7 +48,6 @@ const SectionCard: React.FC<{
   </div>
 )
 
-/** A label/value pair. */
 const Field: React.FC<{
   label: string
   value: React.ReactNode
@@ -66,10 +66,7 @@ const Field: React.FC<{
   </div>
 )
 
-/**
- * Admin Transaction Detail Page
- */
-export const AdminTransactionDetailPage = () => {
+export const TransactionDetailPage = () => {
   const t = useTranslations('transactions')
   const params = useParams()
   const transactionId = params.transactionId as string
@@ -103,7 +100,6 @@ export const AdminTransactionDetailPage = () => {
 
   return (
     <div className='space-y-6'>
-      {/* Header */}
       <div className='flex flex-wrap items-start justify-between gap-4'>
         <div className='min-w-0 space-y-1.5'>
           <div className='text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground'>
@@ -126,7 +122,9 @@ export const AdminTransactionDetailPage = () => {
           <span
             className={cn(
               'inline-block h-1.5 w-1.5 rounded-full',
-              transaction.status === 'SUCCESS' && 'bg-success',
+              (transaction.status === 'SUCCESS' ||
+                transaction.status === 'COMPLETED') &&
+                'bg-success',
               transaction.status === 'PENDING' && 'bg-warning',
               transaction.status === 'FAILED' && 'bg-destructive',
               transaction.status === 'CANCELLED' && 'bg-muted-foreground/60',
@@ -137,7 +135,6 @@ export const AdminTransactionDetailPage = () => {
         </span>
       </div>
 
-      {/* Amount highlight */}
       <div className='rounded-xl border border-border/70 bg-gradient-to-br from-primary/5 via-card to-card p-6 shadow-sm'>
         <p className='text-xs font-medium uppercase tracking-wider text-muted-foreground'>
           {t('detail.amount')}
@@ -148,7 +145,6 @@ export const AdminTransactionDetailPage = () => {
       </div>
 
       <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-        {/* Transaction Summary */}
         <SectionCard icon={Receipt} title={t('detail.transactionInfo')}>
           <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
             <Field
@@ -174,7 +170,6 @@ export const AdminTransactionDetailPage = () => {
           </div>
         </SectionCard>
 
-        {/* Dates Info */}
         <SectionCard icon={CalendarClock} title={t('detail.dates')}>
           <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
             <Field
@@ -197,11 +192,14 @@ export const AdminTransactionDetailPage = () => {
         </SectionCard>
       </div>
 
-      {/* Customer Info */}
       <SectionCard icon={User} title={t('detail.customerInfo')}>
         <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
           <Field label={t('detail.name')} value={transaction.customer.name} />
-          <Field label='ID' value={transaction.customer.customerId} mono />
+          <Field
+            label={t('detail.id')}
+            value={transaction.customer.customerId}
+            mono
+          />
           <Field
             label={t('detail.email')}
             value={transaction.customer.email || '-'}
@@ -213,7 +211,6 @@ export const AdminTransactionDetailPage = () => {
         </div>
       </SectionCard>
 
-      {/* Landlord Info */}
       {transaction.landlord && (
         <SectionCard icon={User} title={t('detail.landlordInfo')}>
           <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
@@ -231,7 +228,6 @@ export const AdminTransactionDetailPage = () => {
         </SectionCard>
       )}
 
-      {/* Invoice & Room Info */}
       {(transaction.invoice || transaction.room) && (
         <SectionCard icon={Building2} title={t('detail.invoiceInfo')}>
           <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
@@ -276,7 +272,6 @@ export const AdminTransactionDetailPage = () => {
         </SectionCard>
       )}
 
-      {/* Gateway Info */}
       {(transaction.gatewayTransactionCode ||
         transaction.gatewayResponseCode) && (
         <SectionCard icon={Landmark} title={t('detail.gatewayInfo')}>
@@ -310,7 +305,6 @@ export const AdminTransactionDetailPage = () => {
         </SectionCard>
       )}
 
-      {/* Failure Reason */}
       {transaction.failureReason && (
         <div className='rounded-xl border border-destructive/25 bg-destructive/6 p-6'>
           <div className='mb-2 flex items-center gap-2 text-sm font-semibold text-destructive'>
@@ -323,7 +317,6 @@ export const AdminTransactionDetailPage = () => {
         </div>
       )}
 
-      {/* Timeline */}
       {transaction.timeline && transaction.timeline.length > 0 && (
         <TransactionTimelineComponent timeline={transaction.timeline} />
       )}

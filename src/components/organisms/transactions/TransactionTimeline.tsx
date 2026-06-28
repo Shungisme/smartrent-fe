@@ -10,7 +10,7 @@ import {
   Activity,
   type LucideIcon,
 } from 'lucide-react'
-import { TransactionTimeline } from '../types/transaction.type'
+import { TransactionTimeline } from '@/types/transaction.type'
 import { cn } from '@/lib/utils'
 import { formatDateTime } from '@/utils/format'
 
@@ -20,11 +20,8 @@ interface TransactionTimelineProps {
 
 type Tone = {
   icon: LucideIcon
-  /** Solid color for the connector dot + ring. */
   dot: string
-  /** Tinted background for the icon chip. */
   chip: string
-  /** Foreground color for the icon. */
   iconColor: string
 }
 
@@ -36,6 +33,12 @@ const TONES: Record<string, Tone> = {
     iconColor: 'text-warning-foreground',
   },
   SUCCESS: {
+    icon: CheckCircle2,
+    dot: 'bg-success',
+    chip: 'bg-success/15 ring-success/30',
+    iconColor: 'text-success-foreground',
+  },
+  COMPLETED: {
     icon: CheckCircle2,
     dot: 'bg-success',
     chip: 'bg-success/15 ring-success/30',
@@ -93,7 +96,6 @@ export const TransactionTimelineComponent = ({
 
           return (
             <li key={index} className='relative flex gap-4 pb-6 last:pb-0'>
-              {/* Vertical connector */}
               {!isLast && (
                 <span
                   aria-hidden
@@ -101,7 +103,6 @@ export const TransactionTimelineComponent = ({
                 />
               )}
 
-              {/* Status chip */}
               <span
                 className={cn(
                   'relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full ring-1 ring-inset',

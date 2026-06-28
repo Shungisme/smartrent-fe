@@ -1,5 +1,3 @@
-'use client'
-
 import { instanceClientAxios as axiosInstance } from '@/configs/axios/axiosClient'
 import {
   AdminTransactionDetail,
@@ -7,17 +5,9 @@ import {
   AdminTransactionListResponse,
   RevenueSeries,
   TransactionStatistics,
-} from '../types/transaction.type'
+} from '@/types/transaction.type'
 
-/**
- * Admin Transaction API service
- * Handles all API calls for admin transaction management
- */
-export const adminTransactionsApi = {
-  /**
-   * Get paginated list of transactions
-   * GET /v1/admin/transactions
-   */
+export const TransactionService = {
   listTransactions: async (filters: AdminTransactionFilters) => {
     const params = new URLSearchParams()
 
@@ -39,10 +29,6 @@ export const adminTransactionsApi = {
     return response.data.data
   },
 
-  /**
-   * Get transaction detail
-   * GET /v1/admin/transactions/{transactionId}
-   */
   getTransactionDetail: async (transactionId: string) => {
     const response = await axiosInstance.get<{ data: AdminTransactionDetail }>(
       `/v1/admin/transactions/${transactionId}`,
@@ -50,10 +36,6 @@ export const adminTransactionsApi = {
     return response.data.data
   },
 
-  /**
-   * Get transaction statistics
-   * GET /v1/admin/transactions/statistics
-   */
   getStatistics: async (fromDate?: string, toDate?: string) => {
     const params = new URLSearchParams()
     if (fromDate) params.append('fromDate', fromDate)
@@ -65,10 +47,6 @@ export const adminTransactionsApi = {
     return response.data.data
   },
 
-  /**
-   * Get revenue series data
-   * GET /v1/admin/transactions/revenue-series
-   */
   getRevenueSeries: async (
     groupBy: 'DAY' | 'MONTH',
     fromDate?: string,
@@ -85,10 +63,6 @@ export const adminTransactionsApi = {
     return response.data.data
   },
 
-  /**
-   * Export transactions as CSV
-   * GET /v1/admin/transactions/export
-   */
   exportTransactions: async (filters: AdminTransactionFilters) => {
     const params = new URLSearchParams()
 
@@ -103,12 +77,9 @@ export const adminTransactionsApi = {
 
     const response = await axiosInstance.get(
       `/v1/admin/transactions/export?${params.toString()}`,
-      {
-        responseType: 'blob',
-      },
+      { responseType: 'blob' },
     )
 
-    // Create blob and trigger download
     const url = window.URL.createObjectURL(new Blob([response.data]))
     const link = document.createElement('a')
     link.href = url

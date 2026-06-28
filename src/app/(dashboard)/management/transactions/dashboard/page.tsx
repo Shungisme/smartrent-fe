@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { AdminTransactionsDashboardPage } from '@/features/adminTransactions/pages/AdminTransactionsDashboardPage'
+import { TransactionsDashboardPage } from '@/components/features/transactions'
 
 export const metadata: Metadata = {
   title: 'Tổng quan giao dịch - SmartRent Admin',
@@ -7,6 +7,6 @@ export const metadata: Metadata = {
     'Xem tổng quan về doanh thu, tỷ lệ thành công và xu hướng thanh toán',
 }
 
-export default function TransactionsDashboardPage() {
-  return <AdminTransactionsDashboardPage />
+export default function Page() {
+  return <TransactionsDashboardPage />
 }

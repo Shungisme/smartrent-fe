@@ -13,11 +13,11 @@ import {
   AdminTransactionFilters,
   PaymentGateway,
   PaymentStatus,
-} from '../types/transaction.type'
-import { getPaymentGatewayLabel } from '../utils/formatters'
+} from '@/types/transaction.type'
 import {
   formatCurrency,
   formatDateTime,
+  getPaymentGatewayLabel,
   formatPhoneNumber,
 } from '@/utils/format'
 
@@ -43,11 +43,6 @@ const STATUS_BADGE_CLASS: Record<PaymentStatus, string> = {
   REFUNDED: 'bg-primary/10 text-primary dark:bg-primary/20 border-primary/30',
 }
 
-/**
- * Admin Transaction Table
- * Renders the transaction list through the shared DataTable organism
- * (server-driven pagination via filterMode="api").
- */
 export const AdminTransactionTable = ({
   transactions,
   totalItems,
@@ -208,6 +203,7 @@ export const AdminTransactionTable = ({
         { value: 'VNPAY', label: 'VNPay' },
         { value: 'ZALOPAY', label: 'ZaloPay' },
         { value: 'MOMO', label: 'MoMo' },
+        { value: 'SEPAY', label: 'SePay' },
       ],
       isFilterField: true,
     },
