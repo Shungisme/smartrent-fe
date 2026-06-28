@@ -128,7 +128,7 @@ export const TransactionTimelineComponent = ({
                   </p>
                   <time
                     dateTime={item.at}
-                    className='font-mono text-xs tabular-nums text-muted-foreground'
+                    className='text-xs text-muted-foreground'
                   >
                     {formatDateTime(item.at)}
                   </time>

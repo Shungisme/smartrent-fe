@@ -7,8 +7,8 @@ import { PasswordField } from '../passwordField'
 import { EmailField } from '../emailField'
 import { useTranslations } from 'next-intl'
 import { useForm, useController } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import dynamic from 'next/dynamic'
 import SeparatorOr from '@/components/atoms/separatorOr'
 import { useRegister } from '@/hooks/useAuth'
@@ -38,42 +38,46 @@ const RegisterForm: NextPage<RegisterFormProps> = (props) => {
   const t = useTranslations()
   const { registerUser } = useRegister()
 
-  const registerSchema = yup.object({
-    firstName: yup
-      .string()
-      .required(t('homePage.auth.validation.firstNameRequired'))
-      .min(2, t('homePage.auth.validation.firstNameMinLength')),
-    lastName: yup
-      .string()
-      .required(t('homePage.auth.validation.lastNameRequired'))
-      .min(2, t('homePage.auth.validation.lastNameMinLength')),
-    email: yup
-      .string()
-      .required(t('homePage.auth.validation.emailRequired'))
-      .matches(EMAIL_REGEX, t('homePage.auth.validation.emailInvalid')),
-    password: yup
-      .string()
-      .required(t('homePage.auth.validation.passwordRequired'))
-      .min(8, t('homePage.auth.validation.passwordMinLength'))
-      .matches(
-        PASSWORD_STRENGTH_REGEX,
-        t('homePage.auth.validation.passwordPattern'),
-      ),
-    confirmPassword: yup
-      .string()
-      .required(t('homePage.auth.validation.confirmPasswordRequired'))
-      .oneOf(
-        [yup.ref('password')],
-        t('homePage.auth.validation.confirmPasswordMatch'),
-      ),
-  })
+  const registerSchema = z
+    .object({
+      firstName: z
+        .string()
+        .trim()
+        .min(1, t('homePage.auth.validation.firstNameRequired'))
+        .min(2, t('homePage.auth.validation.firstNameMinLength')),
+      lastName: z
+        .string()
+        .trim()
+        .min(1, t('homePage.auth.validation.lastNameRequired'))
+        .min(2, t('homePage.auth.validation.lastNameMinLength')),
+      email: z
+        .string()
+        .trim()
+        .min(1, t('homePage.auth.validation.emailRequired'))
+        .regex(EMAIL_REGEX, t('homePage.auth.validation.emailInvalid')),
+      password: z
+        .string()
+        .min(1, t('homePage.auth.validation.passwordRequired'))
+        .min(8, t('homePage.auth.validation.passwordMinLength'))
+        .regex(
+          PASSWORD_STRENGTH_REGEX,
+          t('homePage.auth.validation.passwordPattern'),
+        ),
+      confirmPassword: z
+        .string()
+        .min(1, t('homePage.auth.validation.confirmPasswordRequired')),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+      message: t('homePage.auth.validation.confirmPasswordMatch'),
+      path: ['confirmPassword'],
+    })
 
   const {
     control,
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<RegisterFormData>({
-    resolver: yupResolver(registerSchema),
+    resolver: zodResolver(registerSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -92,8 +96,6 @@ const RegisterForm: NextPage<RegisterFormProps> = (props) => {
     name: 'lastName',
     control,
   })
-
-  // Email handled by EmailField component via control/name
 
   const confirmPasswordController = useController({
     name: 'confirmPassword',

@@ -20,17 +20,41 @@ import Subscript from '@tiptap/extension-subscript'
 import Superscript from '@tiptap/extension-superscript'
 import { TableKitPlus } from 'tiptap-table-plus'
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { toast } from 'sonner'
 import slugify from 'react-slugify'
 import { Loader2 } from 'lucide-react'
 import { NewsService } from '@/api/services/news.service'
 import { NewsCreateRequest, NewsUpdateRequest } from '@/api/types/news.type'
 import { EditorFormData } from '@/types/news-editor.type'
+import type { Resolver } from 'react-hook-form'
 import { NewsEditorMenuBar } from '@/components/molecules/editor/NewsEditorMenuBar'
 import { NewsEditorHeader } from '@/components/organisms/news/NewsEditorHeader'
 import { NewsMetaForm } from '@/components/organisms/news/NewsMetaForm'
 
 const SUCCESS_CODE = '999999'
+
+const newsEditorSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required'),
+  slug: z.string(),
+  summary: z.string(),
+  category: z.enum([
+    'NEWS',
+    'BLOG',
+    'POLICY',
+    'MARKET',
+    'PROJECT',
+    'INVESTMENT',
+    'GUIDE',
+  ]),
+  tags: z.string(),
+  thumbnailUrl: z.string(),
+  status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']),
+  metaTitle: z.string(),
+  metaDescription: z.string(),
+  metaKeywords: z.string(),
+})
 
 const NewsEditor = () => {
   const router = useRouter()
@@ -57,6 +81,7 @@ const NewsEditor = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<EditorFormData>({
+    resolver: zodResolver(newsEditorSchema) as Resolver<EditorFormData>,
     defaultValues: {
       title: '',
       slug: '',

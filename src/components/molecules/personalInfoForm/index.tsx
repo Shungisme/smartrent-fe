@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { useForm, useController, type Resolver } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import { useForm, useController } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/atoms/button'
 import { Card } from '@/components/atoms/card'
@@ -40,35 +40,42 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
 }) => {
   const t = useTranslations()
 
-  const validationSchema = yup.object().shape({
-    firstName: yup
+  const validationSchema = z.object({
+    firstName: z
       .string()
-      .required(t('homePage.auth.validation.firstNameRequired'))
+      .trim()
+      .min(1, t('homePage.auth.validation.firstNameRequired'))
       .min(2, t('homePage.auth.validation.firstNameMinLength')),
-    lastName: yup
+    lastName: z
       .string()
-      .required(t('homePage.auth.validation.lastNameRequired'))
+      .trim()
+      .min(1, t('homePage.auth.validation.lastNameRequired'))
       .min(2, t('homePage.auth.validation.lastNameMinLength')),
-    email: yup
+    email: z
       .string()
-      .required(t('homePage.auth.validation.emailRequired'))
-      .matches(
+      .trim()
+      .min(1, t('homePage.auth.validation.emailRequired'))
+      .regex(
         VALIDATION_PATTERNS.EMAIL,
         t('homePage.auth.validation.emailInvalid'),
       ),
-    phoneNumber: yup
+    phoneNumber: z
       .string()
-      .required(t('homePage.auth.validation.phoneNumberRequired'))
-      .matches(/^[0-9+\-\s()]+$/, t('homePage.auth.validation.phoneInvalid')),
-    idDocument: yup
+      .trim()
+      .min(1, t('homePage.auth.validation.phoneNumberRequired'))
+      .regex(/^[0-9+\-\s()]+$/, t('homePage.auth.validation.phoneInvalid')),
+    idDocument: z
       .string()
-      .required(t('homePage.auth.validation.idDocumentRequired'))
+      .trim()
+      .min(1, t('homePage.auth.validation.idDocumentRequired'))
       .min(9, t('homePage.auth.validation.idDocumentMinLength')),
-    taxNumber: yup
+    taxNumber: z
       .string()
+      .regex(/^[0-9\-]*$/, t('homePage.auth.validation.taxNumberInvalid'))
       .optional()
-      .matches(/^[0-9\-]*$/, t('homePage.auth.validation.taxNumberInvalid')),
-    avatar: yup.mixed().optional(),
+      .or(z.literal('')),
+    avatar: z.any().optional(),
+    address: z.string().optional(),
   })
 
   const {
@@ -78,9 +85,7 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
     watch,
     formState: { errors, isValid },
   } = useForm<PersonalInfoFormData>({
-    resolver: yupResolver(
-      validationSchema,
-    ) as unknown as Resolver<PersonalInfoFormData>,
+    resolver: zodResolver(validationSchema),
     defaultValues: {
       firstName: initialData?.firstName || '',
       lastName: initialData?.lastName || '',
@@ -93,7 +98,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
     mode: 'onChange',
   })
 
-  // Controllers for simple FormField inputs
   const firstNameController = useController({ name: 'firstName', control })
   const lastNameController = useController({ name: 'lastName', control })
   const idDocumentController = useController({ name: 'idDocument', control })
@@ -114,7 +118,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
   return (
     <Card className={cn('p-6', className)}>
       <div className='space-y-6'>
-        {/* Header */}
         <div className='flex items-center gap-3'>
           <User className='h-5 w-5 text-primary' />
           <Typography variant='h3' className='text-lg font-semibold'>
@@ -123,7 +126,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
         </div>
 
         <form onSubmit={handleSubmit(handleFormSubmit)} className='space-y-6'>
-          {/* Avatar Upload */}
           <div className='flex justify-center'>
             <AvatarUpload
               name={fullName}
@@ -132,7 +134,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
             />
           </div>
 
-          {/* Name Fields */}
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <FormField
               label={t(
@@ -150,7 +151,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
             />
           </div>
 
-          {/* Contact Information */}
           <div className='space-y-4'>
             <Typography variant='h4' className='font-medium text-foreground'>
               {t('homePage.auth.accountManagement.personalInfo.contactInfo')}
@@ -176,7 +176,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
             </div>
           </div>
 
-          {/* Business Information */}
           <div className='space-y-4'>
             <Typography variant='h4' className='font-medium text-foreground'>
               {t('homePage.auth.accountManagement.personalInfo.businessInfo')}
@@ -209,7 +208,6 @@ const PersonalInfoForm: React.FC<PersonalInfoFormProps> = ({
             />
           </div>
 
-          {/* Submit Button */}
           <div className='flex justify-end pt-4'>
             <Button
               type='submit'

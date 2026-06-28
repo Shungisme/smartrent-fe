@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
@@ -10,6 +10,9 @@ import {
   DialogFooter,
 } from '@/components/atoms/dialog'
 import { Plus, Minus } from 'lucide-react'
+import { useForm, useFieldArray, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 
 export type MembershipFormData = {
   name: string
@@ -18,6 +21,33 @@ export type MembershipFormData = {
   features: string[]
   isActive: boolean
 }
+
+const membershipSchema = z.object({
+  name: z.string().trim().min(1, 'Package name is required'),
+  price: z
+    .string()
+    .trim()
+    .min(1, 'Price is required')
+    .refine(
+      (v) => !isNaN(Number(v)) && Number(v) >= 0,
+      'Price must be a valid non-negative number',
+    ),
+  discount: z
+    .string()
+    .optional()
+    .refine(
+      (v) => !v || (!isNaN(Number(v)) && Number(v) >= 0 && Number(v) <= 100),
+      'Discount must be between 0 and 100',
+    ),
+  features: z
+    .array(
+      z.object({ value: z.string().trim().min(1, 'Feature cannot be empty') }),
+    )
+    .min(1, 'At least one feature is required'),
+  isActive: z.boolean(),
+})
+
+type MembershipInternalFormData = z.infer<typeof membershipSchema>
 
 interface AddMembershipModalProps {
   open: boolean
@@ -30,52 +60,42 @@ export default function AddMembershipModal({
   onOpenChange,
   onSubmit,
 }: AddMembershipModalProps) {
-  const [formData, setFormData] = useState<MembershipFormData>({
-    name: '',
-    price: '',
-    discount: '',
-    features: [''],
-    isActive: true,
-  })
-
-  const handleAddFeature = () => {
-    setFormData({
-      ...formData,
-      features: [...formData.features, ''],
-    })
-  }
-
-  const handleRemoveFeature = (index: number) => {
-    setFormData({
-      ...formData,
-      features: formData.features.filter((_, i) => i !== index),
-    })
-  }
-
-  const handleFeatureChange = (index: number, value: string) => {
-    const newFeatures = [...formData.features]
-    newFeatures[index] = value
-    setFormData({ ...formData, features: newFeatures })
-  }
-
-  const handleSubmit = () => {
-    onSubmit(formData)
-    resetForm()
-    onOpenChange(false)
-  }
-
-  const resetForm = () => {
-    setFormData({
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<MembershipInternalFormData>({
+    resolver: zodResolver(membershipSchema),
+    defaultValues: {
       name: '',
       price: '',
       discount: '',
-      features: [''],
+      features: [{ value: '' }],
       isActive: true,
+    },
+  })
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'features',
+  })
+
+  const handleFormSubmit = (data: MembershipInternalFormData) => {
+    onSubmit({
+      name: data.name,
+      price: data.price,
+      discount: data.discount || '',
+      features: data.features.map((f) => f.value),
+      isActive: data.isActive,
     })
+    reset()
+    onOpenChange(false)
   }
 
   const handleCancel = () => {
-    resetForm()
+    reset()
     onOpenChange(false)
   }
 
@@ -85,31 +105,38 @@ export default function AddMembershipModal({
         <DialogHeader>
           <DialogTitle>Add Membership Package</DialogTitle>
         </DialogHeader>
-        <div className='overflow-y-auto flex-1 px-1'>
+        <form
+          onSubmit={handleSubmit(handleFormSubmit)}
+          className='overflow-y-auto flex-1 px-1'
+        >
           <div className='space-y-4'>
             <div className='grid grid-cols-2 gap-4'>
               <div className='space-y-2'>
-                <Label htmlFor='package-name'>Package Name</Label>
+                <Label htmlFor='package-name'>Package Name *</Label>
                 <Input
                   id='package-name'
                   placeholder='e.g., Premium, VIP'
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  {...register('name')}
                 />
+                {errors.name && (
+                  <p className='text-xs text-destructive'>
+                    {errors.name.message}
+                  </p>
+                )}
               </div>
               <div className='space-y-2'>
-                <Label htmlFor='package-price'>Price (đ/month)</Label>
+                <Label htmlFor='package-price'>Price (đ/month) *</Label>
                 <Input
                   id='package-price'
                   type='number'
                   placeholder='e.g., 99000'
-                  value={formData.price}
-                  onChange={(e) =>
-                    setFormData({ ...formData, price: e.target.value })
-                  }
+                  {...register('price')}
                 />
+                {errors.price && (
+                  <p className='text-xs text-destructive'>
+                    {errors.price.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -119,42 +146,48 @@ export default function AddMembershipModal({
                 id='package-discount'
                 type='number'
                 placeholder='e.g., 10'
-                value={formData.discount}
-                onChange={(e) =>
-                  setFormData({ ...formData, discount: e.target.value })
-                }
+                {...register('discount')}
               />
+              {errors.discount && (
+                <p className='text-xs text-destructive'>
+                  {errors.discount.message}
+                </p>
+              )}
             </div>
 
             <div className='space-y-2'>
               <div className='flex items-center justify-between'>
-                <Label>Features</Label>
+                <Label>Features *</Label>
                 <Button
                   type='button'
                   variant='outline'
                   size='sm'
-                  onClick={handleAddFeature}
+                  onClick={() => append({ value: '' })}
                 >
                   <Plus className='h-4 w-4 mr-1' />
                   Add Feature
                 </Button>
               </div>
               <div className='space-y-2'>
-                {formData.features.map((feature, index) => (
-                  <div key={index} className='flex gap-2'>
-                    <Input
-                      placeholder='e.g., Post 10 listings/month'
-                      value={feature}
-                      onChange={(e) =>
-                        handleFeatureChange(index, e.target.value)
-                      }
-                    />
-                    {formData.features.length > 1 && (
+                {fields.map((field, index) => (
+                  <div key={field.id} className='flex gap-2'>
+                    <div className='flex-1'>
+                      <Input
+                        placeholder='e.g., Post 10 listings/month'
+                        {...register(`features.${index}.value`)}
+                      />
+                      {errors.features?.[index]?.value && (
+                        <p className='text-xs text-destructive mt-1'>
+                          {errors.features[index]?.value?.message}
+                        </p>
+                      )}
+                    </div>
+                    {fields.length > 1 && (
                       <Button
                         type='button'
                         variant='outline'
                         size='sm'
-                        onClick={() => handleRemoveFeature(index)}
+                        onClick={() => remove(index)}
                       >
                         <Minus className='h-4 w-4' />
                       </Button>
@@ -162,28 +195,38 @@ export default function AddMembershipModal({
                   </div>
                 ))}
               </div>
+              {errors.features?.root && (
+                <p className='text-xs text-destructive'>
+                  {errors.features.root.message}
+                </p>
+              )}
             </div>
 
-            <div className='flex items-center space-x-2'>
-              <input
-                type='checkbox'
-                id='package-active'
-                checked={formData.isActive}
-                onChange={(e) =>
-                  setFormData({ ...formData, isActive: e.target.checked })
-                }
-                className='h-4 w-4 rounded border-border text-primary focus:ring-primary'
-              />
-              <Label htmlFor='package-active'>Active</Label>
-            </div>
+            <Controller
+              name='isActive'
+              control={control}
+              render={({ field }) => (
+                <div className='flex items-center space-x-2'>
+                  <input
+                    type='checkbox'
+                    id='package-active'
+                    checked={field.value}
+                    onChange={field.onChange}
+                    className='h-4 w-4 rounded border-border text-primary focus:ring-primary'
+                  />
+                  <Label htmlFor='package-active'>Active</Label>
+                </div>
+              )}
+            />
           </div>
-        </div>
-        <DialogFooter>
-          <Button variant='outline' onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit}>Create Package</Button>
-        </DialogFooter>
+
+          <DialogFooter className='mt-4'>
+            <Button type='button' variant='outline' onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button type='submit'>Create Package</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )

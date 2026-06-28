@@ -137,8 +137,8 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       render: (_, row) => {
         const { date, time } = formatDateTime(row.createdAt)
         return (
-          <div className='font-mono text-[13px] tabular-nums leading-tight'>
-            <div className='text-foreground'>{date}</div>
+          <div className='leading-tight'>
+            <div className='text-sm text-foreground'>{date}</div>
             <div className='text-xs text-muted-foreground'>{time}</div>
           </div>
         )

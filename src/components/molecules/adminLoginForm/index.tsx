@@ -5,8 +5,8 @@ import { Button } from '@/components/atoms/button'
 import { useTranslations } from 'next-intl'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { useAdminLogin } from '@/hooks/useAuth'
 import { toast } from 'sonner'
 import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
@@ -27,18 +27,19 @@ const AdminLoginForm: NextPage<AdminLoginFormProps> = (props) => {
   const { loginAdmin } = useAdminLogin()
   const { onSuccess } = props
 
-  const loginSchema = yup.object({
-    email: yup
+  const loginSchema = z.object({
+    email: z
       .string()
-      .required(t('homePage.auth.validation.emailRequired'))
-      .matches(
+      .trim()
+      .min(1, t('homePage.auth.validation.emailRequired'))
+      .regex(
         VALIDATION_PATTERNS.EMAIL,
         t('homePage.auth.validation.emailInvalid'),
       ),
-    password: yup
+    password: z
       .string()
-      .required(t('homePage.auth.validation.passwordRequired'))
-      .matches(
+      .min(1, t('homePage.auth.validation.passwordRequired'))
+      .regex(
         VALIDATION_PATTERNS.PASSWORD,
         t('homePage.auth.validation.passwordPattern'),
       ),
@@ -49,7 +50,7 @@ const AdminLoginForm: NextPage<AdminLoginFormProps> = (props) => {
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<AdminLoginFormData>({
-    resolver: yupResolver(loginSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -63,7 +64,6 @@ const AdminLoginForm: NextPage<AdminLoginFormProps> = (props) => {
       if (result.success) {
         toast.success(t('homePage.auth.login.successMessage'))
         onSuccess?.()
-        // Redirect to users page
         router.push('/management/users')
       } else {
         toast.error(result.message || t('homePage.auth.login.errorMessage'))

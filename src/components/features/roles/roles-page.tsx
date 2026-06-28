@@ -7,24 +7,14 @@ import {
   FilterConfig,
 } from '@/components/organisms/DataTable'
 import { Button } from '@/components/atoms/button'
-import { Input } from '@/components/atoms/input'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/atoms/dialog'
-import { Label } from '@/components/atoms/label'
-import {
-  getRoles,
-  createRole,
-  updateRole,
-  deleteRole,
-} from '@/api/services/role.service'
+import { getRoles } from '@/api/services/role.service'
 import { Role } from '@/api/types/role.type'
 import { useTranslations } from 'next-intl'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
 import { PageHeader } from '@/components/molecules/pageHeader'
+import { RoleCreateDialog } from '@/components/organisms/roles/RoleCreateDialog'
+import { RoleEditDialog } from '@/components/organisms/roles/RoleEditDialog'
+import { RoleDeleteDialog } from '@/components/organisms/roles/RoleDeleteDialog'
 
 type RoleRow = {
   id: string
@@ -43,14 +33,10 @@ const RoleManagement = () => {
   const [showCreate, setShowCreate] = useState(false)
   const [showEdit, setShowEdit] = useState<Role | null>(null)
   const [showDelete, setShowDelete] = useState<Role | null>(null)
-  const [form, setForm] = useState({ roleId: '', roleName: '' })
-  const [formLoading, setFormLoading] = useState(false)
-  const [formError, setFormError] = useState<string | null>(null)
 
   const fetchRoles = useCallback(async () => {
     setLoading(true)
     try {
-      // Build filter array from filterValues (filter=key:value format)
       const filterArray: string[] = []
 
       if (filterValues.roleName) {
@@ -118,11 +104,7 @@ const RoleManagement = () => {
             title={t('table.actions.edit')}
             onClick={() => {
               const role = roles.find((r) => r.roleId === row.id)
-              if (role) {
-                setShowEdit(role)
-                setForm({ roleId: role.roleId, roleName: role.roleName })
-                setFormError(null)
-              }
+              if (role) setShowEdit(role)
             }}
           >
             <Pencil className='h-4 w-4' />
@@ -168,11 +150,7 @@ const RoleManagement = () => {
           actions={
             <Button
               className='w-full sm:w-auto'
-              onClick={() => {
-                setShowCreate(true)
-                setForm({ roleId: '', roleName: '' })
-                setFormError(null)
-              }}
+              onClick={() => setShowCreate(true)}
             >
               <Plus className='h-4 w-4' />
               {t('createNewRole')}
@@ -194,204 +172,26 @@ const RoleManagement = () => {
           emptyMessage={loading ? 'Loading roles...' : 'No roles found'}
           getRowKey={(row) => row.id}
         />
-        {/* Create Role Modal */}
-        <Dialog open={showCreate} onOpenChange={setShowCreate}>
-          <DialogContent className='max-w-md'>
-            <DialogHeader>
-              <DialogTitle>{t('create.title')}</DialogTitle>
-            </DialogHeader>
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault()
-                setFormLoading(true)
-                setFormError(null)
-                try {
-                  const resp = await createRole(form)
-                  if (resp.success && resp.data) {
-                    setShowCreate(false)
-                    await fetchRoles()
-                  } else {
-                    setFormError(resp.message || 'Failed to create role')
-                  }
-                } catch (err: unknown) {
-                  const error = err as { message?: string }
-                  setFormError(error.message || 'Error creating role')
-                } finally {
-                  setFormLoading(false)
-                }
-              }}
-              className='space-y-4'
-            >
-              <div className='space-y-2'>
-                <Label htmlFor='roleId'>{t('create.roleId')} *</Label>
-                <Input
-                  id='roleId'
-                  placeholder={t('create.roleId')}
-                  value={form.roleId}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, roleId: e.target.value }))
-                  }
-                  required
-                />
-              </div>
-              <div className='space-y-2'>
-                <Label htmlFor='roleName'>{t('create.roleName')} *</Label>
-                <Input
-                  id='roleName'
-                  placeholder={t('create.roleName')}
-                  value={form.roleName}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, roleName: e.target.value }))
-                  }
-                  required
-                />
-              </div>
-              {formError && (
-                <div className='text-sm text-destructive'>{formError}</div>
-              )}
-              <div className='flex gap-3'>
-                <Button
-                  type='button'
-                  variant='outline'
-                  onClick={() => setShowCreate(false)}
-                  disabled={formLoading}
-                  className='flex-1'
-                >
-                  {t('create.cancel')}
-                </Button>
-                <Button type='submit' disabled={formLoading} className='flex-1'>
-                  {formLoading ? t('create.creating') : t('create.create')}
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
-        {/* Edit Role Modal */}
-        <Dialog
+
+        <RoleCreateDialog
+          open={showCreate}
+          onOpenChange={setShowCreate}
+          onSuccess={fetchRoles}
+        />
+
+        <RoleEditDialog
+          role={showEdit}
           open={!!showEdit}
           onOpenChange={(open) => !open && setShowEdit(null)}
-        >
-          <DialogContent className='max-w-md'>
-            <DialogHeader>
-              <DialogTitle>{t('edit.title')}</DialogTitle>
-            </DialogHeader>
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault()
-                setFormLoading(true)
-                setFormError(null)
-                try {
-                  const resp = await updateRole(showEdit!.roleId, {
-                    roleName: form.roleName,
-                  })
-                  if (resp.success && resp.data) {
-                    setShowEdit(null)
-                    await fetchRoles()
-                  } else {
-                    setFormError(resp.message || 'Failed to update role')
-                  }
-                } catch (err: unknown) {
-                  const error = err as { message?: string }
-                  setFormError(error.message || 'Error updating role')
-                } finally {
-                  setFormLoading(false)
-                }
-              }}
-              className='space-y-4'
-            >
-              <div className='space-y-2'>
-                <Label htmlFor='editRoleId'>{t('create.roleId')}</Label>
-                <Input id='editRoleId' value={form.roleId} disabled />
-              </div>
-              <div className='space-y-2'>
-                <Label htmlFor='editRoleName'>{t('create.roleName')} *</Label>
-                <Input
-                  id='editRoleName'
-                  placeholder={t('create.roleName')}
-                  value={form.roleName}
-                  onChange={(e) =>
-                    setForm((f) => ({ ...f, roleName: e.target.value }))
-                  }
-                  required
-                />
-              </div>
-              {formError && (
-                <div className='text-sm text-destructive'>{formError}</div>
-              )}
-              <div className='flex gap-3'>
-                <Button
-                  type='button'
-                  variant='outline'
-                  onClick={() => setShowEdit(null)}
-                  disabled={formLoading}
-                  className='flex-1'
-                >
-                  {t('edit.cancel')}
-                </Button>
-                <Button type='submit' disabled={formLoading} className='flex-1'>
-                  {formLoading ? t('edit.saving') : t('edit.save')}
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
-        {/* Delete Role Modal */}
-        <Dialog
+          onSuccess={fetchRoles}
+        />
+
+        <RoleDeleteDialog
+          role={showDelete}
           open={!!showDelete}
           onOpenChange={(open) => !open && setShowDelete(null)}
-        >
-          <DialogContent className='max-w-sm'>
-            <DialogHeader>
-              <DialogTitle>{t('delete.title')}</DialogTitle>
-            </DialogHeader>
-            <div className='space-y-4'>
-              <p>
-                {t('delete.confirm')}
-                <br />
-                <span className='font-semibold'>{showDelete?.roleName}</span>
-              </p>
-              {formError && (
-                <div className='text-sm text-destructive'>{formError}</div>
-              )}
-              <div className='flex gap-3 pt-4'>
-                <Button
-                  type='button'
-                  variant='outline'
-                  onClick={() => setShowDelete(null)}
-                  disabled={formLoading}
-                  className='flex-1'
-                >
-                  {t('delete.cancel')}
-                </Button>
-                <Button
-                  variant='destructive'
-                  disabled={formLoading}
-                  onClick={async () => {
-                    setFormLoading(true)
-                    setFormError(null)
-                    try {
-                      const resp = await deleteRole(showDelete!.roleId)
-                      if (resp.success) {
-                        setShowDelete(null)
-                        await fetchRoles()
-                      } else {
-                        setFormError(resp.message || 'Failed to delete role')
-                      }
-                    } catch (err: unknown) {
-                      const error = err as { message?: string }
-                      setFormError(error.message || 'Error deleting role')
-                    } finally {
-                      setFormLoading(false)
-                    }
-                  }}
-                  className='flex-1'
-                >
-                  {formLoading ? t('delete.deleting') : t('delete.delete')}
-                </Button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
+          onSuccess={fetchRoles}
+        />
       </div>
     </div>
   )

@@ -5,8 +5,8 @@ import { Button } from '@/components/atoms/button'
 import { Typography } from '@/components/atoms/typography'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { toast } from 'sonner'
 import { ArrowLeft, RotateCcw } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -51,10 +51,10 @@ const OtpInput: React.FC<OtpInputProps> = ({
     }
   }, [countdown, canResend])
 
-  const otpSchema = yup.object({
-    otp: yup
+  const otpSchema = z.object({
+    otp: z
       .string()
-      .required(t('homePage.auth.validation.otpRequired'))
+      .min(1, t('homePage.auth.validation.otpRequired'))
       .length(6, t('homePage.auth.validation.otpLength')),
   })
 
@@ -63,7 +63,7 @@ const OtpInput: React.FC<OtpInputProps> = ({
     setValue,
     formState: { errors },
   } = useForm<OtpFormData>({
-    resolver: yupResolver(otpSchema),
+    resolver: zodResolver(otpSchema),
     defaultValues: {
       otp: '',
     },
@@ -171,7 +171,6 @@ const OtpInput: React.FC<OtpInputProps> = ({
 
   return (
     <div className='space-y-6'>
-      {/* Header */}
       <div className='space-y-3 text-center'>
         <Typography variant='h3' className='!mb-2'>
           {t('homePage.auth.otp.title')}

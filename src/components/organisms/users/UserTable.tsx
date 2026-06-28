@@ -102,25 +102,10 @@ export const UserTable: React.FC<UserTableProps> = ({
       accessor: 'joinDate',
       sortable: true,
       render: (value) => (
-        <span className='font-mono text-[13px] tabular-nums text-muted-foreground'>
+        <span className='text-sm text-muted-foreground'>
           {formatDateTime(value as string | null)}
         </span>
       ),
-    },
-    {
-      id: 'posts',
-      header: t('table.headers.posts'),
-      accessor: 'posts',
-      render: (value) =>
-        value !== null ? (
-          <Badge variant='success'>
-            {value as React.ReactNode} {t('table.postsBadge')}
-          </Badge>
-        ) : (
-          <span className='text-sm text-muted-foreground/70'>
-            {t('table.notApplicable')}
-          </span>
-        ),
     },
     {
       id: 'status',

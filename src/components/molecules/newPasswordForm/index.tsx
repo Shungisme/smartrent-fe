@@ -4,8 +4,8 @@ import { Typography } from '@/components/atoms/typography'
 import { PasswordField } from '../passwordField'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { toast } from 'sonner'
 import { ArrowLeft } from 'lucide-react'
 import { resetPassword } from '@/api/services/auth.service'
@@ -26,30 +26,31 @@ const NewPasswordForm: NextPage<NewPasswordFormProps> = (props) => {
   const { onSuccess, onBack, resetPasswordToken } = props
   const t = useTranslations()
 
-  const passwordSchema = yup.object({
-    newPassword: yup
-      .string()
-      .required(t('homePage.auth.validation.passwordRequired'))
-      .min(8, t('homePage.auth.validation.passwordMinLength'))
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
-        t('homePage.auth.validation.passwordPattern'),
-      ),
-    confirmPassword: yup
-      .string()
-      .required(t('homePage.auth.validation.confirmPasswordRequired'))
-      .oneOf(
-        [yup.ref('newPassword')],
-        t('homePage.auth.validation.passwordsDoNotMatch'),
-      ),
-  })
+  const passwordSchema = z
+    .object({
+      newPassword: z
+        .string()
+        .min(1, t('homePage.auth.validation.passwordRequired'))
+        .min(8, t('homePage.auth.validation.passwordMinLength'))
+        .regex(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/,
+          t('homePage.auth.validation.passwordPattern'),
+        ),
+      confirmPassword: z
+        .string()
+        .min(1, t('homePage.auth.validation.confirmPasswordRequired')),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: t('homePage.auth.validation.passwordsDoNotMatch'),
+      path: ['confirmPassword'],
+    })
 
   const {
     control,
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<NewPasswordFormData>({
-    resolver: yupResolver(passwordSchema),
+    resolver: zodResolver(passwordSchema),
     defaultValues: {
       newPassword: '',
       confirmPassword: '',

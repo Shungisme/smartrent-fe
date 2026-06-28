@@ -6,8 +6,8 @@ import { Button } from '@/components/atoms/button'
 import { Typography } from '@/components/atoms/typography'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import dynamic from 'next/dynamic'
 import SeparatorOr from '@/components/atoms/separatorOr'
 import { useLogin } from '@/hooks/useAuth'
@@ -35,18 +35,19 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
 
   const { onSuccess } = props
 
-  const loginSchema = yup.object({
-    email: yup
+  const loginSchema = z.object({
+    email: z
       .string()
-      .required(t('homePage.auth.validation.emailRequired'))
-      .matches(
+      .trim()
+      .min(1, t('homePage.auth.validation.emailRequired'))
+      .regex(
         VALIDATION_PATTERNS.EMAIL,
         t('homePage.auth.validation.emailInvalid'),
       ),
-    password: yup
+    password: z
       .string()
-      .required(t('homePage.auth.validation.passwordRequired'))
-      .matches(
+      .min(1, t('homePage.auth.validation.passwordRequired'))
+      .regex(
         VALIDATION_PATTERNS.PASSWORD,
         t('homePage.auth.validation.passwordPattern'),
       ),
@@ -57,7 +58,7 @@ const LoginForm: NextPage<LoginFormProps> = (props) => {
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<LoginFormData>({
-    resolver: yupResolver(loginSchema),
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
       password: '',

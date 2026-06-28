@@ -36,7 +36,6 @@ export const ListingTypeTable: React.FC<ListingTypeTableProps> = ({
       header: t('listingTypes.columns.tier'),
       accessor: (row) => row.tierName,
       render: (_, tier) => {
-        const style = TIER_STYLES[tier.tierCode] || FALLBACK_TIER_STYLE
         const name = locale === 'vi' ? tier.tierName : tier.tierNameEn
         return (
           <div>
