@@ -100,13 +100,17 @@ export const formatDateTime = (
 }
 
 export const getStatusColor = (status: PostStatus): string => {
-  const colors = {
+  const colors: Record<PostStatus, string> = {
     pending: 'border-warning/30 bg-warning/15 text-warning-foreground',
+    resubmitted: 'border-sky-500/30 bg-sky-500/10 text-sky-700',
     approved: 'border-success/30 bg-success/12 text-success-foreground',
     rejected: 'border-destructive/30 bg-destructive/10 text-destructive',
+    revision_required: 'border-orange-500/30 bg-orange-500/10 text-orange-700',
+    suspended: 'border-destructive/30 bg-destructive/10 text-destructive',
     expired: 'border-border bg-muted text-foreground/70',
+    pending_payment: 'border-purple-500/30 bg-purple-500/10 text-purple-700',
   }
-  return colors[status]
+  return colors[status] ?? colors.pending
 }
 
 export const mapUIFiltersToAPI = (
@@ -138,9 +142,25 @@ export const mapUIFiltersToAPI = (
   }
 
   // moderationStatus filter (primary moderation workflow field)
+  // Also send the corresponding listingStatus — mirrors smartrent-fe's LISTING_STATUS_MODERATION_MAP pattern
   const moderationStatus = str('moderationStatus')
   if (moderationStatus) {
     apiFilters.moderationStatus = moderationStatus as ModerationStatus
+    const moderationToListingStatus: Partial<
+      Record<ModerationStatus, SummaryListingStatus>
+    > = {
+      PENDING_REVIEW: 'IN_REVIEW',
+      RESUBMITTED: 'RESUBMITTED',
+      APPROVED: 'DISPLAYING',
+      REVISION_REQUIRED: 'REJECTED',
+      SUSPENDED: 'REJECTED',
+      REJECTED: 'REJECTED',
+    }
+    const mappedListingStatus =
+      moderationToListingStatus[moderationStatus as ModerationStatus]
+    if (mappedListingStatus) {
+      apiFilters.listingStatus = mappedListingStatus
+    }
   }
   // Legacy: Status mapping (backward compatible)
   else if (uiFilters.status) {
@@ -262,6 +282,7 @@ const deriveStatusFromVerification = (
 
 const deriveStatusFromListingStatus = (
   listingStatus: SummaryListingStatus | null | undefined,
+  moderationStatus: ModerationStatus | null | undefined,
   verificationStatus: string | null | undefined,
   expired: boolean | null | undefined,
 ): PostStatus => {
@@ -269,14 +290,18 @@ const deriveStatusFromListingStatus = (
     case 'EXPIRED':
       return 'expired'
     case 'IN_REVIEW':
-    case 'RESUBMITTED':
-    case 'PENDING_PAYMENT':
       return 'pending'
+    case 'RESUBMITTED':
+      return 'resubmitted'
+    case 'PENDING_PAYMENT':
+      return 'pending_payment'
     case 'DISPLAYING':
     case 'EXPIRING_SOON':
     case 'VERIFIED':
       return 'approved'
     case 'REJECTED':
+      if (moderationStatus === 'REVISION_REQUIRED') return 'revision_required'
+      if (moderationStatus === 'SUSPENDED') return 'suspended'
       return 'rejected'
     default:
       return deriveStatusFromVerification(verificationStatus, expired)
@@ -333,6 +358,7 @@ export const mapSummaryToUI = (item: AdminListingSummary): UIPostData => {
     expiryDate,
     status: deriveStatusFromListingStatus(
       item.listingStatus,
+      item.moderationStatus,
       item.adminVerification?.verificationStatus,
       item.expired,
     ),

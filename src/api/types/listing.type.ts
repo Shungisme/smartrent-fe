@@ -259,7 +259,7 @@ export interface ListingFilterRequest {
   /** Matches owner firstName/lastName/contactPhoneNumber/phoneNumber (case-insensitive contains). */
   ownerSearch?: string
   moderationStatus?: ModerationStatus
-  listingStatus?: ListingStatus
+  listingStatus?: SummaryListingStatus
   verified?: boolean
   isVerify?: boolean
   expired?: boolean
