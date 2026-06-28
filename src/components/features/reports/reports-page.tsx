@@ -29,28 +29,34 @@ const ViolationReportManagement = () => {
   const fetchReports = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await ListingService.getReports({ page: 1, size: 50 })
+      const [reportsRes, statsRes] = await Promise.all([
+        ListingService.getReports({ page: 1, size: 50 }),
+        ListingService.getReportStatistics(),
+      ])
 
-      if (!res.data) {
+      if (!reportsRes.data) {
         setReports([])
         setStats({ total: 0, pending: 0, resolved: 0, dismissed: 0 })
         return
       }
 
-      setReports(res.data.data)
-      // Calculate stats
-      const statObj = { total: 0, pending: 0, resolved: 0, dismissed: 0 }
-      statObj.total = res.data.totalElements
-      statObj.pending = res.data.data.filter(
-        (r) => r.status === 'PENDING',
-      ).length
-      statObj.resolved = res.data.data.filter(
-        (r) => r.status === 'RESOLVED',
-      ).length
-      statObj.dismissed = res.data.data.filter(
-        (r) => r.status === 'REJECTED',
-      ).length
-      setStats(statObj)
+      setReports(reportsRes.data.data)
+
+      if (statsRes.data) {
+        setStats({
+          total: statsRes.data.totalReports,
+          pending: statsRes.data.pendingReports,
+          resolved: statsRes.data.resolvedReports,
+          dismissed: statsRes.data.rejectedReports,
+        })
+      } else {
+        setStats({
+          total: reportsRes.data.totalElements,
+          pending: 0,
+          resolved: 0,
+          dismissed: 0,
+        })
+      }
     } catch (e) {
       console.error(e)
     } finally {
@@ -80,24 +86,21 @@ const ViolationReportManagement = () => {
     }
 
     try {
-      const response = await ListingService.requestListingRevision(
+      await ListingService.requestListingRevision(
         selectedReport.listingId,
         reason,
         true, // ownerActionRequired
       )
 
-      // Check if request was successful
-      if (response && response.code !== '9999') {
-        toast.success(t('toasts.revisionSuccess'))
+      // Close the report after requesting revision
+      await ListingService.resolveReport(selectedReport.reportId, {
+        status: 'RESOLVED',
+        adminNotes: reason,
+      })
 
-        // Refresh reports
-        setReviewModalOpen(false)
-        fetchReports()
-      } else {
-        // Handle error response
-        const errorMessage = response.message || t('toasts.revisionError')
-        toast.error(errorMessage)
-      }
+      toast.success(t('toasts.revisionSuccess'))
+      setReviewModalOpen(false)
+      fetchReports()
     } catch (error) {
       console.error('Error requesting revision:', error)
       toast.error(t('toasts.revisionError'))
