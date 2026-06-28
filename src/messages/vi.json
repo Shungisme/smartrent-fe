@@ -1691,45 +1691,13 @@
   "reports": {
     "title": "Quản Lý Báo Cáo Vi Phạm",
     "description": "Xem xét và xử lý báo cáo của người dùng về bài đăng có thể vi phạm quy tắc cộng đồng.",
-    "breadcrumb": {
-      "menu": "Thực Đơn Điều Hướng",
-      "title": "Quản Lý Báo Cáo Vi Phạm",
-      "overview": "Tổng Quan"
-    },
     "stats": {
       "total": "Tổng Báo Cáo",
-      "allTime": "Tất cả báo cáo",
-      "pending": "Chờ Xử Lý",
-      "needAttention": "Cần xử lý",
-      "resolved": "Đã Xử Lý",
-      "actionTaken": "Đã có hành động",
-      "dismissed": "Đã Bỏ Qua",
-      "noAction": "Không cần xử lý"
-    },
-    "search": {
-      "placeholder": "Tìm theo tiêu đề bài đăng, tên người báo cáo hoặc ID bài đăng..."
-    },
-    "filters": {
-      "status": "Trạng Thái",
       "pending": "Chờ Xử Lý",
       "resolved": "Đã Xử Lý",
-      "dismissed": "Đã Bỏ Qua",
-      "category": "Danh Mục",
-      "fakeFraudulent": "Tin Giả/Lừa Đảo",
-      "spamPromotional": "Spam/Quảng Cáo",
-      "inappropriateContent": "Nội Dung Không Phù Hợp",
-      "wrongInformation": "Thông Tin Sai",
-      "other": "Khác"
+      "dismissed": "Đã Bỏ Qua"
     },
     "table": {
-      "postDetails": "Chi Tiết Bài Đăng",
-      "reporter": "Người Báo Cáo",
-      "category": "Danh Mục Báo Cáo",
-      "content": "Nội Dung Báo Cáo",
-      "reportTime": "Thời Gian Báo Cáo",
-      "status": "Trạng Thái",
-      "actions": "Thao tác",
-      "noReportsFound": "Không tìm thấy báo cáo phù hợp",
       "viewDetails": "Xem Chi Tiết",
       "id": "ID",
       "listingNumber": "Tin đăng #",
@@ -1739,22 +1707,12 @@
     "review": {
       "title": "Xem Xét Báo Cáo Vi Phạm",
       "reportedBy": "Báo cáo bởi",
-      "on": "vào",
-      "category": "Danh mục",
       "reportedPost": "Bài Đăng Bị Báo Cáo",
-      "postId": "ID Bài Đăng",
-      "postStatus": "Trạng thái bài đăng",
-      "active": "Hoạt động",
-      "inactive": "Không hoạt động",
       "reporterInfo": "Thông Tin Người Báo Cáo",
       "reportReasons": "Lý Do Báo Cáo",
       "reportedAt": "Thời Gian Báo Cáo",
       "additionalFeedback": "Phản Hồi Bổ Sung",
-      "reportContent": "Nội Dung Báo Cáo",
       "currentStatus": "Trạng Thái Hiện Tại",
-      "actionReason": "Lý Do Hành Động",
-      "actionPlaceholder": "Nhập lý do quyết định của bạn...",
-      "viewPost": "Xem Bài Đăng",
       "resolve": "Xử Lý",
       "requestRevision": "Yêu Cầu Sửa Đổi",
       "dismiss": "Bỏ Qua",
@@ -1779,6 +1737,7 @@
       "couldNotLoad": "Không thể tải thông tin bài đăng"
     },
     "categories": {
+      "LISTING": "Tin Đăng",
       "fake_fraudulent": "Tin Giả/Lừa Đảo",
       "spam_promotional": "Spam/Quảng Cáo",
       "inappropriate_content": "Nội Dung Không Phù Hợp",
@@ -2019,6 +1978,7 @@
     "status": {
       "PENDING": "Chờ Xử Lý",
       "SUCCESS": "Thành Công",
+      "COMPLETED": "Hoàn Thành",
       "FAILED": "Thất Bại",
       "CANCELLED": "Đã Huỷ",
       "REFUNDED": "Hoàn Tiền"

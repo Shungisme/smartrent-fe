@@ -81,7 +81,11 @@ export const ReportTable: React.FC<ReportTableProps> = ({
             {t('table.listingNumber')}
             {row.listingId}
           </div>
-          <div className='text-xs text-muted-foreground'>{row.category}</div>
+          <div className='text-xs text-muted-foreground'>
+            {t.has(`categories.${row.category}`)
+              ? t(`categories.${row.category}`)
+              : row.category}
+          </div>
         </div>
       ),
     },
