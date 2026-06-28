@@ -55,11 +55,9 @@ export const UserTable: React.FC<UserTableProps> = ({
   const transformedUsers: UserData[] = users.map((user) => ({
     id: user.userId,
     name: `${user.firstName} ${user.lastName}`,
-    avatar: undefined, // API doesn't return avatar yet
+    avatar: user.avatarUrl,
     type: user.isBroker ? 'broker' : 'normal_user',
     joinDate: user.createdAt || '-',
-    posts: null, // API doesn't return posts count yet
-    status: 'normal', // API doesn't return status yet, default to normal
   }))
 
   const columns: Column<UserData>[] = [
@@ -106,34 +104,6 @@ export const UserTable: React.FC<UserTableProps> = ({
           {formatDateTime(value as string | null)}
         </span>
       ),
-    },
-    {
-      id: 'status',
-      header: t('table.headers.status'),
-      accessor: 'status',
-      render: (value) => {
-        const status = value as string
-        const variant: 'success' | 'destructive' | 'secondary' =
-          status === 'normal'
-            ? 'success'
-            : status === 'banned'
-              ? 'destructive'
-              : 'secondary'
-        return (
-          <Badge variant={variant} className='gap-1.5'>
-            <span
-              className={`inline-block h-1.5 w-1.5 rounded-full ${
-                status === 'normal'
-                  ? 'bg-success'
-                  : status === 'banned'
-                    ? 'bg-destructive'
-                    : 'bg-muted-foreground/50'
-              }`}
-            />
-            {t(`table.statuses.${status}`)}
-          </Badge>
-        )
-      },
     },
     {
       id: 'actions',

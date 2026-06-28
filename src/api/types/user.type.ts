@@ -16,16 +16,14 @@ export type UserBrokerVerificationStatus =
 // User profile response from GET /v1/users
 export interface UserProfile {
   userId: string
-  phoneCode: string
-  phoneNumber: string
   email: string
   firstName: string
   lastName: string
   createdAt?: string
   idDocument?: string
-  taxNumber?: string
   contactPhoneNumber?: string
   contactPhoneVerified?: boolean
+  avatarUrl?: string
   isBroker?: boolean
   brokerVerificationStatus?: UserBrokerVerificationStatus
 }

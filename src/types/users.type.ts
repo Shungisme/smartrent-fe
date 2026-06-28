@@ -4,6 +4,4 @@ export type UserData = {
   avatar?: string
   type: 'normal_user' | 'broker'
   joinDate: string
-  posts: number | null
-  status: 'normal' | 'banned'
 }
