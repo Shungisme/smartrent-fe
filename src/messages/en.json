@@ -1727,45 +1727,13 @@
   "reports": {
     "title": "Violation Report Management",
     "description": "Review and manage user reports about posts that may violate community guidelines.",
-    "breadcrumb": {
-      "menu": "Navigation Menu",
-      "title": "Violation Report Management",
-      "overview": "Overview"
-    },
     "stats": {
       "total": "Total Reports",
-      "allTime": "All time reports",
       "pending": "Pending Review",
-      "needAttention": "Need attention",
       "resolved": "Resolved",
-      "actionTaken": "Action taken",
-      "dismissed": "Dismissed",
-      "noAction": "No action needed"
-    },
-    "search": {
-      "placeholder": "Search by post title, reporter name, or post ID..."
-    },
-    "filters": {
-      "status": "Status",
-      "pending": "Pending",
-      "resolved": "Resolved",
-      "dismissed": "Dismissed",
-      "category": "Category",
-      "fakeFraudulent": "Fake/Fraudulent Listing",
-      "spamPromotional": "Spam/Promotional",
-      "inappropriateContent": "Inappropriate Content",
-      "wrongInformation": "Wrong Information",
-      "other": "Other"
+      "dismissed": "Dismissed"
     },
     "table": {
-      "postDetails": "Post Details",
-      "reporter": "Reporter",
-      "category": "Report Category",
-      "content": "Report Content",
-      "reportTime": "Report Time",
-      "status": "Status",
-      "actions": "Actions",
-      "noReportsFound": "No reports found matching your criteria",
       "viewDetails": "View Details",
       "id": "ID",
       "listingNumber": "Listing #",
@@ -1775,22 +1743,12 @@
     "review": {
       "title": "Review Violation Report",
       "reportedBy": "Reported by",
-      "on": "on",
-      "category": "Category",
       "reportedPost": "Reported Post",
-      "postId": "Post ID",
-      "postStatus": "Post status",
-      "active": "Active",
-      "inactive": "Inactive",
       "reporterInfo": "Reporter Information",
       "reportReasons": "Report Reasons",
       "reportedAt": "Reported At",
       "additionalFeedback": "Additional Feedback",
-      "reportContent": "Report Content",
       "currentStatus": "Current Status",
-      "actionReason": "Action Reason",
-      "actionPlaceholder": "Enter reason for your decision...",
-      "viewPost": "View Post",
       "resolve": "Resolve Report",
       "requestRevision": "Request Revision",
       "dismiss": "Dismiss Report",
@@ -1815,6 +1773,7 @@
       "couldNotLoad": "Could not load listing details"
     },
     "categories": {
+      "LISTING": "Listing",
       "fake_fraudulent": "Fake/Fraudulent Listing",
       "spam_promotional": "Spam/Promotional",
       "inappropriate_content": "Inappropriate Content",
@@ -2055,6 +2014,7 @@
     "status": {
       "PENDING": "Pending",
       "SUCCESS": "Success",
+      "COMPLETED": "Completed",
       "FAILED": "Failed",
       "CANCELLED": "Cancelled",
       "REFUNDED": "Refunded"

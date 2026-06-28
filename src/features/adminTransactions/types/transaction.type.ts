@@ -7,6 +7,7 @@ export type PaymentStatus =
   | 'FAILED'
   | 'CANCELLED'
   | 'REFUNDED'
+  | 'COMPLETED'
 
 /**
  * Payment Gateway

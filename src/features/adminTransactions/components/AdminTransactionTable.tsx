@@ -35,6 +35,8 @@ const STATUS_BADGE_CLASS: Record<PaymentStatus, string> = {
     'bg-warning/10 text-warning-foreground dark:bg-warning/20 border-warning/30',
   SUCCESS:
     'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30',
+  COMPLETED:
+    'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30',
   FAILED:
     'bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30',
   CANCELLED: 'bg-muted text-foreground/80',
@@ -191,6 +193,7 @@ export const AdminTransactionTable = ({
       options: [
         { value: 'PENDING', label: t('status.PENDING') },
         { value: 'SUCCESS', label: t('status.SUCCESS') },
+        { value: 'COMPLETED', label: t('status.COMPLETED') },
         { value: 'FAILED', label: t('status.FAILED') },
         { value: 'CANCELLED', label: t('status.CANCELLED') },
         { value: 'REFUNDED', label: t('status.REFUNDED') },

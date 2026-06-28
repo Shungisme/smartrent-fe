@@ -59,6 +59,18 @@ const getStatusColor = (status: string) => {
   }
 }
 
+const getAlertIcon = (status: string) => {
+  const cls = 'h-5 w-5 mt-0.5 flex-shrink-0'
+  switch (status) {
+    case 'RESOLVED':
+      return <CheckCircle className={cls} />
+    case 'REJECTED':
+      return <XCircle className={cls} />
+    default:
+      return <AlertTriangle className={cls} />
+  }
+}
+
 const statusMap = {
   PENDING: 'pending',
   RESOLVED: 'resolved',
@@ -246,14 +258,22 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
           {report && (
             <div className='space-y-4 md:space-y-6'>
               {/* Report Info Alert */}
-              <div className='rounded-lg bg-warning/10 dark:bg-warning/20 border border-warning/30 p-3 md:p-4'>
+              <div
+                className={cn(
+                  'rounded-lg border p-3 md:p-4',
+                  getStatusColor(report.status),
+                )}
+              >
                 <div className='flex items-start gap-2 md:gap-3'>
-                  <AlertTriangle className='h-5 w-5 text-warning-foreground mt-0.5 flex-shrink-0' />
+                  {getAlertIcon(report.status)}
                   <div className='flex-1'>
-                    <h4 className='text-sm md:text-base font-medium text-warning-foreground'>
-                      Report #{report.reportId} - {report.category}
+                    <h4 className='text-sm md:text-base font-medium'>
+                      Report #{report.reportId} -{' '}
+                      {t.has(`categories.${report.category}`)
+                        ? t(`categories.${report.category}`)
+                        : report.category}
                     </h4>
-                    <p className='mt-1 text-xs md:text-sm text-warning-foreground/90'>
+                    <p className='mt-1 text-xs md:text-sm opacity-90'>
                       Reported by <strong>{report.reporterName}</strong>
                       {report.createdAt && (
                         <>
