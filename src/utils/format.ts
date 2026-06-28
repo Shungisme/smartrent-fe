@@ -24,20 +24,51 @@ export const truncateText = (text: string, maxLength: number): string => {
   return text.substring(0, maxLength) + '...'
 }
 
-/**
- * Format date time string
- */
-export const formatDateTime = (dateString: string): string => {
+export const formatDateTime = (
+  dateString: string | null | undefined,
+): string => {
+  if (!dateString) return '--'
   const date = new Date(dateString)
+  if (Number.isNaN(date.getTime())) return '--'
   return date.toLocaleString('vi-VN')
 }
 
-/**
- * Format date only
- */
-export const formatDate = (dateString: string): string => {
+export const formatDate = (dateString: string | null | undefined): string => {
+  if (!dateString) return '--'
   const date = new Date(dateString)
+  if (Number.isNaN(date.getTime())) return '--'
   return date.toLocaleDateString('vi-VN')
+}
+
+export const formatDateTimeParts = (
+  isoString: string,
+): { date: string; time: string } => {
+  const date = new Date(isoString)
+  return {
+    date: date.toLocaleDateString('vi-VN'),
+    time: date.toLocaleTimeString('vi-VN', {
+      hour: '2-digit',
+      minute: '2-digit',
+    }),
+  }
+}
+
+export const formatDateTimeCompact = (value?: string | null): string => {
+  if (!value) return '-'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '-'
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())} ${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}`
+}
+
+export const formatPrice = (price: number, priceUnit: string): string => {
+  const formatted = new Intl.NumberFormat('vi-VN').format(price)
+  const unitMap: Record<string, string> = {
+    VND_PER_MONTH: 'đ/tháng',
+    VND_PER_YEAR: 'đ/năm',
+    VND_TOTAL: 'đ',
+  }
+  return `${formatted}${unitMap[priceUnit] ?? 'đ'}`
 }
 
 /**

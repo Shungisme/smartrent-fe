@@ -11,6 +11,7 @@ import { Badge } from '@/components/atoms/badge'
 import { Calendar, User, Eye, Tag, ImageOff } from 'lucide-react'
 import { NewsResponse, NewsStatus, NewsCategory } from '@/api/types/news.type'
 import { cn } from '@/lib/utils'
+import { formatDateTime } from '@/utils/format'
 
 interface NewsPreviewModalProps {
   open: boolean
@@ -43,12 +44,6 @@ const getCategoryClass = (category: NewsCategory): string => {
       'border-pink-200/70 bg-pink-50 text-pink-700 dark:border-pink-500/30 dark:bg-pink-500/10 dark:text-pink-300',
   }
   return colors[category]
-}
-
-const formatDateTime = (dateString: string | null): string => {
-  if (!dateString) return 'N/A'
-  const date = new Date(dateString)
-  return date.toLocaleString('vi-VN')
 }
 
 const isValidImageSrc = (src: unknown): src is string => {

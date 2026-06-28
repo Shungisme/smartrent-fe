@@ -30,6 +30,7 @@ import { ListingReport } from '@/api/types/listing-report.type'
 import { ListingService } from '@/api/services/listing.service'
 import { ListingResponseWithAdmin } from '@/api/types/listing.type'
 import { toast } from 'sonner'
+import { formatPrice, formatDateTimeParts } from '@/utils/format'
 
 interface ReportReviewModalProps {
   open: boolean
@@ -88,27 +89,6 @@ const getPropertyIcon = (type: string) => {
   return iconMap[type] || <Home className='h-4 w-4' />
 }
 
-const formatPrice = (price: number, priceUnit: string): string => {
-  const formatted = new Intl.NumberFormat('vi-VN').format(price)
-  const unitMap: Record<string, string> = {
-    VND_PER_MONTH: 'đ/tháng',
-    VND_PER_YEAR: 'đ/năm',
-    VND_TOTAL: 'đ',
-  }
-  return `${formatted}${unitMap[priceUnit] || 'đ'}`
-}
-
-const formatDateTime = (isoString: string): { date: string; time: string } => {
-  const date = new Date(isoString)
-  return {
-    date: date.toLocaleDateString('vi-VN'),
-    time: date.toLocaleTimeString('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-  }
-}
-
 export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
   open,
   onOpenChange,
@@ -117,6 +97,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
   onRequestRevision,
 }) => {
   const t = useTranslations('reports')
+  const tPosts = useTranslations('posts')
   const [listingDetails, setListingDetails] =
     useState<ListingResponseWithAdmin | null>(null)
   const [loadingListing, setLoadingListing] = useState(false)
@@ -146,7 +127,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
       }
     } catch (error) {
       console.error('Error fetching listing details:', error)
-      toast.error('Failed to load listing details')
+      toast.error(t('toasts.loadListingError'))
     } finally {
       setLoadingListing(false)
     }
@@ -156,7 +137,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
     if (!report) return
 
     if (!actionReason.trim()) {
-      toast.warning('Please provide admin notes for resolution')
+      toast.warning(t('toasts.adminNotesRequired'))
       return
     }
 
@@ -166,12 +147,12 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
         status: 'RESOLVED',
         adminNotes: actionReason,
       })
-      toast.success('Report has been resolved successfully')
+      toast.success(t('toasts.resolveSuccess'))
       onOpenChange(false)
       onActionComplete()
     } catch (e) {
       console.error(e)
-      toast.error('Failed to resolve report. Please try again.')
+      toast.error(t('toasts.resolveError'))
     } finally {
       setActionLoading(false)
     }
@@ -181,7 +162,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
     if (!report) return
 
     if (!actionReason.trim()) {
-      toast.warning('Please provide a reason for dismissal')
+      toast.warning(t('toasts.dismissNoteRequired'))
       return
     }
 
@@ -191,12 +172,12 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
         status: 'REJECTED',
         adminNotes: actionReason,
       })
-      toast.success('Report has been dismissed')
+      toast.success(t('toasts.dismissSuccess'))
       onOpenChange(false)
       onActionComplete()
     } catch (e) {
       console.error(e)
-      toast.error('Failed to dismiss report. Please try again.')
+      toast.error(t('toasts.dismissError'))
     } finally {
       setActionLoading(false)
     }
@@ -206,7 +187,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
     if (!report || !onRequestRevision) return
 
     if (!actionReason.trim()) {
-      toast.warning('Please provide details on what needs to be revised.')
+      toast.warning(t('toasts.revisionDetailsRequired'))
       return
     }
 
@@ -268,18 +249,22 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                   {getAlertIcon(report.status)}
                   <div className='flex-1'>
                     <h4 className='text-sm md:text-base font-medium'>
-                      Report #{report.reportId} -{' '}
+                      {t('review.reportPrefix')}
+                      {report.reportId} -{' '}
                       {t.has(`categories.${report.category}`)
                         ? t(`categories.${report.category}`)
                         : report.category}
                     </h4>
                     <p className='mt-1 text-xs md:text-sm opacity-90'>
-                      Reported by <strong>{report.reporterName}</strong>
+                      {t('review.reportedBy')}{' '}
+                      <strong>{report.reporterName}</strong>
                       {report.createdAt && (
                         <>
                           {' '}
-                          on {formatDateTime(report.createdAt).date} at{' '}
-                          {formatDateTime(report.createdAt).time}
+                          {t('review.on')}{' '}
+                          {formatDateTimeParts(report.createdAt).date}{' '}
+                          {t('review.at')}{' '}
+                          {formatDateTimeParts(report.createdAt).time}
                         </>
                       )}
                     </p>
@@ -374,7 +359,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                   <div className='flex items-center justify-center p-8 border border-border/70 rounded-lg'>
                     <Loader2 className='h-6 w-6 animate-spin text-primary' />
                     <span className='ml-2 text-sm text-muted-foreground'>
-                      Loading listing details...
+                      {t('review.loadingDetails')}
                     </span>
                   </div>
                 ) : listingDetails ? (
@@ -412,7 +397,8 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                         {listingDetails.title}
                       </h4>
                       <p className='text-sm text-muted-foreground mt-1'>
-                        Listing ID: #{listingDetails.listingId}
+                        {t('review.listingIdPrefix')}
+                        {listingDetails.listingId}
                       </p>
                     </div>
 
@@ -439,7 +425,13 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                             {getPropertyIcon(listingDetails.productType)}
                           </div>
                           <span className='text-sm font-medium'>
-                            {listingDetails.productType}
+                            {tPosts.has(
+                              `propertyTypes.${listingDetails.productType.toLowerCase()}`,
+                            )
+                              ? tPosts(
+                                  `propertyTypes.${listingDetails.productType.toLowerCase()}`,
+                                )
+                              : listingDetails.productType}
                           </span>
                         </div>
                       </div>
@@ -492,7 +484,13 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                             {t('review.direction')}
                           </div>
                           <div className='text-sm font-medium mt-1'>
-                            {listingDetails.direction}
+                            {tPosts.has(
+                              `directions.${listingDetails.direction.toLowerCase()}`,
+                            )
+                              ? tPosts(
+                                  `directions.${listingDetails.direction.toLowerCase()}`,
+                                )
+                              : listingDetails.direction}
                           </div>
                         </div>
                       )}
@@ -555,8 +553,9 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                   {report.resolvedAt && (
                     <p className='text-xs text-muted-foreground mt-2'>
                       {t('review.resolvedOn')}{' '}
-                      {formatDateTime(report.resolvedAt).date} {t('review.at')}{' '}
-                      {formatDateTime(report.resolvedAt).time}
+                      {formatDateTimeParts(report.resolvedAt).date}{' '}
+                      {t('review.at')}{' '}
+                      {formatDateTimeParts(report.resolvedAt).time}
                       {report.resolvedByName &&
                         ` ${t('review.by')} ${report.resolvedByName}`}
                     </p>

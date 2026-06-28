@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { toast } from 'sonner'
+import { useTranslations } from 'next-intl'
 import { ListingService } from '@/api/services/listing.service'
 import { ListingStatisticsSummary } from '@/api/types/listing.type'
 import { Loader2 } from 'lucide-react'
@@ -17,6 +18,7 @@ import { PostReviewModal } from '@/components/organisms/posts/PostReviewModal'
 import { AiSchedulerControl } from '@/components/molecules/aiServiceStatus/AiSchedulerControl'
 
 const PostVerification = () => {
+  const t = useTranslations('posts')
   const [posts, setPosts] = useState<UIPostData[]>([])
   const [initialLoading, setInitialLoading] = useState(true)
   const [tableLoading, setTableLoading] = useState(false)
@@ -65,7 +67,7 @@ const PostVerification = () => {
       }
     } catch (error) {
       console.error('Error fetching listings:', error)
-      toast.error('Failed to load listings. Please try again.')
+      toast.error(t('toasts.loadListingsError'))
     } finally {
       setInitialLoading(false)
       setTableLoading(false)
@@ -85,12 +87,12 @@ const PostVerification = () => {
       if (response.success && response.data) {
         setSelectedPost(mapDetailToUI(response.data))
       } else {
-        toast.error(response.message || 'Failed to load listing detail.')
+        toast.error(response.message || t('toasts.loadDetailError'))
         setReviewModalOpen(false)
       }
     } catch (error) {
       console.error('Error fetching listing detail:', error)
-      toast.error('Failed to load listing detail. Please try again.')
+      toast.error(t('toasts.loadDetailError'))
       setReviewModalOpen(false)
     } finally {
       setDetailLoading(false)
@@ -113,19 +115,18 @@ const PostVerification = () => {
       const response = await ListingService.approveListing(selectedPost.id)
 
       if (response && response.code !== '9999') {
-        toast.success('Listing has been approved successfully.')
+        toast.success(t('toasts.approveSuccess'))
 
         await fetchListings()
         setReviewModalOpen(false)
         setSelectedPost(null)
       } else {
-        const errorMessage =
-          response.message || 'Failed to approve listing. Please try again.'
+        const errorMessage = response.message || t('toasts.approveError')
         toast.error(errorMessage)
       }
     } catch (error) {
       console.error('Error approving listing:', error)
-      toast.error('Failed to approve listing. Please try again.')
+      toast.error(t('toasts.approveError'))
     } finally {
       setActionLoading(false)
     }
@@ -135,7 +136,7 @@ const PostVerification = () => {
     if (!selectedPost) return
 
     if (!reason.trim()) {
-      toast.warning('Please provide a reason for rejection.')
+      toast.warning(t('toasts.rejectReasonRequired'))
       return
     }
 
@@ -152,21 +153,18 @@ const PostVerification = () => {
       )
 
       if (response && response.code !== '9999') {
-        toast.success(
-          'Listing has been rejected. Owner will be notified to fix and resubmit.',
-        )
+        toast.success(t('toasts.rejectSuccess'))
 
         await fetchListings()
         setReviewModalOpen(false)
         setSelectedPost(null)
       } else {
-        const errorMessage =
-          response.message || 'Failed to reject listing. Please try again.'
+        const errorMessage = response.message || t('toasts.rejectError')
         toast.error(errorMessage)
       }
     } catch (error) {
       console.error('Error rejecting listing:', error)
-      toast.error('Failed to reject listing. Please try again.')
+      toast.error(t('toasts.rejectError'))
     } finally {
       setActionLoading(false)
     }
@@ -176,7 +174,7 @@ const PostVerification = () => {
     if (!selectedPost) return
 
     if (!reason.trim()) {
-      toast.warning('Please provide details on what needs to be revised.')
+      toast.warning(t('toasts.revisionDetailsRequired'))
       return
     }
 
@@ -189,21 +187,18 @@ const PostVerification = () => {
       )
 
       if (response && response.code !== '9999') {
-        toast.success(
-          'Revision requested. Owner will be notified to update the listing.',
-        )
+        toast.success(t('toasts.revisionSuccess'))
 
         await fetchListings()
         setReviewModalOpen(false)
         setSelectedPost(null)
       } else {
-        const errorMessage =
-          response.message || 'Failed to request revision. Please try again.'
+        const errorMessage = response.message || t('toasts.revisionError')
         toast.error(errorMessage)
       }
     } catch (error) {
       console.error('Error requesting revision:', error)
-      toast.error('Failed to request revision. Please try again.')
+      toast.error(t('toasts.revisionError'))
     } finally {
       setActionLoading(false)
     }

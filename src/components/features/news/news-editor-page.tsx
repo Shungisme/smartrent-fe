@@ -357,10 +357,10 @@ const NewsEditor = () => {
         .focus()
         .setImage({ src: imageUrl, alt: file.name, title: file.name })
         .run()
-      toast.success('Image inserted')
+      toast.success(t('messages.imageInserted'))
     } catch (error) {
       console.error('Error uploading content image:', error)
-      toast.error('Failed to upload image')
+      toast.error(t('messages.uploadImageFailed'))
     } finally {
       setUploadingContentImage(false)
       event.target.value = ''
@@ -374,10 +374,10 @@ const NewsEditor = () => {
       setValue('thumbnailUrl', imageUrl, {
         shouldDirty: true,
       })
-      toast.success('Thumbnail uploaded')
+      toast.success(t('messages.uploadThumbnailSuccess'))
     } catch (error) {
       console.error('Error uploading thumbnail:', error)
-      toast.error('Failed to upload thumbnail')
+      toast.error(t('messages.uploadThumbnailFailed'))
     } finally {
       setUploadingThumbnail(false)
     }

@@ -25,6 +25,7 @@ import {
 } from 'lucide-react'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/atoms/avatar'
 import { AdminBrokerUserResponse } from '@/api/types/broker.type'
+import { formatDate } from '@/utils/format'
 
 const BROKER_REGISTRY_URL =
   'https://www.nangluchdxd.gov.vn/Canhan?page=2&pagesize=20'
@@ -39,13 +40,6 @@ interface BrokerReviewDialogProps {
   onApprove: (user: AdminBrokerUserResponse) => void
   onRejectWithReason: (user: AdminBrokerUserResponse, reason: string) => void
   onRemove: (user: AdminBrokerUserResponse) => void
-}
-
-const formatDate = (value?: string | null) => {
-  if (!value) return '--'
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return '--'
-  return date.toLocaleDateString('vi-VN')
 }
 
 const statusVariant = (

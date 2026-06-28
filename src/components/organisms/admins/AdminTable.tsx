@@ -12,24 +12,9 @@ import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 import { AdminProfile } from '@/api/types/admin.type'
 import { AdminRow } from '@/types/admins.type'
+import { formatDateTimeCompact } from '@/utils/format'
 
 type AdminRole = 'SA' | 'UA' | 'CM' | 'SPA' | 'FA' | 'MA'
-
-const formatDateTime = (value?: string | null): string => {
-  if (!value) return '-'
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return '-'
-
-  const pad = (input: number) => String(input).padStart(2, '0')
-  const hours = pad(date.getHours())
-  const minutes = pad(date.getMinutes())
-  const seconds = pad(date.getSeconds())
-  const day = pad(date.getDate())
-  const month = pad(date.getMonth() + 1)
-  const year = date.getFullYear()
-
-  return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`
-}
 
 // Subtle tinted role pills — quiet enough for a dense table, semantic enough to scan.
 const getRoleBadgeClass = (role: string): string => {
@@ -187,7 +172,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       sortable: true,
       render: (value) => (
         <span className='text-sm text-muted-foreground'>
-          {formatDateTime(value as string | null)}
+          {formatDateTimeCompact(value as string | null)}
         </span>
       ),
     },

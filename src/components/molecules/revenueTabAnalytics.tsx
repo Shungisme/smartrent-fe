@@ -77,6 +77,7 @@ const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
     MEMBERSHIP_PURCHASE: t('transactionTypes.membershipPurchase'),
     MEMBERSHIP_UPGRADE: t('transactionTypes.membershipUpgrade'),
     POST_FEE: t('transactionTypes.postFee'),
+    REPOST_FEE: t('transactionTypes.repostFee'),
     PUSH_FEE: t('transactionTypes.pushFee'),
     WALLET_TOPUP: t('transactionTypes.walletTopup'),
     REFUND: t('transactionTypes.refund'),

@@ -6,6 +6,7 @@ import LineChartCard from '@/components/molecules/lineChartCard'
 import { DashboardService } from '@/api/services/dashboard.service'
 import { type DateRangeValue } from '@/components/molecules/dateRangePicker'
 import { Users, Loader2 } from 'lucide-react'
+import { formatChartXLabel } from '@/utils/chart'
 
 type UsersTabProps = {
   dateRange: DateRangeValue
@@ -20,14 +21,6 @@ const UsersTab: React.FC<UsersTabProps> = ({ dateRange }) => {
     useState<
       Awaited<ReturnType<typeof DashboardService.getUserGrowth>>['data']
     >(null)
-
-  const formatXLabel = (label: string, granularity: 'DAY' | 'MONTH') => {
-    if (granularity === 'MONTH') {
-      const [year, month] = label.split('-')
-      return `T${month}/${year}`
-    }
-    return label.length > 5 ? label.slice(5) : label
-  }
 
   useEffect(() => {
     const fetchUserGrowth = async () => {
@@ -94,7 +87,7 @@ const UsersTab: React.FC<UsersTabProps> = ({ dateRange }) => {
             },
           ]}
           labels={(data?.dataPoints || []).map((item) =>
-            formatXLabel(item.label, data?.granularity || 'DAY'),
+            formatChartXLabel(item.label, data?.granularity || 'DAY'),
           )}
           height='h-80'
           showLegend={false}

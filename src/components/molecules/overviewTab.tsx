@@ -6,6 +6,7 @@ import LineChartCard from '@/components/molecules/lineChartCard'
 import AreaChartCard from '@/components/molecules/areaChartCard'
 import PieChartCard from '@/components/molecules/pieChartCard'
 import { formatCurrency } from '@/utils/format'
+import { formatChartXLabel } from '@/utils/chart'
 import { DashboardService } from '@/api/services/dashboard.service'
 import { MembershipPackageLevel } from '@/api/types/dashboard.type'
 import { type DateRangeValue } from '@/components/molecules/dateRangePicker'
@@ -44,14 +45,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ dateRange }) => {
     useState<
       Awaited<ReturnType<typeof DashboardService.getListingCreation>>['data']
     >(null)
-
-  const formatXLabel = (label: string, granularity: 'DAY' | 'MONTH') => {
-    if (granularity === 'MONTH') {
-      const [year, month] = label.split('-')
-      return `T${month}/${year}`
-    }
-    return label.length > 5 ? label.slice(5) : label
-  }
 
   useEffect(() => {
     const fetchOverviewData = async () => {
@@ -182,7 +175,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ dateRange }) => {
               (item) => item.totalAmount,
             )}
             labels={(revenueData?.dataPoints || []).map((item) =>
-              formatXLabel(item.date, revenueData?.granularity || 'DAY'),
+              formatChartXLabel(item.date, revenueData?.granularity || 'DAY'),
             )}
             color='var(--chart-1)'
             height='h-80'
@@ -212,7 +205,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ dateRange }) => {
             },
           ]}
           labels={(userGrowthData?.dataPoints || []).map((item) =>
-            formatXLabel(item.label, userGrowthData?.granularity || 'DAY'),
+            formatChartXLabel(item.label, userGrowthData?.granularity || 'DAY'),
           )}
           showLegend={false}
           height='h-80'
@@ -228,7 +221,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ dateRange }) => {
             },
           ]}
           labels={(reportData?.dataPoints || []).map((item) =>
-            formatXLabel(item.label, reportData?.granularity || 'DAY'),
+            formatChartXLabel(item.label, reportData?.granularity || 'DAY'),
           )}
           showLegend={false}
           height='h-80'
@@ -244,7 +237,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ dateRange }) => {
             },
           ]}
           labels={(listingData?.dataPoints || []).map((item) =>
-            formatXLabel(item.label, listingData?.granularity || 'DAY'),
+            formatChartXLabel(item.label, listingData?.granularity || 'DAY'),
           )}
           showLegend={false}
           height='h-80'

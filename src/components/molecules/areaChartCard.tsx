@@ -8,6 +8,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/atoms/chart'
+import { formatChartTick } from '@/utils/chart'
 
 type AreaChartCardProps = {
   title: string
@@ -52,15 +53,6 @@ const AreaChartCard: React.FC<AreaChartCardProps> = ({
       label: title,
       color,
     },
-  }
-
-  const formatTick = (value: string | number) => {
-    if (typeof value !== 'number') return value
-    if (Math.abs(value) < 1000) return value.toLocaleString('vi-VN')
-    return new Intl.NumberFormat('vi-VN', {
-      notation: 'compact',
-      maximumFractionDigits: 1,
-    }).format(value)
   }
 
   const hasData = data.some((v) => v > 0)
@@ -123,7 +115,7 @@ const AreaChartCard: React.FC<AreaChartCardProps> = ({
             axisLine={false}
             width={42}
             tickMargin={8}
-            tickFormatter={formatTick}
+            tickFormatter={formatChartTick}
             stroke='var(--muted-foreground)'
             fontSize={11}
           />
