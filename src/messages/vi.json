@@ -1685,9 +1685,13 @@
     },
     "statuses": {
       "pending": "Chờ Duyệt",
+      "resubmitted": "Đã Gửi Lại",
       "approved": "Đã Duyệt",
       "rejected": "Từ Chối",
-      "expired": "Hết Hạn"
+      "revision_required": "Cần Chỉnh Sửa",
+      "suspended": "Tạm Ngưng",
+      "expired": "Hết Hạn",
+      "pending_payment": "Chờ Thanh Toán"
     },
     "toasts": {
       "loadListingsError": "Không thể tải danh sách tin đăng. Vui lòng thử lại.",

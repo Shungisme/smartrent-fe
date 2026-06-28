@@ -1721,9 +1721,13 @@
     },
     "statuses": {
       "pending": "Pending",
+      "resubmitted": "Resubmitted",
       "approved": "Approved",
       "rejected": "Rejected",
-      "expired": "Expired"
+      "revision_required": "Revision Required",
+      "suspended": "Suspended",
+      "expired": "Expired",
+      "pending_payment": "Pending Payment"
     },
     "toasts": {
       "loadListingsError": "Unable to load listings. Please try again.",

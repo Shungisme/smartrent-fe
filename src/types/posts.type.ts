@@ -1,6 +1,14 @@
 import { Amenity } from '@/api/types/listing.type'
 
-export type PostStatus = 'pending' | 'approved' | 'rejected' | 'expired'
+export type PostStatus =
+  | 'pending'
+  | 'resubmitted'
+  | 'approved'
+  | 'rejected'
+  | 'revision_required'
+  | 'suspended'
+  | 'expired'
+  | 'pending_payment'
 
 export type UIPostData = {
   id: string
