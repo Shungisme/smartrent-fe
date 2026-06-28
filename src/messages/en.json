@@ -1944,6 +1944,16 @@
         "reject": "Reject",
         "removeBroker": "Remove Broker"
       },
+      "review": {
+        "title": "Review Broker Application",
+        "documents": "Documents"
+      },
+      "statuses": {
+        "NONE": "Not registered",
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected"
+      },
       "modal": {
         "title": "Reject Broker Application",
         "reasonLabel": "Rejection Reason",
