@@ -1908,6 +1908,16 @@
         "reject": "Từ chối",
         "removeBroker": "Gỡ môi giới"
       },
+      "review": {
+        "title": "Xem hồ sơ môi giới",
+        "documents": "Hồ sơ tài liệu"
+      },
+      "statuses": {
+        "NONE": "Chưa đăng ký",
+        "PENDING": "Chờ duyệt",
+        "APPROVED": "Đã duyệt",
+        "REJECTED": "Đã từ chối"
+      },
       "modal": {
         "title": "Từ chối đơn môi giới",
         "reasonLabel": "Lý do từ chối",

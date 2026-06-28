@@ -20,6 +20,7 @@ export interface AdminBrokerUserResponse {
   cccdFrontUrl?: string | null
   cccdBackUrl?: string | null
   certUrl?: string | null
+  avatarUrl?: string | null
 }
 
 export interface BrokerVerificationRequest {
