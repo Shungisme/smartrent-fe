@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
-import { RevenueSeries } from '../types/transaction.type'
+import { RevenueSeries } from '@/types/transaction.type'
 import { formatCurrency } from '@/utils/format'
 
 interface RevenueChartProps {
@@ -10,16 +10,13 @@ interface RevenueChartProps {
   groupBy?: 'DAY' | 'MONTH'
 }
 
-/**
- * Simple Revenue Chart Component
- * Shows revenue trend over time with a basic bar/line visualization
- */
 export const RevenueChart = ({
   data,
   isLoading,
   groupBy = 'DAY',
 }: RevenueChartProps) => {
   const t = useTranslations('transactions')
+
   if (isLoading) {
     return (
       <div className='h-64 bg-muted/50 rounded-lg flex items-center justify-center'>
@@ -36,7 +33,6 @@ export const RevenueChart = ({
     )
   }
 
-  // Find max revenue for scaling
   const maxRevenue = Math.max(...data.map((d) => d.revenue), 1)
 
   return (
@@ -47,34 +43,31 @@ export const RevenueChart = ({
       </h3>
 
       <div className='space-y-4'>
-        {data.map((item, index) => {
-          return (
-            <div key={index} className='space-y-2'>
-              <div className='flex items-center justify-between'>
-                <span className='text-sm font-medium text-foreground/80 w-24'>
-                  {item.period}
-                </span>
-                <div className='flex-1 ml-4 relative h-8 bg-muted rounded'>
-                  <div
-                    className='h-full bg-gradient-to-r from-primary/60 to-primary rounded transition-all'
-                    style={{ width: `${(item.revenue / maxRevenue) * 100}%` }}
-                  />
-                </div>
-                <span className='text-sm font-semibold text-foreground w-32 text-right'>
-                  {formatCurrency(item.revenue)}
-                </span>
+        {data.map((item, index) => (
+          <div key={index} className='space-y-2'>
+            <div className='flex items-center justify-between'>
+              <span className='text-sm font-medium text-foreground/80 w-24'>
+                {item.period}
+              </span>
+              <div className='flex-1 ml-4 relative h-8 bg-muted rounded'>
+                <div
+                  className='h-full bg-gradient-to-r from-primary/60 to-primary rounded transition-all'
+                  style={{ width: `${(item.revenue / maxRevenue) * 100}%` }}
+                />
               </div>
-              <div className='flex items-center justify-between pl-28'>
-                <span className='text-xs text-muted-foreground'>
-                  {item.successfulCount} {t('chart.count')}
-                </span>
-              </div>
+              <span className='text-sm font-semibold text-foreground w-32 text-right'>
+                {formatCurrency(item.revenue)}
+              </span>
             </div>
-          )
-        })}
+            <div className='flex items-center justify-between pl-28'>
+              <span className='text-xs text-muted-foreground'>
+                {item.successfulCount} {t('chart.count')}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Summary */}
       <div className='mt-6 pt-6 border-t border-border/70 grid grid-cols-3 gap-4'>
         <div>
           <p className='text-sm text-muted-foreground'>{t('chart.total')}</p>

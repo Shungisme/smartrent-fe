@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { StatCard } from '@/components/molecules/statCard'
-import { TransactionStatistics } from '../types/transaction.type'
+import { TransactionStatistics } from '@/types/transaction.type'
 import { formatCurrency } from '@/utils/format'
 
 interface TransactionStatisticsCardsProps {
@@ -21,11 +21,6 @@ interface TransactionStatisticsCardsProps {
   isLoading?: boolean
 }
 
-/**
- * Transaction Statistics Cards
- * Uses the shared neutral StatCard primitive for consistency with the rest
- * of the dashboard (no colored surfaces / emoji icons).
- */
 export const TransactionStatisticsCards = ({
   statistics,
 }: TransactionStatisticsCardsProps) => {

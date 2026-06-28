@@ -12,7 +12,7 @@ export type PaymentStatus =
 /**
  * Payment Gateway
  */
-export type PaymentGateway = 'VNPAY' | 'ZALOPAY' | 'MOMO'
+export type PaymentGateway = 'VNPAY' | 'ZALOPAY' | 'MOMO' | 'SEPAY'
 
 /**
  * Payment Type

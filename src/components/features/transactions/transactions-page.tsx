@@ -5,19 +5,17 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Download } from 'lucide-react'
 import { Button } from '@/components/atoms/button'
-import { adminTransactionsApi } from '../api/adminTransactionsApi'
+import { PageHeader } from '@/components/molecules/pageHeader'
+import { AdminTransactionTable } from '@/components/organisms/transactions/AdminTransactionTable'
+import { TransactionStatisticsCards } from '@/components/organisms/transactions/TransactionStatisticsCards'
+import { TransactionService } from '@/api/services/transaction.service'
 import {
   useAdminTransactions,
   useTransactionStatistics,
-} from '../hooks/useAdminTransactions'
-import { AdminTransactionFilters } from '../types/transaction.type'
-import { AdminTransactionTable } from '../components/AdminTransactionTable'
-import { TransactionStatisticsCards } from '../components/TransactionStatisticsCards'
+} from '@/hooks/useTransactions'
+import { AdminTransactionFilters } from '@/types/transaction.type'
 
-/**
- * Admin Transactions List Page
- */
-export const AdminTransactionsPage = () => {
+export const TransactionsPage = () => {
   const t = useTranslations('transactions')
   const router = useRouter()
   const [filters, setFilters] = useState<AdminTransactionFilters>({
@@ -42,7 +40,7 @@ export const AdminTransactionsPage = () => {
 
   const handleExport = async () => {
     try {
-      await adminTransactionsApi.exportTransactions(filters)
+      await TransactionService.exportTransactions(filters)
     } catch (error) {
       console.error('Export failed:', error)
     }
@@ -50,10 +48,10 @@ export const AdminTransactionsPage = () => {
 
   return (
     <div className='space-y-6'>
-      {/* Statistics Cards */}
+      <PageHeader title={t('title')} description={t('description')} />
+
       <TransactionStatisticsCards statistics={statistics} />
 
-      {/* Export action */}
       <div className='flex justify-end'>
         <Button variant='outline' size='sm' onClick={handleExport}>
           <Download className='h-4 w-4' />
@@ -61,7 +59,6 @@ export const AdminTransactionsPage = () => {
         </Button>
       </div>
 
-      {/* Transaction Table (filter button + popup handled by DataTable) */}
       <AdminTransactionTable
         transactions={transactionsList?.data || []}
         totalItems={transactionsList?.totalElements || 0}
