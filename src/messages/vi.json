@@ -1124,6 +1124,7 @@
           "membershipPurchase": "Mua gói thành viên",
           "membershipUpgrade": "Nâng cấp gói thành viên",
           "postFee": "Phí đăng tin",
+          "repostFee": "Phí đăng lại tin",
           "pushFee": "Phí đẩy tin",
           "walletTopup": "Nạp ví",
           "refund": "Hoàn tiền"
@@ -1661,6 +1662,7 @@
     "propertyTypes": {
       "house": "Nhà",
       "apartment": "Căn hộ",
+      "studio": "Studio",
       "office": "Văn phòng",
       "land": "Đất",
       "room": "Phòng trọ",
@@ -1686,6 +1688,18 @@
       "approved": "Đã Duyệt",
       "rejected": "Từ Chối",
       "expired": "Hết Hạn"
+    },
+    "toasts": {
+      "loadListingsError": "Không thể tải danh sách tin đăng. Vui lòng thử lại.",
+      "loadDetailError": "Không thể tải chi tiết tin đăng. Vui lòng thử lại.",
+      "approveSuccess": "Tin đăng đã được duyệt thành công.",
+      "approveError": "Không thể duyệt tin đăng. Vui lòng thử lại.",
+      "rejectReasonRequired": "Vui lòng cung cấp lý do từ chối.",
+      "rejectSuccess": "Tin đăng đã bị từ chối. Chủ tin sẽ được thông báo để sửa và gửi lại.",
+      "rejectError": "Không thể từ chối tin đăng. Vui lòng thử lại.",
+      "revisionDetailsRequired": "Vui lòng cung cấp chi tiết cần chỉnh sửa.",
+      "revisionSuccess": "Đã yêu cầu chỉnh sửa. Chủ tin sẽ được thông báo để cập nhật.",
+      "revisionError": "Không thể yêu cầu chỉnh sửa. Vui lòng thử lại."
     }
   },
   "reports": {
@@ -1696,6 +1710,18 @@
       "pending": "Chờ Xử Lý",
       "resolved": "Đã Xử Lý",
       "dismissed": "Đã Bỏ Qua"
+    },
+    "toasts": {
+      "loadListingError": "Không thể tải thông tin tin đăng",
+      "adminNotesRequired": "Vui lòng nhập ghi chú xử lý",
+      "resolveSuccess": "Báo cáo đã được giải quyết thành công",
+      "resolveError": "Không thể giải quyết báo cáo. Vui lòng thử lại.",
+      "dismissNoteRequired": "Vui lòng cung cấp lý do bác bỏ",
+      "dismissSuccess": "Báo cáo đã được bác bỏ",
+      "dismissError": "Không thể bác bỏ báo cáo. Vui lòng thử lại.",
+      "revisionDetailsRequired": "Vui lòng cung cấp chi tiết cần chỉnh sửa.",
+      "revisionSuccess": "Đã yêu cầu chỉnh sửa. Chủ tin đăng sẽ được thông báo.",
+      "revisionError": "Không thể yêu cầu chỉnh sửa. Vui lòng thử lại."
     },
     "table": {
       "viewDetails": "Xem Chi Tiết",
@@ -1731,10 +1757,14 @@
       "expired": "Đã hết hạn",
       "adminNotesLabel": "Ghi chú quản trị",
       "adminNotesPlaceholder": "Cung cấp ghi chú về quyết định của bạn (bắt buộc)",
+      "on": "vào",
       "resolvedOn": "Đã giải quyết vào",
       "at": "lúc",
       "by": "bởi",
-      "couldNotLoad": "Không thể tải thông tin bài đăng"
+      "couldNotLoad": "Không thể tải thông tin bài đăng",
+      "reportPrefix": "Báo cáo #",
+      "loadingDetails": "Đang tải thông tin tin đăng...",
+      "listingIdPrefix": "Tin đăng #"
     },
     "categories": {
       "LISTING": "Tin Đăng",
@@ -1813,10 +1843,10 @@
     },
     "previewModal": {
       "title": "Xem trước tin tức",
-      "seoTitle": "SEO Metadata",
-      "metaTitleLabel": "Meta Title",
-      "metaDescriptionLabel": "Meta Description",
-      "metaKeywordsLabel": "Meta Keywords"
+      "seoTitle": "Thông tin SEO",
+      "metaTitleLabel": "Tiêu đề Meta",
+      "metaDescriptionLabel": "Mô tả Meta",
+      "metaKeywordsLabel": "Từ khóa Meta"
     },
     "deleteModal": {
       "title": "Xác nhận xóa",
@@ -1876,7 +1906,11 @@
         "updateError": "Không thể cập nhật tin tức",
         "createSuccess": "Tạo tin tức thành công",
         "createError": "Không thể tạo tin tức",
-        "saveError": "Có lỗi xảy ra khi lưu tin tức"
+        "saveError": "Có lỗi xảy ra khi lưu tin tức",
+        "imageInserted": "Đã chèn ảnh",
+        "uploadImageFailed": "Không thể tải ảnh lên",
+        "uploadThumbnailSuccess": "Đã tải ảnh đại diện thành công",
+        "uploadThumbnailFailed": "Không thể tải ảnh đại diện lên"
       },
       "menuBar": {
         "enterUrl": "Nhập URL:"

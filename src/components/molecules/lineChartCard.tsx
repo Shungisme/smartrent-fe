@@ -11,6 +11,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/atoms/chart'
+import { formatChartTick } from '@/utils/chart'
 
 export type LineChartDataset = {
   data: number[]
@@ -70,15 +71,6 @@ const LineChartCard: React.FC<LineChartCardProps> = ({
     [datasets],
   )
 
-  const formatTick = (value: string | number) => {
-    if (typeof value !== 'number') return value
-    if (Math.abs(value) < 1000) return value.toLocaleString('vi-VN')
-    return new Intl.NumberFormat('vi-VN', {
-      notation: 'compact',
-      maximumFractionDigits: 1,
-    }).format(value)
-  }
-
   const hasData = datasets.some((d) => d.data.some((v) => v > 0))
 
   return (
@@ -123,7 +115,7 @@ const LineChartCard: React.FC<LineChartCardProps> = ({
             axisLine={false}
             width={42}
             tickMargin={8}
-            tickFormatter={formatTick}
+            tickFormatter={formatChartTick}
             stroke='var(--muted-foreground)'
             fontSize={11}
           />

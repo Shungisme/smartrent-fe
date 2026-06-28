@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 import { BrokerService } from '@/api/services/broker.service'
@@ -11,7 +11,6 @@ import { BrokerPendingTable } from '@/components/organisms/brokers/BrokerPending
 import { BrokerReviewDialog } from '@/components/organisms/brokers/BrokerReviewDialog'
 
 const DEFAULT_PAGE_SIZE = 10
-const DOC_REFRESH_COOLDOWN_MS = 60 * 1000
 
 type ActionKind = 'approve' | 'reject' | 'remove'
 
@@ -36,8 +35,6 @@ const BrokerPendingPage = () => {
   >({})
   const [reviewTarget, setReviewTarget] =
     useState<AdminBrokerUserResponse | null>(null)
-
-  const lastDocRefreshRef = useRef(0)
 
   const setAction = (userId: string, action: ActionKind) => {
     setActionState((prev) => ({ ...prev, [userId]: action }))
@@ -137,15 +134,6 @@ const BrokerPendingPage = () => {
         typeof filters.pageSize === 'number' ? filters.pageSize : prev.pageSize,
     }))
   }
-
-  const handleDocError = useCallback(() => {
-    const now = Date.now()
-    if (now - lastDocRefreshRef.current < DOC_REFRESH_COOLDOWN_MS) {
-      return
-    }
-    lastDocRefreshRef.current = now
-    fetchPendingBrokers()
-  }, [fetchPendingBrokers])
 
   const handleApprove = async (user: AdminBrokerUserResponse) => {
     setAction(user.userId, 'approve')

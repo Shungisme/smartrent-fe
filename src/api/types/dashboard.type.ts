@@ -2,6 +2,7 @@ export type DashboardTransactionType =
   | 'MEMBERSHIP_PURCHASE'
   | 'MEMBERSHIP_UPGRADE'
   | 'POST_FEE'
+  | 'REPOST_FEE'
   | 'PUSH_FEE'
   | 'WALLET_TOPUP'
   | 'REFUND'

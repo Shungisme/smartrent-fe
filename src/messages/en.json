@@ -1160,6 +1160,7 @@
           "membershipPurchase": "Membership purchase",
           "membershipUpgrade": "Membership upgrade",
           "postFee": "Post fee",
+          "repostFee": "Repost fee",
           "pushFee": "Push fee",
           "walletTopup": "Wallet top-up",
           "refund": "Refund"
@@ -1697,6 +1698,7 @@
     "propertyTypes": {
       "house": "House",
       "apartment": "Apartment",
+      "studio": "Studio",
       "office": "Office",
       "land": "Land",
       "room": "Room",
@@ -1722,6 +1724,18 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "expired": "Expired"
+    },
+    "toasts": {
+      "loadListingsError": "Unable to load listings. Please try again.",
+      "loadDetailError": "Unable to load listing details. Please try again.",
+      "approveSuccess": "Listing approved successfully.",
+      "approveError": "Failed to approve listing. Please try again.",
+      "rejectReasonRequired": "Please provide a reason for rejection.",
+      "rejectSuccess": "Listing rejected. Owner will be notified to revise and resubmit.",
+      "rejectError": "Failed to reject listing. Please try again.",
+      "revisionDetailsRequired": "Please provide details on what needs to be revised.",
+      "revisionSuccess": "Revision requested. Owner will be notified to update the listing.",
+      "revisionError": "Failed to request revision. Please try again."
     }
   },
   "reports": {
@@ -1732,6 +1746,18 @@
       "pending": "Pending Review",
       "resolved": "Resolved",
       "dismissed": "Dismissed"
+    },
+    "toasts": {
+      "loadListingError": "Failed to load listing details",
+      "adminNotesRequired": "Please provide admin notes for resolution",
+      "resolveSuccess": "Report has been resolved successfully",
+      "resolveError": "Failed to resolve report. Please try again.",
+      "dismissNoteRequired": "Please provide a reason for dismissal",
+      "dismissSuccess": "Report has been dismissed",
+      "dismissError": "Failed to dismiss report. Please try again.",
+      "revisionDetailsRequired": "Please provide details on what needs to be revised.",
+      "revisionSuccess": "Revision requested. Listing owner will be notified.",
+      "revisionError": "Failed to request revision. Please try again."
     },
     "table": {
       "viewDetails": "View Details",
@@ -1767,10 +1793,14 @@
       "expired": "Expired",
       "adminNotesLabel": "Admin Notes",
       "adminNotesPlaceholder": "Provide notes about your decision (required)",
+      "on": "on",
       "resolvedOn": "Resolved on",
       "at": "at",
       "by": "by",
-      "couldNotLoad": "Could not load listing details"
+      "couldNotLoad": "Could not load listing details",
+      "reportPrefix": "Report #",
+      "loadingDetails": "Loading listing details...",
+      "listingIdPrefix": "Listing ID: #"
     },
     "categories": {
       "LISTING": "Listing",
@@ -1912,7 +1942,11 @@
         "updateError": "Unable to update news",
         "createSuccess": "News created successfully",
         "createError": "Unable to create news",
-        "saveError": "An error occurred while saving news"
+        "saveError": "An error occurred while saving news",
+        "imageInserted": "Image inserted",
+        "uploadImageFailed": "Failed to upload image",
+        "uploadThumbnailSuccess": "Thumbnail uploaded successfully",
+        "uploadThumbnailFailed": "Failed to upload thumbnail"
       },
       "menuBar": {
         "enterUrl": "Enter URL:"

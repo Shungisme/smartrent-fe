@@ -11,22 +11,7 @@ import { Pencil, UserX, Trash2 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { UserProfile } from '@/api/types/user.type'
 import { UserData } from '@/types/users.type'
-
-const formatDateTime = (value?: string | null): string => {
-  if (!value) return '-'
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return '-'
-
-  const pad = (input: number) => String(input).padStart(2, '0')
-  const hours = pad(date.getHours())
-  const minutes = pad(date.getMinutes())
-  const seconds = pad(date.getSeconds())
-  const day = pad(date.getDate())
-  const month = pad(date.getMonth() + 1)
-  const year = date.getFullYear()
-
-  return `${hours}:${minutes}:${seconds} ${day}/${month}/${year}`
-}
+import { formatDateTimeCompact } from '@/utils/format'
 
 interface UserTableProps {
   users: UserProfile[]
@@ -101,7 +86,7 @@ export const UserTable: React.FC<UserTableProps> = ({
       sortable: true,
       render: (value) => (
         <span className='text-sm text-muted-foreground'>
-          {formatDateTime(value as string | null)}
+          {formatDateTimeCompact(value as string | null)}
         </span>
       ),
     },

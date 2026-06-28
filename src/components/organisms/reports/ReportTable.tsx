@@ -6,6 +6,7 @@ import { Button } from '@/components/atoms/button'
 import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
 import { Eye } from 'lucide-react'
 import { ListingReport } from '@/api/types/listing-report.type'
+import { formatDateTimeParts } from '@/utils/format'
 
 type BadgeVariant =
   | 'default'
@@ -39,17 +40,6 @@ const statusMap = {
   PENDING: 'pending',
   RESOLVED: 'resolved',
   REJECTED: 'dismissed',
-}
-
-const formatDateTime = (isoString: string): { date: string; time: string } => {
-  const date = new Date(isoString)
-  return {
-    date: date.toLocaleDateString('vi-VN'),
-    time: date.toLocaleTimeString('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit',
-    }),
-  }
 }
 
 export const ReportTable: React.FC<ReportTableProps> = ({
@@ -139,7 +129,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       accessor: 'createdAt',
       header: t('review.reportedAt'),
       render: (_, row) => {
-        const { date, time } = formatDateTime(row.createdAt)
+        const { date, time } = formatDateTimeParts(row.createdAt)
         return (
           <div className='leading-tight'>
             <div className='text-sm text-foreground'>{date}</div>

@@ -15,6 +15,7 @@ import {
   NewsStatus,
   NewsSummaryResponse,
 } from '@/api/types/news.type'
+import { formatDate } from '@/utils/format'
 
 interface NewsTableProps {
   data: NewsSummaryResponse[]
@@ -54,12 +55,6 @@ const getCategoryColor = (category: NewsCategory): string => {
       'border-pink-200/70 bg-pink-50 text-pink-700 dark:border-pink-500/30 dark:bg-pink-500/10 dark:text-pink-300',
   }
   return colors[category]
-}
-
-const formatDate = (dateString: string | null): string => {
-  if (!dateString) return 'N/A'
-  const date = new Date(dateString)
-  return date.toLocaleDateString('vi-VN')
 }
 
 const isValidImageSrc = (src: unknown): src is string => {

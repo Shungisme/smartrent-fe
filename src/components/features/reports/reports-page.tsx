@@ -75,7 +75,7 @@ const ViolationReportManagement = () => {
     if (!selectedReport) return
 
     if (!reason.trim()) {
-      toast.warning('Please provide details on what needs to be revised.')
+      toast.warning(t('toasts.revisionDetailsRequired'))
       return
     }
 
@@ -88,22 +88,19 @@ const ViolationReportManagement = () => {
 
       // Check if request was successful
       if (response && response.code !== '9999') {
-        toast.success(
-          'Revision requested. Listing owner will be notified to update the listing.',
-        )
+        toast.success(t('toasts.revisionSuccess'))
 
         // Refresh reports
         setReviewModalOpen(false)
         fetchReports()
       } else {
         // Handle error response
-        const errorMessage =
-          response.message || 'Failed to request revision. Please try again.'
+        const errorMessage = response.message || t('toasts.revisionError')
         toast.error(errorMessage)
       }
     } catch (error) {
       console.error('Error requesting revision:', error)
-      toast.error('Failed to request revision. Please try again.')
+      toast.error(t('toasts.revisionError'))
     }
   }
 

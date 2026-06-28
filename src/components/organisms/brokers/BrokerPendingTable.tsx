@@ -7,6 +7,7 @@ import { DataTable, Column } from '@/components/organisms/DataTable'
 import { Button } from '@/components/atoms/button'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/atoms/avatar'
 import { AdminBrokerUserResponse } from '@/api/types/broker.type'
+import { formatDate } from '@/utils/format'
 
 type BrokerPendingTableProps = {
   data: AdminBrokerUserResponse[]
@@ -15,13 +16,6 @@ type BrokerPendingTableProps = {
   filterValues: Record<string, unknown>
   onFilterChange: (filters: Record<string, unknown>) => void
   onReview: (user: AdminBrokerUserResponse) => void
-}
-
-const formatRegistrationDate = (value?: string | null) => {
-  if (!value) return '--'
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return '--'
-  return date.toLocaleDateString('vi-VN')
 }
 
 export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
@@ -78,7 +72,7 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
       accessor: 'brokerRegisteredAt',
       render: (value) => (
         <div className='text-sm text-foreground'>
-          {formatRegistrationDate(value as string | null)}
+          {formatDate(value as string | null)}
         </div>
       ),
     },
