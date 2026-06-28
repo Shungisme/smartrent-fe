@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { Building2, ShieldCheck, Languages } from 'lucide-react'
+import { Building2, Languages } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import AdminLoginForm from '@/components/molecules/adminLoginForm'
 import { Skeleton } from '@/components/atoms/skeleton'

@@ -9,8 +9,12 @@ import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { useTranslations } from 'next-intl'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { createUser } from '@/api/services/user.service'
-import { CreateUserRequest, UserProfile } from '@/api/types/user.type'
+import { UserProfile } from '@/api/types/user.type'
+import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
 
 interface UserCreateDialogProps {
   open: boolean
@@ -18,34 +22,65 @@ interface UserCreateDialogProps {
   onSuccess: (user: UserProfile) => void
 }
 
+const userCreateSchema = z.object({
+  firstName: z.string().trim().min(1, 'First name is required'),
+  lastName: z.string().trim().min(1, 'Last name is required'),
+  email: z
+    .string()
+    .trim()
+    .min(1, 'Email is required')
+    .regex(VALIDATION_PATTERNS.EMAIL, 'Invalid email address'),
+  phoneCode: z.string().trim().min(1, 'Phone code is required'),
+  phoneNumber: z.string().trim().min(1, 'Phone number is required'),
+  password: z
+    .string()
+    .min(1, 'Password is required')
+    .min(8, 'Password must be at least 8 characters'),
+})
+
+type UserCreateFormData = z.infer<typeof userCreateSchema>
+
 export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
   open,
   onOpenChange,
   onSuccess,
 }) => {
   const t = useTranslations('admin.users')
-  const [form, setForm] = useState<
-    Partial<CreateUserRequest & { password: string }>
-  >({})
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [serverError, setServerError] = useState<string | null>(null)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<UserCreateFormData>({
+    resolver: zodResolver(userCreateSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneCode: '',
+      phoneNumber: '',
+      password: '',
+    },
+  })
+
+  const onSubmit = async (data: UserCreateFormData) => {
     setLoading(true)
-    setError(null)
+    setServerError(null)
     try {
-      const resp = await createUser(form as CreateUserRequest)
+      const resp = await createUser(data)
       if (resp.success && resp.data) {
         onSuccess(resp.data)
         onOpenChange(false)
-        setForm({})
+        reset()
       } else {
-        setError(resp.message || 'Failed to create user')
+        setServerError(resp.message || 'Failed to create user')
       }
     } catch (err: unknown) {
       const error = err as { message?: string }
-      setError(error.message || 'Error creating user')
+      setServerError(error.message || 'Error creating user')
     } finally {
       setLoading(false)
     }
@@ -57,87 +92,69 @@ export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
         <DialogHeader>
           <DialogTitle>{t('create.title') || 'Create User'}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className='space-y-2'>
+        <form onSubmit={handleSubmit(onSubmit)} className='space-y-2'>
           <div className='space-y-2'>
             <Label htmlFor='firstName'>{t('create.firstName')} *</Label>
-            <Input
-              id='firstName'
-              value={form.firstName || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, firstName: e.target.value }))
-              }
-              required
-            />
+            <Input id='firstName' {...register('firstName')} />
+            {errors.firstName && (
+              <p className='text-xs text-destructive'>
+                {errors.firstName.message}
+              </p>
+            )}
           </div>
 
           <div className='space-y-2'>
             <Label htmlFor='lastName'>{t('create.lastName')} *</Label>
-            <Input
-              id='lastName'
-              value={form.lastName || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, lastName: e.target.value }))
-              }
-              required
-            />
+            <Input id='lastName' {...register('lastName')} />
+            {errors.lastName && (
+              <p className='text-xs text-destructive'>
+                {errors.lastName.message}
+              </p>
+            )}
           </div>
 
           <div className='space-y-2'>
             <Label htmlFor='email'>{t('create.email')} *</Label>
-            <Input
-              id='email'
-              type='email'
-              value={form.email || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, email: e.target.value }))
-              }
-              required
-            />
+            <Input id='email' type='email' {...register('email')} />
+            {errors.email && (
+              <p className='text-xs text-destructive'>{errors.email.message}</p>
+            )}
           </div>
 
           <div className='grid grid-cols-3 gap-2'>
             <div className='space-y-2'>
               <Label htmlFor='phoneCode'>{t('create.phoneCode')} *</Label>
-              <Input
-                id='phoneCode'
-                value={form.phoneCode || ''}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, phoneCode: e.target.value }))
-                }
-                required
-              />
+              <Input id='phoneCode' {...register('phoneCode')} />
+              {errors.phoneCode && (
+                <p className='text-xs text-destructive'>
+                  {errors.phoneCode.message}
+                </p>
+              )}
             </div>
             <div className='col-span-2 space-y-2'>
               <Label htmlFor='phoneNumber'>{t('create.phoneNumber')} *</Label>
-              <Input
-                id='phoneNumber'
-                value={form.phoneNumber || ''}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    phoneNumber: e.target.value,
-                  }))
-                }
-                required
-              />
+              <Input id='phoneNumber' {...register('phoneNumber')} />
+              {errors.phoneNumber && (
+                <p className='text-xs text-destructive'>
+                  {errors.phoneNumber.message}
+                </p>
+              )}
             </div>
           </div>
 
           <div className='space-y-2'>
             <Label htmlFor='password'>{t('create.password')} *</Label>
-            <Input
-              id='password'
-              type='password'
-              value={form.password || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, password: e.target.value }))
-              }
-              required
-              minLength={8}
-            />
+            <Input id='password' type='password' {...register('password')} />
+            {errors.password && (
+              <p className='text-xs text-destructive'>
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
-          {error && <div className='text-red-600 text-sm'>{error}</div>}
+          {serverError && (
+            <div className='text-red-600 text-sm'>{serverError}</div>
+          )}
 
           <div className='flex justify-end gap-2'>
             <Button

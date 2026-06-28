@@ -9,10 +9,14 @@ import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { useTranslations } from 'next-intl'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { updateAdmin } from '@/api/services/admin.service'
 import { getRoles } from '@/api/services/role.service'
 import { Role } from '@/api/types/role.type'
-import { AdminProfile, UpdateAdminRequest } from '@/api/types/admin.type'
+import { AdminProfile } from '@/api/types/admin.type'
+import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
 
 interface AdminEditDialogProps {
   admin: AdminProfile | null
@@ -21,6 +25,21 @@ interface AdminEditDialogProps {
   onSuccess: (admin: AdminProfile) => void
 }
 
+const adminEditSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, 'Email is required')
+    .regex(VALIDATION_PATTERNS.EMAIL, 'Invalid email address'),
+  firstName: z.string().trim().min(1, 'First name is required'),
+  lastName: z.string().trim().min(1, 'Last name is required'),
+  phoneCode: z.string().trim().min(1, 'Phone code is required'),
+  phoneNumber: z.string().trim().min(1, 'Phone number is required'),
+  roles: z.array(z.string()),
+})
+
+type AdminEditFormData = z.infer<typeof adminEditSchema>
+
 export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
   admin,
   open,
@@ -28,13 +47,29 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
   onSuccess,
 }) => {
   const t = useTranslations('admin.admins')
-  const [form, setForm] = useState<Partial<UpdateAdminRequest>>({})
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [serverError, setServerError] = useState<string | null>(null)
   const [roles, setRoles] = useState<Role[]>([])
   const [rolesLoading, setRolesLoading] = useState(true)
 
-  // Fetch roles on mount
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<AdminEditFormData>({
+    resolver: zodResolver(adminEditSchema),
+    defaultValues: {
+      email: '',
+      firstName: '',
+      lastName: '',
+      phoneCode: '',
+      phoneNumber: '',
+      roles: [],
+    },
+  })
+
   useEffect(() => {
     const fetchRoles = async () => {
       try {
@@ -53,7 +88,7 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
 
   useEffect(() => {
     if (admin) {
-      setForm({
+      reset({
         email: admin.email,
         firstName: admin.firstName,
         lastName: admin.lastName,
@@ -62,25 +97,24 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
         roles: admin.roles,
       })
     }
-  }, [admin])
+  }, [admin, reset])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = async (data: AdminEditFormData) => {
     if (!admin) return
 
     setLoading(true)
-    setError(null)
+    setServerError(null)
     try {
-      const resp = await updateAdmin(admin.adminId, form)
+      const resp = await updateAdmin(admin.adminId, data)
       if (resp.success && resp.data) {
         onSuccess(resp.data)
         onOpenChange(false)
       } else {
-        setError(resp.message || 'Failed to update admin')
+        setServerError(resp.message || 'Failed to update admin')
       }
     } catch (err: unknown) {
       const error = err as { message?: string }
-      setError(error.message || 'Error updating admin')
+      setServerError(error.message || 'Error updating admin')
     } finally {
       setLoading(false)
     }
@@ -92,116 +126,111 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
         <DialogHeader>
           <DialogTitle>{t('edit.title') || 'Edit Admin'}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className='space-y-2'>
+        <form onSubmit={handleSubmit(onSubmit)} className='space-y-2'>
           <div className='space-y-2'>
             <Label htmlFor='editEmail'>{t('edit.email') || 'Email'} *</Label>
-            <Input
-              id='editEmail'
-              type='email'
-              placeholder='Email'
-              value={form.email || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, email: e.target.value }))
-              }
-              required
-            />
+            <Input id='editEmail' type='email' {...register('email')} />
+            {errors.email && (
+              <p className='text-xs text-destructive'>{errors.email.message}</p>
+            )}
           </div>
+
           <div className='space-y-2'>
             <Label htmlFor='editFirstName'>
               {t('edit.firstName') || 'First Name'} *
             </Label>
-            <Input
-              id='editFirstName'
-              placeholder='First Name'
-              value={form.firstName || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, firstName: e.target.value }))
-              }
-              required
-            />
+            <Input id='editFirstName' {...register('firstName')} />
+            {errors.firstName && (
+              <p className='text-xs text-destructive'>
+                {errors.firstName.message}
+              </p>
+            )}
           </div>
+
           <div className='space-y-2'>
             <Label htmlFor='editLastName'>
               {t('edit.lastName') || 'Last Name'} *
             </Label>
-            <Input
-              id='editLastName'
-              placeholder='Last Name'
-              value={form.lastName || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, lastName: e.target.value }))
-              }
-              required
-            />
+            <Input id='editLastName' {...register('lastName')} />
+            {errors.lastName && (
+              <p className='text-xs text-destructive'>
+                {errors.lastName.message}
+              </p>
+            )}
           </div>
+
           <div className='grid grid-cols-3 gap-2'>
             <div className='space-y-2'>
               <Label htmlFor='editPhoneCode'>
                 {t('edit.phoneCode') || 'Code'} *
               </Label>
-              <Input
-                id='editPhoneCode'
-                placeholder='Code'
-                value={form.phoneCode || ''}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, phoneCode: e.target.value }))
-                }
-                required
-              />
+              <Input id='editPhoneCode' {...register('phoneCode')} />
+              {errors.phoneCode && (
+                <p className='text-xs text-destructive'>
+                  {errors.phoneCode.message}
+                </p>
+              )}
             </div>
             <div className='col-span-2 space-y-2'>
               <Label htmlFor='editPhoneNumber'>
                 {t('edit.phoneNumber') || 'Phone Number'} *
               </Label>
-              <Input
-                id='editPhoneNumber'
-                placeholder='Phone Number'
-                value={form.phoneNumber || ''}
-                onChange={(e) =>
-                  setForm((f) => ({
-                    ...f,
-                    phoneNumber: e.target.value,
-                  }))
-                }
-                required
-              />
+              <Input id='editPhoneNumber' {...register('phoneNumber')} />
+              {errors.phoneNumber && (
+                <p className='text-xs text-destructive'>
+                  {errors.phoneNumber.message}
+                </p>
+              )}
             </div>
           </div>
+
           <div className='space-y-2'>
             <Label>{t('edit.roles') || 'Roles'}</Label>
             {rolesLoading ? (
               <p className='text-sm text-muted-foreground'>Loading roles...</p>
             ) : (
-              <div className='space-y-2 mt-2'>
-                {roles.map((role) => (
-                  <label key={role.roleId} className='flex items-center gap-2'>
-                    <input
-                      type='checkbox'
-                      checked={form.roles?.includes(role.roleId) || false}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setForm((f) => ({
-                            ...f,
-                            roles: [...(f.roles || []), role.roleId],
-                          }))
-                        } else {
-                          setForm((f) => ({
-                            ...f,
-                            roles: (f.roles || []).filter(
-                              (r) => r !== role.roleId,
-                            ),
-                          }))
-                        }
-                      }}
-                      className='rounded border-border text-primary focus:ring-primary'
-                    />
-                    <span className='text-sm'>{role.roleName}</span>
-                  </label>
-                ))}
-              </div>
+              <Controller
+                name='roles'
+                control={control}
+                render={({ field }) => (
+                  <div className='space-y-2 mt-2'>
+                    {roles.map((role) => (
+                      <label
+                        key={role.roleId}
+                        className='flex items-center gap-2'
+                      >
+                        <input
+                          type='checkbox'
+                          checked={field.value?.includes(role.roleId) || false}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              field.onChange([
+                                ...(field.value || []),
+                                role.roleId,
+                              ])
+                            } else {
+                              field.onChange(
+                                (field.value || []).filter(
+                                  (r) => r !== role.roleId,
+                                ),
+                              )
+                            }
+                          }}
+                          className='rounded border-border text-primary focus:ring-primary'
+                        />
+                        <span className='text-sm'>{role.roleName}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              />
             )}
           </div>
-          {error && <div className='text-destructive text-sm'>{error}</div>}
+
+          {serverError && (
+            <div className='text-destructive text-sm'>{serverError}</div>
+          )}
+
           <div className='flex justify-end gap-2'>
             <Button
               type='button'

@@ -9,10 +9,14 @@ import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { useTranslations } from 'next-intl'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { createAdmin } from '@/api/services/admin.service'
 import { getRoles } from '@/api/services/role.service'
 import { Role } from '@/api/types/role.type'
 import { AdminProfile } from '@/api/types/admin.type'
+import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
 
 interface AdminCreateDialogProps {
   open: boolean
@@ -20,26 +24,54 @@ interface AdminCreateDialogProps {
   onSuccess: (admin: AdminProfile) => void
 }
 
+const adminCreateSchema = z.object({
+  firstName: z.string().trim().min(1, 'First name is required'),
+  lastName: z.string().trim().min(1, 'Last name is required'),
+  email: z
+    .string()
+    .trim()
+    .min(1, 'Email is required')
+    .regex(VALIDATION_PATTERNS.EMAIL, 'Invalid email address'),
+  phoneCode: z.string().trim().min(1, 'Phone code is required'),
+  phoneNumber: z.string().trim().min(1, 'Phone number is required'),
+  password: z
+    .string()
+    .min(1, 'Password is required')
+    .min(8, 'Password must be at least 8 characters'),
+  roles: z.array(z.string()).min(1, 'At least one role must be selected'),
+})
+
+type AdminCreateFormData = z.infer<typeof adminCreateSchema>
+
 export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
   open,
   onOpenChange,
   onSuccess,
 }) => {
   const t = useTranslations('admin.admins')
-  const [formData, setFormData] = useState({
-    phoneCode: '+84',
-    phoneNumber: '',
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    roles: [] as string[],
-  })
   const [loading, setLoading] = useState(false)
   const [roles, setRoles] = useState<Role[]>([])
   const [rolesLoading, setRolesLoading] = useState(true)
 
-  // Fetch roles on mount
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<AdminCreateFormData>({
+    resolver: zodResolver(adminCreateSchema),
+    defaultValues: {
+      phoneCode: '+84',
+      phoneNumber: '',
+      email: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      roles: [],
+    },
+  })
+
   useEffect(() => {
     const fetchRoles = async () => {
       try {
@@ -56,16 +88,14 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
     fetchRoles()
   }, [])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = async (data: AdminCreateFormData) => {
     setLoading(true)
     try {
-      const response = await createAdmin(formData)
+      const response = await createAdmin(data)
       if (response.success && response.data) {
         alert(
           `Admin created successfully!\nTemporary Password: ${response.data.password}\n\nPlease save this password securely.`,
         )
-        // Map CreateAdminResponse to AdminProfile shape for state
         const newAdmin: AdminProfile = {
           adminId: response.data.adminId,
           phoneCode: response.data.phoneCode,
@@ -79,15 +109,7 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
         }
         onSuccess(newAdmin)
         onOpenChange(false)
-        setFormData({
-          phoneCode: '+84',
-          phoneNumber: '',
-          email: '',
-          password: '',
-          firstName: '',
-          lastName: '',
-          roles: [],
-        })
+        reset()
       } else {
         alert(`Error: ${response.message}`)
       }
@@ -105,81 +127,64 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
         <DialogHeader>
           <DialogTitle>{t('create.title')}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className='space-y-2'>
+        <form onSubmit={handleSubmit(onSubmit)} className='space-y-2'>
           <div className='space-y-2'>
             <Label htmlFor='firstName'>{t('create.firstName')} *</Label>
-            <Input
-              id='firstName'
-              value={formData.firstName}
-              onChange={(e) =>
-                setFormData({ ...formData, firstName: e.target.value })
-              }
-              required
-            />
+            <Input id='firstName' {...register('firstName')} />
+            {errors.firstName && (
+              <p className='text-xs text-destructive'>
+                {errors.firstName.message}
+              </p>
+            )}
           </div>
 
           <div className='space-y-2'>
             <Label htmlFor='lastName'>{t('create.lastName')} *</Label>
-            <Input
-              id='lastName'
-              value={formData.lastName}
-              onChange={(e) =>
-                setFormData({ ...formData, lastName: e.target.value })
-              }
-              required
-            />
+            <Input id='lastName' {...register('lastName')} />
+            {errors.lastName && (
+              <p className='text-xs text-destructive'>
+                {errors.lastName.message}
+              </p>
+            )}
           </div>
 
           <div className='space-y-2'>
             <Label htmlFor='email'>{t('create.email')} *</Label>
-            <Input
-              id='email'
-              type='email'
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              required
-            />
+            <Input id='email' type='email' {...register('email')} />
+            {errors.email && (
+              <p className='text-xs text-destructive'>{errors.email.message}</p>
+            )}
           </div>
 
           <div className='grid grid-cols-3 gap-2'>
             <div className='space-y-2'>
               <Label htmlFor='phoneCode'>{t('create.phoneCode')} *</Label>
-              <Input
-                id='phoneCode'
-                value={formData.phoneCode}
-                onChange={(e) =>
-                  setFormData({ ...formData, phoneCode: e.target.value })
-                }
-                required
-              />
+              <Input id='phoneCode' {...register('phoneCode')} />
+              {errors.phoneCode && (
+                <p className='text-xs text-destructive'>
+                  {errors.phoneCode.message}
+                </p>
+              )}
             </div>
             <div className='col-span-2 space-y-2'>
               <Label htmlFor='phoneNumber'>{t('create.phoneNumber')} *</Label>
-              <Input
-                id='phoneNumber'
-                value={formData.phoneNumber}
-                onChange={(e) =>
-                  setFormData({ ...formData, phoneNumber: e.target.value })
-                }
-                required
-              />
+              <Input id='phoneNumber' {...register('phoneNumber')} />
+              {errors.phoneNumber && (
+                <p className='text-xs text-destructive'>
+                  {errors.phoneNumber.message}
+                </p>
+              )}
             </div>
           </div>
 
           <div className='space-y-2'>
             <Label htmlFor='password'>{t('create.password')} *</Label>
-            <Input
-              id='password'
-              type='password'
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-              required
-              minLength={8}
-            />
+            <Input id='password' type='password' {...register('password')} />
+            {errors.password && (
+              <p className='text-xs text-destructive'>
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           <div className='space-y-2'>
@@ -189,33 +194,39 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
             {rolesLoading ? (
               <p className='text-sm text-muted-foreground'>Loading roles...</p>
             ) : (
-              <div className='space-y-2 mt-2'>
-                {roles.map((role) => (
-                  <label key={role.roleId} className='flex items-center gap-2'>
-                    <input
-                      type='checkbox'
-                      checked={formData.roles.includes(role.roleId)}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setFormData({
-                            ...formData,
-                            roles: [...formData.roles, role.roleId],
-                          })
-                        } else {
-                          setFormData({
-                            ...formData,
-                            roles: formData.roles.filter(
-                              (r) => r !== role.roleId,
-                            ),
-                          })
-                        }
-                      }}
-                      className='rounded border-border text-primary focus:ring-primary'
-                    />
-                    <span className='text-sm'>{role.roleName}</span>
-                  </label>
-                ))}
-              </div>
+              <Controller
+                name='roles'
+                control={control}
+                render={({ field }) => (
+                  <div className='space-y-2 mt-2'>
+                    {roles.map((role) => (
+                      <label
+                        key={role.roleId}
+                        className='flex items-center gap-2'
+                      >
+                        <input
+                          type='checkbox'
+                          checked={field.value.includes(role.roleId)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              field.onChange([...field.value, role.roleId])
+                            } else {
+                              field.onChange(
+                                field.value.filter((r) => r !== role.roleId),
+                              )
+                            }
+                          }}
+                          className='rounded border-border text-primary focus:ring-primary'
+                        />
+                        <span className='text-sm'>{role.roleName}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
+              />
+            )}
+            {errors.roles && (
+              <p className='text-xs text-destructive'>{errors.roles.message}</p>
             )}
           </div>
 
@@ -229,11 +240,7 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
             >
               {t('create.cancel')}
             </Button>
-            <Button
-              type='submit'
-              disabled={loading || formData.roles.length === 0}
-              className='flex-1'
-            >
+            <Button type='submit' disabled={loading} className='flex-1'>
               {loading ? t('create.creating') : t('create.create')}
             </Button>
           </div>

@@ -5,8 +5,11 @@ import { Button } from '@/components/atoms/button'
 import { Typography } from '@/components/atoms/typography'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { AuthService } from '@/api/services/auth.service'
 import { toast } from 'sonner'
+import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
 
 type ForgotPasswordFormProps = {
   switchTo: (type: AuthType) => void
@@ -21,11 +24,23 @@ const ForgotPasswordForm: NextPage<ForgotPasswordFormProps> = (props) => {
   const { onSuccess } = props
   const t = useTranslations()
 
+  const forgotSchema = z.object({
+    email: z
+      .string()
+      .trim()
+      .min(1, t('homePage.auth.validation.emailRequired'))
+      .regex(
+        VALIDATION_PATTERNS.EMAIL,
+        t('homePage.auth.validation.emailInvalid'),
+      ),
+  })
+
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotSchema),
     defaultValues: {
       email: '',
     },
@@ -66,6 +81,7 @@ const ForgotPasswordForm: NextPage<ForgotPasswordFormProps> = (props) => {
           name='email'
           control={control}
           label={t('homePage.auth.common.email')}
+          error={errors.email?.message}
         />
 
         <Button type='submit' disabled={isSubmitting} className='w-full'>

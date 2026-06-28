@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { useTranslations } from 'next-intl'
 import { Button } from '@/components/atoms/button'
 import { Card } from '@/components/atoms/card'
@@ -33,26 +33,27 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
   const [showRequirements, setShowRequirements] = React.useState(false)
   const [showAccountActions, setShowAccountActions] = React.useState(false)
 
-  const validationSchema = yup.object({
-    currentPassword: yup
-      .string()
-      .required(t('homePage.auth.validation.currentPasswordRequired')),
-    newPassword: yup
-      .string()
-      .required(t('homePage.auth.validation.newPasswordRequired'))
-      .min(8, t('homePage.auth.validation.newPasswordMinLength'))
-      .matches(
-        VALIDATION_PATTERNS.PASSWORD,
-        t('homePage.auth.validation.passwordPattern'),
-      ),
-    confirmPassword: yup
-      .string()
-      .required(t('homePage.auth.validation.confirmPasswordRequired'))
-      .oneOf(
-        [yup.ref('newPassword')],
-        t('homePage.auth.validation.confirmPasswordMatch'),
-      ),
-  })
+  const validationSchema = z
+    .object({
+      currentPassword: z
+        .string()
+        .min(1, t('homePage.auth.validation.currentPasswordRequired')),
+      newPassword: z
+        .string()
+        .min(1, t('homePage.auth.validation.newPasswordRequired'))
+        .min(8, t('homePage.auth.validation.newPasswordMinLength'))
+        .regex(
+          VALIDATION_PATTERNS.PASSWORD,
+          t('homePage.auth.validation.passwordPattern'),
+        ),
+      confirmPassword: z
+        .string()
+        .min(1, t('homePage.auth.validation.confirmPasswordRequired')),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: t('homePage.auth.validation.confirmPasswordMatch'),
+      path: ['confirmPassword'],
+    })
 
   const {
     control,
@@ -60,7 +61,7 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
     watch,
     formState: { errors, isValid },
   } = useForm<PasswordChangeFormData>({
-    resolver: yupResolver(validationSchema),
+    resolver: zodResolver(validationSchema),
     defaultValues: {
       currentPassword: '',
       newPassword: '',
@@ -104,7 +105,6 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
   return (
     <Card className={cn('p-6', className)}>
       <div className='space-y-6'>
-        {/* Header */}
         <div className='flex items-center gap-3'>
           <Lock className='h-5 w-5 text-primary' />
           <Typography variant='h3' className='text-lg font-semibold'>
@@ -160,7 +160,6 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
 
         <Separator />
 
-        {/* Password Requirements */}
         <div className='space-y-3'>
           <button
             type='button'
@@ -205,7 +204,6 @@ const PasswordChangeForm: React.FC<PasswordChangeFormProps> = ({
 
         <Separator />
 
-        {/* Account Actions */}
         <div className='space-y-3'>
           <button
             type='button'

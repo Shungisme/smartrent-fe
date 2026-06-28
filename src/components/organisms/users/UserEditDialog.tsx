@@ -9,8 +9,12 @@ import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { useTranslations } from 'next-intl'
+import { useForm, Controller } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { updateUser } from '@/api/services/user.service'
-import { UserProfile, UserUpdateRequest } from '@/api/types/user.type'
+import { UserProfile } from '@/api/types/user.type'
+import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
 
 interface UserEditDialogProps {
   user: UserProfile | null
@@ -19,6 +23,20 @@ interface UserEditDialogProps {
   onSuccess: (user: UserProfile) => void
 }
 
+const userEditSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .min(1, 'Email is required')
+    .regex(VALIDATION_PATTERNS.EMAIL, 'Invalid email address'),
+  firstName: z.string().trim().min(1, 'First name is required'),
+  lastName: z.string().trim().min(1, 'Last name is required'),
+  contactPhoneNumber: z.string().optional(),
+  isVerified: z.boolean(),
+})
+
+type UserEditFormData = z.infer<typeof userEditSchema>
+
 export const UserEditDialog: React.FC<UserEditDialogProps> = ({
   user,
   open,
@@ -26,40 +44,55 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
   onSuccess,
 }) => {
   const t = useTranslations('admin.users')
-  const [form, setForm] = useState<Partial<UserUpdateRequest>>({})
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [serverError, setServerError] = useState<string | null>(null)
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<UserEditFormData>({
+    resolver: zodResolver(userEditSchema),
+    defaultValues: {
+      email: '',
+      firstName: '',
+      lastName: '',
+      contactPhoneNumber: '',
+      isVerified: false,
+    },
+  })
 
   useEffect(() => {
     if (user) {
-      setForm({
+      reset({
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        contactPhoneNumber: user.contactPhoneNumber,
+        contactPhoneNumber: user.contactPhoneNumber || '',
         isVerified:
           (user as UserProfile & { isVerified?: boolean }).isVerified ?? false,
       })
     }
-  }, [user])
+  }, [user, reset])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = async (data: UserEditFormData) => {
     if (!user) return
 
     setLoading(true)
-    setError(null)
+    setServerError(null)
     try {
-      const resp = await updateUser(user.userId, form)
+      const resp = await updateUser(user.userId, data)
       if (resp.success && resp.data) {
         onSuccess(resp.data)
         onOpenChange(false)
       } else {
-        setError(resp.message || 'Failed to update user')
+        setServerError(resp.message || 'Failed to update user')
       }
     } catch (err: unknown) {
       const error = err as { message?: string }
-      setError(error.message || 'Error updating user')
+      setServerError(error.message || 'Error updating user')
     } finally {
       setLoading(false)
     }
@@ -71,79 +104,68 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
         <DialogHeader>
           <DialogTitle>{t('edit.title') || 'Edit User'}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className='space-y-2'>
+        <form onSubmit={handleSubmit(onSubmit)} className='space-y-2'>
           <div className='space-y-2'>
             <Label htmlFor='editEmail'>{t('edit.email') || 'Email'} *</Label>
-            <Input
-              id='editEmail'
-              type='email'
-              placeholder='Email'
-              value={form.email || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, email: e.target.value }))
-              }
-              required
-            />
+            <Input id='editEmail' type='email' {...register('email')} />
+            {errors.email && (
+              <p className='text-xs text-destructive'>{errors.email.message}</p>
+            )}
           </div>
+
           <div className='space-y-2'>
             <Label htmlFor='editFirstName'>
               {t('edit.firstName') || 'First Name'} *
             </Label>
-            <Input
-              id='editFirstName'
-              placeholder='First Name'
-              value={form.firstName || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, firstName: e.target.value }))
-              }
-              required
-            />
+            <Input id='editFirstName' {...register('firstName')} />
+            {errors.firstName && (
+              <p className='text-xs text-destructive'>
+                {errors.firstName.message}
+              </p>
+            )}
           </div>
+
           <div className='space-y-2'>
             <Label htmlFor='editLastName'>
               {t('edit.lastName') || 'Last Name'} *
             </Label>
-            <Input
-              id='editLastName'
-              placeholder='Last Name'
-              value={form.lastName || ''}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, lastName: e.target.value }))
-              }
-              required
-            />
+            <Input id='editLastName' {...register('lastName')} />
+            {errors.lastName && (
+              <p className='text-xs text-destructive'>
+                {errors.lastName.message}
+              </p>
+            )}
           </div>
+
           <div className='space-y-2'>
             <Label htmlFor='editContactPhone'>
               {t('edit.contactPhone') || 'Contact Phone'}
             </Label>
-            <Input
-              id='editContactPhone'
-              placeholder='Contact Phone'
-              value={form.contactPhoneNumber || ''}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  contactPhoneNumber: e.target.value,
-                }))
-              }
-            />
+            <Input id='editContactPhone' {...register('contactPhoneNumber')} />
           </div>
-          <label className='flex items-center gap-2'>
-            <input
-              type='checkbox'
-              checked={!!form.isVerified}
-              onChange={(e) =>
-                setForm((f) => ({
-                  ...f,
-                  isVerified: e.target.checked,
-                }))
-              }
-              className='rounded border-border text-primary focus:ring-primary'
-            />
-            <span className='text-sm'>{t('edit.verified') || 'Verified'}</span>
-          </label>
-          {error && <div className='text-destructive text-sm'>{error}</div>}
+
+          <Controller
+            name='isVerified'
+            control={control}
+            render={({ field }) => (
+              <label className='flex items-center gap-2'>
+                <input
+                  type='checkbox'
+                  checked={field.value}
+                  onChange={field.onChange}
+                  className='rounded border-border text-primary focus:ring-primary'
+                />
+                <span className='text-sm'>
+                  {t('edit.verified') || 'Verified'}
+                </span>
+              </label>
+            )}
+          />
+
+          {serverError && (
+            <div className='text-destructive text-sm'>{serverError}</div>
+          )}
+
           <div className='flex justify-end gap-2 pt-4'>
             <Button
               type='button'

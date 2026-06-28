@@ -186,7 +186,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       accessor: 'joinDate',
       sortable: true,
       render: (value) => (
-        <span className='font-mono text-[13px] tabular-nums text-muted-foreground'>
+        <span className='text-sm text-muted-foreground'>
           {formatDateTime(value as string | null)}
         </span>
       ),
