@@ -275,4 +275,22 @@ export class ListingService {
       data,
     })
   }
+
+  /**
+   * Get report statistics
+   * GET /v1/admin/reports/statistics
+   */
+  static async getReportStatistics(): Promise<
+    ApiResponse<{
+      totalReports: number
+      pendingReports: number
+      resolvedReports: number
+      rejectedReports: number
+    }>
+  > {
+    return apiRequest({
+      method: 'GET',
+      url: '/v1/admin/reports/statistics',
+    })
+  }
 }
