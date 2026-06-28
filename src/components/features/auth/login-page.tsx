@@ -3,37 +3,13 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import {
-  Building2,
-  ShieldCheck,
-  Sparkles,
-  LineChart,
-  Languages,
-} from 'lucide-react'
+import { Building2, ShieldCheck, Languages } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import AdminLoginForm from '@/components/molecules/adminLoginForm'
 import { Skeleton } from '@/components/atoms/skeleton'
 import ThemeSwitch from '@/components/molecules/themeSwitch'
 import { useSwitchLanguage } from '@/contexts/switchLanguage/index.context'
 import { cn } from '@/lib/utils'
-
-const FEATURES = [
-  {
-    icon: ShieldCheck,
-    titleKey: 'features.security.title',
-    descKey: 'features.security.desc',
-  },
-  {
-    icon: LineChart,
-    titleKey: 'features.insights.title',
-    descKey: 'features.insights.desc',
-  },
-  {
-    icon: Sparkles,
-    titleKey: 'features.automation.title',
-    descKey: 'features.automation.desc',
-  },
-] as const
 
 const LoginPage = () => {
   const router = useRouter()
@@ -117,8 +93,8 @@ const LoginPage = () => {
 
       <div className='relative z-10 mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-6xl items-center justify-center px-4 pb-10 sm:px-6 lg:px-8'>
         <div className='grid w-full grid-cols-1 overflow-hidden rounded-2xl border border-border/70 bg-card/80 shadow-lg backdrop-blur-sm lg:grid-cols-[1.05fr_1fr]'>
-          {/* Left: brand / feature side (hidden on small screens) */}
-          <div className='relative hidden flex-col justify-between gap-10 overflow-hidden p-10 lg:flex'>
+          {/* Left: brand side (hidden on small screens) */}
+          <div className='relative hidden flex-col items-center justify-center gap-6 overflow-hidden p-12 lg:flex'>
             <div
               aria-hidden
               className={cn(
@@ -132,45 +108,20 @@ const LoginPage = () => {
               className='absolute -top-32 -left-32 -z-10 h-80 w-80 rounded-full bg-primary/20 blur-3xl dark:bg-primary/30'
             />
 
-            <div>
-              <span className='inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-card/70 px-2.5 py-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground backdrop-blur'>
-                <span className='inline-block h-1.5 w-1.5 rounded-full bg-primary' />
-                {tBrand('badge')}
-              </span>
-              <h2 className='mt-6 max-w-md text-3xl font-semibold leading-tight tracking-tight text-foreground'>
-                {tBrand('headline')}
+            <div className='text-center'>
+              <div className='flex h-14 w-14 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-lg mx-auto mb-4'>
+                <Building2 className='h-7 w-7' />
+              </div>
+              <h2 className='text-2xl font-semibold tracking-tight text-foreground'>
+                SmartRent
               </h2>
-              <p className='mt-3 max-w-md text-sm leading-relaxed text-muted-foreground'>
-                {tBrand('subheadline')}
+              <p className='mt-2 text-sm text-muted-foreground'>
+                {tBrand('subtitle')}
               </p>
             </div>
 
-            <ul className='space-y-4'>
-              {FEATURES.map((feature) => {
-                const Icon = feature.icon
-                return (
-                  <li
-                    key={feature.titleKey}
-                    className='flex items-start gap-3 rounded-xl border border-border/60 bg-card/60 p-3 backdrop-blur-sm'
-                  >
-                    <span className='flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary'>
-                      <Icon className='h-4 w-4' />
-                    </span>
-                    <div className='space-y-0.5'>
-                      <div className='text-sm font-medium text-foreground'>
-                        {tBrand(feature.titleKey)}
-                      </div>
-                      <div className='text-xs leading-relaxed text-muted-foreground'>
-                        {tBrand(feature.descKey)}
-                      </div>
-                    </div>
-                  </li>
-                )
-              })}
-            </ul>
-
-            <div className='text-xs text-muted-foreground/80'>
-              © {new Date().getFullYear()} SmartRent. {tBrand('rights')}
+            <div className='text-xs text-muted-foreground/70 text-center'>
+              © {new Date().getFullYear()} SmartRent
             </div>
           </div>
 
@@ -199,12 +150,8 @@ const LoginPage = () => {
                 <AdminLoginForm />
               </div>
 
-              <div className='mt-6 flex items-center justify-between text-xs text-muted-foreground'>
-                <span>SmartRent Admin · v1.0</span>
-                <span className='inline-flex items-center gap-1'>
-                  <ShieldCheck className='h-3 w-3' />
-                  {tBrand('secure')}
-                </span>
+              <div className='mt-6 text-center text-xs text-muted-foreground'>
+                SmartRent Admin · v1.0
               </div>
             </div>
           </div>
