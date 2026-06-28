@@ -27,6 +27,7 @@ import {
   ListingFilterRequest,
   ProductType,
   ModerationStatus,
+  SummaryListingStatus,
 } from '@/api/types/listing.type'
 import { PostStatus, UIPostData } from '@/types/posts.type'
 
@@ -259,6 +260,29 @@ const deriveStatusFromVerification = (
   }
 }
 
+const deriveStatusFromListingStatus = (
+  listingStatus: SummaryListingStatus | null | undefined,
+  verificationStatus: string | null | undefined,
+  expired: boolean | null | undefined,
+): PostStatus => {
+  switch (listingStatus) {
+    case 'EXPIRED':
+      return 'expired'
+    case 'IN_REVIEW':
+    case 'RESUBMITTED':
+    case 'PENDING_PAYMENT':
+      return 'pending'
+    case 'DISPLAYING':
+    case 'EXPIRING_SOON':
+    case 'VERIFIED':
+      return 'approved'
+    case 'REJECTED':
+      return 'rejected'
+    default:
+      return deriveStatusFromVerification(verificationStatus, expired)
+  }
+}
+
 const normalizeListingType = (
   type: string | null | undefined,
 ): 'for_rent' | 'for_sale' => {
@@ -307,7 +331,8 @@ export const mapSummaryToUI = (item: AdminListingSummary): UIPostData => {
     postedDate: date,
     postedTime: time,
     expiryDate,
-    status: deriveStatusFromVerification(
+    status: deriveStatusFromListingStatus(
+      item.listingStatus,
       item.adminVerification?.verificationStatus,
       item.expired,
     ),
