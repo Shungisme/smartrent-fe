@@ -944,7 +944,8 @@
           "removeBroker": "Gỡ môi giới",
           "removeBrokerConfirm": "Bạn có chắc muốn gỡ vai trò môi giới của {name}?",
           "removeBrokerSuccess": "Đã gỡ vai trò môi giới thành công",
-          "removeBrokerError": "Không thể gỡ vai trò môi giới. Vui lòng thử lại."
+          "removeBrokerError": "Không thể gỡ vai trò môi giới. Vui lòng thử lại.",
+          "clearMembership": "Xoá gói hội viên"
         },
         "loading": "Đang tải người dùng...",
         "noUsersFound": "Không tìm thấy người dùng"
@@ -985,6 +986,17 @@
         "creating": "Đang Tạo...",
         "cancel": "Hủy",
         "button": "Tạo Người Dùng Mới"
+      },
+      "clearMembership": {
+        "title": "Xoá gói hội viên",
+        "subtitle": "Thao tác này sẽ buộc hết hạn toàn bộ gói đang active để user có thể mua lại gói mới.",
+        "confirm": "Xoá toàn bộ gói hội viên đang active của",
+        "warning": "Toàn bộ lượt đăng tin và quyền lợi sẽ mất ngay lập tức.",
+        "confirm_button": "Xoá gói",
+        "cancel": "Huỷ",
+        "clearing": "Đang xoá...",
+        "success": "Đã xoá gói thành công. User có thể mua gói mới.",
+        "error": "Không thể xoá gói hội viên. Vui lòng thử lại."
       }
     },
     "analytics": {
