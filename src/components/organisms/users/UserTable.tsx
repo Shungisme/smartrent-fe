@@ -7,7 +7,7 @@ import {
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
-import { Pencil, UserX, Trash2 } from 'lucide-react'
+import { Pencil, UserX, Trash2, ShieldOff } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { UserProfile } from '@/api/types/user.type'
 import { UserData } from '@/types/users.type'
@@ -22,6 +22,7 @@ interface UserTableProps {
   onEdit: (user: UserProfile) => void
   onDelete: (user: UserProfile) => void
   onRemoveBroker: (user: UserProfile) => void
+  onClearMembership: (user: UserProfile) => void
 }
 
 export const UserTable: React.FC<UserTableProps> = ({
@@ -33,6 +34,7 @@ export const UserTable: React.FC<UserTableProps> = ({
   onEdit,
   onDelete,
   onRemoveBroker,
+  onClearMembership,
 }) => {
   const t = useTranslations('admin.users')
 
@@ -123,6 +125,17 @@ export const UserTable: React.FC<UserTableProps> = ({
                 <UserX className='h-4 w-4' />
               </Button>
             )}
+            <Button
+              variant='ghost'
+              size='sm'
+              className='h-8 w-8 p-0 text-muted-foreground hover:bg-warning/15 hover:text-warning-foreground'
+              title={t('table.actions.clearMembership')}
+              onClick={() => {
+                if (user) onClearMembership(user)
+              }}
+            >
+              <ShieldOff className='h-4 w-4' />
+            </Button>
             <Button
               variant='ghost'
               size='sm'

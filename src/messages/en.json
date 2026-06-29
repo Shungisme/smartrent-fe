@@ -980,7 +980,8 @@
           "removeBroker": "Remove Broker",
           "removeBrokerConfirm": "Remove broker role for {name}?",
           "removeBrokerSuccess": "Broker role removed successfully",
-          "removeBrokerError": "Unable to remove broker role. Please try again."
+          "removeBrokerError": "Unable to remove broker role. Please try again.",
+          "clearMembership": "Clear Membership"
         },
         "loading": "Loading users...",
         "noUsersFound": "No users found"
@@ -1021,6 +1022,17 @@
         "creating": "Creating...",
         "cancel": "Cancel",
         "button": "Create New User"
+      },
+      "clearMembership": {
+        "title": "Clear User Membership",
+        "subtitle": "This will force-expire all active memberships so the user can purchase a new package.",
+        "confirm": "Clear all active memberships for",
+        "warning": "All active membership quotas and benefits will be lost immediately.",
+        "confirm_button": "Clear Membership",
+        "cancel": "Cancel",
+        "clearing": "Clearing...",
+        "success": "Membership cleared successfully. The user can now purchase a new package.",
+        "error": "Failed to clear membership. Please try again."
       }
     },
     "analytics": {

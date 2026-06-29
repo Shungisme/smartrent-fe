@@ -74,6 +74,7 @@ export const PATHS = {
     GET_PACKAGE_BY_ID: '/v1/admin/memberships/packages/:membershipId',
     UPDATE_PACKAGE: '/v1/admin/memberships/packages/:membershipId',
     DELETE_PACKAGE: '/v1/admin/memberships/packages/:membershipId',
+    CLEAR_USER: '/v1/admin/memberships/users/:userId',
   },
 
   // VIP Tier endpoints

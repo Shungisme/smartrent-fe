@@ -12,12 +12,15 @@ import { UserTable } from '@/components/organisms/users/UserTable'
 import { UserCreateDialog } from '@/components/organisms/users/UserCreateDialog'
 import { UserEditDialog } from '@/components/organisms/users/UserEditDialog'
 import { UserDeleteDialog } from '@/components/organisms/users/UserDeleteDialog'
+import { UserClearMembershipDialog } from '@/components/organisms/users/UserClearMembershipDialog'
 import { PageHeader } from '@/components/molecules/pageHeader'
 
 const UserManagement = () => {
   // Modal states
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
   const [showDelete, setShowDelete] = useState<UserProfile | null>(null)
+  const [showClearMembership, setShowClearMembership] =
+    useState<UserProfile | null>(null)
   const [showCreate, setShowCreate] = useState(false)
   const t = useTranslations('admin.users')
 
@@ -163,6 +166,7 @@ const UserManagement = () => {
           onEdit={setEditingUser}
           onDelete={setShowDelete}
           onRemoveBroker={handleRemoveBroker}
+          onClearMembership={setShowClearMembership}
         />
       </div>
 
@@ -195,6 +199,17 @@ const UserManagement = () => {
         onSuccess={(userId) =>
           setUsers((prev) => prev.filter((u) => u.userId !== userId))
         }
+      />
+
+      {/* Clear Membership Modal */}
+      <UserClearMembershipDialog
+        user={showClearMembership}
+        open={!!showClearMembership}
+        onOpenChange={(open) => !open && setShowClearMembership(null)}
+        onSuccess={() => {
+          toast.success(t('clearMembership.success'))
+          setShowClearMembership(null)
+        }}
       />
     </div>
   )

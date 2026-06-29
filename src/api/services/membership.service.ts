@@ -106,6 +106,18 @@ export class MembershipService {
 
     return response
   }
+
+  /**
+   * Clear all active memberships for a user (Admin operation)
+   * DELETE /v1/admin/memberships/users/{userId}
+   *
+   * Expires every ACTIVE membership record for the given user.
+   * Use this to fix duplicate-active-membership issues.
+   */
+  static async clearUserMembership(userId: string): Promise<ApiResponse<void>> {
+    const url = ENV.API.MEMBERSHIP.CLEAR_USER.replace(':userId', userId)
+    return apiRequest<void>({ method: 'DELETE', url })
+  }
 }
 
 // Export individual methods for convenience
@@ -114,4 +126,5 @@ export const {
   getMembershipPackageById,
   updateMembershipPackage,
   deleteMembershipPackage,
+  clearUserMembership,
 } = MembershipService
