@@ -202,9 +202,6 @@ export const PostTable: React.FC<PostTableProps> = ({
       render: (_, row) => (
         <div className='text-sm text-muted-foreground'>
           <div>{row.postedDate}</div>
-          <div className='text-xs text-muted-foreground/80'>
-            {row.postedTime}
-          </div>
         </div>
       ),
     },
