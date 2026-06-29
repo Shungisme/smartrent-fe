@@ -117,7 +117,7 @@ export const mapUIFiltersToAPI = (
   uiFilters: Record<string, unknown>,
 ): Partial<ListingFilterRequest> => {
   const apiFilters: Partial<ListingFilterRequest> = {
-    page: uiFilters.page ? Number(uiFilters.page) - 1 : 0,
+    page: uiFilters.page ? Number(uiFilters.page) : 1,
     size: uiFilters.pageSize ? Number(uiFilters.pageSize) : 20,
     sortBy: 'NEWEST',
   }
