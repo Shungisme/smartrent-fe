@@ -9,7 +9,7 @@ import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Label } from '@/components/atoms/label'
 import { useTranslations } from 'next-intl'
-import { useForm, Controller } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { updateUser } from '@/api/services/user.service'
@@ -24,15 +24,14 @@ interface UserEditDialogProps {
 }
 
 const userEditSchema = z.object({
+  firstName: z.string().trim().min(1, 'First name is required'),
+  lastName: z.string().trim().min(1, 'Last name is required'),
   email: z
     .string()
     .trim()
     .min(1, 'Email is required')
     .regex(VALIDATION_PATTERNS.EMAIL, 'Invalid email address'),
-  firstName: z.string().trim().min(1, 'First name is required'),
-  lastName: z.string().trim().min(1, 'Last name is required'),
   contactPhoneNumber: z.string().optional(),
-  isVerified: z.boolean(),
 })
 
 type UserEditFormData = z.infer<typeof userEditSchema>
@@ -50,29 +49,25 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
   const {
     register,
     handleSubmit,
-    control,
     reset,
     formState: { errors },
   } = useForm<UserEditFormData>({
     resolver: zodResolver(userEditSchema),
     defaultValues: {
-      email: '',
       firstName: '',
       lastName: '',
+      email: '',
       contactPhoneNumber: '',
-      isVerified: false,
     },
   })
 
   useEffect(() => {
     if (user) {
       reset({
-        email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        email: user.email,
         contactPhoneNumber: user.contactPhoneNumber || '',
-        isVerified:
-          (user as UserProfile & { isVerified?: boolean }).isVerified ?? false,
       })
     }
   }, [user, reset])
@@ -106,14 +101,6 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-2'>
           <div className='space-y-2'>
-            <Label htmlFor='editEmail'>{t('edit.email') || 'Email'} *</Label>
-            <Input id='editEmail' type='email' {...register('email')} />
-            {errors.email && (
-              <p className='text-xs text-destructive'>{errors.email.message}</p>
-            )}
-          </div>
-
-          <div className='space-y-2'>
             <Label htmlFor='editFirstName'>
               {t('edit.firstName') || 'First Name'} *
             </Label>
@@ -138,29 +125,19 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
           </div>
 
           <div className='space-y-2'>
+            <Label htmlFor='editEmail'>{t('edit.email') || 'Email'} *</Label>
+            <Input id='editEmail' type='email' {...register('email')} />
+            {errors.email && (
+              <p className='text-xs text-destructive'>{errors.email.message}</p>
+            )}
+          </div>
+
+          <div className='space-y-2'>
             <Label htmlFor='editContactPhone'>
               {t('edit.contactPhone') || 'Contact Phone'}
             </Label>
             <Input id='editContactPhone' {...register('contactPhoneNumber')} />
           </div>
-
-          <Controller
-            name='isVerified'
-            control={control}
-            render={({ field }) => (
-              <label className='flex items-center gap-2'>
-                <input
-                  type='checkbox'
-                  checked={field.value}
-                  onChange={field.onChange}
-                  className='rounded border-border text-primary focus:ring-primary'
-                />
-                <span className='text-sm'>
-                  {t('edit.verified') || 'Verified'}
-                </span>
-              </label>
-            )}
-          />
 
           {serverError && (
             <div className='text-destructive text-sm'>{serverError}</div>
