@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -22,11 +22,9 @@ interface RoleEditDialogProps {
   onSuccess: () => void
 }
 
-const roleEditSchema = z.object({
-  roleName: z.string().trim().min(1, 'Role name is required'),
-})
-
-type RoleEditFormData = z.infer<typeof roleEditSchema>
+type RoleEditFormData = {
+  roleName: string
+}
 
 export const RoleEditDialog: React.FC<RoleEditDialogProps> = ({
   role,
@@ -36,6 +34,17 @@ export const RoleEditDialog: React.FC<RoleEditDialogProps> = ({
 }) => {
   const t = useTranslations('admin.roles')
   const [serverError, setServerError] = React.useState<string | null>(null)
+
+  const roleEditSchema = useMemo(
+    () =>
+      z.object({
+        roleName: z
+          .string()
+          .trim()
+          .min(1, t('edit.validation.roleNameRequired')),
+      }),
+    [t],
+  )
 
   const {
     register,
@@ -68,11 +77,11 @@ export const RoleEditDialog: React.FC<RoleEditDialogProps> = ({
         onOpenChange(false)
         onSuccess()
       } else {
-        setServerError(resp.message || 'Failed to update role')
+        setServerError(resp.message || t('edit.updateFailed'))
       }
     } catch (err: unknown) {
       const error = err as { message?: string }
-      setServerError(error.message || 'Error updating role')
+      setServerError(error.message || t('edit.updateError'))
     }
   }
 

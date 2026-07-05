@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -23,18 +23,12 @@ interface UserEditDialogProps {
   onSuccess: (user: UserProfile) => void
 }
 
-const userEditSchema = z.object({
-  firstName: z.string().trim().min(1, 'First name is required'),
-  lastName: z.string().trim().min(1, 'Last name is required'),
-  email: z
-    .string()
-    .trim()
-    .min(1, 'Email is required')
-    .regex(VALIDATION_PATTERNS.EMAIL, 'Invalid email address'),
-  contactPhoneNumber: z.string().optional(),
-})
-
-type UserEditFormData = z.infer<typeof userEditSchema>
+type UserEditFormData = {
+  firstName: string
+  lastName: string
+  email: string
+  contactPhoneNumber?: string
+}
 
 export const UserEditDialog: React.FC<UserEditDialogProps> = ({
   user,
@@ -45,6 +39,27 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
   const t = useTranslations('admin.users')
   const [loading, setLoading] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
+
+  const userEditSchema = useMemo(
+    () =>
+      z.object({
+        firstName: z
+          .string()
+          .trim()
+          .min(1, t('edit.validation.firstNameRequired')),
+        lastName: z
+          .string()
+          .trim()
+          .min(1, t('edit.validation.lastNameRequired')),
+        email: z
+          .string()
+          .trim()
+          .min(1, t('edit.validation.emailRequired'))
+          .regex(VALIDATION_PATTERNS.EMAIL, t('edit.validation.emailInvalid')),
+        contactPhoneNumber: z.string().optional(),
+      }),
+    [t],
+  )
 
   const {
     register,
@@ -83,11 +98,11 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
         onSuccess(resp.data)
         onOpenChange(false)
       } else {
-        setServerError(resp.message || 'Failed to update user')
+        setServerError(resp.message || t('edit.updateFailed'))
       }
     } catch (err: unknown) {
       const error = err as { message?: string }
-      setServerError(error.message || 'Error updating user')
+      setServerError(error.message || t('edit.updateError'))
     } finally {
       setLoading(false)
     }
@@ -97,13 +112,11 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='min-w-[40vw] max-w-md max-h-[80vh] overflow-y-auto'>
         <DialogHeader>
-          <DialogTitle>{t('edit.title') || 'Edit User'}</DialogTitle>
+          <DialogTitle>{t('edit.title')}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-2'>
           <div className='space-y-2'>
-            <Label htmlFor='editFirstName'>
-              {t('edit.firstName') || 'First Name'} *
-            </Label>
+            <Label htmlFor='editFirstName'>{t('edit.firstName')} *</Label>
             <Input id='editFirstName' {...register('firstName')} />
             {errors.firstName && (
               <p className='text-xs text-destructive'>
@@ -113,9 +126,7 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
           </div>
 
           <div className='space-y-2'>
-            <Label htmlFor='editLastName'>
-              {t('edit.lastName') || 'Last Name'} *
-            </Label>
+            <Label htmlFor='editLastName'>{t('edit.lastName')} *</Label>
             <Input id='editLastName' {...register('lastName')} />
             {errors.lastName && (
               <p className='text-xs text-destructive'>
@@ -125,7 +136,7 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
           </div>
 
           <div className='space-y-2'>
-            <Label htmlFor='editEmail'>{t('edit.email') || 'Email'} *</Label>
+            <Label htmlFor='editEmail'>{t('edit.email')} *</Label>
             <Input id='editEmail' type='email' {...register('email')} />
             {errors.email && (
               <p className='text-xs text-destructive'>{errors.email.message}</p>
@@ -133,9 +144,7 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
           </div>
 
           <div className='space-y-2'>
-            <Label htmlFor='editContactPhone'>
-              {t('edit.contactPhone') || 'Contact Phone'}
-            </Label>
+            <Label htmlFor='editContactPhone'>{t('edit.contactPhone')}</Label>
             <Input id='editContactPhone' {...register('contactPhoneNumber')} />
           </div>
 
@@ -150,12 +159,10 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >
-              {t('edit.cancel') || 'Cancel'}
+              {t('edit.cancel')}
             </Button>
             <Button type='submit' disabled={loading}>
-              {loading
-                ? t('edit.saving') || 'Saving...'
-                : t('edit.save') || 'Save'}
+              {loading ? t('edit.saving') : t('edit.save')}
             </Button>
           </div>
         </form>

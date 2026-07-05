@@ -955,7 +955,9 @@
         "confirm": "Bạn có chắc chắn muốn xóa người dùng này không? Hành động này không thể hoàn tác.",
         "deleting": "Đang xóa...",
         "cancel": "Hủy",
-        "delete": "Xóa"
+        "delete": "Xóa",
+        "deleteFailed": "Không thể xóa người dùng",
+        "deleteError": "Lỗi khi xóa người dùng"
       },
       "edit": {
         "title": "Chỉnh sửa Người Dùng",
@@ -968,7 +970,15 @@
         "contactPhone": "Số điện thoại liên hệ",
         "save": "Lưu Thay Đổi",
         "saving": "Đang Lưu...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "updateFailed": "Không thể cập nhật người dùng",
+        "updateError": "Lỗi khi cập nhật người dùng",
+        "validation": {
+          "firstNameRequired": "Tên là bắt buộc",
+          "lastNameRequired": "Họ là bắt buộc",
+          "emailRequired": "Email là bắt buộc",
+          "emailInvalid": "Email không hợp lệ"
+        }
       },
       "create": {
         "title": "Tạo Người Dùng Mới",
@@ -985,7 +995,18 @@
         "create": "Tạo",
         "creating": "Đang Tạo...",
         "cancel": "Hủy",
-        "button": "Tạo Người Dùng Mới"
+        "button": "Tạo Người Dùng Mới",
+        "createFailed": "Không thể tạo người dùng",
+        "createError": "Lỗi khi tạo người dùng",
+        "validation": {
+          "firstNameRequired": "Tên là bắt buộc",
+          "lastNameRequired": "Họ là bắt buộc",
+          "emailRequired": "Email là bắt buộc",
+          "emailInvalid": "Email không hợp lệ",
+          "phoneNumberRequired": "Số điện thoại là bắt buộc",
+          "passwordRequired": "Mật khẩu là bắt buộc",
+          "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự"
+        }
       },
       "clearMembership": {
         "title": "Xoá gói hội viên",
@@ -1235,14 +1256,27 @@
         "roles": "Vai trò",
         "save": "Lưu thay đổi",
         "saving": "Đang lưu...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "loadingRoles": "Đang tải vai trò...",
+        "updateFailed": "Không thể cập nhật admin",
+        "updateError": "Lỗi khi cập nhật admin",
+        "validation": {
+          "emailRequired": "Email là bắt buộc",
+          "emailInvalid": "Email không hợp lệ",
+          "firstNameRequired": "Tên là bắt buộc",
+          "lastNameRequired": "Họ là bắt buộc",
+          "phoneCodeRequired": "Mã vùng là bắt buộc",
+          "phoneNumberRequired": "Số điện thoại là bắt buộc"
+        }
       },
       "delete": {
         "title": "Xóa Admin",
         "confirm": "Bạn có chắc chắn muốn xóa admin này không?",
         "delete": "Xóa",
         "deleting": "Đang xóa...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "deleteFailed": "Không thể xóa admin",
+        "deleteError": "Lỗi khi xóa admin"
       },
       "create": {
         "title": "Tạo Admin Mới",
@@ -1256,7 +1290,21 @@
         "selectRoles": "Chọn ít nhất một vai trò",
         "create": "Tạo Admin",
         "creating": "Đang tạo...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "loadingRoles": "Đang tải vai trò...",
+        "successMessage": "Tạo admin thành công!\nMật khẩu tạm thời: {password}\n\nVui lòng lưu mật khẩu này cẩn thận.",
+        "errorPrefix": "Lỗi: {message}",
+        "failedGeneric": "Không thể tạo admin: {message}",
+        "validation": {
+          "firstNameRequired": "Tên là bắt buộc",
+          "lastNameRequired": "Họ là bắt buộc",
+          "emailRequired": "Email là bắt buộc",
+          "emailInvalid": "Email không hợp lệ",
+          "phoneNumberRequired": "Số điện thoại là bắt buộc",
+          "passwordRequired": "Mật khẩu là bắt buộc",
+          "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
+          "rolesRequired": "Phải chọn ít nhất một vai trò"
+        }
       }
     },
     "roles": {
@@ -1280,20 +1328,33 @@
         "roleName": "Tên Vai Trò",
         "create": "Tạo",
         "creating": "Đang tạo...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "createFailed": "Không thể tạo vai trò",
+        "createError": "Lỗi khi tạo vai trò",
+        "validation": {
+          "roleIdRequired": "ID vai trò là bắt buộc",
+          "roleNameRequired": "Tên vai trò là bắt buộc"
+        }
       },
       "edit": {
         "title": "Chỉnh sửa Vai Trò",
         "save": "Lưu Thay Đổi",
         "saving": "Đang lưu...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "updateFailed": "Không thể cập nhật vai trò",
+        "updateError": "Lỗi khi cập nhật vai trò",
+        "validation": {
+          "roleNameRequired": "Tên vai trò là bắt buộc"
+        }
       },
       "delete": {
         "title": "Xóa Vai Trò",
         "confirm": "Bạn có chắc chắn muốn xóa vai trò này không?",
         "delete": "Xóa",
         "deleting": "Đang xóa...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "deleteFailed": "Không thể xóa vai trò",
+        "deleteError": "Lỗi khi xóa vai trò"
       }
     },
     "finance": {
@@ -1972,6 +2033,9 @@
       },
       "menuBar": {
         "enterUrl": "Nhập URL:"
+      },
+      "validation": {
+        "titleRequired": "Tiêu đề là bắt buộc"
       }
     }
   },

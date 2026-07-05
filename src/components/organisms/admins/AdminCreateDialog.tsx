@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -26,23 +26,14 @@ interface AdminCreateDialogProps {
 
 const DEFAULT_PHONE_CODE = '+84'
 
-const adminCreateSchema = z.object({
-  firstName: z.string().trim().min(1, 'First name is required'),
-  lastName: z.string().trim().min(1, 'Last name is required'),
-  email: z
-    .string()
-    .trim()
-    .min(1, 'Email is required')
-    .regex(VALIDATION_PATTERNS.EMAIL, 'Invalid email address'),
-  phoneNumber: z.string().trim().min(1, 'Phone number is required'),
-  password: z
-    .string()
-    .min(1, 'Password is required')
-    .min(8, 'Password must be at least 8 characters'),
-  roles: z.array(z.string()).min(1, 'At least one role must be selected'),
-})
-
-type AdminCreateFormData = z.infer<typeof adminCreateSchema>
+type AdminCreateFormData = {
+  firstName: string
+  lastName: string
+  email: string
+  phoneNumber: string
+  password: string
+  roles: string[]
+}
 
 export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
   open,
@@ -53,6 +44,38 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
   const [loading, setLoading] = useState(false)
   const [roles, setRoles] = useState<Role[]>([])
   const [rolesLoading, setRolesLoading] = useState(true)
+
+  const adminCreateSchema = useMemo(
+    () =>
+      z.object({
+        firstName: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.firstNameRequired')),
+        lastName: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.lastNameRequired')),
+        email: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.emailRequired'))
+          .regex(
+            VALIDATION_PATTERNS.EMAIL,
+            t('create.validation.emailInvalid'),
+          ),
+        phoneNumber: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.phoneNumberRequired')),
+        password: z
+          .string()
+          .min(1, t('create.validation.passwordRequired'))
+          .min(8, t('create.validation.passwordMinLength')),
+        roles: z.array(z.string()).min(1, t('create.validation.rolesRequired')),
+      }),
+    [t],
+  )
 
   const {
     register,
@@ -96,9 +119,7 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
         phoneCode: DEFAULT_PHONE_CODE,
       })
       if (response.success && response.data) {
-        alert(
-          `Admin created successfully!\nTemporary Password: ${response.data.password}\n\nPlease save this password securely.`,
-        )
+        alert(t('create.successMessage', { password: response.data.password }))
         const newAdmin: AdminProfile = {
           adminId: response.data.adminId,
           phoneCode: response.data.phoneCode,
@@ -114,11 +135,11 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
         onOpenChange(false)
         reset()
       } else {
-        alert(`Error: ${response.message}`)
+        alert(t('create.errorPrefix', { message: response.message ?? '' }))
       }
     } catch (error: unknown) {
       const err = error as { message?: string }
-      alert(`Failed to create admin: ${err.message}`)
+      alert(t('create.failedGeneric', { message: err.message ?? '' }))
     } finally {
       setLoading(false)
     }
@@ -184,7 +205,9 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
               {t('create.roles')} * ({t('create.selectRoles')})
             </Label>
             {rolesLoading ? (
-              <p className='text-sm text-muted-foreground'>Loading roles...</p>
+              <p className='text-sm text-muted-foreground'>
+                {t('create.loadingRoles')}
+              </p>
             ) : (
               <Controller
                 name='roles'

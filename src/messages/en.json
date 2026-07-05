@@ -991,7 +991,9 @@
         "confirm": "Are you sure you want to delete this user? This action cannot be undone.",
         "deleting": "Deleting...",
         "cancel": "Cancel",
-        "delete": "Delete"
+        "delete": "Delete",
+        "deleteFailed": "Failed to delete user",
+        "deleteError": "Error deleting user"
       },
       "edit": {
         "title": "Edit User",
@@ -1004,7 +1006,15 @@
         "contactPhone": "Contact Phone",
         "save": "Save Changes",
         "saving": "Saving...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "updateFailed": "Failed to update user",
+        "updateError": "Error updating user",
+        "validation": {
+          "firstNameRequired": "First name is required",
+          "lastNameRequired": "Last name is required",
+          "emailRequired": "Email is required",
+          "emailInvalid": "Invalid email address"
+        }
       },
       "create": {
         "title": "Create New User",
@@ -1021,7 +1031,18 @@
         "create": "Create",
         "creating": "Creating...",
         "cancel": "Cancel",
-        "button": "Create New User"
+        "button": "Create New User",
+        "createFailed": "Failed to create user",
+        "createError": "Error creating user",
+        "validation": {
+          "firstNameRequired": "First name is required",
+          "lastNameRequired": "Last name is required",
+          "emailRequired": "Email is required",
+          "emailInvalid": "Invalid email address",
+          "phoneNumberRequired": "Phone number is required",
+          "passwordRequired": "Password is required",
+          "passwordMinLength": "Password must be at least 8 characters"
+        }
       },
       "clearMembership": {
         "title": "Clear User Membership",
@@ -1271,14 +1292,27 @@
         "roles": "Roles",
         "save": "Save Changes",
         "saving": "Saving...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "loadingRoles": "Loading roles...",
+        "updateFailed": "Failed to update admin",
+        "updateError": "Error updating admin",
+        "validation": {
+          "emailRequired": "Email is required",
+          "emailInvalid": "Invalid email address",
+          "firstNameRequired": "First name is required",
+          "lastNameRequired": "Last name is required",
+          "phoneCodeRequired": "Phone code is required",
+          "phoneNumberRequired": "Phone number is required"
+        }
       },
       "delete": {
         "title": "Delete Admin",
         "confirm": "Are you sure you want to delete this admin?",
         "delete": "Delete",
         "deleting": "Deleting...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "deleteFailed": "Failed to delete admin",
+        "deleteError": "Error deleting admin"
       },
       "create": {
         "title": "Create New Admin",
@@ -1292,7 +1326,21 @@
         "selectRoles": "Select at least one",
         "create": "Create Admin",
         "creating": "Creating...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "loadingRoles": "Loading roles...",
+        "successMessage": "Admin created successfully!\nTemporary Password: {password}\n\nPlease save this password securely.",
+        "errorPrefix": "Error: {message}",
+        "failedGeneric": "Failed to create admin: {message}",
+        "validation": {
+          "firstNameRequired": "First name is required",
+          "lastNameRequired": "Last name is required",
+          "emailRequired": "Email is required",
+          "emailInvalid": "Invalid email address",
+          "phoneNumberRequired": "Phone number is required",
+          "passwordRequired": "Password is required",
+          "passwordMinLength": "Password must be at least 8 characters",
+          "rolesRequired": "At least one role must be selected"
+        }
       }
     },
     "roles": {
@@ -1316,20 +1364,33 @@
         "roleName": "Role Name",
         "create": "Create",
         "creating": "Creating...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "createFailed": "Failed to create role",
+        "createError": "Error creating role",
+        "validation": {
+          "roleIdRequired": "Role ID is required",
+          "roleNameRequired": "Role name is required"
+        }
       },
       "edit": {
         "title": "Edit Role",
         "save": "Save Changes",
         "saving": "Saving...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "updateFailed": "Failed to update role",
+        "updateError": "Error updating role",
+        "validation": {
+          "roleNameRequired": "Role name is required"
+        }
       },
       "delete": {
         "title": "Delete Role",
         "confirm": "Are you sure you want to delete this role?",
         "delete": "Delete",
         "deleting": "Deleting...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "deleteFailed": "Failed to delete role",
+        "deleteError": "Error deleting role"
       }
     },
     "finance": {
@@ -2008,6 +2069,9 @@
       },
       "menuBar": {
         "enterUrl": "Enter URL:"
+      },
+      "validation": {
+        "titleRequired": "Title is required"
       }
     }
   },
