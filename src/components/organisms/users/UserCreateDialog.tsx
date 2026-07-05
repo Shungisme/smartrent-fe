@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -45,22 +45,13 @@ const generatePassword = (length = 12) => {
   return [...required, ...rest].sort(() => Math.random() - 0.5).join('')
 }
 
-const userCreateSchema = z.object({
-  firstName: z.string().trim().min(1, 'First name is required'),
-  lastName: z.string().trim().min(1, 'Last name is required'),
-  email: z
-    .string()
-    .trim()
-    .min(1, 'Email is required')
-    .regex(VALIDATION_PATTERNS.EMAIL, 'Invalid email address'),
-  phoneNumber: z.string().trim().min(1, 'Phone number is required'),
-  password: z
-    .string()
-    .min(1, 'Password is required')
-    .min(8, 'Password must be at least 8 characters'),
-})
-
-type UserCreateFormData = z.infer<typeof userCreateSchema>
+type UserCreateFormData = {
+  firstName: string
+  lastName: string
+  email: string
+  phoneNumber: string
+  password: string
+}
 
 export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
   open,
@@ -71,6 +62,37 @@ export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
   const [loading, setLoading] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
+
+  const userCreateSchema = useMemo(
+    () =>
+      z.object({
+        firstName: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.firstNameRequired')),
+        lastName: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.lastNameRequired')),
+        email: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.emailRequired'))
+          .regex(
+            VALIDATION_PATTERNS.EMAIL,
+            t('create.validation.emailInvalid'),
+          ),
+        phoneNumber: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.phoneNumberRequired')),
+        password: z
+          .string()
+          .min(1, t('create.validation.passwordRequired'))
+          .min(8, t('create.validation.passwordMinLength')),
+      }),
+    [t],
+  )
 
   const {
     register,
@@ -105,11 +127,11 @@ export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
         reset()
         setShowPassword(false)
       } else {
-        setServerError(resp.message || 'Failed to create user')
+        setServerError(resp.message || t('create.createFailed'))
       }
     } catch (err: unknown) {
       const error = err as { message?: string }
-      setServerError(error.message || 'Error creating user')
+      setServerError(error.message || t('create.createError'))
     } finally {
       setLoading(false)
     }
@@ -119,7 +141,7 @@ export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='min-w-[40vw] max-w-md max-h-[80vh] overflow-y-auto'>
         <DialogHeader>
-          <DialogTitle>{t('create.title') || 'Create User'}</DialogTitle>
+          <DialogTitle>{t('create.title')}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-2'>
           <div className='space-y-2'>
@@ -216,12 +238,10 @@ export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >
-              {t('create.cancel') || 'Cancel'}
+              {t('create.cancel')}
             </Button>
             <Button type='submit' disabled={loading}>
-              {loading
-                ? t('create.creating') || 'Creating...'
-                : t('create.create') || 'Create'}
+              {loading ? t('create.creating') : t('create.create')}
             </Button>
           </div>
         </form>

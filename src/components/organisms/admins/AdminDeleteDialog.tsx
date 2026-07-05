@@ -37,11 +37,11 @@ export const AdminDeleteDialog: React.FC<AdminDeleteDialogProps> = ({
         onSuccess(admin.adminId)
         onOpenChange(false)
       } else {
-        setError(resp.message || 'Failed to delete admin')
+        setError(resp.message || t('delete.deleteFailed'))
       }
     } catch (err: unknown) {
       const error = err as { message?: string }
-      setError(error.message || 'Error deleting admin')
+      setError(error.message || t('delete.deleteError'))
     } finally {
       setLoading(false)
     }
@@ -51,12 +51,11 @@ export const AdminDeleteDialog: React.FC<AdminDeleteDialogProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='max-w-sm'>
         <DialogHeader>
-          <DialogTitle>{t('delete.title') || 'Delete Admin'}</DialogTitle>
+          <DialogTitle>{t('delete.title')}</DialogTitle>
         </DialogHeader>
         <div className='space-y-2'>
           <p>
-            {t('delete.confirm') ||
-              'Are you sure you want to delete this admin?'}
+            {t('delete.confirm')}
             <br />
             <span className='font-semibold'>{admin?.email}</span>
           </p>
@@ -69,16 +68,14 @@ export const AdminDeleteDialog: React.FC<AdminDeleteDialogProps> = ({
               disabled={loading}
               className='flex-1'
             >
-              {t('delete.cancel') || 'Cancel'}
+              {t('delete.cancel')}
             </Button>
             <Button
               disabled={loading}
               onClick={handleDelete}
               className='flex-1 bg-red-600 hover:bg-red-700'
             >
-              {loading
-                ? t('delete.deleting') || 'Deleting...'
-                : t('delete.delete') || 'Delete'}
+              {loading ? t('delete.deleting') : t('delete.delete')}
             </Button>
           </div>
         </div>

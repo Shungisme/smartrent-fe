@@ -42,11 +42,11 @@ export const RoleDeleteDialog: React.FC<RoleDeleteDialogProps> = ({
         onOpenChange(false)
         onSuccess()
       } else {
-        setError(resp.message || 'Failed to delete role')
+        setError(resp.message || t('delete.deleteFailed'))
       }
     } catch (err: unknown) {
       const e = err as { message?: string }
-      setError(e.message || 'Error deleting role')
+      setError(e.message || t('delete.deleteError'))
     } finally {
       setLoading(false)
     }
