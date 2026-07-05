@@ -50,13 +50,13 @@ export const PATHS = {
     BROKER_REMOVE: '/v1/admin/users/:userId/broker',
   },
 
-  // Admin dashboard endpoints
-  ADMIN_DASHBOARD: {
-    REVENUE: '/v1/admin/dashboard/revenue',
-    MEMBERSHIP_DISTRIBUTION: '/v1/admin/dashboard/memberships/distribution',
-    USERS_GROWTH: '/v1/admin/dashboard/users/growth',
-    REPORTS_COUNT: '/v1/admin/dashboard/reports/count',
-    LISTINGS_CREATION: '/v1/admin/dashboard/listings/creation',
+  // Admin analytics endpoints (formerly /v1/admin/dashboard/*)
+  ADMIN_ANALYTICS: {
+    REVENUE: '/v1/admin/analytics/revenue',
+    MEMBERSHIP_DISTRIBUTION: '/v1/admin/analytics/memberships/distribution',
+    USERS: '/v1/admin/analytics/users',
+    REPORTS: '/v1/admin/analytics/reports',
+    LISTINGS: '/v1/admin/analytics/listings',
   },
 
   // Role endpoints

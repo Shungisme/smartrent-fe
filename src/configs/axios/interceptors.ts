@@ -109,7 +109,6 @@ export function createAuthRequestInterceptor(
 
       // Add X-Admin-Id header for admin requests
       const adminId = getAdminIdFromToken(accessToken)
-      console.log('Extracted adminId from token:', adminId)
       if (adminId) {
         config.headers['X-Admin-Id'] = adminId
       }

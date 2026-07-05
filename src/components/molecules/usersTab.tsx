@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
-import StatsCard from '@/components/molecules/statsCard'
+import { StatCard } from '@/components/molecules/statCard'
+import AreaChartCard from '@/components/molecules/areaChartCard'
 import LineChartCard from '@/components/molecules/lineChartCard'
+import PieChartCard, { PieChartData } from '@/components/molecules/pieChartCard'
 import { DashboardService } from '@/api/services/dashboard.service'
+import {
+  AdminUserAnalyticsResponse,
+  BrokerVerificationCategory,
+  UserRoleCategory,
+} from '@/api/types/dashboard.type'
 import { type DateRangeValue } from '@/components/molecules/dateRangePicker'
-import { Users, Loader2 } from 'lucide-react'
+import { Users, UserCheck, Briefcase, Clock3, Loader2 } from 'lucide-react'
 import { formatChartXLabel } from '@/utils/chart'
 
 type UsersTabProps = {
@@ -17,10 +24,7 @@ const UsersTab: React.FC<UsersTabProps> = ({ dateRange }) => {
   const tRevenue = useTranslations('admin.analytics.revenue')
 
   const [loading, setLoading] = useState(true)
-  const [data, setData] =
-    useState<
-      Awaited<ReturnType<typeof DashboardService.getUserGrowth>>['data']
-    >(null)
+  const [data, setData] = useState<AdminUserAnalyticsResponse | null>(null)
 
   useEffect(() => {
     const fetchUserGrowth = async () => {
@@ -52,6 +56,60 @@ const UsersTab: React.FC<UsersTabProps> = ({ dateRange }) => {
     fetchUserGrowth()
   }, [dateRange.from, dateRange.to, tRevenue])
 
+  const roleLabels: Record<UserRoleCategory, string> = {
+    REGULAR: t('roles.REGULAR'),
+    BROKER: t('roles.BROKER'),
+  }
+  const roleColors: Record<UserRoleCategory, string> = {
+    REGULAR: 'var(--chart-1)',
+    BROKER: 'var(--chart-2)',
+  }
+
+  const brokerStatusLabels: Record<BrokerVerificationCategory, string> = {
+    NONE: t('brokerStatus.NONE'),
+    PENDING: t('brokerStatus.PENDING'),
+    APPROVED: t('brokerStatus.APPROVED'),
+    REJECTED: t('brokerStatus.REJECTED'),
+  }
+  const brokerStatusColors: Record<BrokerVerificationCategory, string> = {
+    NONE: 'var(--chart-5)',
+    PENDING: 'var(--chart-3)',
+    APPROVED: 'var(--chart-2)',
+    REJECTED: 'var(--chart-4)',
+  }
+
+  const roleChartData: PieChartData[] = useMemo(
+    () =>
+      (data?.roleBreakdown || []).map((item) => ({
+        label: roleLabels[item.category] ?? item.category,
+        value: item.count,
+        color: roleColors[item.category] ?? 'var(--chart-5)',
+        percentage: item.percentage,
+      })),
+
+    [data?.roleBreakdown],
+  )
+
+  const brokerStatusChartData: PieChartData[] = useMemo(
+    () =>
+      (data?.brokerVerificationBreakdown || []).map((item) => ({
+        label: brokerStatusLabels[item.category] ?? item.category,
+        value: item.count,
+        color: brokerStatusColors[item.category] ?? 'var(--chart-5)',
+        percentage: item.percentage,
+      })),
+
+    [data?.brokerVerificationBreakdown],
+  )
+
+  const brokerPendingCount =
+    data?.brokerVerificationBreakdown.find(
+      (item) => item.category === 'PENDING',
+    )?.count ?? 0
+  const brokerSharePercent =
+    data?.roleBreakdown.find((item) => item.category === 'BROKER')
+      ?.percentage ?? 0
+
   if (loading) {
     return (
       <div className='flex h-64 items-center justify-center'>
@@ -62,35 +120,75 @@ const UsersTab: React.FC<UsersTabProps> = ({ dateRange }) => {
 
   return (
     <div className='space-y-6'>
-      <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
-        <StatsCard
-          title={t('charts.newUsers')}
-          value={(data?.total || 0).toLocaleString('vi-VN')}
-          icon={<Users className='h-5 w-5' />}
+      <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4'>
+        <StatCard
+          label={t('stats.newUsers')}
+          value={(data?.total ?? 0).toLocaleString('vi-VN')}
+          icon={Users}
+          intent='primary'
         />
-        <StatsCard
-          title={t('stats.totalUsers')}
-          value={(data?.dataPoints.length || 0).toLocaleString('vi-VN')}
-          subtitle={t('charts.userGrowthOverTime')}
-          icon={<Users className='h-5 w-5' />}
+        <StatCard
+          label={t('stats.totalUsers')}
+          value={(data?.totalUsersAsOfRangeEnd ?? 0).toLocaleString('vi-VN')}
+          icon={UserCheck}
+          intent='neutral'
+        />
+        <StatCard
+          label={t('stats.brokerShare')}
+          value={`${brokerSharePercent.toFixed(1)}%`}
+          icon={Briefcase}
+          intent='success'
+        />
+        <StatCard
+          label={t('stats.brokerPending')}
+          value={brokerPendingCount.toLocaleString('vi-VN')}
+          icon={Clock3}
+          intent='warning'
         />
       </div>
 
-      <div className='grid grid-cols-1 gap-6'>
+      <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
+        <AreaChartCard
+          title={t('charts.newUsersOverTime')}
+          data={(data?.dataPoints || []).map((item) => item.count)}
+          labels={(data?.dataPoints || []).map((item) =>
+            formatChartXLabel(item.label, data?.granularity || 'DAY'),
+          )}
+          color='var(--chart-1)'
+          height='h-72'
+        />
         <LineChartCard
           title={t('charts.userGrowthOverTime')}
           datasets={[
             {
-              data: (data?.dataPoints || []).map((item) => item.count),
-              color: 'var(--chart-1)',
-              label: t('charts.newUsers'),
+              data: (data?.cumulativeDataPoints || []).map(
+                (item) => item.count,
+              ),
+              color: 'var(--chart-2)',
+              label: t('stats.totalUsers'),
             },
           ]}
-          labels={(data?.dataPoints || []).map((item) =>
+          labels={(data?.cumulativeDataPoints || []).map((item) =>
             formatChartXLabel(item.label, data?.granularity || 'DAY'),
           )}
-          height='h-80'
           showLegend={false}
+          height='h-72'
+        />
+      </div>
+
+      <div className='grid grid-cols-1 gap-6 lg:grid-cols-2'>
+        <PieChartCard
+          title={t('charts.roleBreakdown')}
+          data={roleChartData}
+          showPercentage
+          height='h-72'
+        />
+        <PieChartCard
+          title={t('charts.brokerVerificationBreakdown')}
+          data={brokerStatusChartData}
+          showPercentage
+          height='h-72'
+          emptyLabel={t('emptyBrokerBreakdown')}
         />
       </div>
     </div>
