@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { createPortal } from 'react-dom'
 import { Calendar, ChevronLeft, ChevronRight, X } from 'lucide-react'
 import { useLocale, useTranslations } from 'next-intl'
 import { Button } from '@/components/atoms/button'
@@ -15,6 +16,8 @@ interface DateRangePickerProps {
   value: DateRangeValue
   onChange: (value: DateRangeValue) => void
   className?: string
+  /** Overrides the trigger button's classes — useful to make it fill a tight slot. */
+  triggerClassName?: string
   align?: 'start' | 'end'
   /** Disallow dates after today. Defaults to true. */
   disableFuture?: boolean
@@ -243,15 +246,50 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   value,
   onChange,
   className,
+  triggerClassName,
   align = 'start',
   disableFuture = true,
 }) => {
   const t = useTranslations('admin.analytics.filters.dateRangePicker')
   const locale = useLocale()
   const [open, setOpen] = React.useState(false)
+  const [mounted, setMounted] = React.useState(false)
+  const [coords, setCoords] = React.useState<{
+    top: number
+    left?: number
+    right?: number
+  } | null>(null)
 
   const containerRef = React.useRef<HTMLDivElement>(null)
   const popoverRef = React.useRef<HTMLDivElement>(null)
+
+  // Portals need a browser document; guards SSR/hydration mismatch.
+  React.useEffect(() => setMounted(true), [])
+
+  // Render the calendar via a portal positioned with `fixed` coordinates so it
+  // always escapes any scrollable/overflow-clipped ancestor (e.g. another
+  // popover or dialog it's nested inside), rather than being cut off.
+  const updatePosition = React.useCallback(() => {
+    const el = containerRef.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    setCoords(
+      align === 'end'
+        ? { top: rect.bottom + 8, right: window.innerWidth - rect.right }
+        : { top: rect.bottom + 8, left: rect.left },
+    )
+  }, [align])
+
+  React.useEffect(() => {
+    if (!open) return
+    updatePosition()
+    window.addEventListener('resize', updatePosition)
+    window.addEventListener('scroll', updatePosition, true)
+    return () => {
+      window.removeEventListener('resize', updatePosition)
+      window.removeEventListener('scroll', updatePosition, true)
+    }
+  }, [open, updatePosition])
 
   const [draftFrom, setDraftFrom] = React.useState<Date | null>(null)
   const [draftTo, setDraftTo] = React.useState<Date | null>(null)
@@ -376,13 +414,126 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
   const rightMonth = addMonths(leftMonth, 1)
   const canGoNext = !disableFuture || compareDay(rightMonth, today) < 0
 
+  const popoverContent = open && coords && (
+    <div
+      ref={popoverRef}
+      data-slot='date-range-popover'
+      style={{
+        position: 'fixed',
+        top: coords.top,
+        left: coords.left,
+        right: coords.right,
+      }}
+      className='z-50 overflow-hidden rounded-lg border border-border bg-popover shadow-lg'
+    >
+      <div className='flex flex-col lg:flex-row'>
+        <div className='flex shrink-0 flex-col gap-1 p-2 lg:w-44 lg:border-r lg:border-border'>
+          {PRESET_KEYS.map((key) => {
+            const active = rangeMatchesPreset(key)
+            return (
+              <button
+                key={key}
+                type='button'
+                onClick={() => applyPreset(key)}
+                className={cn(
+                  'rounded-md px-3 py-1.5 text-left text-sm transition-colors hover:bg-muted',
+                  active && 'bg-primary/10 font-semibold text-primary',
+                )}
+              >
+                {t(`presets.${key}`)}
+              </button>
+            )
+          })}
+        </div>
+
+        <div className='flex flex-col'>
+          <div className='flex flex-col sm:flex-row sm:divide-x sm:divide-border'>
+            <MonthGrid
+              month={leftMonth}
+              hovered={hovered}
+              draftFrom={draftFrom}
+              draftTo={draftTo}
+              onClick={handleDayClick}
+              onHover={setHovered}
+              weekdayLabels={weekdayLabels}
+              monthLabel={monthLabel(leftMonth)}
+              onPrev={() => setLeftMonth(addMonths(leftMonth, -1))}
+              showArrows={{ prev: true, next: false }}
+              today={today}
+              disableFuture={disableFuture}
+            />
+            <div className='hidden sm:block'>
+              <MonthGrid
+                month={rightMonth}
+                hovered={hovered}
+                draftFrom={draftFrom}
+                draftTo={draftTo}
+                onClick={handleDayClick}
+                onHover={setHovered}
+                weekdayLabels={weekdayLabels}
+                monthLabel={monthLabel(rightMonth)}
+                onNext={
+                  canGoNext
+                    ? () => setLeftMonth(addMonths(leftMonth, 1))
+                    : undefined
+                }
+                showArrows={{ prev: false, next: canGoNext }}
+                today={today}
+                disableFuture={disableFuture}
+              />
+            </div>
+          </div>
+
+          <div className='flex items-center justify-between gap-2 border-t border-border bg-muted/30 px-3 py-2'>
+            <div className='text-xs text-muted-foreground'>
+              {draftFrom && draftTo ? (
+                <span className='font-medium text-foreground'>
+                  {formatDisplay(toIsoDate(draftFrom))}
+                  <span className='mx-1.5 text-muted-foreground'>→</span>
+                  {formatDisplay(toIsoDate(draftTo))}
+                </span>
+              ) : draftFrom ? (
+                t('selectEnd')
+              ) : (
+                t('selectStart')
+              )}
+            </div>
+            <div className='flex gap-2'>
+              <Button
+                type='button'
+                variant='ghost'
+                size='sm'
+                onClick={handleClear}
+                disabled={!draftFrom && !draftTo}
+              >
+                <X className='h-3.5 w-3.5' />
+                {t('clear')}
+              </Button>
+              <Button
+                type='button'
+                size='sm'
+                onClick={handleApply}
+                disabled={!draftFrom || !draftTo}
+              >
+                {t('apply')}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <div ref={containerRef} className={cn('relative inline-block', className)}>
       <Button
         type='button'
         variant='outline'
         onClick={() => setOpen((prev) => !prev)}
-        className='w-full justify-start font-normal sm:w-auto'
+        className={cn(
+          'w-full justify-start font-normal sm:w-auto',
+          triggerClassName,
+        )}
       >
         <Calendar className='h-4 w-4' />
         {value.from && value.to ? (
@@ -396,111 +547,9 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({
         )}
       </Button>
 
-      {open && (
-        <div
-          ref={popoverRef}
-          className={cn(
-            'absolute z-50 mt-2 overflow-hidden rounded-lg border border-border bg-popover shadow-lg',
-            align === 'end' ? 'right-0' : 'left-0',
-          )}
-        >
-          <div className='flex flex-col lg:flex-row'>
-            <div className='flex shrink-0 flex-col gap-1 p-2 lg:w-44 lg:border-r lg:border-border'>
-              {PRESET_KEYS.map((key) => {
-                const active = rangeMatchesPreset(key)
-                return (
-                  <button
-                    key={key}
-                    type='button'
-                    onClick={() => applyPreset(key)}
-                    className={cn(
-                      'rounded-md px-3 py-1.5 text-left text-sm transition-colors hover:bg-muted',
-                      active && 'bg-primary/10 font-semibold text-primary',
-                    )}
-                  >
-                    {t(`presets.${key}`)}
-                  </button>
-                )
-              })}
-            </div>
-
-            <div className='flex flex-col'>
-              <div className='flex flex-col sm:flex-row sm:divide-x sm:divide-border'>
-                <MonthGrid
-                  month={leftMonth}
-                  hovered={hovered}
-                  draftFrom={draftFrom}
-                  draftTo={draftTo}
-                  onClick={handleDayClick}
-                  onHover={setHovered}
-                  weekdayLabels={weekdayLabels}
-                  monthLabel={monthLabel(leftMonth)}
-                  onPrev={() => setLeftMonth(addMonths(leftMonth, -1))}
-                  showArrows={{ prev: true, next: false }}
-                  today={today}
-                  disableFuture={disableFuture}
-                />
-                <div className='hidden sm:block'>
-                  <MonthGrid
-                    month={rightMonth}
-                    hovered={hovered}
-                    draftFrom={draftFrom}
-                    draftTo={draftTo}
-                    onClick={handleDayClick}
-                    onHover={setHovered}
-                    weekdayLabels={weekdayLabels}
-                    monthLabel={monthLabel(rightMonth)}
-                    onNext={
-                      canGoNext
-                        ? () => setLeftMonth(addMonths(leftMonth, 1))
-                        : undefined
-                    }
-                    showArrows={{ prev: false, next: canGoNext }}
-                    today={today}
-                    disableFuture={disableFuture}
-                  />
-                </div>
-              </div>
-
-              <div className='flex items-center justify-between gap-2 border-t border-border bg-muted/30 px-3 py-2'>
-                <div className='text-xs text-muted-foreground'>
-                  {draftFrom && draftTo ? (
-                    <span className='font-medium text-foreground'>
-                      {formatDisplay(toIsoDate(draftFrom))}
-                      <span className='mx-1.5 text-muted-foreground'>→</span>
-                      {formatDisplay(toIsoDate(draftTo))}
-                    </span>
-                  ) : draftFrom ? (
-                    t('selectEnd')
-                  ) : (
-                    t('selectStart')
-                  )}
-                </div>
-                <div className='flex gap-2'>
-                  <Button
-                    type='button'
-                    variant='ghost'
-                    size='sm'
-                    onClick={handleClear}
-                    disabled={!draftFrom && !draftTo}
-                  >
-                    <X className='h-3.5 w-3.5' />
-                    {t('clear')}
-                  </Button>
-                  <Button
-                    type='button'
-                    size='sm'
-                    onClick={handleApply}
-                    disabled={!draftFrom || !draftTo}
-                  >
-                    {t('apply')}
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {mounted && popoverContent
+        ? createPortal(popoverContent, document.body)
+        : null}
     </div>
   )
 }

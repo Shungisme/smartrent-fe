@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { Button } from '@/components/atoms/button'
 import { Input } from '@/components/atoms/input'
 import { Popover } from '@/components/atoms/popover'
+import DateRangePicker from '@/components/molecules/dateRangePicker'
 import {
   Select,
   SelectContent,
@@ -28,6 +29,21 @@ const buildRangeValue = (from: string, to: string): string => {
   const t = to.trim()
   if (!f && !t) return ''
   return `${f}..${t}`
+}
+
+// Native date inputs only open their calendar when the tiny picker-indicator
+// icon is clicked exactly — most people click anywhere in the field instead.
+// `showPicker()` (Chrome/Edge 99+) opens it on any click; older browsers just
+// fall back to the default (icon-only) behavior.
+const openDatePicker = (e: React.MouseEvent<HTMLInputElement>) => {
+  const input = e.currentTarget
+  if (typeof input.showPicker === 'function') {
+    try {
+      input.showPicker()
+    } catch {
+      // Ignore — e.g. thrown if the input is disabled or not user-activated.
+    }
+  }
 }
 
 export interface FilterDialogProps {
@@ -112,6 +128,7 @@ export function FilterDialog({
   const handleClearFilters = () => {
     setActiveFilters([])
     onClear()
+    setOpen(false)
   }
 
   const activeCount = activeFilters.filter((f) => f.key && f.value).length
@@ -312,20 +329,33 @@ export function FilterDialog({
                           onChange={(e) =>
                             handleFilterValueChange(index, e.target.value)
                           }
-                          className='h-9'
+                          onClick={openDatePicker}
+                          className='h-9 cursor-pointer'
                         />
+                      ) : isRange && config?.type === 'date-range' ? (
+                        (() => {
+                          const { from, to } = parseRange(filter.value)
+                          return (
+                            <DateRangePicker
+                              value={{ from, to }}
+                              onChange={(range) =>
+                                handleFilterValueChange(
+                                  index,
+                                  buildRangeValue(range.from, range.to),
+                                )
+                              }
+                              triggerClassName='h-9 w-full'
+                            />
+                          )
+                        })()
                       ) : isRange ? (
                         (() => {
-                          const isDate = config?.type === 'date-range'
                           const { from, to } = parseRange(filter.value)
-                          const inputType = isDate ? 'date' : 'number'
                           return (
                             <div className='flex items-center gap-1.5'>
                               <Input
-                                type={inputType}
-                                placeholder={
-                                  isDate ? undefined : t('rangeFrom') || 'From'
-                                }
+                                type='number'
+                                placeholder={t('rangeFrom') || 'From'}
                                 value={from}
                                 onChange={(e) =>
                                   handleFilterValueChange(
@@ -339,10 +369,8 @@ export function FilterDialog({
                                 –
                               </span>
                               <Input
-                                type={inputType}
-                                placeholder={
-                                  isDate ? undefined : t('rangeTo') || 'To'
-                                }
+                                type='number'
+                                placeholder={t('rangeTo') || 'To'}
                                 value={to}
                                 onChange={(e) =>
                                   handleFilterValueChange(

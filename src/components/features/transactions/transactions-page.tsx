@@ -25,9 +25,11 @@ export const TransactionsPage = () => {
 
   const { data: transactionsList, isLoading: isLoadingTransactions } =
     useAdminTransactions(filters)
+
+  const [statsFromDate, statsToDate] = (filters.createdAt ?? '').split('..')
   const { data: statistics } = useTransactionStatistics(
-    filters.fromDate,
-    filters.toDate,
+    statsFromDate || undefined,
+    statsToDate || undefined,
   )
 
   const handleFiltersChange = (newFilters: AdminTransactionFilters) => {

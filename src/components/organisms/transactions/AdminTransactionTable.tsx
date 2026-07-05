@@ -13,6 +13,7 @@ import {
   AdminTransactionFilters,
   PaymentGateway,
   PaymentStatus,
+  PaymentType,
 } from '@/types/transaction.type'
 import {
   formatCurrency,
@@ -141,12 +142,31 @@ export const AdminTransactionTable = ({
     },
   ]
 
+  const paymentTypeOptions: PaymentType[] = [
+    'MONTHLY_INVOICE',
+    'MEMBERSHIP_PURCHASE',
+    'MEMBERSHIP_UPGRADE',
+    'MEMBERSHIP_RENEWAL',
+    'LISTING_BOOST',
+    'LISTING_POST',
+    'POST_FEE',
+    'REPOST_FEE',
+    'PUSH_FEE',
+  ]
+
   const filterConfig: FilterConfig[] = [
     {
-      id: 'q',
+      id: 'transactionId',
       type: 'search',
-      label: t('filters.keyword'),
-      placeholder: t('filters.search'),
+      label: t('filters.transactionId'),
+      placeholder: t('filters.transactionIdPlaceholder'),
+      isFilterField: true,
+    },
+    {
+      id: 'customer',
+      type: 'search',
+      label: t('filters.customer'),
+      placeholder: t('filters.customerPlaceholder'),
       isFilterField: true,
     },
     {
@@ -162,7 +182,7 @@ export const AdminTransactionTable = ({
       isFilterField: true,
     },
     {
-      id: 'gateway',
+      id: 'paymentGateway',
       type: 'select',
       label: t('filters.gateway'),
       options: [
@@ -174,17 +194,19 @@ export const AdminTransactionTable = ({
       isFilterField: true,
     },
     {
-      id: 'fromDate',
-      type: 'search',
-      label: t('filters.fromDate'),
-      placeholder: t('filters.datePlaceholder'),
+      id: 'paymentType',
+      type: 'select',
+      label: t('filters.paymentType'),
+      options: paymentTypeOptions.map((value) => ({
+        value,
+        label: t.has(`type.${value}`) ? t(`type.${value}`) : value,
+      })),
       isFilterField: true,
     },
     {
-      id: 'toDate',
-      type: 'search',
-      label: t('filters.toDate'),
-      placeholder: t('filters.datePlaceholder'),
+      id: 'createdAt',
+      type: 'date-range',
+      label: t('filters.createdAt'),
       isFilterField: true,
     },
   ]
@@ -196,22 +218,24 @@ export const AdminTransactionTable = ({
       filters={filterConfig}
       filterMode='api'
       filterValues={{
-        q: filters.q ?? '',
+        transactionId: filters.transactionId ?? '',
+        customer: filters.customer ?? '',
         status: filters.status ?? '',
-        gateway: filters.gateway ?? '',
-        fromDate: filters.fromDate ?? '',
-        toDate: filters.toDate ?? '',
+        paymentGateway: filters.paymentGateway ?? '',
+        paymentType: filters.paymentType ?? '',
+        createdAt: filters.createdAt ?? '',
         page: filters.page ?? 1,
         pageSize,
       }}
       onFilterChange={(next) =>
         onFiltersChange({
           ...filters,
-          q: (next.q as string) || undefined,
+          transactionId: (next.transactionId as string) || undefined,
+          customer: (next.customer as string) || undefined,
           status: (next.status as PaymentStatus) || undefined,
-          gateway: (next.gateway as PaymentGateway) || undefined,
-          fromDate: (next.fromDate as string) || undefined,
-          toDate: (next.toDate as string) || undefined,
+          paymentGateway: (next.paymentGateway as PaymentGateway) || undefined,
+          paymentType: (next.paymentType as PaymentType) || undefined,
+          createdAt: (next.createdAt as string) || undefined,
           page: Number(next.page) || 1,
           size: Number(next.pageSize) || pageSize,
         })
