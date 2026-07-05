@@ -9,6 +9,9 @@ export interface MembershipBenefit {
   benefitType: string
   benefitNameDisplay: string
   quantityPerMonth: number
+  vipTierCode?: string | null
+  maxImages?: number | null
+  maxVideos?: number | null
   createdAt: string
 }
 

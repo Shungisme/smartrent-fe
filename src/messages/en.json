@@ -998,12 +998,10 @@
         "email": "Email",
         "firstName": "First Name",
         "lastName": "Last Name",
-        "phoneCode": "Phone Code",
         "phoneNumber": "Phone Number",
         "idDocument": "ID Document",
         "taxNumber": "Tax Number",
         "contactPhone": "Contact Phone",
-        "verified": "Verified",
         "save": "Save Changes",
         "saving": "Saving...",
         "cancel": "Cancel"
@@ -1013,9 +1011,11 @@
         "firstName": "First Name",
         "lastName": "Last Name",
         "email": "Email",
-        "phoneCode": "Code",
         "phoneNumber": "Phone Number",
         "password": "Password",
+        "generatePassword": "Generate password",
+        "showPassword": "Show password",
+        "hidePassword": "Hide password",
         "idDocument": "ID Document",
         "taxNumber": "Tax Number",
         "create": "Create",
@@ -1171,6 +1171,7 @@
         "transactionTypes": {
           "membershipPurchase": "Membership purchase",
           "membershipUpgrade": "Membership upgrade",
+          "membershipRenewal": "Membership renewal",
           "postFee": "Post fee",
           "repostFee": "Repost fee",
           "pushFee": "Push fee",
@@ -1361,7 +1362,7 @@
       "charts": {
         "revenueChart": {
           "title": "Revenue Trend",
-          "unit": "Unit: Million ₫"
+          "unit": "Unit: Million đ"
         },
         "donutChart": {
           "title": "Invoice Status Distribution",
@@ -1371,8 +1372,8 @@
           "title": "Monthly Performance",
           "revenue": "Revenue",
           "avgValue": "Avg Value",
-          "revenueUnit": "Revenue: Million ₫",
-          "avgUnit": "Avg Value: Million ₫"
+          "revenueUnit": "Revenue: Million đ",
+          "avgUnit": "Avg Value: Million đ"
         }
       },
       "invoice": {
@@ -1425,6 +1426,7 @@
       "users": "Users"
     },
     "actions": {
+      "view": "View",
       "edit": "Edit",
       "delete": "Delete"
     },
@@ -1434,24 +1436,65 @@
       "table": {
         "package": "Package",
         "price": "Price",
+        "description": "Description",
         "features": "Features",
         "discount": "Discount",
         "status": "Status",
         "actions": "Actions",
-        "activeUsers": "active users",
         "moreFeatures": "{count} more features",
-        "noDiscount": "No discount"
+        "noDiscount": "No discount",
+        "month": "month"
+      },
+      "levels": {
+        "BASIC": "Basic",
+        "STANDARD": "Standard",
+        "ADVANCED": "Advanced"
+      },
+      "view": {
+        "title": "Membership package details",
+        "fields": {
+          "originalPrice": "Original price",
+          "salePrice": "Sale price",
+          "discount": "Discount",
+          "duration": "Duration",
+          "level": "Level",
+          "status": "Status",
+          "description": "Description"
+        },
+        "unit": {
+          "month": "month"
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "benefits": {
+          "title": "Benefits",
+          "empty": "No benefits",
+          "mediaLimit": "up to {images} images, {videos} videos"
+        },
+        "createdAt": "Created at",
+        "updatedAt": "Last updated",
+        "close": "Close"
       },
       "edit": {
         "title": "Edit membership package",
         "fields": {
           "packageName": "Package name",
+          "originalPrice": "Original price (đ)",
           "salePrice": "Sale price (đ)",
           "discountPercentage": "Discount (%)",
           "isActive": "Active"
         },
         "placeholders": {
           "packageName": "e.g. Premium 12 Months"
+        },
+        "originalPriceHint": "Original price is managed by the system and can't be edited here.",
+        "validation": {
+          "packageNameRequired": "Package name is required",
+          "packageNameMaxLength": "Package name must be at most 120 characters",
+          "discountPercentageRequired": "Discount is required",
+          "discountPercentageRange": "Discount must be between 0 and 100"
         },
         "cancel": "Cancel",
         "save": "Save changes",
@@ -1489,7 +1532,6 @@
       "inactive": "Inactive",
       "columns": {
         "tier": "Tier",
-        "badge": "Badge",
         "pricePerDay": "Price/day",
         "status": "Status"
       },
@@ -2040,10 +2082,8 @@
       "title": "Transaction Management"
     },
     "table": {
-      "transaction": "Transaction",
-      "invoice": "Invoice",
+      "transactionId": "Transaction ID",
       "customer": "Customer",
-      "landlord": "Landlord",
       "type": "Type",
       "gateway": "Gateway",
       "amount": "Amount",
@@ -2104,7 +2144,6 @@
       "roomName": "Room Name",
       "address": "Address",
       "gatewayInfo": "Gateway Information",
-      "gatewayTransaction": "Gateway Transaction Code",
       "responseCode": "Response Code",
       "payload": "Payload from Gateway",
       "failureReason": "Failure Reason",
@@ -2137,6 +2176,7 @@
       "MONTHLY_INVOICE": "Monthly Invoice",
       "MEMBERSHIP_PURCHASE": "Membership Purchase",
       "MEMBERSHIP_UPGRADE": "Membership Upgrade",
+      "MEMBERSHIP_RENEWAL": "Membership Renewal",
       "LISTING_BOOST": "Listing Boost",
       "LISTING_POST": "Listing Post",
       "POST_FEE": "Post Fee",
@@ -2145,6 +2185,13 @@
       "WALLET_TOPUP": "Wallet Top-up",
       "DEPOSIT": "Deposit",
       "REFUND": "Refund"
+    },
+    "method": {
+      "BANK_TRANSFER": "Bank Transfer",
+      "CASH": "Cash",
+      "CREDIT_CARD": "Credit Card",
+      "E_WALLET": "E-Wallet",
+      "QR_CODE": "QR Code"
     },
     "dashboard": {
       "title": "Transactions Overview",

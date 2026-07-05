@@ -17,6 +17,7 @@ import { MembershipTable } from '../../organisms/premium/MembershipTable'
 import { ListingTypeTable } from '@/components/organisms/premium/ListingTypeTable'
 import { EditMembershipDialog } from '@/components/organisms/premium/EditMembershipDialog'
 import { DeleteMembershipDialog } from '@/components/organisms/premium/DeleteMembershipDialog'
+import { ViewMembershipDialog } from '@/components/organisms/premium/ViewMembershipDialog'
 import { PageHeader } from '@/components/molecules/pageHeader'
 
 export type PremiumSection = 'overview' | 'membership' | 'listing-types'
@@ -40,6 +41,9 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [vipTiersError, setVIPTiersError] = useState<string | null>(null)
 
+  const [viewTarget, setViewTarget] = useState<APIMembershipPackage | null>(
+    null,
+  )
   const [editTarget, setEditTarget] = useState<APIMembershipPackage | null>(
     null,
   )
@@ -107,18 +111,18 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
     fetchVIPTiers()
   }, [needsVIPTiers])
 
+  const monthUnit = t('membership.table.month')
+
   const transformedMemberships: MembershipPackage[] = apiMemberships.map(
     (pkg) => ({
       id: pkg.membershipId.toString(),
       name: pkg.packageName,
-      price: `${pkg.salePrice.toLocaleString()}đ/${pkg.durationMonths}mo`,
-      features: pkg.benefits.map(
-        (b) => `${b.benefitNameDisplay} (${b.quantityPerMonth}/month)`,
-      ),
+      price: `${pkg.salePrice.toLocaleString()}đ/${pkg.durationMonths} ${monthUnit}`,
+      description: pkg.description,
+      features: pkg.benefits.map((b) => b.benefitNameDisplay),
       discount: pkg.discountPercentage,
       status: pkg.isActive ? 'active' : 'inactive',
       revenue: '0đ',
-      activeUsers: 0,
     }),
   )
 
@@ -126,6 +130,11 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
 
   const findApiPackage = (id: string) =>
     apiMemberships.find((p) => p.membershipId.toString() === id) ?? null
+
+  const handleView = (id: string) => {
+    const pkg = findApiPackage(id)
+    if (pkg) setViewTarget(pkg)
+  }
 
   const handleEdit = (id: string) => {
     const pkg = findApiPackage(id)
@@ -231,6 +240,7 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
           <MembershipTable
             memberships={displayMemberships}
             loading={membershipsLoading}
+            onView={handleView}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onToggleStatus={handleToggleStatus}
@@ -247,6 +257,14 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
           <ListingTypeTable tiers={apiVIPTiers} loading={vipTiersLoading} />
         </>
       )}
+
+      <ViewMembershipDialog
+        open={!!viewTarget}
+        pkg={viewTarget}
+        onOpenChange={(open) => {
+          if (!open) setViewTarget(null)
+        }}
+      />
 
       <EditMembershipDialog
         open={!!editTarget}

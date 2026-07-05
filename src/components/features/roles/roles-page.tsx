@@ -91,39 +91,6 @@ const RoleManagement = () => {
       accessor: 'name',
       render: (value) => <span>{value as React.ReactNode}</span>,
     },
-    {
-      id: 'actions',
-      header: t('table.headers.actions'),
-      accessor: () => '',
-      render: (_, row) => (
-        <div className='flex items-center justify-center gap-0.5'>
-          <Button
-            variant='ghost'
-            size='sm'
-            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
-            title={t('table.actions.edit')}
-            onClick={() => {
-              const role = roles.find((r) => r.roleId === row.id)
-              if (role) setShowEdit(role)
-            }}
-          >
-            <Pencil className='h-4 w-4' />
-          </Button>
-          <Button
-            variant='ghost'
-            size='sm'
-            className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
-            title={t('table.actions.delete')}
-            onClick={() => {
-              const role = roles.find((r) => r.roleId === row.id)
-              if (role) setShowDelete(role)
-            }}
-          >
-            <Trash2 className='h-4 w-4' />
-          </Button>
-        </div>
-      ),
-    },
   ]
 
   const transformedRoles: RoleRow[] = roles.map((role) => ({
@@ -171,6 +138,34 @@ const RoleManagement = () => {
           loading={loading}
           emptyMessage={loading ? 'Loading roles...' : 'No roles found'}
           getRowKey={(row) => row.id}
+          actions={(row) => (
+            <div className='flex items-center justify-center gap-0.5'>
+              <Button
+                variant='ghost'
+                size='sm'
+                className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+                title={t('table.actions.edit')}
+                onClick={() => {
+                  const role = roles.find((r) => r.roleId === row.id)
+                  if (role) setShowEdit(role)
+                }}
+              >
+                <Pencil className='h-4 w-4' />
+              </Button>
+              <Button
+                variant='ghost'
+                size='sm'
+                className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
+                title={t('table.actions.delete')}
+                onClick={() => {
+                  const role = roles.find((r) => r.roleId === row.id)
+                  if (role) setShowDelete(role)
+                }}
+              >
+                <Trash2 className='h-4 w-4' />
+              </Button>
+            </div>
+          )}
         />
 
         <RoleCreateDialog

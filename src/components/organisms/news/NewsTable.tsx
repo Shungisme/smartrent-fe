@@ -93,7 +93,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
         const displayStatus = getDisplayStatus(row)
 
         return (
-          <div className='flex gap-3'>
+          <div className='flex justify-end gap-3 lg:justify-start'>
             <div className='relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-muted'>
               {safeThumbnailSrc ? (
                 <Image
@@ -146,21 +146,20 @@ export const NewsTable: React.FC<NewsTableProps> = ({
       header: t('table.columns.author'),
       accessor: (row) => row.authorName || t('notAvailable'),
       render: (_, row) => (
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center justify-end gap-2 lg:justify-start'>
           <User className='h-4 w-4 text-muted-foreground' />
           <span className='text-sm text-foreground/80'>
             {row.authorName || t('notAvailable')}
           </span>
         </div>
       ),
-      hideOnMobile: true,
     },
     {
       id: 'stats',
       header: t('table.columns.stats'),
       accessor: () => '',
       render: (_, row) => (
-        <div className='flex flex-col gap-1 text-sm'>
+        <div className='flex flex-col items-end gap-1 text-sm lg:items-start'>
           <div className='flex items-center gap-1 text-muted-foreground'>
             <Eye className='h-3.5 w-3.5' />
             <span>
@@ -177,7 +176,6 @@ export const NewsTable: React.FC<NewsTableProps> = ({
           )}
         </div>
       ),
-      hideOnMobile: true,
     },
     {
       id: 'dates',
@@ -192,42 +190,6 @@ export const NewsTable: React.FC<NewsTableProps> = ({
               {t('table.published')}: {formatDate(row.publishedAt)}
             </div>
           )}
-        </div>
-      ),
-    },
-    {
-      id: 'actions',
-      header: t('table.columns.actions'),
-      accessor: () => '',
-      render: (_, row) => (
-        <div className='flex items-center justify-center gap-0.5'>
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={() => onPreview(row)}
-            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
-            title={t('actions.preview')}
-          >
-            <Eye className='h-4 w-4' />
-          </Button>
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={() => onEdit(row)}
-            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
-            title={t('actions.edit')}
-          >
-            <Edit className='h-4 w-4' />
-          </Button>
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={() => onDelete(row)}
-            className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
-            title={t('actions.delete')}
-          >
-            <Trash2 className='h-4 w-4' />
-          </Button>
         </div>
       ),
     },
@@ -294,6 +256,37 @@ export const NewsTable: React.FC<NewsTableProps> = ({
       totalItems={totalItems}
       loading={loading}
       getRowKey={(row) => row.newsId}
+      actions={(row) => (
+        <div className='flex items-center justify-center gap-0.5'>
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => onPreview(row)}
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+            title={t('actions.preview')}
+          >
+            <Eye className='h-4 w-4' />
+          </Button>
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => onEdit(row)}
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+            title={t('actions.edit')}
+          >
+            <Edit className='h-4 w-4' />
+          </Button>
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => onDelete(row)}
+            className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
+            title={t('actions.delete')}
+          >
+            <Trash2 className='h-4 w-4' />
+          </Button>
+        </div>
+      )}
     />
   )
 }

@@ -15,11 +15,34 @@ import { z } from 'zod'
 import { createUser } from '@/api/services/user.service'
 import { UserProfile } from '@/api/types/user.type'
 import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
+import { Eye, EyeOff, RefreshCw } from 'lucide-react'
 
 interface UserCreateDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess: (user: UserProfile) => void
+}
+
+const DEFAULT_PHONE_CODE = '+84'
+
+const PASSWORD_CHARSET = {
+  lower: 'abcdefghijklmnopqrstuvwxyz',
+  upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  digit: '0123456789',
+  symbol: '!@#$%^&*',
+}
+
+const generatePassword = (length = 12) => {
+  const all = Object.values(PASSWORD_CHARSET).join('')
+  const randomChar = (charset: string) =>
+    charset[Math.floor(Math.random() * charset.length)]
+
+  const required = Object.values(PASSWORD_CHARSET).map(randomChar)
+  const rest = Array.from({ length: length - required.length }, () =>
+    randomChar(all),
+  )
+
+  return [...required, ...rest].sort(() => Math.random() - 0.5).join('')
 }
 
 const userCreateSchema = z.object({
@@ -30,7 +53,6 @@ const userCreateSchema = z.object({
     .trim()
     .min(1, 'Email is required')
     .regex(VALIDATION_PATTERNS.EMAIL, 'Invalid email address'),
-  phoneCode: z.string().trim().min(1, 'Phone code is required'),
   phoneNumber: z.string().trim().min(1, 'Phone number is required'),
   password: z
     .string()
@@ -48,10 +70,12 @@ export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
   const t = useTranslations('admin.users')
   const [loading, setLoading] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
 
   const {
     register,
     handleSubmit,
+    setValue,
     reset,
     formState: { errors },
   } = useForm<UserCreateFormData>({
@@ -60,21 +84,26 @@ export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
       firstName: '',
       lastName: '',
       email: '',
-      phoneCode: '',
       phoneNumber: '',
       password: '',
     },
   })
 
+  const handleGeneratePassword = () => {
+    setValue('password', generatePassword(), { shouldValidate: true })
+    setShowPassword(true)
+  }
+
   const onSubmit = async (data: UserCreateFormData) => {
     setLoading(true)
     setServerError(null)
     try {
-      const resp = await createUser(data)
+      const resp = await createUser({ ...data, phoneCode: DEFAULT_PHONE_CODE })
       if (resp.success && resp.data) {
         onSuccess(resp.data)
         onOpenChange(false)
         reset()
+        setShowPassword(false)
       } else {
         setServerError(resp.message || 'Failed to create user')
       }
@@ -121,30 +150,54 @@ export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
             )}
           </div>
 
-          <div className='grid grid-cols-3 gap-2'>
-            <div className='space-y-2'>
-              <Label htmlFor='phoneCode'>{t('create.phoneCode')} *</Label>
-              <Input id='phoneCode' {...register('phoneCode')} />
-              {errors.phoneCode && (
-                <p className='text-xs text-destructive'>
-                  {errors.phoneCode.message}
-                </p>
-              )}
-            </div>
-            <div className='col-span-2 space-y-2'>
-              <Label htmlFor='phoneNumber'>{t('create.phoneNumber')} *</Label>
-              <Input id='phoneNumber' {...register('phoneNumber')} />
-              {errors.phoneNumber && (
-                <p className='text-xs text-destructive'>
-                  {errors.phoneNumber.message}
-                </p>
-              )}
-            </div>
+          <div className='space-y-2'>
+            <Label htmlFor='phoneNumber'>{t('create.phoneNumber')} *</Label>
+            <Input id='phoneNumber' {...register('phoneNumber')} />
+            {errors.phoneNumber && (
+              <p className='text-xs text-destructive'>
+                {errors.phoneNumber.message}
+              </p>
+            )}
           </div>
 
           <div className='space-y-2'>
             <Label htmlFor='password'>{t('create.password')} *</Label>
-            <Input id='password' type='password' {...register('password')} />
+            <div className='flex items-center gap-2'>
+              <div className='relative flex-1'>
+                <Input
+                  id='password'
+                  type={showPassword ? 'text' : 'password'}
+                  className='pr-10'
+                  {...register('password')}
+                />
+                <button
+                  type='button'
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground'
+                  aria-label={
+                    showPassword
+                      ? t('create.hidePassword')
+                      : t('create.showPassword')
+                  }
+                >
+                  {showPassword ? (
+                    <EyeOff className='h-4 w-4' />
+                  ) : (
+                    <Eye className='h-4 w-4' />
+                  )}
+                </button>
+              </div>
+              <Button
+                type='button'
+                variant='outline'
+                size='icon'
+                onClick={handleGeneratePassword}
+                aria-label={t('create.generatePassword')}
+                title={t('create.generatePassword')}
+              >
+                <RefreshCw className='h-4 w-4' />
+              </Button>
+            </div>
             {errors.password && (
               <p className='text-xs text-destructive'>
                 {errors.password.message}

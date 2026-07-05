@@ -82,6 +82,17 @@ const AuthProvider = ({ children }: PropsWithChildren) => {
     initializeAuth()
   }, [])
 
+  // React to 401s / expired tokens raised anywhere in the app (see interceptors.ts)
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      logout()
+    }
+
+    window.addEventListener('auth:unauthorized', handleUnauthorized)
+    return () =>
+      window.removeEventListener('auth:unauthorized', handleUnauthorized)
+  }, [logout])
+
   const contextValue: AuthContextType = useMemo(
     () => ({
       user,

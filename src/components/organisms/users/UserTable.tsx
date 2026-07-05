@@ -65,7 +65,7 @@ export const UserTable: React.FC<UserTableProps> = ({
       accessor: (row) => row.name,
       sortable: true,
       render: (_, row) => (
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center justify-end gap-3 lg:justify-start'>
           <InitialsAvatar name={row.name} src={row.avatar} size='md' />
           <span className='font-medium text-foreground'>{row.name}</span>
         </div>
@@ -91,65 +91,6 @@ export const UserTable: React.FC<UserTableProps> = ({
           {formatDateTimeCompact(value as string | null)}
         </span>
       ),
-    },
-    {
-      id: 'actions',
-      header: t('table.headers.actions'),
-      accessor: () => '',
-      render: (_, row) => {
-        const user = users.find((u) => u.userId === row.id)
-
-        return (
-          <div className='flex items-center justify-center gap-0.5'>
-            <Button
-              variant='ghost'
-              size='sm'
-              className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
-              title={t('table.actions.edit')}
-              onClick={() => {
-                if (user) onEdit(user)
-              }}
-            >
-              <Pencil className='h-4 w-4' />
-            </Button>
-            {user?.isBroker && (
-              <Button
-                variant='ghost'
-                size='sm'
-                className='h-8 w-8 p-0 text-muted-foreground hover:bg-warning/15 hover:text-warning-foreground'
-                title={t('table.actions.removeBroker')}
-                onClick={() => {
-                  if (user) onRemoveBroker(user)
-                }}
-              >
-                <UserX className='h-4 w-4' />
-              </Button>
-            )}
-            <Button
-              variant='ghost'
-              size='sm'
-              className='h-8 w-8 p-0 text-muted-foreground hover:bg-warning/15 hover:text-warning-foreground'
-              title={t('table.actions.clearMembership')}
-              onClick={() => {
-                if (user) onClearMembership(user)
-              }}
-            >
-              <ShieldOff className='h-4 w-4' />
-            </Button>
-            <Button
-              variant='ghost'
-              size='sm'
-              className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
-              title={t('table.actions.delete')}
-              onClick={() => {
-                if (user) onDelete(user)
-              }}
-            >
-              <Trash2 className='h-4 w-4' />
-            </Button>
-          </div>
-        )
-      },
     },
   ]
 
@@ -209,6 +150,60 @@ export const UserTable: React.FC<UserTableProps> = ({
       loading={loading}
       emptyMessage={loading ? t('table.loading') : t('table.noUsersFound')}
       getRowKey={(row) => row.id}
+      actions={(row) => {
+        const user = users.find((u) => u.userId === row.id)
+
+        return (
+          <div className='flex items-center justify-center gap-0.5'>
+            <Button
+              variant='ghost'
+              size='sm'
+              className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+              title={t('table.actions.edit')}
+              onClick={() => {
+                if (user) onEdit(user)
+              }}
+            >
+              <Pencil className='h-4 w-4' />
+            </Button>
+            {user?.isBroker && (
+              <Button
+                variant='ghost'
+                size='sm'
+                className='h-8 w-8 p-0 text-muted-foreground hover:bg-warning/15 hover:text-warning-foreground'
+                title={t('table.actions.removeBroker')}
+                onClick={() => {
+                  if (user) onRemoveBroker(user)
+                }}
+              >
+                <UserX className='h-4 w-4' />
+              </Button>
+            )}
+            <Button
+              variant='ghost'
+              size='sm'
+              className='h-8 w-8 p-0 text-muted-foreground hover:bg-warning/15 hover:text-warning-foreground'
+              title={t('table.actions.clearMembership')}
+              onClick={() => {
+                if (user) onClearMembership(user)
+              }}
+            >
+              <ShieldOff className='h-4 w-4' />
+            </Button>
+            <Button
+              variant='ghost'
+              size='sm'
+              className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
+              title={t('table.actions.delete')}
+              onClick={() => {
+                if (user) onDelete(user)
+              }}
+            >
+              <Trash2 className='h-4 w-4' />
+            </Button>
+          </div>
+        )
+      }}
     />
   )
 }

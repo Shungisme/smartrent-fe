@@ -28,35 +28,35 @@ const recentInvoices: InvoiceData[] = [
     customerName: 'Nguyễn Văn An',
     dueDate: '15/01/2024',
     status: 'paid',
-    amount: '15.0M ₫',
+    amount: '15.0M đ',
   },
   {
     id: 'INV-2024-002',
     customerName: 'Trần Thị Bình',
     dueDate: '20/01/2024',
     status: 'unpaid',
-    amount: '22.0M ₫',
+    amount: '22.0M đ',
   },
   {
     id: 'INV-2024-003',
     customerName: 'Lê Văn Cường',
     dueDate: '12/01/2024',
     status: 'overdue',
-    amount: '18.5M ₫',
+    amount: '18.5M đ',
   },
   {
     id: 'INV-2024-004',
     customerName: 'Phạm Thị Dung',
     dueDate: '18/01/2024',
     status: 'paid',
-    amount: '25.0M ₫',
+    amount: '25.0M đ',
   },
   {
     id: 'INV-2024-005',
     customerName: 'Hoàng Văn Em',
     dueDate: '25/01/2024',
     status: 'unpaid',
-    amount: '20.0M ₫',
+    amount: '20.0M đ',
   },
 ]
 
@@ -104,7 +104,7 @@ const FinancialManagement = () => {
         <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4'>
           <StatsCard
             title={t('stats.totalRevenue')}
-            value='2.8B ₫'
+            value='2.8B đ'
             trend={{
               value: `+15.2% ${t('stats.comparedToLastMonth')}`,
               isPositive: true,
@@ -128,7 +128,7 @@ const FinancialManagement = () => {
 
           <StatsCard
             title={t('stats.avgInvoiceValue')}
-            value='18.5M ₫'
+            value='18.5M đ'
             subtitle={t('stats.basedOnInvoices')}
             icon={<TrendingUp className='h-6 w-6' />}
           />

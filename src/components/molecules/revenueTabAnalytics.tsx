@@ -76,6 +76,7 @@ const RevenueTabAnalytics: React.FC<RevenueTabAnalyticsProps> = ({
   const typeLabels: Record<DashboardTransactionType, string> = {
     MEMBERSHIP_PURCHASE: t('transactionTypes.membershipPurchase'),
     MEMBERSHIP_UPGRADE: t('transactionTypes.membershipUpgrade'),
+    MEMBERSHIP_RENEWAL: t('transactionTypes.membershipRenewal'),
     POST_FEE: t('transactionTypes.postFee'),
     REPOST_FEE: t('transactionTypes.repostFee'),
     PUSH_FEE: t('transactionTypes.pushFee'),

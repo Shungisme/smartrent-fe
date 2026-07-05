@@ -134,7 +134,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       accessor: (row) => row.name,
       sortable: true,
       render: (_, row) => (
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center justify-end gap-3 lg:justify-start'>
           <InitialsAvatar name={row.name} src={row.avatar} size='md' />
           <div className='min-w-0 flex-col leading-tight'>
             <div className='truncate font-medium text-foreground'>
@@ -152,7 +152,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       header: t('table.headers.role'),
       accessor: 'role',
       render: (value) => (
-        <div className='flex flex-wrap items-center gap-1'>
+        <div className='flex flex-wrap items-center justify-end gap-1 lg:justify-start'>
           {(value as string[]).map((role: string) => (
             <Badge
               key={role}
@@ -176,11 +176,24 @@ export const AdminTable: React.FC<AdminTableProps> = ({
         </span>
       ),
     },
-    {
-      id: 'actions',
-      header: t('table.headers.actions'),
-      accessor: () => '',
-      render: (_, row) => (
+  ]
+
+  return (
+    <DataTable
+      data={transformedAdmins}
+      columns={columns}
+      filters={filterConfig}
+      filterMode='api'
+      filterValues={filterValues}
+      onFilterChange={onFilterChange}
+      totalItems={totalItems}
+      itemsPerPageOptions={[10, 20, 50]}
+      sortable
+      defaultSort={{ key: 'joinDate', direction: 'desc' }}
+      loading={loading}
+      emptyMessage={loading ? t('table.loading') : t('table.noAdminsFound')}
+      getRowKey={(row) => row.id}
+      actions={(row) => (
         <div className='flex items-center justify-center gap-0.5'>
           <Button
             variant='ghost'
@@ -207,25 +220,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
             <Trash2 className='h-4 w-4' />
           </Button>
         </div>
-      ),
-    },
-  ]
-
-  return (
-    <DataTable
-      data={transformedAdmins}
-      columns={columns}
-      filters={filterConfig}
-      filterMode='api'
-      filterValues={filterValues}
-      onFilterChange={onFilterChange}
-      totalItems={totalItems}
-      itemsPerPageOptions={[10, 20, 50]}
-      sortable
-      defaultSort={{ key: 'joinDate', direction: 'desc' }}
-      loading={loading}
-      emptyMessage={loading ? t('table.loading') : t('table.noAdminsFound')}
-      getRowKey={(row) => row.id}
+      )}
     />
   )
 }

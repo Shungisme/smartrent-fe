@@ -4,7 +4,7 @@ export const formatCurrency = (amount: number): string => {
     currency: 'VND',
     minimumFractionDigits: 0,
   }).format(amount)
-  return formatted.replace('₫', '').trim() + '₫'
+  return formatted.replace('₫', '').trim() + 'đ'
 }
 
 /**
