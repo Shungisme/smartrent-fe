@@ -1171,6 +1171,7 @@
         "transactionTypes": {
           "membershipPurchase": "Membership purchase",
           "membershipUpgrade": "Membership upgrade",
+          "membershipRenewal": "Membership renewal",
           "postFee": "Post fee",
           "repostFee": "Repost fee",
           "pushFee": "Push fee",

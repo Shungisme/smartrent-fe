@@ -1135,6 +1135,7 @@
         "transactionTypes": {
           "membershipPurchase": "Mua gói thành viên",
           "membershipUpgrade": "Nâng cấp gói thành viên",
+          "membershipRenewal": "Gia hạn gói thành viên",
           "postFee": "Phí đăng tin",
           "repostFee": "Phí đăng lại tin",
           "pushFee": "Phí đẩy tin",
