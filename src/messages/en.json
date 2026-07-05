@@ -2082,10 +2082,8 @@
       "title": "Transaction Management"
     },
     "table": {
-      "transaction": "Transaction",
-      "invoice": "Invoice",
+      "transactionId": "Transaction ID",
       "customer": "Customer",
-      "landlord": "Landlord",
       "type": "Type",
       "gateway": "Gateway",
       "amount": "Amount",
@@ -2146,7 +2144,6 @@
       "roomName": "Room Name",
       "address": "Address",
       "gatewayInfo": "Gateway Information",
-      "gatewayTransaction": "Gateway Transaction Code",
       "responseCode": "Response Code",
       "payload": "Payload from Gateway",
       "failureReason": "Failure Reason",
@@ -2179,6 +2176,7 @@
       "MONTHLY_INVOICE": "Monthly Invoice",
       "MEMBERSHIP_PURCHASE": "Membership Purchase",
       "MEMBERSHIP_UPGRADE": "Membership Upgrade",
+      "MEMBERSHIP_RENEWAL": "Membership Renewal",
       "LISTING_BOOST": "Listing Boost",
       "LISTING_POST": "Listing Post",
       "POST_FEE": "Post Fee",
@@ -2187,6 +2185,13 @@
       "WALLET_TOPUP": "Wallet Top-up",
       "DEPOSIT": "Deposit",
       "REFUND": "Refund"
+    },
+    "method": {
+      "BANK_TRANSFER": "Bank Transfer",
+      "CASH": "Cash",
+      "CREDIT_CARD": "Credit Card",
+      "E_WALLET": "E-Wallet",
+      "QR_CODE": "QR Code"
     },
     "dashboard": {
       "title": "Transactions Overview",

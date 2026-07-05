@@ -98,6 +98,12 @@ export const TransactionDetailPage = () => {
   const typeKey = `type.${transaction.paymentType}`
   const paymentTypeLabel = t.has(typeKey) ? t(typeKey) : transaction.paymentType
 
+  const methodKey = `method.${transaction.paymentMethod}`
+  const paymentMethodLabel =
+    transaction.paymentMethod && t.has(methodKey)
+      ? t(methodKey)
+      : transaction.paymentMethod
+
   return (
     <div className='space-y-6'>
       <div className='flex flex-wrap items-start justify-between gap-4'>
@@ -164,7 +170,7 @@ export const TransactionDetailPage = () => {
             {transaction.paymentMethod && (
               <Field
                 label={t('detail.paymentMethod')}
-                value={transaction.paymentMethod}
+                value={paymentMethodLabel}
               />
             )}
           </div>
@@ -272,17 +278,9 @@ export const TransactionDetailPage = () => {
         </SectionCard>
       )}
 
-      {(transaction.gatewayTransactionCode ||
-        transaction.gatewayResponseCode) && (
+      {(transaction.gatewayResponseCode || transaction.providerPayload) && (
         <SectionCard icon={Landmark} title={t('detail.gatewayInfo')}>
           <div className='grid gap-x-6 gap-y-4 sm:grid-cols-2'>
-            {transaction.gatewayTransactionCode && (
-              <Field
-                label={t('detail.gatewayTransaction')}
-                value={transaction.gatewayTransactionCode}
-                mono
-              />
-            )}
             {transaction.gatewayResponseCode && (
               <Field
                 label={t('detail.responseCode')}

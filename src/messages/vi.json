@@ -2046,10 +2046,8 @@
       "title": "Quản Lý Giao Dịch"
     },
     "table": {
-      "transaction": "Giao Dịch",
-      "invoice": "Hóa Đơn",
+      "transactionId": "Mã Giao Dịch",
       "customer": "Khách Hàng",
-      "landlord": "Chủ Nhà",
       "type": "Loại",
       "gateway": "Cổng Thanh Toán",
       "amount": "Số Tiền",
@@ -2110,7 +2108,6 @@
       "roomName": "Tên Phòng",
       "address": "Địa Chỉ",
       "gatewayInfo": "Thông Tin Cổng Thanh Toán",
-      "gatewayTransaction": "Mã Giao Dịch Cổng",
       "responseCode": "Mã Phản Hồi",
       "payload": "Tải Từ Cổng",
       "failureReason": "Lý Do Thất Bại",
@@ -2143,6 +2140,7 @@
       "MONTHLY_INVOICE": "Hóa đơn hàng tháng",
       "MEMBERSHIP_PURCHASE": "Mua gói thành viên",
       "MEMBERSHIP_UPGRADE": "Nâng cấp gói thành viên",
+      "MEMBERSHIP_RENEWAL": "Gia hạn gói thành viên",
       "LISTING_BOOST": "Đẩy tin đăng",
       "LISTING_POST": "Đăng tin",
       "POST_FEE": "Phí đăng tin",
@@ -2151,6 +2149,13 @@
       "WALLET_TOPUP": "Nạp ví",
       "DEPOSIT": "Ký quỹ",
       "REFUND": "Hoàn tiền"
+    },
+    "method": {
+      "BANK_TRANSFER": "Chuyển khoản ngân hàng",
+      "CASH": "Tiền mặt",
+      "CREDIT_CARD": "Thẻ tín dụng",
+      "E_WALLET": "Ví điện tử",
+      "QR_CODE": "Mã QR"
     },
     "dashboard": {
       "title": "Tổng quan giao dịch",

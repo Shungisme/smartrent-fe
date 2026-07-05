@@ -57,31 +57,15 @@ export const AdminTransactionTable = ({
   const columns: Column<AdminTransaction>[] = [
     {
       id: 'transaction',
-      header: t('table.transaction'),
+      header: t('table.transactionId'),
       accessor: (row) => row.transactionCode,
+      defaultHidden: true,
       render: (_, row) => (
         <div className='flex flex-col gap-1'>
           <span className='font-semibold'>{row.transactionCode}</span>
           {row.gatewayTransactionCode && (
             <span className='text-xs text-muted-foreground'>
               {t('table.gatewayPrefix')}: {row.gatewayTransactionCode}
-            </span>
-          )}
-        </div>
-      ),
-    },
-    {
-      id: 'invoiceRoom',
-      header: t('table.invoice'),
-      accessor: (row) => row.invoice?.invoiceCode ?? '',
-      render: (_, row) => (
-        <div className='flex flex-col gap-1'>
-          {row.invoice && (
-            <span className='text-sm'>{row.invoice.invoiceCode}</span>
-          )}
-          {row.room && (
-            <span className='text-xs text-muted-foreground'>
-              {row.room.roomCode} - {row.room.roomName}
             </span>
           )}
         </div>
@@ -99,22 +83,6 @@ export const AdminTransactionTable = ({
           </span>
         </div>
       ),
-    },
-    {
-      id: 'landlord',
-      header: t('table.landlord'),
-      accessor: (row) => row.landlord?.name ?? '',
-      render: (_, row) =>
-        row.landlord ? (
-          <div className='flex flex-col gap-1'>
-            <span className='text-sm font-medium'>{row.landlord.name}</span>
-            <span className='text-xs text-muted-foreground'>
-              {formatPhoneNumber(row.landlord.phone)}
-            </span>
-          </div>
-        ) : (
-          <span className='text-muted-foreground'>-</span>
-        ),
     },
     {
       id: 'paymentType',
@@ -154,14 +122,14 @@ export const AdminTransactionTable = ({
       accessor: (row) => row.status,
       render: (_, row) => (
         <span
-          className={`rounded-full px-3 py-1 text-sm font-medium ${
+          className={`inline-block whitespace-nowrap rounded-full px-3 py-1 text-sm font-medium ${
             STATUS_BADGE_CLASS[row.status] ?? STATUS_BADGE_CLASS.PENDING
           }`}
         >
           {t(`status.${row.status}`)}
         </span>
       ),
-      minWidth: 120,
+      minWidth: 160,
     },
     {
       id: 'createdAt',
@@ -187,11 +155,9 @@ export const AdminTransactionTable = ({
       label: t('filters.status'),
       options: [
         { value: 'PENDING', label: t('status.PENDING') },
-        { value: 'SUCCESS', label: t('status.SUCCESS') },
         { value: 'COMPLETED', label: t('status.COMPLETED') },
         { value: 'FAILED', label: t('status.FAILED') },
         { value: 'CANCELLED', label: t('status.CANCELLED') },
-        { value: 'REFUNDED', label: t('status.REFUNDED') },
       ],
       isFilterField: true,
     },
