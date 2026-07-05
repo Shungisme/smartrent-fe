@@ -1,5 +1,5 @@
 import React from 'react'
-import { Crown, Pencil, Trash2 } from 'lucide-react'
+import { Crown, Eye, Pencil, Trash2 } from 'lucide-react'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import { DataTable, type Column } from '@/components/organisms/DataTable'
@@ -9,6 +9,7 @@ import { MembershipPackage } from '@/types/premium.type'
 interface MembershipTableProps {
   memberships: MembershipPackage[]
   loading: boolean
+  onView: (id: string) => void
   onEdit: (id: string) => void
   onDelete: (id: string) => void
   onToggleStatus: (id: string, currentStatus: string) => void
@@ -17,6 +18,7 @@ interface MembershipTableProps {
 export const MembershipTable: React.FC<MembershipTableProps> = ({
   memberships,
   loading,
+  onView,
   onEdit,
   onDelete,
   onToggleStatus,
@@ -45,14 +47,23 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
       header: t('membership.table.price'),
       accessor: 'price',
       render: (_, pkg) => (
-        <div className='leading-tight'>
-          <div className='font-medium tabular-nums text-foreground'>
-            {pkg.price}
-          </div>
-          <div className='text-xs text-muted-foreground'>
-            {pkg.activeUsers} {t('membership.table.activeUsers')}
-          </div>
+        <div className='font-medium tabular-nums text-foreground'>
+          {pkg.price}
         </div>
+      ),
+    },
+    {
+      id: 'description',
+      header: t('membership.table.description'),
+      accessor: 'description',
+      maxWidth: 220,
+      render: (_, pkg) => (
+        <p
+          className='truncate text-sm text-muted-foreground'
+          title={pkg.description}
+        >
+          {pkg.description || '—'}
+        </p>
       ),
     },
     {
@@ -126,6 +137,15 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
       getRowKey={(row) => row.id}
       actions={(row) => (
         <div className='flex items-center justify-center gap-0.5'>
+          <Button
+            variant='ghost'
+            size='sm'
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+            title={t('actions.view')}
+            onClick={() => onView(row.id)}
+          >
+            <Eye className='h-4 w-4' />
+          </Button>
           <Button
             variant='ghost'
             size='sm'

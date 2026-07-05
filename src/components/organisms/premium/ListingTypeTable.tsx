@@ -4,10 +4,8 @@ import React from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { DataTable, type Column } from '@/components/organisms/DataTable'
 import { Badge } from '@/components/atoms/badge'
-import { cn } from '@/lib/utils'
 import { VIPTier } from '@/api/types/vip-tier.type'
 import { formatCurrency } from '@/utils/format'
-import { TIER_STYLES, FALLBACK_TIER_STYLE } from '@/utils/premium.utils'
 
 interface ListingTypeTableProps {
   tiers: VIPTier[]
@@ -50,34 +48,12 @@ export const ListingTypeTable: React.FC<ListingTypeTableProps> = ({
       },
     },
     {
-      id: 'badge',
-      header: t('listingTypes.columns.badge'),
-      accessor: (row) => row.badgeName ?? '',
-      render: (_, tier) => {
-        const style = TIER_STYLES[tier.tierCode] || FALLBACK_TIER_STYLE
-        if (tier.hasBadge && tier.badgeName) {
-          return (
-            <Badge
-              variant='outline'
-              className={cn(
-                'font-semibold uppercase tracking-wide',
-                style.badge,
-              )}
-            >
-              {tier.badgeName}
-            </Badge>
-          )
-        }
-        return <span className='text-sm text-muted-foreground/50'>—</span>
-      },
-    },
-    {
       id: 'pricePerDay',
       header: t('listingTypes.columns.pricePerDay'),
       accessor: 'pricePerDay',
       sortable: true,
       render: (value) => (
-        <div className='font-mono text-sm font-medium tabular-nums'>
+        <div className='text-sm font-medium tabular-nums'>
           {formatCurrency(value as number)}
         </div>
       ),
@@ -89,46 +65,27 @@ export const ListingTypeTable: React.FC<ListingTypeTableProps> = ({
       render: (_, tier) => (
         <div className='flex flex-col gap-2 text-xs'>
           <div className='flex justify-between gap-4'>
-            <span className='text-muted-foreground'>10 days</span>
-            <span className='font-mono font-medium tabular-nums'>
+            <span className='text-muted-foreground'>
+              10 {t('listingTypes.days')}
+            </span>
+            <span className='font-medium tabular-nums'>
               {formatCurrency(tier.price10Days)}
             </span>
           </div>
           <div className='flex justify-between gap-4'>
-            <span className='text-muted-foreground'>15 days</span>
-            <span className='font-mono font-medium tabular-nums'>
+            <span className='text-muted-foreground'>
+              15 {t('listingTypes.days')}
+            </span>
+            <span className='font-medium tabular-nums'>
               {formatCurrency(tier.price15Days)}
             </span>
           </div>
           <div className='flex justify-between gap-4'>
-            <span className='text-muted-foreground'>30 days</span>
-            <span className='font-mono font-medium tabular-nums'>
+            <span className='text-muted-foreground'>
+              30 {t('listingTypes.days')}
+            </span>
+            <span className='font-medium tabular-nums'>
               {formatCurrency(tier.price30Days)}
-            </span>
-          </div>
-        </div>
-      ),
-    },
-    {
-      id: 'media',
-      header: t('listingTypes.mediaLimits'),
-      accessor: (row) => row.maxImages + row.maxVideos,
-      render: (_, tier) => (
-        <div className='flex flex-col gap-2 text-xs'>
-          <div className='flex justify-between gap-4'>
-            <span className='text-muted-foreground'>
-              {t('listingTypes.maxImages')}
-            </span>
-            <span className='font-mono font-medium tabular-nums'>
-              {tier.maxImages}
-            </span>
-          </div>
-          <div className='flex justify-between gap-4'>
-            <span className='text-muted-foreground'>
-              {t('listingTypes.maxVideos')}
-            </span>
-            <span className='font-mono font-medium tabular-nums'>
-              {tier.maxVideos}
             </span>
           </div>
         </div>
@@ -138,23 +95,25 @@ export const ListingTypeTable: React.FC<ListingTypeTableProps> = ({
       id: 'capabilities',
       header: t('listingTypes.capabilities'),
       accessor: () => '',
+      maxWidth: 200,
       render: (_, tier) => {
         const caps = [
           { key: 'autoApprove', enabled: tier.autoApprove },
           { key: 'noAds', enabled: tier.noAds },
           { key: 'priorityDisplay', enabled: tier.priorityDisplay },
           { key: 'hasShadowListing', enabled: tier.hasShadowListing },
-        ] as const
+        ].filter((cap) => cap.enabled)
+
+        if (caps.length === 0) {
+          return <span className='text-sm text-muted-foreground/50'>—</span>
+        }
+
         return (
-          <div className='flex flex-col gap-1.5 text-xs'>
+          <div className='flex flex-wrap gap-1 text-xs'>
             {caps.map((cap) => (
               <span
                 key={cap.key}
-                className={cn(
-                  cap.enabled
-                    ? 'text-foreground'
-                    : 'text-muted-foreground/50 line-through',
-                )}
+                className='inline-block rounded-md bg-muted px-2 py-1 text-foreground'
               >
                 {t(`listingTypes.caps.${cap.key}`)}
               </span>
@@ -167,6 +126,7 @@ export const ListingTypeTable: React.FC<ListingTypeTableProps> = ({
       id: 'extraFeatures',
       header: t('listingTypes.features'),
       accessor: (row) => row.features?.length ?? 0,
+      maxWidth: 200,
       render: (_, tier) => {
         if (!tier.features || tier.features.length === 0) {
           return <span className='text-sm text-muted-foreground/50'>—</span>

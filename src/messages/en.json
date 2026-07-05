@@ -1362,7 +1362,7 @@
       "charts": {
         "revenueChart": {
           "title": "Revenue Trend",
-          "unit": "Unit: Million ₫"
+          "unit": "Unit: Million đ"
         },
         "donutChart": {
           "title": "Invoice Status Distribution",
@@ -1372,8 +1372,8 @@
           "title": "Monthly Performance",
           "revenue": "Revenue",
           "avgValue": "Avg Value",
-          "revenueUnit": "Revenue: Million ₫",
-          "avgUnit": "Avg Value: Million ₫"
+          "revenueUnit": "Revenue: Million đ",
+          "avgUnit": "Avg Value: Million đ"
         }
       },
       "invoice": {
@@ -1426,6 +1426,7 @@
       "users": "Users"
     },
     "actions": {
+      "view": "View",
       "edit": "Edit",
       "delete": "Delete"
     },
@@ -1435,24 +1436,65 @@
       "table": {
         "package": "Package",
         "price": "Price",
+        "description": "Description",
         "features": "Features",
         "discount": "Discount",
         "status": "Status",
         "actions": "Actions",
-        "activeUsers": "active users",
         "moreFeatures": "{count} more features",
-        "noDiscount": "No discount"
+        "noDiscount": "No discount",
+        "month": "month"
+      },
+      "levels": {
+        "BASIC": "Basic",
+        "STANDARD": "Standard",
+        "ADVANCED": "Advanced"
+      },
+      "view": {
+        "title": "Membership package details",
+        "fields": {
+          "originalPrice": "Original price",
+          "salePrice": "Sale price",
+          "discount": "Discount",
+          "duration": "Duration",
+          "level": "Level",
+          "status": "Status",
+          "description": "Description"
+        },
+        "unit": {
+          "month": "month"
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "benefits": {
+          "title": "Benefits",
+          "empty": "No benefits",
+          "mediaLimit": "up to {images} images, {videos} videos"
+        },
+        "createdAt": "Created at",
+        "updatedAt": "Last updated",
+        "close": "Close"
       },
       "edit": {
         "title": "Edit membership package",
         "fields": {
           "packageName": "Package name",
+          "originalPrice": "Original price (đ)",
           "salePrice": "Sale price (đ)",
           "discountPercentage": "Discount (%)",
           "isActive": "Active"
         },
         "placeholders": {
           "packageName": "e.g. Premium 12 Months"
+        },
+        "originalPriceHint": "Original price is managed by the system and can't be edited here.",
+        "validation": {
+          "packageNameRequired": "Package name is required",
+          "packageNameMaxLength": "Package name must be at most 120 characters",
+          "discountPercentageRequired": "Discount is required",
+          "discountPercentageRange": "Discount must be between 0 and 100"
         },
         "cancel": "Cancel",
         "save": "Save changes",
@@ -1490,7 +1532,6 @@
       "inactive": "Inactive",
       "columns": {
         "tier": "Tier",
-        "badge": "Badge",
         "pricePerDay": "Price/day",
         "status": "Status"
       },

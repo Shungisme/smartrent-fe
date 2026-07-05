@@ -1326,7 +1326,7 @@
       "charts": {
         "revenueChart": {
           "title": "Xu Hướng Doanh Thu",
-          "unit": "Đơn vị: Triệu ₫"
+          "unit": "Đơn vị: Triệu đ"
         },
         "donutChart": {
           "title": "Phân Bố Trạng Thái Hóa Đơn",
@@ -1336,8 +1336,8 @@
           "title": "Hiệu Suất Hàng Tháng",
           "revenue": "Doanh thu",
           "avgValue": "Giá trị TB",
-          "revenueUnit": "Doanh thu: Triệu ₫",
-          "avgUnit": "Giá trị TB: Triệu ₫"
+          "revenueUnit": "Doanh thu: Triệu đ",
+          "avgUnit": "Giá trị TB: Triệu đ"
         }
       },
       "invoice": {
@@ -1390,6 +1390,7 @@
       "users": "Người dùng"
     },
     "actions": {
+      "view": "Xem",
       "edit": "Sửa",
       "delete": "Xóa"
     },
@@ -1399,24 +1400,65 @@
       "table": {
         "package": "Gói",
         "price": "Giá",
+        "description": "Mô tả",
         "features": "Tính Năng",
         "discount": "Giảm Giá",
         "status": "Trạng Thái",
         "actions": "Thao tác",
-        "activeUsers": "người dùng đang dùng",
         "moreFeatures": "thêm {count} tính năng",
-        "noDiscount": "Không giảm giá"
+        "noDiscount": "Không giảm giá",
+        "month": "tháng"
+      },
+      "levels": {
+        "BASIC": "Cơ Bản",
+        "STANDARD": "Tiêu Chuẩn",
+        "ADVANCED": "Nâng Cao"
+      },
+      "view": {
+        "title": "Chi tiết gói thành viên",
+        "fields": {
+          "originalPrice": "Giá gốc",
+          "salePrice": "Giá bán",
+          "discount": "Giảm giá",
+          "duration": "Thời hạn",
+          "level": "Cấp bậc",
+          "status": "Trạng thái",
+          "description": "Mô tả"
+        },
+        "unit": {
+          "month": "tháng"
+        },
+        "status": {
+          "active": "Đang hoạt động",
+          "inactive": "Ngừng hoạt động"
+        },
+        "benefits": {
+          "title": "Quyền lợi",
+          "empty": "Không có quyền lợi nào",
+          "mediaLimit": "tối đa {images} ảnh, {videos} video"
+        },
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Cập nhật lần cuối",
+        "close": "Đóng"
       },
       "edit": {
         "title": "Chỉnh sửa gói thành viên",
         "fields": {
           "packageName": "Tên gói",
+          "originalPrice": "Giá gốc (đ)",
           "salePrice": "Giá bán (đ)",
           "discountPercentage": "Giảm giá (%)",
           "isActive": "Đang hoạt động"
         },
         "placeholders": {
           "packageName": "Ví dụ: Premium 12 tháng"
+        },
+        "originalPriceHint": "Giá gốc do hệ thống quản lý, không thể chỉnh sửa tại đây.",
+        "validation": {
+          "packageNameRequired": "Tên gói là bắt buộc",
+          "packageNameMaxLength": "Tên gói tối đa 120 ký tự",
+          "discountPercentageRequired": "Giảm giá là bắt buộc",
+          "discountPercentageRange": "Giảm giá phải từ 0 đến 100"
         },
         "cancel": "Hủy",
         "save": "Lưu thay đổi",
@@ -1454,7 +1496,6 @@
       "inactive": "Không Hoạt Động",
       "columns": {
         "tier": "Bậc",
-        "badge": "Huy hiệu",
         "pricePerDay": "Giá/ngày",
         "status": "Trạng thái"
       },
