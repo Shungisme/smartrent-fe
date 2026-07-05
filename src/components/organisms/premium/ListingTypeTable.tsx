@@ -109,7 +109,7 @@ export const ListingTypeTable: React.FC<ListingTypeTableProps> = ({
         }
 
         return (
-          <div className='flex flex-wrap gap-1 text-xs'>
+          <div className='flex flex-wrap justify-end gap-1 text-xs lg:justify-start'>
             {caps.map((cap) => (
               <span
                 key={cap.key}
@@ -133,7 +133,7 @@ export const ListingTypeTable: React.FC<ListingTypeTableProps> = ({
         }
         return (
           <div className='max-h-32 overflow-y-auto text-xs'>
-            <div className='flex flex-wrap gap-1'>
+            <div className='flex flex-wrap justify-end gap-1 lg:justify-start'>
               {tier.features.map((feature, i) => (
                 <span
                   key={i}

@@ -31,7 +31,7 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
       header: t('membership.table.package'),
       accessor: 'name',
       render: (_, pkg) => (
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center justify-end gap-3 lg:justify-start'>
           <div className='flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-100 to-amber-200 text-amber-700 ring-1 ring-amber-200/70 dark:from-amber-500/15 dark:to-amber-500/5 dark:text-amber-300 dark:ring-amber-500/20'>
             <Crown className='h-5 w-5' />
           </div>
@@ -71,7 +71,7 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
       header: t('membership.table.features'),
       accessor: 'features',
       render: (_, pkg) => (
-        <div className='flex flex-wrap gap-1'>
+        <div className='flex flex-wrap justify-end gap-1 lg:justify-start'>
           {pkg.features.slice(0, 2).map((feature, idx) => (
             <Badge key={idx} variant='outline' className='text-xs'>
               {feature}

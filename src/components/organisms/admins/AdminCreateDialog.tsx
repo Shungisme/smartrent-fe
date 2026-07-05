@@ -24,6 +24,8 @@ interface AdminCreateDialogProps {
   onSuccess: (admin: AdminProfile) => void
 }
 
+const DEFAULT_PHONE_CODE = '+84'
+
 const adminCreateSchema = z.object({
   firstName: z.string().trim().min(1, 'First name is required'),
   lastName: z.string().trim().min(1, 'Last name is required'),
@@ -32,7 +34,6 @@ const adminCreateSchema = z.object({
     .trim()
     .min(1, 'Email is required')
     .regex(VALIDATION_PATTERNS.EMAIL, 'Invalid email address'),
-  phoneCode: z.string().trim().min(1, 'Phone code is required'),
   phoneNumber: z.string().trim().min(1, 'Phone number is required'),
   password: z
     .string()
@@ -62,7 +63,6 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
   } = useForm<AdminCreateFormData>({
     resolver: zodResolver(adminCreateSchema),
     defaultValues: {
-      phoneCode: '+84',
       phoneNumber: '',
       email: '',
       password: '',
@@ -91,7 +91,10 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
   const onSubmit = async (data: AdminCreateFormData) => {
     setLoading(true)
     try {
-      const response = await createAdmin(data)
+      const response = await createAdmin({
+        ...data,
+        phoneCode: DEFAULT_PHONE_CODE,
+      })
       if (response.success && response.data) {
         alert(
           `Admin created successfully!\nTemporary Password: ${response.data.password}\n\nPlease save this password securely.`,
@@ -156,25 +159,14 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
             )}
           </div>
 
-          <div className='grid grid-cols-3 gap-2'>
-            <div className='space-y-2'>
-              <Label htmlFor='phoneCode'>{t('create.phoneCode')} *</Label>
-              <Input id='phoneCode' {...register('phoneCode')} />
-              {errors.phoneCode && (
-                <p className='text-xs text-destructive'>
-                  {errors.phoneCode.message}
-                </p>
-              )}
-            </div>
-            <div className='col-span-2 space-y-2'>
-              <Label htmlFor='phoneNumber'>{t('create.phoneNumber')} *</Label>
-              <Input id='phoneNumber' {...register('phoneNumber')} />
-              {errors.phoneNumber && (
-                <p className='text-xs text-destructive'>
-                  {errors.phoneNumber.message}
-                </p>
-              )}
-            </div>
+          <div className='space-y-2'>
+            <Label htmlFor='phoneNumber'>{t('create.phoneNumber')} *</Label>
+            <Input id='phoneNumber' {...register('phoneNumber')} />
+            {errors.phoneNumber && (
+              <p className='text-xs text-destructive'>
+                {errors.phoneNumber.message}
+              </p>
+            )}
           </div>
 
           <div className='space-y-2'>

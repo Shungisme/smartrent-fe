@@ -223,15 +223,17 @@ export const AdminTransactionTable = ({
       emptyMessage={t('table.noData')}
       getRowKey={(row) => row.transactionId}
       actions={(row) => (
-        <Button
-          size='sm'
-          variant='ghost'
-          onClick={() => onViewDetails(row.transactionId)}
-          className='h-8 w-8 p-0'
-          title={t('table.viewDetails')}
-        >
-          <Eye className='h-4 w-4' />
-        </Button>
+        <div className='flex items-center justify-center gap-0.5'>
+          <Button
+            size='sm'
+            variant='ghost'
+            onClick={() => onViewDetails(row.transactionId)}
+            className='h-8 w-8 p-0'
+            title={t('table.viewDetails')}
+          >
+            <Eye className='h-4 w-4' />
+          </Button>
+        </div>
       )}
     />
   )

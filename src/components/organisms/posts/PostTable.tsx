@@ -98,7 +98,7 @@ export const PostTable: React.FC<PostTableProps> = ({
       accessor: (row) => row.title,
       sortable: true,
       render: (_, row) => (
-        <div className='flex min-w-0 items-start gap-3 text-left'>
+        <div className='flex min-w-0 items-start justify-end gap-3 text-left lg:justify-start'>
           <div className='relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted'>
             <Image
               src={row.images[0]}
@@ -144,7 +144,7 @@ export const PostTable: React.FC<PostTableProps> = ({
       accessor: (row) => row.poster.name,
       sortable: true,
       render: (_, row) => (
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center justify-end gap-2 lg:justify-start'>
           <Avatar className='h-10 w-10'>
             <div className='h-full w-full bg-muted flex items-center justify-center text-foreground font-semibold'>
               {row.poster.name.charAt(0).toUpperCase()}
@@ -219,24 +219,6 @@ export const PostTable: React.FC<PostTableProps> = ({
         >
           {getStatusLabel(value as PostStatus)}
         </Badge>
-      ),
-    },
-    {
-      id: 'actions',
-      header: t('table.actions'),
-      accessor: () => '',
-      render: (_, row) => (
-        <div className='flex items-center justify-center gap-0.5'>
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={() => onReview(row)}
-            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
-            title={t('table.reviewButton')}
-          >
-            <Eye className='h-4 w-4' />
-          </Button>
-        </div>
       ),
     },
   ]
@@ -361,6 +343,19 @@ export const PostTable: React.FC<PostTableProps> = ({
       defaultSort={{ key: 'postedDate', direction: 'desc' }}
       emptyMessage={t('table.noPostsFound')}
       getRowKey={(row) => row.id}
+      actions={(row) => (
+        <div className='flex items-center justify-center gap-0.5'>
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => onReview(row)}
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+            title={t('table.reviewButton')}
+          >
+            <Eye className='h-4 w-4' />
+          </Button>
+        </div>
+      )}
     />
   )
 }
