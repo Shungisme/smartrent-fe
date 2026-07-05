@@ -7,6 +7,16 @@ import {
   TransactionStatistics,
 } from '@/types/transaction.type'
 
+/** Builds the single `createdAt` range param (`from..to`) the admin transaction
+ * endpoints expect, replacing the old separate `fromDate`/`toDate` params. */
+function buildCreatedAtParam(
+  fromDate?: string,
+  toDate?: string,
+): string | undefined {
+  if (!fromDate && !toDate) return undefined
+  return `${fromDate ?? ''}..${toDate ?? ''}`
+}
+
 export const TransactionService = {
   listTransactions: async (filters: AdminTransactionFilters) => {
     const params = new URLSearchParams()
@@ -15,12 +25,15 @@ export const TransactionService = {
     if (filters.size) params.append('size', String(filters.size))
     if (filters.q) params.append('q', filters.q)
     if (filters.status) params.append('status', filters.status)
-    if (filters.gateway) params.append('gateway', filters.gateway)
-    if (filters.type) params.append('type', filters.type)
+    if (filters.paymentGateway)
+      params.append('paymentGateway', filters.paymentGateway)
+    if (filters.paymentType) params.append('paymentType', filters.paymentType)
+    if (filters.transactionId)
+      params.append('transactionId', filters.transactionId)
+    if (filters.customer) params.append('customer', filters.customer)
     if (filters.customerId) params.append('customerId', filters.customerId)
     if (filters.landlordId) params.append('landlordId', filters.landlordId)
-    if (filters.fromDate) params.append('fromDate', filters.fromDate)
-    if (filters.toDate) params.append('toDate', filters.toDate)
+    if (filters.createdAt) params.append('createdAt', filters.createdAt)
     if (filters.sort) params.append('sort', filters.sort)
 
     const response = await axiosInstance.get<{
@@ -38,8 +51,8 @@ export const TransactionService = {
 
   getStatistics: async (fromDate?: string, toDate?: string) => {
     const params = new URLSearchParams()
-    if (fromDate) params.append('fromDate', fromDate)
-    if (toDate) params.append('toDate', toDate)
+    const createdAt = buildCreatedAtParam(fromDate, toDate)
+    if (createdAt) params.append('createdAt', createdAt)
 
     const response = await axiosInstance.get<{ data: TransactionStatistics }>(
       `/v1/admin/transactions/statistics?${params.toString()}`,
@@ -54,8 +67,8 @@ export const TransactionService = {
   ) => {
     const params = new URLSearchParams()
     params.append('groupBy', groupBy)
-    if (fromDate) params.append('fromDate', fromDate)
-    if (toDate) params.append('toDate', toDate)
+    const createdAt = buildCreatedAtParam(fromDate, toDate)
+    if (createdAt) params.append('createdAt', createdAt)
 
     const response = await axiosInstance.get<{ data: RevenueSeries[] }>(
       `/v1/admin/transactions/revenue-series?${params.toString()}`,
@@ -68,12 +81,15 @@ export const TransactionService = {
 
     if (filters.q) params.append('q', filters.q)
     if (filters.status) params.append('status', filters.status)
-    if (filters.gateway) params.append('gateway', filters.gateway)
-    if (filters.type) params.append('type', filters.type)
+    if (filters.paymentGateway)
+      params.append('paymentGateway', filters.paymentGateway)
+    if (filters.paymentType) params.append('paymentType', filters.paymentType)
+    if (filters.transactionId)
+      params.append('transactionId', filters.transactionId)
+    if (filters.customer) params.append('customer', filters.customer)
     if (filters.customerId) params.append('customerId', filters.customerId)
     if (filters.landlordId) params.append('landlordId', filters.landlordId)
-    if (filters.fromDate) params.append('fromDate', filters.fromDate)
-    if (filters.toDate) params.append('toDate', filters.toDate)
+    if (filters.createdAt) params.append('createdAt', filters.createdAt)
 
     const response = await axiosInstance.get(
       `/v1/admin/transactions/export?${params.toString()}`,

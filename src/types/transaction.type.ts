@@ -153,13 +153,18 @@ export interface AdminTransactionListResponse {
 export interface AdminTransactionFilters {
   page?: number
   size?: number
+  /** Transaction code, gateway transaction code, or invoice code. */
   q?: string
   status?: PaymentStatus
-  gateway?: PaymentGateway
-  type?: PaymentType
+  paymentGateway?: PaymentGateway
+  paymentType?: PaymentType
+  /** Partial, case-insensitive match against the transaction ID. */
+  transactionId?: string
+  /** Free-text match against customer name or phone (snapshot at transaction time). */
+  customer?: string
   customerId?: string
   landlordId?: string
-  fromDate?: string
-  toDate?: string
+  /** Single date (`2026-05-01`) or range `from..to`; either side of a range may be omitted. */
+  createdAt?: string
   sort?: string
 }
