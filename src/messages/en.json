@@ -1136,6 +1136,10 @@
       },
       "posts": {
         "stats": {
+          "newListings": "New Listings",
+          "totalListings": "Total Listings",
+          "verifiedShare": "Verified",
+          "rentShare": "For Rent",
           "totalPosts": "Total Posts",
           "pending": "Pending",
           "totalViews": "Total Views",
@@ -1143,26 +1147,65 @@
           "inThisPeriod": "in this period"
         },
         "charts": {
-          "postActivity": "Post Activity",
+          "postActivity": "New Listings Over Time",
+          "cumulativeListings": "Total Listings Over Time",
+          "listingTypeBreakdown": "By Listing Type",
+          "productTypeBreakdown": "By Property Type",
+          "verificationBreakdown": "By Verification Status",
           "viewsAndClicks": "Views & Clicks",
           "statusDistribution": "Post Status Distribution",
-          "newPosts": "New posts",
+          "newPosts": "New listings",
           "views": "Views",
           "clicks": "Clicks"
+        },
+        "listingTypes": {
+          "RENT": "For rent",
+          "SALE": "For sale",
+          "SHARE": "Shared room"
+        },
+        "productTypes": {
+          "ROOM": "Room",
+          "APARTMENT": "Apartment",
+          "HOUSE": "House",
+          "OFFICE": "Office",
+          "STUDIO": "Studio",
+          "STORE": "Storefront",
+          "OTHER": "Other"
+        },
+        "verification": {
+          "VERIFIED": "Verified",
+          "UNVERIFIED": "Unverified"
         }
       },
       "users": {
         "stats": {
+          "newUsers": "New Users",
           "totalUsers": "Total Users",
+          "brokerShare": "Brokers in New Signups",
+          "brokerPending": "Brokers Pending Review",
           "landlords": "Landlords",
           "tenants": "Tenants",
           "ofTotal": "of total"
         },
         "charts": {
-          "userGrowthOverTime": "User Growth Over Time",
+          "newUsersOverTime": "New Users Over Time",
+          "userGrowthOverTime": "Total Users Over Time",
+          "roleBreakdown": "New Signups by Role",
+          "brokerVerificationBreakdown": "Broker Verification Status",
           "userTypeDistribution": "User Type Distribution",
           "newUsers": "New users"
-        }
+        },
+        "roles": {
+          "REGULAR": "Regular user",
+          "BROKER": "Broker"
+        },
+        "brokerStatus": {
+          "NONE": "Not registered",
+          "PENDING": "Pending review",
+          "APPROVED": "Approved",
+          "REJECTED": "Rejected"
+        },
+        "emptyBrokerBreakdown": "No broker signups in this period"
       },
       "revenue": {
         "stats": {
@@ -1212,6 +1255,8 @@
       },
       "reports": {
         "stats": {
+          "newReports": "New Reports",
+          "resolutionRate": "Resolution Rate",
           "totalReports": "Total Reports",
           "pending": "Pending",
           "resolved": "Resolved",
@@ -1220,9 +1265,25 @@
           "ofTotal": "of total"
         },
         "charts": {
-          "reportsOverTime": "Reports Over Time",
+          "reportsOverTime": "New Reports Over Time",
+          "cumulativeReports": "Total Reports Over Time",
+          "categoryBreakdown": "By Category",
+          "statusBreakdown": "By Status",
           "typeDistribution": "Report Type Distribution",
           "reports": "Reports"
+        },
+        "categories": {
+          "LISTING": "Listing",
+          "MAP": "Map"
+        },
+        "status": {
+          "PENDING": "Pending",
+          "RESOLVED": "Resolved",
+          "REJECTED": "Rejected"
+        },
+        "units": {
+          "days": "days",
+          "notAvailable": "—"
         }
       }
     },

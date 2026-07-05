@@ -1100,6 +1100,10 @@
       },
       "posts": {
         "stats": {
+          "newListings": "Tin Đăng Mới",
+          "totalListings": "Tổng Tin Đăng",
+          "verifiedShare": "Đã Xác Minh",
+          "rentShare": "Cho Thuê",
           "totalPosts": "Tổng Bài Đăng",
           "pending": "Chờ Duyệt",
           "totalViews": "Tổng Lượt Xem",
@@ -1107,26 +1111,65 @@
           "inThisPeriod": "trong kỳ này"
         },
         "charts": {
-          "postActivity": "Hoạt Động Bài Đăng",
+          "postActivity": "Tin Đăng Mới Theo Thời Gian",
+          "cumulativeListings": "Tổng Tin Đăng Theo Thời Gian",
+          "listingTypeBreakdown": "Theo Loại Tin Đăng",
+          "productTypeBreakdown": "Theo Loại Bất Động Sản",
+          "verificationBreakdown": "Theo Trạng Thái Xác Minh",
           "viewsAndClicks": "Lượt Xem & Lượt Nhấp",
           "statusDistribution": "Phân Bố Trạng Thái Bài Đăng",
-          "newPosts": "Bài đăng mới",
+          "newPosts": "Tin đăng mới",
           "views": "Lượt xem",
           "clicks": "Lượt nhấp"
+        },
+        "listingTypes": {
+          "RENT": "Cho thuê",
+          "SALE": "Bán",
+          "SHARE": "Ở ghép"
+        },
+        "productTypes": {
+          "ROOM": "Phòng trọ",
+          "APARTMENT": "Căn hộ",
+          "HOUSE": "Nhà nguyên căn",
+          "OFFICE": "Văn phòng",
+          "STUDIO": "Studio",
+          "STORE": "Mặt bằng kinh doanh",
+          "OTHER": "Khác"
+        },
+        "verification": {
+          "VERIFIED": "Đã xác minh",
+          "UNVERIFIED": "Chưa xác minh"
         }
       },
       "users": {
         "stats": {
+          "newUsers": "Người Dùng Mới",
           "totalUsers": "Tổng Người Dùng",
+          "brokerShare": "Môi Giới Trong Đăng Ký Mới",
+          "brokerPending": "Môi Giới Chờ Duyệt",
           "landlords": "Chủ Nhà",
           "tenants": "Người Thuê",
           "ofTotal": "tổng số"
         },
         "charts": {
-          "userGrowthOverTime": "Tăng Trưởng Người Dùng Theo Thời Gian",
+          "newUsersOverTime": "Người Dùng Mới Theo Thời Gian",
+          "userGrowthOverTime": "Tổng Người Dùng Theo Thời Gian",
+          "roleBreakdown": "Đăng Ký Mới Theo Vai Trò",
+          "brokerVerificationBreakdown": "Trạng Thái Duyệt Môi Giới",
           "userTypeDistribution": "Phân Bố Loại Người Dùng",
           "newUsers": "Người dùng mới"
-        }
+        },
+        "roles": {
+          "REGULAR": "Người dùng thường",
+          "BROKER": "Môi giới"
+        },
+        "brokerStatus": {
+          "NONE": "Chưa đăng ký",
+          "PENDING": "Chờ duyệt",
+          "APPROVED": "Đã duyệt",
+          "REJECTED": "Bị từ chối"
+        },
+        "emptyBrokerBreakdown": "Chưa có môi giới đăng ký mới trong kỳ này"
       },
       "revenue": {
         "stats": {
@@ -1176,6 +1219,8 @@
       },
       "reports": {
         "stats": {
+          "newReports": "Báo Cáo Mới",
+          "resolutionRate": "Tỉ Lệ Xử Lý",
           "totalReports": "Tổng Báo Cáo",
           "pending": "Chờ Xử Lý",
           "resolved": "Đã Giải Quyết",
@@ -1184,9 +1229,25 @@
           "ofTotal": "tổng số"
         },
         "charts": {
-          "reportsOverTime": "Số Lượng Báo Cáo Theo Thời Gian",
+          "reportsOverTime": "Báo Cáo Mới Theo Thời Gian",
+          "cumulativeReports": "Tổng Báo Cáo Theo Thời Gian",
+          "categoryBreakdown": "Theo Danh Mục",
+          "statusBreakdown": "Theo Trạng Thái",
           "typeDistribution": "Phân Loại Báo Cáo Vi Phạm",
           "reports": "Báo cáo"
+        },
+        "categories": {
+          "LISTING": "Tin đăng",
+          "MAP": "Bản đồ"
+        },
+        "status": {
+          "PENDING": "Chờ xử lý",
+          "RESOLVED": "Đã xử lý",
+          "REJECTED": "Đã từ chối"
+        },
+        "units": {
+          "days": "ngày",
+          "notAvailable": "—"
         }
       }
     },

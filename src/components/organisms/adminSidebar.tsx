@@ -2,7 +2,10 @@ import React from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { useSwitchLanguage } from '@/contexts/switchLanguage/index.context'
-import { getSidebarNavigationGroups } from '@/constants/navigation'
+import {
+  DEFAULT_HOME_ROUTE,
+  getSidebarNavigationGroups,
+} from '@/constants/navigation'
 import {
   ChevronRight,
   PanelLeftClose,
@@ -177,7 +180,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   )
 
   const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>({
-    management: true,
+    insights: true,
   })
   const openGroupsBeforeCollapseRef = React.useRef<Record<
     string,
@@ -263,7 +266,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
           {!collapsed && (
             <button
               type='button'
-              onClick={() => handleNavigate('/management/users')}
+              onClick={() => handleNavigate(DEFAULT_HOME_ROUTE)}
               className='group flex min-w-0 flex-1 items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent'
               aria-label='SmartRent Admin'
             >

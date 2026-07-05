@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/atoms/skeleton'
 import ThemeSwitch from '@/components/molecules/themeSwitch'
 import { useSwitchLanguage } from '@/contexts/switchLanguage/index.context'
 import { cn } from '@/lib/utils'
+import { DEFAULT_HOME_ROUTE } from '@/constants/navigation'
 
 const LoginPage = () => {
   const router = useRouter()
@@ -20,7 +21,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push('/management/users')
+      router.push(DEFAULT_HOME_ROUTE)
     }
   }, [isAuthenticated, isLoading, router])
 

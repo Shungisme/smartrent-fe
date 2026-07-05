@@ -2,9 +2,11 @@ import { apiRequest } from '@/configs/axios/axiosClient'
 import { ApiResponse } from '@/configs/axios/types'
 import { ENV } from '@/constants/env'
 import {
+  AdminListingAnalyticsResponse,
+  AdminReportAnalyticsResponse,
+  AdminUserAnalyticsResponse,
   MembershipDistributionResponse,
   RevenueOverTimeResponse,
-  TimeSeriesResponse,
 } from '@/api/types/dashboard.type'
 
 export interface DashboardTimeQuery {
@@ -30,7 +32,7 @@ export class DashboardService {
   ): Promise<ApiResponse<RevenueOverTimeResponse>> {
     return apiRequest<RevenueOverTimeResponse>({
       method: 'GET',
-      url: ENV.API.ADMIN_DASHBOARD.REVENUE,
+      url: ENV.API.ADMIN_ANALYTICS.REVENUE,
       params: buildParams(query),
     })
   }
@@ -40,36 +42,36 @@ export class DashboardService {
   > {
     return apiRequest<MembershipDistributionResponse>({
       method: 'GET',
-      url: ENV.API.ADMIN_DASHBOARD.MEMBERSHIP_DISTRIBUTION,
+      url: ENV.API.ADMIN_ANALYTICS.MEMBERSHIP_DISTRIBUTION,
     })
   }
 
   static async getUserGrowth(
     query?: DashboardTimeQuery,
-  ): Promise<ApiResponse<TimeSeriesResponse>> {
-    return apiRequest<TimeSeriesResponse>({
+  ): Promise<ApiResponse<AdminUserAnalyticsResponse>> {
+    return apiRequest<AdminUserAnalyticsResponse>({
       method: 'GET',
-      url: ENV.API.ADMIN_DASHBOARD.USERS_GROWTH,
+      url: ENV.API.ADMIN_ANALYTICS.USERS,
       params: buildParams(query),
     })
   }
 
   static async getReportCount(
     query?: DashboardTimeQuery,
-  ): Promise<ApiResponse<TimeSeriesResponse>> {
-    return apiRequest<TimeSeriesResponse>({
+  ): Promise<ApiResponse<AdminReportAnalyticsResponse>> {
+    return apiRequest<AdminReportAnalyticsResponse>({
       method: 'GET',
-      url: ENV.API.ADMIN_DASHBOARD.REPORTS_COUNT,
+      url: ENV.API.ADMIN_ANALYTICS.REPORTS,
       params: buildParams(query),
     })
   }
 
   static async getListingCreation(
     query?: DashboardTimeQuery,
-  ): Promise<ApiResponse<TimeSeriesResponse>> {
-    return apiRequest<TimeSeriesResponse>({
+  ): Promise<ApiResponse<AdminListingAnalyticsResponse>> {
+    return apiRequest<AdminListingAnalyticsResponse>({
       method: 'GET',
-      url: ENV.API.ADMIN_DASHBOARD.LISTINGS_CREATION,
+      url: ENV.API.ADMIN_ANALYTICS.LISTINGS,
       params: buildParams(query),
     })
   }

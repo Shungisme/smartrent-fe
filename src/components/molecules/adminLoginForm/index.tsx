@@ -11,6 +11,7 @@ import { useAdminLogin } from '@/hooks/useAuth'
 import { toast } from 'sonner'
 import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
 import { useRouter } from 'next/navigation'
+import { DEFAULT_HOME_ROUTE } from '@/constants/navigation'
 
 type AdminLoginFormProps = {
   onSuccess?: () => void
@@ -64,7 +65,7 @@ const AdminLoginForm: NextPage<AdminLoginFormProps> = (props) => {
       if (result.success) {
         toast.success(t('homePage.auth.login.successMessage'))
         onSuccess?.()
-        router.push('/management/users')
+        router.push(DEFAULT_HOME_ROUTE)
       } else {
         toast.error(result.message || t('homePage.auth.login.errorMessage'))
       }

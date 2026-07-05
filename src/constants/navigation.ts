@@ -4,6 +4,9 @@ export type BreadcrumbItem = {
   disabled?: boolean
 }
 
+/** Landing page after login and the sidebar logo's "home" link. */
+export const DEFAULT_HOME_ROUTE = '/insights/users'
+
 type CategoryKey =
   | 'management'
   | 'monetization'
@@ -68,21 +71,21 @@ const ROUTE_META: Record<string, { category: CategoryKey; page: PageKey }> = {
 }
 
 const CATEGORY_ROUTES: Record<CategoryKey, string[]> = {
-  management: [
-    '/management/users',
-    '/management/admins',
-    '/management/roles',
-    '/management/transactions',
-  ],
-  monetization: ['/monetization/membership', '/monetization/listing-types'],
   insights: [
     '/insights/users',
     '/insights/posts',
     '/insights/revenue',
     '/insights/reports',
   ],
+  management: [
+    '/management/users',
+    '/management/admins',
+    '/management/roles',
+    '/management/transactions',
+  ],
   content: ['/content/posts', '/content/news'],
   moderation: ['/moderation/reports', '/moderation/broker-pending'],
+  monetization: ['/monetization/membership', '/monetization/listing-types'],
 }
 
 type NavigationLabels = {
@@ -183,7 +186,7 @@ export const getBreadcrumbItems = (
   if (meta) {
     const categoryRoot = CATEGORY_ROUTES[meta.category][0]
     const breadcrumb: BreadcrumbItem[] = [
-      { label: dictionary.home, href: '/management/users' },
+      { label: dictionary.home, href: DEFAULT_HOME_ROUTE },
       {
         label: dictionary.categories[meta.category],
         href: categoryRoot,
@@ -206,13 +209,13 @@ export const getBreadcrumbItems = (
   const segments = pathname.split('/').filter(Boolean)
   if (segments.length === 0) {
     return [
-      { label: dictionary.home, href: '/management/users' },
+      { label: dictionary.home, href: DEFAULT_HOME_ROUTE },
       { label: dictionary.fallbackDashboard },
     ]
   }
 
   const fallbackItems: BreadcrumbItem[] = [
-    { label: dictionary.home, href: '/management/users' },
+    { label: dictionary.home, href: DEFAULT_HOME_ROUTE },
   ]
   let cumulativePath = ''
 
