@@ -1,5 +1,4 @@
 import React from 'react'
-import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import {
   DataTable,
@@ -9,6 +8,7 @@ import {
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { Avatar } from '@/components/atoms/avatar'
+import { MediaThumbnail } from '@/components/molecules/mediaPreview'
 import { Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PostStatus, UIPostData } from '@/types/posts.type'
@@ -100,13 +100,7 @@ export const PostTable: React.FC<PostTableProps> = ({
       render: (_, row) => (
         <div className='flex min-w-0 items-start justify-end gap-3 text-left lg:justify-start'>
           <div className='relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted'>
-            <Image
-              src={row.images[0]}
-              alt={row.title}
-              width={56}
-              height={56}
-              className='h-full w-full object-cover'
-            />
+            <MediaThumbnail src={row.images[0]} alt={row.title} />
             {row.images.length > 1 && (
               <div className='absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white'>
                 +{row.images.length - 1}

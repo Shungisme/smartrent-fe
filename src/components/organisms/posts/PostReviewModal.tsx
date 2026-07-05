@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import {
   Dialog,
@@ -36,6 +35,10 @@ import { cn } from '@/lib/utils'
 import { UIPostData } from '@/types/posts.type'
 import { getAmenityIcon, getStatusColor } from '@/utils/post.utils' // Need to ensure these helpers are exported correctly or pass translations
 import { PostAiAnalysis } from '@/components/organisms/posts/PostAiAnalysis'
+import {
+  MediaThumbnail,
+  MediaPlayer,
+} from '@/components/molecules/mediaPreview'
 
 // Note: Helper functions like getPropertyTypeLabel depend on translation 't', so we should probably handle that.
 // I'll accept 't' as a prop or useTranslations hook inside the component.
@@ -231,336 +234,348 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='flex w-[80vw] max-w-[1200px] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0'>
-          <>
-            <DialogHeader className='shrink-0 border-b border-border/60 px-6 py-4'>
-              <DialogTitle className='text-base font-semibold'>
-                {t('review.title')}
-              </DialogTitle>
-            </DialogHeader>
+        <DialogContent
+          className='flex w-[80vw] max-w-[1200px] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0'
+          onPointerDownOutside={(e) => {
+            if (lightboxOpen) e.preventDefault()
+          }}
+          onInteractOutside={(e) => {
+            if (lightboxOpen) e.preventDefault()
+          }}
+          onEscapeKeyDown={(e) => {
+            if (lightboxOpen) e.preventDefault()
+          }}
+        >
+          <DialogHeader className='shrink-0 border-b border-border/60 px-6 py-4'>
+            <DialogTitle className='text-base font-semibold'>
+              {t('review.title')}
+            </DialogTitle>
+          </DialogHeader>
 
-            <div className='min-h-0 flex-1 overflow-y-auto px-6 py-5'>
-              <div className='space-y-5'>
-                {/* Hero: title, code, listing type, status & price */}
-                <div className='rounded-xl border border-border/70 bg-gradient-to-br from-primary/5 via-card to-card p-5 shadow-sm md:p-6'>
-                  <div className='flex items-start justify-between gap-4'>
-                    <div className='min-w-0 space-y-2'>
-                      <div className='flex flex-wrap items-center gap-1.5'>
-                        <Badge variant='secondary' className='font-normal px-0'>
-                          {t(`listingTypes.${selectedPost.listingType}`)}
-                        </Badge>
-                        <span className='font-mono text-xs text-muted-foreground'>
-                          {selectedPost.postCode}
-                        </span>
-                      </div>
-                      <h3 className='text-lg font-semibold leading-snug text-foreground md:text-xl'>
-                        {selectedPost.title}
-                      </h3>
+          <div className='min-h-0 flex-1 overflow-y-auto px-6 py-5'>
+            <div className='space-y-5'>
+              {/* Hero: title, code, listing type, status & price */}
+              <div className='rounded-xl border border-border/70 bg-gradient-to-br from-primary/5 via-card to-card p-5 shadow-sm md:p-6'>
+                <div className='flex items-start justify-between gap-4'>
+                  <div className='min-w-0 space-y-2'>
+                    <div className='flex flex-wrap items-center gap-1.5'>
+                      <Badge variant='secondary' className='font-normal px-0'>
+                        {t(`listingTypes.${selectedPost.listingType}`)}
+                      </Badge>
+                      <span className='font-mono text-xs text-muted-foreground'>
+                        {selectedPost.postCode}
+                      </span>
                     </div>
-                    <Badge
-                      variant='outline'
-                      className={cn(
-                        'shrink-0',
-                        getStatusColor(selectedPost.status),
-                      )}
-                    >
-                      {_getStatusLabel(selectedPost.status)}
-                    </Badge>
+                    <h3 className='text-lg font-semibold leading-snug text-foreground md:text-xl'>
+                      {selectedPost.title}
+                    </h3>
                   </div>
-                  <div className='mt-5 flex items-baseline gap-2 border-t border-border/60 pt-4'>
-                    <span className='text-2xl font-semibold tracking-tight text-foreground tabular-nums md:text-3xl'>
-                      {selectedPost.price}
-                    </span>
-                  </div>
+                  <Badge
+                    variant='outline'
+                    className={cn(
+                      'shrink-0',
+                      getStatusColor(selectedPost.status),
+                    )}
+                  >
+                    {_getStatusLabel(selectedPost.status)}
+                  </Badge>
                 </div>
+                <div className='mt-5 flex items-baseline gap-2 border-t border-border/60 pt-4'>
+                  <span className='text-2xl font-semibold tracking-tight text-foreground tabular-nums md:text-3xl'>
+                    {selectedPost.price}
+                  </span>
+                </div>
+              </div>
 
-                {/* Images Gallery */}
-                {images.length === 0 ? (
-                  <div className='flex h-32 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-muted/40 text-muted-foreground'>
-                    <ImageOff className='h-6 w-6' />
-                    <span className='text-sm'>{t('review.noImages')}</span>
-                  </div>
-                ) : (
-                  <div className='grid grid-cols-3 gap-2 sm:grid-cols-4'>
-                    {visibleImages.map((img, idx) => {
-                      const isLastVisible = idx === visibleImages.length - 1
-                      const showMoreOverlay = isLastVisible && hiddenCount > 0
-                      return (
-                        <button
-                          type='button'
-                          key={idx}
-                          onClick={() => openLightbox(idx)}
-                          className='group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border border-border bg-muted outline-none transition-shadow focus-visible:ring-4 focus-visible:ring-ring'
-                        >
-                          <Image
-                            src={img}
-                            alt={`${selectedPost.title} ${idx + 1}`}
-                            width={320}
-                            height={240}
-                            className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-105'
-                          />
-                          {showMoreOverlay ? (
-                            <div className='absolute inset-0 flex items-center justify-center bg-black/60 text-lg font-semibold text-white'>
-                              +{hiddenCount}
-                            </div>
-                          ) : (
-                            <div className='absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/35'>
-                              <ZoomIn className='h-5 w-5 text-white opacity-0 transition-opacity group-hover:opacity-100' />
-                            </div>
-                          )}
-                        </button>
-                      )
-                    })}
-                  </div>
-                )}
+              {/* Images Gallery */}
+              {images.length === 0 ? (
+                <div className='flex h-32 flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border bg-muted/40 text-muted-foreground'>
+                  <ImageOff className='h-6 w-6' />
+                  <span className='text-sm'>{t('review.noImages')}</span>
+                </div>
+              ) : (
+                <div className='grid grid-cols-3 gap-2 sm:grid-cols-4'>
+                  {visibleImages.map((img, idx) => {
+                    const isLastVisible = idx === visibleImages.length - 1
+                    const showMoreOverlay = isLastVisible && hiddenCount > 0
+                    return (
+                      <button
+                        type='button'
+                        key={idx}
+                        onClick={() => openLightbox(idx)}
+                        className='group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border border-border bg-muted outline-none transition-shadow focus-visible:ring-4 focus-visible:ring-ring'
+                      >
+                        <MediaThumbnail
+                          src={img}
+                          alt={`${selectedPost.title} ${idx + 1}`}
+                          className='transition-transform duration-300 group-hover:scale-105'
+                        />
+                        {showMoreOverlay ? (
+                          <div className='absolute inset-0 flex items-center justify-center bg-black/60 text-lg font-semibold text-white'>
+                            +{hiddenCount}
+                          </div>
+                        ) : (
+                          <div className='absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/35'>
+                            <ZoomIn className='h-5 w-5 text-white opacity-0 transition-opacity group-hover:opacity-100' />
+                          </div>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
 
-                {/* Property details */}
-                <div>
-                  <SectionLabel icon={Home}>
-                    {t('review.propertyDetails')}
-                  </SectionLabel>
-                  <div className='grid grid-cols-2 gap-2.5 sm:grid-cols-3'>
-                    <Fact
-                      icon={Home}
-                      label={t('review.propertyType')}
-                      value={_getPropertyTypeLabel(
-                        selectedPost.propertyInfo.type,
-                      )}
-                    />
-                    <Fact
-                      icon={Ruler}
-                      label={t('review.area')}
-                      value={`${selectedPost.propertyInfo.area}m²`}
-                    />
-                    {selectedPost.bedrooms !== null &&
-                      selectedPost.bedrooms !== undefined && (
-                        <Fact
-                          icon={BedDouble}
-                          label={t('review.bedrooms')}
-                          value={selectedPost.bedrooms}
-                        />
-                      )}
-                    {selectedPost.bathrooms !== null &&
-                      selectedPost.bathrooms !== undefined && (
-                        <Fact
-                          icon={Bath}
-                          label={t('review.bathrooms')}
-                          value={selectedPost.bathrooms}
-                        />
-                      )}
-                    {selectedPost.direction && (
+              {/* Property details */}
+              <div>
+                <SectionLabel icon={Home}>
+                  {t('review.propertyDetails')}
+                </SectionLabel>
+                <div className='grid grid-cols-2 gap-2.5 sm:grid-cols-3'>
+                  <Fact
+                    icon={Home}
+                    label={t('review.propertyType')}
+                    value={_getPropertyTypeLabel(
+                      selectedPost.propertyInfo.type,
+                    )}
+                  />
+                  <Fact
+                    icon={Ruler}
+                    label={t('review.area')}
+                    value={`${selectedPost.propertyInfo.area}m²`}
+                  />
+                  {selectedPost.bedrooms !== null &&
+                    selectedPost.bedrooms !== undefined && (
                       <Fact
-                        icon={Compass}
-                        label={t('review.direction')}
-                        value={_getDirectionLabel(selectedPost.direction)}
+                        icon={BedDouble}
+                        label={t('review.bedrooms')}
+                        value={selectedPost.bedrooms}
                       />
                     )}
-                    {selectedPost.furnishing && (
+                  {selectedPost.bathrooms !== null &&
+                    selectedPost.bathrooms !== undefined && (
                       <Fact
-                        icon={Sofa}
-                        label={t('review.furnishing')}
-                        value={_getFurnishingLabel(selectedPost.furnishing)}
+                        icon={Bath}
+                        label={t('review.bathrooms')}
+                        value={selectedPost.bathrooms}
                       />
                     )}
+                  {selectedPost.direction && (
+                    <Fact
+                      icon={Compass}
+                      label={t('review.direction')}
+                      value={_getDirectionLabel(selectedPost.direction)}
+                    />
+                  )}
+                  {selectedPost.furnishing && (
+                    <Fact
+                      icon={Sofa}
+                      label={t('review.furnishing')}
+                      value={_getFurnishingLabel(selectedPost.furnishing)}
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* Location */}
+              <div>
+                <SectionLabel icon={MapPin}>
+                  {t('review.location')}
+                </SectionLabel>
+                <div className='rounded-lg border border-border/70 bg-muted/30 p-4'>
+                  <div className='text-xs text-muted-foreground'>
+                    {selectedPost.propertyInfo.district}
+                  </div>
+                  <div className='mt-1 text-sm text-foreground'>
+                    {selectedPost.propertyInfo.fullAddress}
                   </div>
                 </div>
+              </div>
 
-                {/* Location */}
+              {/* Description */}
+              {selectedPost.description && (
                 <div>
-                  <SectionLabel icon={MapPin}>
-                    {t('review.location')}
+                  <SectionLabel icon={FileText}>
+                    {t('review.description')}
                   </SectionLabel>
-                  <div className='rounded-lg border border-border/70 bg-muted/30 p-4'>
-                    <div className='text-xs text-muted-foreground'>
-                      {selectedPost.propertyInfo.district}
-                    </div>
-                    <div className='mt-1 text-sm text-foreground'>
-                      {selectedPost.propertyInfo.fullAddress}
-                    </div>
+                  <div className='max-h-60 overflow-y-auto whitespace-pre-wrap rounded-lg border border-border/70 bg-muted/30 p-4 text-sm leading-relaxed text-muted-foreground'>
+                    {selectedPost.description}
                   </div>
                 </div>
+              )}
 
-                {/* Description */}
-                {selectedPost.description && (
+              {/* Amenities */}
+              {selectedPost.amenities && selectedPost.amenities.length > 0 && (
+                <div>
+                  <SectionLabel icon={Sparkles}>
+                    {t('review.amenities')}
+                  </SectionLabel>
+                  <div className='flex flex-wrap gap-2'>
+                    {selectedPost.amenities.map((amenity) => (
+                      <Badge
+                        key={amenity.amenityId}
+                        variant='secondary'
+                        className='font-normal'
+                      >
+                        {amenity.icon && (
+                          <span className='mr-1'>
+                            {getAmenityIcon(amenity.icon)}
+                          </span>
+                        )}
+                        {amenity.name}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Poster */}
+              <div className='flex items-center gap-3 rounded-lg border border-border/70 bg-muted/30 p-4'>
+                <InitialsAvatar
+                  name={selectedPost.poster.name}
+                  src={selectedPost.poster.avatar}
+                  size='lg'
+                />
+                <div className='min-w-0'>
+                  <div className='text-xs text-muted-foreground'>
+                    {t('review.postedBy')}
+                  </div>
+                  <div className='truncate text-sm font-medium text-foreground md:text-base'>
+                    {selectedPost.poster.name}
+                  </div>
+                  <div className='text-xs text-muted-foreground md:text-sm'>
+                    {selectedPost.poster.phone}
+                  </div>
+                </div>
+              </div>
+
+              {/* AI-assisted analysis (advisory only) */}
+              {isPending && <PostAiAnalysis post={selectedPost} open={open} />}
+
+              {/* Rejection Reason / Verification Notes */}
+              {isPending && (
+                <div className='space-y-4 rounded-lg border border-border/70 bg-muted/30 p-4'>
                   <div>
-                    <SectionLabel icon={FileText}>
-                      {t('review.description')}
-                    </SectionLabel>
-                    <div className='max-h-60 overflow-y-auto whitespace-pre-wrap rounded-lg border border-border/70 bg-muted/30 p-4 text-sm leading-relaxed text-muted-foreground'>
-                      {selectedPost.description}
-                    </div>
+                    <label
+                      htmlFor='verification-notes'
+                      className='text-sm font-medium text-foreground'
+                    >
+                      {t('review.verificationNotes')}
+                    </label>
+                    <textarea
+                      id='verification-notes'
+                      value={verificationNotes}
+                      onChange={(e) => setVerificationNotes(e.target.value)}
+                      placeholder={t('review.verificationNotesPlaceholder')}
+                      className='mt-2 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-ring'
+                      rows={2}
+                    />
                   </div>
-                )}
+                  <div>
+                    <label
+                      htmlFor='rejection-reason'
+                      className='text-sm font-medium text-foreground'
+                    >
+                      {t('review.rejectionReasonRequired')}
+                    </label>
+                    <textarea
+                      id='rejection-reason'
+                      value={rejectionReason}
+                      onChange={(e) => setRejectionReason(e.target.value)}
+                      placeholder={t('review.rejectionReasonPlaceholder')}
+                      className='mt-2 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-ring'
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              )}
 
-                {/* Amenities */}
-                {selectedPost.amenities &&
-                  selectedPost.amenities.length > 0 && (
+              {/* Display existing notes if already reviewed */}
+              {!isPending && (
+                <>
+                  {selectedPost.verificationNotes && (
                     <div>
-                      <SectionLabel icon={Sparkles}>
-                        {t('review.amenities')}
+                      <SectionLabel icon={FileText}>
+                        {t('review.verificationNotes')}
                       </SectionLabel>
-                      <div className='flex flex-wrap gap-2'>
-                        {selectedPost.amenities.map((amenity) => (
-                          <Badge
-                            key={amenity.amenityId}
-                            variant='secondary'
-                            className='font-normal'
-                          >
-                            {amenity.icon && (
-                              <span className='mr-1'>
-                                {getAmenityIcon(amenity.icon)}
-                              </span>
-                            )}
-                            {amenity.name}
-                          </Badge>
-                        ))}
+                      <div className='rounded-lg border border-border/70 bg-muted/30 p-4 text-sm text-muted-foreground'>
+                        {selectedPost.verificationNotes}
                       </div>
                     </div>
                   )}
-
-                {/* Poster */}
-                <div className='flex items-center gap-3 rounded-lg border border-border/70 bg-muted/30 p-4'>
-                  <InitialsAvatar
-                    name={selectedPost.poster.name}
-                    src={selectedPost.poster.avatar}
-                    size='lg'
-                  />
-                  <div className='min-w-0'>
-                    <div className='text-xs text-muted-foreground'>
-                      {t('review.postedBy')}
-                    </div>
-                    <div className='truncate text-sm font-medium text-foreground md:text-base'>
-                      {selectedPost.poster.name}
-                    </div>
-                    <div className='text-xs text-muted-foreground md:text-sm'>
-                      {selectedPost.poster.phone}
-                    </div>
-                  </div>
-                </div>
-
-                {/* AI-assisted analysis (advisory only) */}
-                {isPending && (
-                  <PostAiAnalysis post={selectedPost} open={open} />
-                )}
-
-                {/* Rejection Reason / Verification Notes */}
-                {isPending && (
-                  <div className='space-y-4 rounded-lg border border-border/70 bg-muted/30 p-4'>
+                  {selectedPost.rejectionReason && (
                     <div>
-                      <label
-                        htmlFor='verification-notes'
-                        className='text-sm font-medium text-foreground'
-                      >
-                        {t('review.verificationNotes')}
-                      </label>
-                      <textarea
-                        id='verification-notes'
-                        value={verificationNotes}
-                        onChange={(e) => setVerificationNotes(e.target.value)}
-                        placeholder={t('review.verificationNotesPlaceholder')}
-                        className='mt-2 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-ring'
-                        rows={2}
-                      />
+                      <SectionLabel icon={XCircle}>
+                        {t('review.rejectionReason')}
+                      </SectionLabel>
+                      <div className='rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive'>
+                        {selectedPost.rejectionReason}
+                      </div>
                     </div>
-                    <div>
-                      <label
-                        htmlFor='rejection-reason'
-                        className='text-sm font-medium text-foreground'
-                      >
-                        {t('review.rejectionReasonRequired')}
-                      </label>
-                      <textarea
-                        id='rejection-reason'
-                        value={rejectionReason}
-                        onChange={(e) => setRejectionReason(e.target.value)}
-                        placeholder={t('review.rejectionReasonPlaceholder')}
-                        className='mt-2 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-ring'
-                        rows={3}
-                      />
-                    </div>
-                  </div>
-                )}
+                  )}
+                </>
+              )}
+            </div>
+          </div>
 
-                {/* Display existing notes if already reviewed */}
-                {!isPending && (
-                  <>
-                    {selectedPost.verificationNotes && (
-                      <div>
-                        <SectionLabel icon={FileText}>
-                          {t('review.verificationNotes')}
-                        </SectionLabel>
-                        <div className='rounded-lg border border-border/70 bg-muted/30 p-4 text-sm text-muted-foreground'>
-                          {selectedPost.verificationNotes}
-                        </div>
-                      </div>
-                    )}
-                    {selectedPost.rejectionReason && (
-                      <div>
-                        <SectionLabel icon={XCircle}>
-                          {t('review.rejectionReason')}
-                        </SectionLabel>
-                        <div className='rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive'>
-                          {selectedPost.rejectionReason}
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
+          {/* Action Buttons */}
+          {isPending && (
+            <div className='shrink-0 border-t border-border/60 bg-card/95 px-6 py-4 backdrop-blur supports-[backdrop-filter]:bg-card/80'>
+              <div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end'>
+                <Button
+                  variant='outline'
+                  onClick={() => onRequestRevision(rejectionReason)}
+                  disabled={actionLoading}
+                  className='border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground'
+                >
+                  {actionLoading ? (
+                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  ) : (
+                    <RotateCcw className='mr-2 h-4 w-4' />
+                  )}
+                  {t('review.requestRevisionButton')}
+                </Button>
+                <Button
+                  variant='outline'
+                  onClick={() => onReject(rejectionReason)}
+                  disabled={actionLoading}
+                  className='border-destructive/30 text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive'
+                >
+                  {actionLoading ? (
+                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  ) : (
+                    <XCircle className='mr-2 h-4 w-4' />
+                  )}
+                  {t('review.rejectButton')}
+                </Button>
+                <Button
+                  onClick={() => onApprove(verificationNotes)}
+                  disabled={actionLoading}
+                >
+                  {actionLoading ? (
+                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  ) : (
+                    <CheckCircle className='mr-2 h-4 w-4' />
+                  )}
+                  {t('review.approveButton')}
+                </Button>
               </div>
             </div>
-
-            {/* Action Buttons */}
-            {isPending && (
-              <div className='shrink-0 border-t border-border/60 bg-card/95 px-6 py-4 backdrop-blur supports-[backdrop-filter]:bg-card/80'>
-                <div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end'>
-                  <Button
-                    variant='outline'
-                    onClick={() => onRequestRevision(rejectionReason)}
-                    disabled={actionLoading}
-                    className='border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground'
-                  >
-                    {actionLoading ? (
-                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                    ) : (
-                      <RotateCcw className='mr-2 h-4 w-4' />
-                    )}
-                    {t('review.requestRevisionButton')}
-                  </Button>
-                  <Button
-                    variant='outline'
-                    onClick={() => onReject(rejectionReason)}
-                    disabled={actionLoading}
-                    className='border-destructive/30 text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive'
-                  >
-                    {actionLoading ? (
-                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                    ) : (
-                      <XCircle className='mr-2 h-4 w-4' />
-                    )}
-                    {t('review.rejectButton')}
-                  </Button>
-                  <Button
-                    onClick={() => onApprove(verificationNotes)}
-                    disabled={actionLoading}
-                  >
-                    {actionLoading ? (
-                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                    ) : (
-                      <CheckCircle className='mr-2 h-4 w-4' />
-                    )}
-                    {t('review.approveButton')}
-                  </Button>
-                </div>
-              </div>
-            )}
-          </>
+          )}
         </DialogContent>
       </Dialog>
 
-      {/* Image Lightbox */}
-      {lightboxOpen && selectedPost && (
+      {/* Image Lightbox — rendered as a sibling (not inside DialogContent,
+          which has a CSS transform) so `fixed` positions against the real
+          viewport instead of being clipped to the dialog box. Radix's modal
+          Dialog sets `pointer-events: none` on <body> while open and only
+          re-enables it for nodes inside its own layer, so this sibling
+          needs `pointer-events-auto` explicitly or nothing in it is
+          clickable. The dialog-close-on-escape/outside-click it would
+          otherwise trigger is suppressed via onPointerDownOutside/
+          onInteractOutside/onEscapeKeyDown above. */}
+      {lightboxOpen && (
         <div
-          className='fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center'
+          className='fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 pointer-events-auto'
           onClick={closeLightbox}
         >
           <button
@@ -586,12 +601,10 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
             className='relative flex h-full w-full max-w-7xl items-center justify-center px-4 pt-16 pb-36'
             onClick={(e) => e.stopPropagation()}
           >
-            <Image
+            <MediaPlayer
               src={selectedPost.images[currentImageIndex]}
               alt={`${selectedPost.title} ${currentImageIndex + 1}`}
-              width={1920}
-              height={1080}
-              className='max-h-full max-w-full object-contain'
+              className='object-contain'
             />
           </div>
 
@@ -632,13 +645,7 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                         : 'border-transparent opacity-50 hover:opacity-90',
                     )}
                   >
-                    <Image
-                      src={img}
-                      alt={`thumbnail ${idx + 1}`}
-                      width={80}
-                      height={56}
-                      className='h-full w-full object-cover'
-                    />
+                    <MediaThumbnail src={img} alt={`thumbnail ${idx + 1}`} />
                   </button>
                 ))}
               </div>
