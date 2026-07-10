@@ -139,7 +139,7 @@ export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='min-w-[40vw] max-w-md max-h-[80vh] overflow-y-auto'>
+      <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
         <DialogHeader>
           <DialogTitle>{t('create.title')}</DialogTitle>
         </DialogHeader>
@@ -228,7 +228,7 @@ export const UserCreateDialog: React.FC<UserCreateDialogProps> = ({
           </div>
 
           {serverError && (
-            <div className='text-red-600 text-sm'>{serverError}</div>
+            <div className='text-destructive text-sm'>{serverError}</div>
           )}
 
           <div className='flex justify-end gap-2'>

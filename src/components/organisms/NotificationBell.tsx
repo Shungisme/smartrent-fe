@@ -69,14 +69,14 @@ export const NotificationBell: React.FC = () => {
 
         {/* Unread Badge */}
         {unreadCount > 0 && (
-          <span className='absolute -top-1 -right-1 h-5 min-w-[20px] px-1 bg-red-500 text-white text-xs font-semibold rounded-full flex items-center justify-center'>
+          <span className='absolute -top-1 -right-1 h-5 min-w-[20px] px-1 bg-destructive text-destructive-foreground text-xs font-semibold rounded-full flex items-center justify-center'>
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
 
         {/* Connection Indicator */}
         {isConnected && (
-          <span className='absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border-2 border-white' />
+          <span className='absolute bottom-0 right-0 w-2 h-2 bg-success rounded-full border-2 border-card' />
         )}
       </Button>
 

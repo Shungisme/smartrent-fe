@@ -68,7 +68,8 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             disabled={loading}
             className={cn(
               'flex-1 sm:flex-none',
-              destructive && 'bg-red-600 hover:bg-red-700',
+              destructive &&
+                'bg-destructive text-destructive-foreground hover:bg-destructive/90',
             )}
           >
             {confirmLabel}

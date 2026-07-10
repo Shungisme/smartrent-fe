@@ -145,7 +145,7 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='min-w-[20vw] max-w-md max-h-[80vh] overflow-y-auto'>
+      <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
         <DialogHeader>
           <DialogTitle>{t('edit.title')}</DialogTitle>
         </DialogHeader>

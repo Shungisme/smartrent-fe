@@ -59,7 +59,7 @@ export const AdminDeleteDialog: React.FC<AdminDeleteDialogProps> = ({
             <br />
             <span className='font-semibold'>{admin?.email}</span>
           </p>
-          {error && <div className='text-red-600 text-sm'>{error}</div>}
+          {error && <div className='text-destructive text-sm'>{error}</div>}
           <div className='flex gap-3 pt-4'>
             <Button
               type='button'
@@ -71,9 +71,10 @@ export const AdminDeleteDialog: React.FC<AdminDeleteDialogProps> = ({
               {t('delete.cancel')}
             </Button>
             <Button
+              variant='destructive'
               disabled={loading}
               onClick={handleDelete}
-              className='flex-1 bg-red-600 hover:bg-red-700'
+              className='flex-1'
             >
               {loading ? t('delete.deleting') : t('delete.delete')}
             </Button>
