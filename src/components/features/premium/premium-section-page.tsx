@@ -225,17 +225,14 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
     <div className='space-y-6'>
       {section === 'overview' && (
         <>
-          <PageHeader title={t('title')} description={t('description')} />
+          <PageHeader title={t('title')} />
           <PremiumStats stats={stats} />
         </>
       )}
 
       {section === 'membership' && (
         <>
-          <PageHeader
-            title={t('title')}
-            description={t('membership.description')}
-          />
+          <PageHeader title={t('title')} />
 
           <MembershipTable
             memberships={displayMemberships}
@@ -250,10 +247,7 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
 
       {section === 'listing-types' && (
         <>
-          <PageHeader
-            title={t('title')}
-            description={t('listingTypes.description')}
-          />
+          <PageHeader title={t('title')} />
           <ListingTypeTable tiers={apiVIPTiers} loading={vipTiersLoading} />
         </>
       )}

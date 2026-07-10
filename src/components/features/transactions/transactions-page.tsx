@@ -50,7 +50,7 @@ export const TransactionsPage = () => {
 
   return (
     <div className='flex flex-col gap-6 lg:min-h-0 lg:flex-1'>
-      <PageHeader title={t('title')} description={t('description')} />
+      <PageHeader title={t('title')} />
 
       <TransactionStatisticsCards statistics={statistics} />
 
