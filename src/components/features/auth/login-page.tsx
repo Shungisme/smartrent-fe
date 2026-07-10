@@ -75,7 +75,7 @@ const LoginPage = () => {
             <Building2 className='h-4 w-4' />
           </div>
           <div className='hidden text-sm font-semibold tracking-tight text-foreground sm:block'>
-            SmartRent
+            Thuê Nhà Trọ
           </div>
         </div>
         <div className='flex items-center gap-1'>
@@ -114,7 +114,7 @@ const LoginPage = () => {
                 <Building2 className='h-7 w-7' />
               </div>
               <h2 className='text-2xl font-semibold tracking-tight text-foreground'>
-                SmartRent
+                Thuê Nhà Trọ
               </h2>
               <p className='mt-2 text-sm text-muted-foreground'>
                 {tBrand('subtitle')}
@@ -122,7 +122,7 @@ const LoginPage = () => {
             </div>
 
             <div className='text-xs text-muted-foreground/70 text-center'>
-              © {new Date().getFullYear()} SmartRent
+              © {new Date().getFullYear()} Thuê Nhà Trọ
             </div>
           </div>
 
@@ -134,7 +134,7 @@ const LoginPage = () => {
                   <Building2 className='h-4 w-4' />
                 </div>
                 <div className='text-base font-semibold tracking-tight'>
-                  SmartRent
+                  Thuê Nhà Trọ
                 </div>
               </div>
 
@@ -152,7 +152,7 @@ const LoginPage = () => {
               </div>
 
               <div className='mt-6 text-center text-xs text-muted-foreground'>
-                SmartRent Admin · v1.0
+                Thuê Nhà Trọ Admin · v1.0
               </div>
             </div>
           </div>
