@@ -179,9 +179,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     [navigationGroups, pathname],
   )
 
-  const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>({
-    insights: true,
-  })
+  // All groups start expanded; the collapse/expand toggle stays available.
+  const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>(
+    () =>
+      Object.fromEntries(navigationGroups.map((group) => [group.key, true])),
+  )
   const openGroupsBeforeCollapseRef = React.useRef<Record<
     string,
     boolean
