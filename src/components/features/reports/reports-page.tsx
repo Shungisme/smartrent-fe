@@ -108,8 +108,8 @@ const ViolationReportManagement = () => {
   }
 
   return (
-    <div>
-      <div className='space-y-6'>
+    <div className='flex flex-col lg:min-h-0 lg:flex-1'>
+      <div className='flex flex-col gap-6 lg:min-h-0 lg:flex-1'>
         <PageHeader title={t('title')} description={t('description')} />
 
         {/* Stats Cards */}

@@ -99,6 +99,7 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
 
   return (
     <DataTable
+      fillHeight
       data={data}
       columns={columns}
       filterMode='api'

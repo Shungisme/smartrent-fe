@@ -21,6 +21,7 @@ function DataTableContent<T = any>({
   filterMode = 'frontend',
   itemsPerPageOptions,
   tableClassName,
+  fillHeight = false,
 }: Omit<DataTableProps<T>, 'data'>) {
   const {
     paginatedData,
@@ -99,7 +100,11 @@ function DataTableContent<T = any>({
   }, [selectedRows, selectable, onSelectionChange])
 
   return (
-    <div className='space-y-4'>
+    <div
+      className={
+        fillHeight ? 'flex flex-col gap-4 lg:min-h-0 lg:flex-1' : 'space-y-4'
+      }
+    >
       {/* Filters + Views (grouped on the left) */}
       {(filters && filters.length > 0) || columns.length > 0 ? (
         <div className='flex flex-wrap items-center gap-2'>
@@ -147,6 +152,7 @@ function DataTableContent<T = any>({
             onRowSelect={toggleRowSelection}
             onSelectAll={toggleAllRows}
             maxHeightClassName={tableClassName}
+            fillHeight={fillHeight}
           />
 
           {/* Mobile Cards */}

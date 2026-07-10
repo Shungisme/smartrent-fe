@@ -168,5 +168,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
     },
   ]
 
-  return <DataTable columns={columns} data={data} loading={loading} />
+  return (
+    <DataTable fillHeight columns={columns} data={data} loading={loading} />
+  )
 }

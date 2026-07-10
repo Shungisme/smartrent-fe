@@ -116,6 +116,14 @@ export interface DataTableProps<T = Record<string, unknown>> {
   // Styling
   className?: string
   tableClassName?: string
+  /**
+   * Fill the available vertical space (flex) instead of using a fixed
+   * viewport-fraction height, so the table body scrolls internally and the
+   * pagination pins to the bottom. Requires the ancestor chain up to the
+   * layout to be a full-height flex column. Fill only engages at `lg`+;
+   * mobile keeps its natural card flow. Default: false (fixed height).
+   */
+  fillHeight?: boolean
 
   // Key extractor
   getRowKey?: (row: T, index: number) => string | number
@@ -171,6 +179,7 @@ export interface TableDesktopProps<T = Record<string, unknown>> {
   onRowSelect?: (row: T) => void
   onSelectAll?: () => void
   maxHeightClassName?: string
+  fillHeight?: boolean
 }
 
 export interface TableMobileProps<T = Record<string, unknown>> {
