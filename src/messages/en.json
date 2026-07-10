@@ -3,7 +3,8 @@
     "or": "Or",
     "noData": "No data",
     "total": "Total",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "retry": "Retry"
   },
   "notFound": {
     "title": "404",
@@ -985,7 +986,8 @@
           "clearMembership": "Clear Membership"
         },
         "loading": "Loading users...",
-        "noUsersFound": "No users found"
+        "noUsersFound": "No users found",
+        "loadError": "Failed to load users"
       },
       "delete": {
         "title": "Delete User",
@@ -1420,7 +1422,10 @@
         "actions": {
           "edit": "Edit",
           "delete": "Delete"
-        }
+        },
+        "roleNamePlaceholder": "e.g. Administrator",
+        "loading": "Loading roles...",
+        "empty": "No roles found"
       },
       "create": {
         "title": "Create Role",
@@ -2134,7 +2139,47 @@
       "menuBar": {
         "enterUrl": "Enter URL:",
         "linkTitle": "Insert link",
-        "insert": "Insert"
+        "insert": "Insert",
+        "tooltips": {
+          "bold": "Bold (Ctrl+B)",
+          "italic": "Italic (Ctrl+I)",
+          "underline": "Underline (Ctrl+U)",
+          "strikethrough": "Strikethrough",
+          "inlineCode": "Inline Code",
+          "highlight": "Highlight",
+          "subscript": "Subscript",
+          "superscript": "Superscript",
+          "textColor": "Text Color",
+          "clearFormatting": "Clear Formatting",
+          "heading1": "Heading 1",
+          "heading2": "Heading 2",
+          "heading3": "Heading 3",
+          "bulletList": "Bullet List",
+          "numberedList": "Numbered List",
+          "taskList": "Task List",
+          "alignLeft": "Align Left",
+          "alignCenter": "Align Center",
+          "alignRight": "Align Right",
+          "justify": "Justify",
+          "insertImage": "Insert Image",
+          "insertLink": "Insert Link",
+          "quote": "Quote",
+          "horizontalRule": "Horizontal Rule",
+          "insertTable": "Insert Table",
+          "addRow": "Add Row",
+          "deleteRow": "Delete Row",
+          "addColumn": "Add Column",
+          "deleteColumn": "Delete Column",
+          "duplicateRow": "Duplicate Row",
+          "duplicateColumn": "Duplicate Column",
+          "mergeCells": "Merge Cells",
+          "splitCell": "Split Cell",
+          "toggleHeaderRow": "Toggle Header Row",
+          "toggleHeaderColumn": "Toggle Header Column",
+          "deleteTable": "Delete Table",
+          "undo": "Undo (Ctrl+Z)",
+          "redo": "Redo (Ctrl+Y)"
+        }
       },
       "validation": {
         "titleRequired": "Title is required"

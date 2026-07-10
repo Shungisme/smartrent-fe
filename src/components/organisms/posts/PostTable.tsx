@@ -15,16 +15,16 @@ import { PostStatus, UIPostData } from '@/types/posts.type'
 import { getPropertyIcon, getStatusColor } from '@/utils/post.utils'
 import { TIER_STYLES, FALLBACK_TIER_STYLE } from '@/utils/premium.utils'
 
-const TIER_LABEL_OVERRIDES: Record<string, string> = {
-  NORMAL: 'Thường',
-  SILVER: 'Bạc',
-  GOLD: 'Vàng',
-  DIAMOND: 'Kim cương',
-}
-
 const VipTypeBadge: React.FC<{ vipType: string }> = ({ vipType }) => {
+  const t = useTranslations('posts.filters')
   const style = TIER_STYLES[vipType] ?? FALLBACK_TIER_STYLE
-  const label = TIER_LABEL_OVERRIDES[vipType] ?? vipType
+  const labels: Record<string, string> = {
+    NORMAL: t('vipNormal'),
+    SILVER: t('vipSilver'),
+    GOLD: t('vipGold'),
+    DIAMOND: t('vipDiamond'),
+  }
+  const label = labels[vipType] ?? vipType
   return (
     <Badge
       variant='outline'
@@ -37,12 +37,6 @@ const VipTypeBadge: React.FC<{ vipType: string }> = ({ vipType }) => {
     </Badge>
   )
 }
-
-// Re-implementing helper functions that need translations inside the component or pass t
-// Since utils cannot use hooks directly unless valid custom hook.
-// The utils I created in previous step used JSX but not translations for labels.
-// getPropertyTypeLabel in posts.tsx used t().
-// I should probably move the label logic back here or pass t to utils if possible (but utils are functions).
 
 interface PostTableProps {
   data: UIPostData[]
