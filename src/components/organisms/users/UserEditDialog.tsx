@@ -110,7 +110,7 @@ export const UserEditDialog: React.FC<UserEditDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='min-w-[40vw] max-w-md max-h-[80vh] overflow-y-auto'>
+      <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
         <DialogHeader>
           <DialogTitle>{t('edit.title')}</DialogTitle>
         </DialogHeader>

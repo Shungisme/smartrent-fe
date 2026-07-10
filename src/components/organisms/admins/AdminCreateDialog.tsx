@@ -168,7 +168,7 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='min-w-[20vw] max-w-md max-h-[80vh] overflow-y-auto'>
+      <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
         <DialogHeader>
           <DialogTitle>{t('create.title')}</DialogTitle>
         </DialogHeader>
