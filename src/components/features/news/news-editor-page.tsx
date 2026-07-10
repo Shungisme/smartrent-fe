@@ -433,7 +433,7 @@ const NewsEditor = () => {
                     onSelectImage={() => contentImageInputRef.current?.click()}
                     isUploadingImage={uploadingContentImage}
                   />
-                  <div className='min-h-[50vh] max-h-[50vh] overflow-y-auto'>
+                  <div className='min-h-[420px] max-h-[60vh] overflow-y-auto'>
                     <EditorContent editor={editor} />
                   </div>
                 </>
