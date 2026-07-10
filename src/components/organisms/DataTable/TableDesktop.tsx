@@ -67,6 +67,7 @@ export function TableDesktop<T = any>({
   onRowSelect,
   onSelectAll,
   maxHeightClassName,
+  fillHeight,
 }: TableDesktopProps<T>) {
   const t = useTranslations('dataTable')
   const getValue = (row: T, column: Column<T>) => {
@@ -97,11 +98,21 @@ export function TableDesktop<T = any>({
   }
 
   return (
-    <div className='table-surface hidden lg:block'>
+    <div
+      className={
+        fillHeight
+          ? 'table-surface hidden lg:flex lg:min-h-0 lg:flex-1 lg:flex-col'
+          : 'table-surface hidden lg:block'
+      }
+    >
       <div
-        className={`overflow-y-auto ${
-          maxHeightClassName || 'h-[50vh] xl:h-[56vh] 2xl:h-[60vh]'
-        }`}
+        className={
+          fillHeight
+            ? 'min-h-0 flex-1 overflow-y-auto'
+            : `overflow-y-auto ${
+                maxHeightClassName || 'h-[50vh] xl:h-[56vh] 2xl:h-[60vh]'
+              }`
+        }
       >
         <table className='w-full min-w-[800px] border-separate border-spacing-0'>
           <thead className='sticky top-0 z-10 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80'>

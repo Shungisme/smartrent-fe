@@ -2,7 +2,8 @@
   "common": {
     "or": "Hoặc",
     "noData": "Không có dữ liệu",
-    "total": "Tổng"
+    "total": "Tổng",
+    "cancel": "Hủy"
   },
   "notFound": {
     "title": "404",
@@ -1356,6 +1357,8 @@
         "successMessage": "Tạo admin thành công!\nMật khẩu tạm thời: {password}\n\nVui lòng lưu mật khẩu này cẩn thận.",
         "errorPrefix": "Lỗi: {message}",
         "failedGeneric": "Không thể tạo admin: {message}",
+        "copyPassword": "Sao chép mật khẩu",
+        "passwordCopied": "Đã sao chép mật khẩu",
         "validation": {
           "firstNameRequired": "Tên là bắt buộc",
           "lastNameRequired": "Họ là bắt buộc",
@@ -2093,7 +2096,9 @@
         "uploadThumbnailFailed": "Không thể tải ảnh đại diện lên"
       },
       "menuBar": {
-        "enterUrl": "Nhập URL:"
+        "enterUrl": "Nhập URL:",
+        "linkTitle": "Chèn liên kết",
+        "insert": "Chèn"
       },
       "validation": {
         "titleRequired": "Tiêu đề là bắt buộc"

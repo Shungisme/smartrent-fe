@@ -180,6 +180,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
 
   return (
     <DataTable
+      fillHeight
       data={transformedAdmins}
       columns={columns}
       filters={filterConfig}

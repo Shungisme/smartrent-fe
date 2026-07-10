@@ -140,6 +140,7 @@ export const UserTable: React.FC<UserTableProps> = ({
       data={transformedUsers}
       columns={columns}
       filters={filterConfig}
+      fillHeight
       filterMode='api'
       filterValues={filterValues}
       onFilterChange={onFilterChange}

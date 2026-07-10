@@ -322,6 +322,7 @@ export const PostTable: React.FC<PostTableProps> = ({
 
   return (
     <DataTable
+      fillHeight
       data={data}
       columns={columns}
       filters={filters}

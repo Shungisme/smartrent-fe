@@ -213,6 +213,7 @@ export const AdminTransactionTable = ({
 
   return (
     <DataTable<AdminTransaction>
+      fillHeight
       data={transactions}
       columns={columns}
       filters={filterConfig}

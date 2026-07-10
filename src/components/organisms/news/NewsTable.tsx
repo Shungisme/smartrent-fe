@@ -247,6 +247,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
 
   return (
     <DataTable
+      fillHeight
       filterMode='api'
       data={data}
       columns={columns}

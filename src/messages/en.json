@@ -2,7 +2,8 @@
   "common": {
     "or": "Or",
     "noData": "No data",
-    "total": "Total"
+    "total": "Total",
+    "cancel": "Cancel"
   },
   "notFound": {
     "title": "404",
@@ -1392,6 +1393,8 @@
         "successMessage": "Admin created successfully!\nTemporary Password: {password}\n\nPlease save this password securely.",
         "errorPrefix": "Error: {message}",
         "failedGeneric": "Failed to create admin: {message}",
+        "copyPassword": "Copy password",
+        "passwordCopied": "Password copied to clipboard",
         "validation": {
           "firstNameRequired": "First name is required",
           "lastNameRequired": "Last name is required",
@@ -2129,7 +2132,9 @@
         "uploadThumbnailFailed": "Failed to upload thumbnail"
       },
       "menuBar": {
-        "enterUrl": "Enter URL:"
+        "enterUrl": "Enter URL:",
+        "linkTitle": "Insert link",
+        "insert": "Insert"
       },
       "validation": {
         "titleRequired": "Title is required"
