@@ -268,7 +268,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
               type='button'
               onClick={() => handleNavigate(DEFAULT_HOME_ROUTE)}
               className='group flex min-w-0 flex-1 items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent'
-              aria-label='SmartRent Admin'
+              aria-label='Thuê Nhà Trọ Admin'
             >
               <span
                 aria-hidden
@@ -278,7 +278,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
               </span>
               <span className='flex min-w-0 flex-col leading-tight'>
                 <span className='truncate text-sm font-semibold text-sidebar-foreground'>
-                  SmartRent
+                  Thuê Nhà Trọ
                 </span>
                 <span className='truncate text-[11px] text-muted-foreground'>
                   Admin Console

@@ -17,8 +17,8 @@ const jetBrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'SmartRent Admin',
-  description: 'SmartRent admin dashboard',
+  title: 'Thuê Nhà Trọ Admin',
+  description: 'Bảng điều khiển quản trị Thuê Nhà Trọ',
 }
 
 export default function RootLayout({

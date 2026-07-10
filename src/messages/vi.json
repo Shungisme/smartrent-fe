@@ -224,7 +224,7 @@
       },
       "brand": {
         "badge": "Bảng điều khiển quản trị",
-        "headline": "Vận hành SmartRent với sự rõ ràng và kiểm soát.",
+        "headline": "Vận hành Thuê Nhà Trọ với sự rõ ràng và kiểm soát.",
         "subheadline": "Quản lý người dùng, tin đăng, gói cao cấp và doanh thu trong một không gian làm việc duy nhất.",
         "subtitle": "Quản lý Bất động sản",
         "secure": "Kết nối bảo mật",
@@ -823,7 +823,7 @@
     "address": "123 Đường Chính, Thành phố Hồ Chí Minh, Việt Nam",
     "phone": "+84 123 456 789",
     "email": "info@smartrent.com",
-    "copyright": "© 2024 SmartRent. Tất cả quyền được bảo lưu.",
+    "copyright": "© 2024 Thuê Nhà Trọ. Tất cả quyền được bảo lưu.",
     "privacy": "Bảo mật",
     "terms": "Điều khoản",
     "followUs": "Theo dõi chúng tôi",
@@ -870,7 +870,7 @@
       "featureInDevelopment": "Chức năng đang phát triển"
     },
     "sidebar": {
-      "title": "SmartRent Admin",
+      "title": "Thuê Nhà Trọ Admin",
       "sections": {
         "management": "Quản Trị"
       },
