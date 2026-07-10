@@ -74,7 +74,7 @@ const UserManagement = () => {
         setUsers(response.data.data)
         setTotalItems(response.data.totalElements)
       } else {
-        setError(response.message || 'Failed to load users')
+        setError(response.message || t('table.loadError'))
       }
     } catch (err: unknown) {
       const error = err as { message?: string }
@@ -138,7 +138,7 @@ const UserManagement = () => {
             size='sm'
             onClick={() => window.location.reload()}
           >
-            Retry
+            {tCommon('retry')}
           </Button>
         </div>
       </div>
@@ -156,7 +156,7 @@ const UserManagement = () => {
               onClick={() => setShowCreate(true)}
             >
               <Plus className='h-4 w-4' />
-              {t('create.button') || 'Create User'}
+              {t('create.button')}
             </Button>
           }
         />

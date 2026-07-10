@@ -108,7 +108,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Bold (Ctrl+B)'
+              title={t('tooltips.bold')}
             >
               <Bold className='h-4 w-4' />
             </Button>
@@ -122,7 +122,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Italic (Ctrl+I)'
+              title={t('tooltips.italic')}
             >
               <Italic className='h-4 w-4' />
             </Button>
@@ -136,7 +136,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Underline (Ctrl+U)'
+              title={t('tooltips.underline')}
             >
               <UnderlineIcon className='h-4 w-4' />
             </Button>
@@ -150,7 +150,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Strikethrough'
+              title={t('tooltips.strikethrough')}
             >
               <Strikethrough className='h-4 w-4' />
             </Button>
@@ -164,7 +164,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Inline Code'
+              title={t('tooltips.inlineCode')}
             >
               <Code className='h-4 w-4' />
             </Button>
@@ -178,7 +178,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Highlight'
+              title={t('tooltips.highlight')}
             >
               <Highlighter className='h-4 w-4' />
             </Button>
@@ -192,7 +192,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Subscript'
+              title={t('tooltips.subscript')}
             >
               <SubscriptIcon className='h-4 w-4' />
             </Button>
@@ -206,13 +206,13 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Superscript'
+              title={t('tooltips.superscript')}
             >
               <SuperscriptIcon className='h-4 w-4' />
             </Button>
             <label
               className='flex h-8 w-8 cursor-pointer items-center justify-center rounded-md hover:bg-accent text-foreground'
-              title='Text Color'
+              title={t('tooltips.textColor')}
             >
               <input
                 type='color'
@@ -228,7 +228,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               onClick={() =>
                 editor.chain().focus().unsetColor().unsetAllMarks().run()
               }
-              title='Clear Formatting'
+              title={t('tooltips.clearFormatting')}
             >
               <Eraser className='h-4 w-4' />
             </Button>
@@ -248,7 +248,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Heading 1'
+              title={t('tooltips.heading1')}
             >
               <Heading1 className='h-4 w-4' />
             </Button>
@@ -264,7 +264,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Heading 2'
+              title={t('tooltips.heading2')}
             >
               <Heading2 className='h-4 w-4' />
             </Button>
@@ -280,7 +280,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Heading 3'
+              title={t('tooltips.heading3')}
             >
               <Heading3 className='h-4 w-4' />
             </Button>
@@ -298,7 +298,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Bullet List'
+              title={t('tooltips.bulletList')}
             >
               <List className='h-4 w-4' />
             </Button>
@@ -312,7 +312,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Numbered List'
+              title={t('tooltips.numberedList')}
             >
               <ListOrdered className='h-4 w-4' />
             </Button>
@@ -326,7 +326,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Task List'
+              title={t('tooltips.taskList')}
             >
               <ListTodo className='h-4 w-4' />
             </Button>
@@ -344,7 +344,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Align Left'
+              title={t('tooltips.alignLeft')}
             >
               <AlignLeft className='h-4 w-4' />
             </Button>
@@ -360,7 +360,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Align Center'
+              title={t('tooltips.alignCenter')}
             >
               <AlignCenter className='h-4 w-4' />
             </Button>
@@ -374,7 +374,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Align Right'
+              title={t('tooltips.alignRight')}
             >
               <AlignRight className='h-4 w-4' />
             </Button>
@@ -390,7 +390,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Justify'
+              title={t('tooltips.justify')}
             >
               <AlignJustify className='h-4 w-4' />
             </Button>
@@ -404,7 +404,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={onSelectImage}
               disabled={!onSelectImage || isUploadingImage}
-              title='Insert Image'
+              title={t('tooltips.insertImage')}
             >
               {isUploadingImage ? (
                 <Loader2 className='h-4 w-4 animate-spin' />
@@ -422,7 +422,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Insert Link'
+              title={t('tooltips.insertLink')}
             >
               <LinkIcon className='h-4 w-4' />
             </Button>
@@ -436,7 +436,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   ? 'bg-primary/12 text-primary ring-1 ring-primary/20'
                   : ''
               }
-              title='Quote'
+              title={t('tooltips.quote')}
             >
               <Quote className='h-4 w-4' />
             </Button>
@@ -445,7 +445,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               variant='ghost'
               size='sm'
               onClick={() => editor.chain().focus().setHorizontalRule().run()}
-              title='Horizontal Rule'
+              title={t('tooltips.horizontalRule')}
             >
               <Minus className='h-4 w-4' />
             </Button>
@@ -464,7 +464,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
                   .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
                   .run()
               }
-              title='Insert Table'
+              title={t('tooltips.insertTable')}
             >
               <Table className='h-4 w-4' />
             </Button>
@@ -474,7 +474,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().addRowAfter().run()}
               disabled={!isInTable}
-              title='Add Row'
+              title={t('tooltips.addRow')}
             >
               <Rows3 className='h-4 w-4' />
             </Button>
@@ -484,7 +484,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().deleteRow().run()}
               disabled={!isInTable}
-              title='Delete Row'
+              title={t('tooltips.deleteRow')}
             >
               <Rows3 className='h-4 w-4 text-red-600' />
             </Button>
@@ -494,7 +494,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().addColumnAfter().run()}
               disabled={!isInTable}
-              title='Add Column'
+              title={t('tooltips.addColumn')}
             >
               <Columns3 className='h-4 w-4' />
             </Button>
@@ -504,7 +504,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().deleteColumn().run()}
               disabled={!isInTable}
-              title='Delete Column'
+              title={t('tooltips.deleteColumn')}
             >
               <Columns3 className='h-4 w-4 text-red-600' />
             </Button>
@@ -514,7 +514,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().duplicateRow(true).run()}
               disabled={!isInTable}
-              title='Duplicate Row'
+              title={t('tooltips.duplicateRow')}
             >
               <CopyPlus className='h-4 w-4' />
             </Button>
@@ -524,7 +524,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().duplicateColumn(true).run()}
               disabled={!isInTable}
-              title='Duplicate Column'
+              title={t('tooltips.duplicateColumn')}
             >
               <CopyPlus className='h-4 w-4 rotate-90' />
             </Button>
@@ -534,7 +534,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().mergeCells().run()}
               disabled={!isInTable}
-              title='Merge Cells'
+              title={t('tooltips.mergeCells')}
             >
               <Merge className='h-4 w-4' />
             </Button>
@@ -544,7 +544,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().splitCell().run()}
               disabled={!isInTable}
-              title='Split Cell'
+              title={t('tooltips.splitCell')}
             >
               <Split className='h-4 w-4' />
             </Button>
@@ -554,7 +554,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().toggleHeaderRow().run()}
               disabled={!isInTable}
-              title='Toggle Header Row'
+              title={t('tooltips.toggleHeaderRow')}
             >
               <span className='text-xs font-medium'>HR</span>
             </Button>
@@ -564,7 +564,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().toggleHeaderColumn().run()}
               disabled={!isInTable}
-              title='Toggle Header Column'
+              title={t('tooltips.toggleHeaderColumn')}
             >
               <span className='text-xs font-medium'>HC</span>
             </Button>
@@ -574,7 +574,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().deleteTable().run()}
               disabled={!isInTable}
-              title='Delete Table'
+              title={t('tooltips.deleteTable')}
             >
               <Trash2 className='h-4 w-4' />
             </Button>
@@ -588,7 +588,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().undo().run()}
               disabled={!editor.can().undo()}
-              title='Undo (Ctrl+Z)'
+              title={t('tooltips.undo')}
             >
               <Undo className='h-4 w-4' />
             </Button>
@@ -598,7 +598,7 @@ export const NewsEditorMenuBar: React.FC<NewsEditorMenuBarProps> = ({
               size='sm'
               onClick={() => editor.chain().focus().redo().run()}
               disabled={!editor.can().redo()}
-              title='Redo (Ctrl+Y)'
+              title={t('tooltips.redo')}
             >
               <Redo className='h-4 w-4' />
             </Button>

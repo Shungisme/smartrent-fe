@@ -102,8 +102,8 @@ const RoleManagement = () => {
     {
       id: 'roleName',
       type: 'search',
-      label: t('table.headers.roleName') || 'Role Name',
-      placeholder: 'e.g. Administrator',
+      label: t('table.headers.roleName'),
+      placeholder: t('table.roleNamePlaceholder'),
       isFilterField: true,
     },
   ]
@@ -136,7 +136,7 @@ const RoleManagement = () => {
           sortable
           defaultSort={{ key: 'id', direction: 'asc' }}
           loading={loading}
-          emptyMessage={loading ? 'Loading roles...' : 'No roles found'}
+          emptyMessage={loading ? t('table.loading') : t('table.empty')}
           getRowKey={(row) => row.id}
           actions={(row) => (
             <div className='flex items-center justify-center gap-0.5'>

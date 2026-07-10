@@ -3,7 +3,8 @@
     "or": "Hoặc",
     "noData": "Không có dữ liệu",
     "total": "Tổng",
-    "cancel": "Hủy"
+    "cancel": "Hủy",
+    "retry": "Thử lại"
   },
   "notFound": {
     "title": "404",
@@ -949,7 +950,8 @@
           "clearMembership": "Xoá gói hội viên"
         },
         "loading": "Đang tải người dùng...",
-        "noUsersFound": "Không tìm thấy người dùng"
+        "noUsersFound": "Không tìm thấy người dùng",
+        "loadError": "Không thể tải danh sách người dùng"
       },
       "delete": {
         "title": "Xóa Người Dùng",
@@ -1384,7 +1386,10 @@
         "actions": {
           "edit": "Chỉnh sửa",
           "delete": "Xóa"
-        }
+        },
+        "roleNamePlaceholder": "VD: Quản trị viên",
+        "loading": "Đang tải vai trò...",
+        "empty": "Không tìm thấy vai trò"
       },
       "create": {
         "title": "Tạo Vai Trò",
@@ -2098,7 +2103,47 @@
       "menuBar": {
         "enterUrl": "Nhập URL:",
         "linkTitle": "Chèn liên kết",
-        "insert": "Chèn"
+        "insert": "Chèn",
+        "tooltips": {
+          "bold": "Đậm (Ctrl+B)",
+          "italic": "Nghiêng (Ctrl+I)",
+          "underline": "Gạch chân (Ctrl+U)",
+          "strikethrough": "Gạch ngang",
+          "inlineCode": "Mã nội dòng",
+          "highlight": "Tô sáng",
+          "subscript": "Chỉ số dưới",
+          "superscript": "Chỉ số trên",
+          "textColor": "Màu chữ",
+          "clearFormatting": "Xóa định dạng",
+          "heading1": "Tiêu đề 1",
+          "heading2": "Tiêu đề 2",
+          "heading3": "Tiêu đề 3",
+          "bulletList": "Danh sách dấu đầu dòng",
+          "numberedList": "Danh sách đánh số",
+          "taskList": "Danh sách công việc",
+          "alignLeft": "Căn trái",
+          "alignCenter": "Căn giữa",
+          "alignRight": "Căn phải",
+          "justify": "Căn đều",
+          "insertImage": "Chèn ảnh",
+          "insertLink": "Chèn liên kết",
+          "quote": "Trích dẫn",
+          "horizontalRule": "Đường kẻ ngang",
+          "insertTable": "Chèn bảng",
+          "addRow": "Thêm hàng",
+          "deleteRow": "Xóa hàng",
+          "addColumn": "Thêm cột",
+          "deleteColumn": "Xóa cột",
+          "duplicateRow": "Nhân đôi hàng",
+          "duplicateColumn": "Nhân đôi cột",
+          "mergeCells": "Gộp ô",
+          "splitCell": "Tách ô",
+          "toggleHeaderRow": "Bật/tắt hàng tiêu đề",
+          "toggleHeaderColumn": "Bật/tắt cột tiêu đề",
+          "deleteTable": "Xóa bảng",
+          "undo": "Hoàn tác (Ctrl+Z)",
+          "redo": "Làm lại (Ctrl+Y)"
+        }
       },
       "validation": {
         "titleRequired": "Tiêu đề là bắt buộc"
