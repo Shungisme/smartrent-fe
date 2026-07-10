@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
+import { toast } from 'sonner'
 import {
   Dialog,
   DialogContent,
@@ -119,7 +120,25 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
         phoneCode: DEFAULT_PHONE_CODE,
       })
       if (response.success && response.data) {
-        alert(t('create.successMessage', { password: response.data.password }))
+        const password = response.data.password
+        // Persistent toast (won't auto-dismiss) so the admin can read/copy the
+        // one-time temporary password before it disappears.
+        toast.success(
+          <span className='whitespace-pre-line'>
+            {t('create.successMessage', { password })}
+          </span>,
+          {
+            duration: Infinity,
+            closeButton: true,
+            action: {
+              label: t('create.copyPassword'),
+              onClick: () => {
+                void navigator.clipboard?.writeText(password)
+                toast.success(t('create.passwordCopied'))
+              },
+            },
+          },
+        )
         const newAdmin: AdminProfile = {
           adminId: response.data.adminId,
           phoneCode: response.data.phoneCode,
@@ -135,11 +154,13 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
         onOpenChange(false)
         reset()
       } else {
-        alert(t('create.errorPrefix', { message: response.message ?? '' }))
+        toast.error(
+          t('create.errorPrefix', { message: response.message ?? '' }),
+        )
       }
     } catch (error: unknown) {
       const err = error as { message?: string }
-      alert(t('create.failedGeneric', { message: err.message ?? '' }))
+      toast.error(t('create.failedGeneric', { message: err.message ?? '' }))
     } finally {
       setLoading(false)
     }
