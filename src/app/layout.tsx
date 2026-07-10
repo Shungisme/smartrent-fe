@@ -19,6 +19,11 @@ const jetBrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'Thuê Nhà Trọ Admin',
   description: 'Bảng điều khiển quản trị Thuê Nhà Trọ',
+  icons: {
+    icon: '/images/logo-smartrent.jpg',
+    shortcut: '/images/logo-smartrent.jpg',
+    apple: '/images/logo-smartrent.jpg',
+  },
 }
 
 export default function RootLayout({
