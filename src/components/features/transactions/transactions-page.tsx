@@ -49,7 +49,7 @@ export const TransactionsPage = () => {
   }
 
   return (
-    <div className='flex flex-col gap-6 lg:min-h-0 lg:flex-1'>
+    <div className='space-y-6'>
       <PageHeader title={t('title')} />
 
       <TransactionStatisticsCards statistics={statistics} />

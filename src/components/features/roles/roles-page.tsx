@@ -109,8 +109,8 @@ const RoleManagement = () => {
   ]
 
   return (
-    <div className='flex flex-col lg:min-h-0 lg:flex-1'>
-      <div className='flex flex-col gap-6 lg:min-h-0 lg:flex-1'>
+    <div>
+      <div className='space-y-6'>
         <PageHeader
           title={t('title')}
           actions={
