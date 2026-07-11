@@ -2429,7 +2429,8 @@
         "phone": "Phone",
         "totalReports": "Total reports",
         "approvedReports": "Approved reports",
-        "status": "Status"
+        "status": "Status",
+        "email": "Email"
       },
       "actions": {
         "viewReports": "View reports",
@@ -2466,6 +2467,14 @@
       "blockSuccess": "Author has been blocked from posting.",
       "unblockSuccess": "Author can post listings again.",
       "blockError": "Failed to update posting block. Please try again."
+    },
+    "filters": {
+      "emailPlaceholder": "Search by email",
+      "namePlaceholder": "Search by name",
+      "phonePlaceholder": "Search by phone",
+      "blockEligible": "Block eligibility",
+      "eligibleOnly": "Eligible to block",
+      "notEligibleOnly": "Not yet eligible"
     }
   }
 }

@@ -2393,7 +2393,8 @@
         "phone": "Điện thoại",
         "totalReports": "Tổng report",
         "approvedReports": "Report đã duyệt",
-        "status": "Trạng thái"
+        "status": "Trạng thái",
+        "email": "Email"
       },
       "actions": {
         "viewReports": "Xem report",
@@ -2430,6 +2431,14 @@
       "blockSuccess": "Đã chặn đăng tin với người này.",
       "unblockSuccess": "Đã mở lại quyền đăng tin.",
       "blockError": "Cập nhật chặn đăng tin thất bại. Vui lòng thử lại."
+    },
+    "filters": {
+      "emailPlaceholder": "Tìm theo email",
+      "namePlaceholder": "Tìm theo tên",
+      "phonePlaceholder": "Tìm theo SĐT",
+      "blockEligible": "Đủ điều kiện chặn",
+      "eligibleOnly": "Đủ điều kiện chặn",
+      "notEligibleOnly": "Chưa đủ điều kiện"
     }
   }
 }

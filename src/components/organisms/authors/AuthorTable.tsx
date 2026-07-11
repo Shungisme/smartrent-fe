@@ -4,7 +4,10 @@ import React from 'react'
 import { useTranslations } from 'next-intl'
 import { Eye, Ban, ShieldCheck, AlertTriangle } from 'lucide-react'
 import { DataTable } from '@/components/organisms/DataTable'
-import type { Column } from '@/components/organisms/DataTable/types'
+import type {
+  Column,
+  FilterConfig,
+} from '@/components/organisms/DataTable/types'
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
@@ -112,10 +115,45 @@ export const AuthorTable: React.FC<AuthorTableProps> = ({
     },
   ]
 
+  const filterConfig: FilterConfig[] = [
+    {
+      id: 'email',
+      type: 'search',
+      label: t('table.headers.email'),
+      placeholder: t('filters.emailPlaceholder'),
+      isFilterField: true,
+    },
+    {
+      id: 'name',
+      type: 'search',
+      label: t('table.headers.author'),
+      placeholder: t('filters.namePlaceholder'),
+      isFilterField: true,
+    },
+    {
+      id: 'phone',
+      type: 'search',
+      label: t('table.headers.phone'),
+      placeholder: t('filters.phonePlaceholder'),
+      isFilterField: true,
+    },
+    {
+      id: 'blockEligible',
+      type: 'select',
+      label: t('filters.blockEligible'),
+      isFilterField: true,
+      options: [
+        { value: 'true', label: t('filters.eligibleOnly') },
+        { value: 'false', label: t('filters.notEligibleOnly') },
+      ],
+    },
+  ]
+
   return (
     <DataTable
       data={authors}
       columns={columns}
+      filters={filterConfig}
       filterMode='api'
       filterValues={filterValues}
       onFilterChange={onFilterChange}

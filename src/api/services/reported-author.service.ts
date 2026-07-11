@@ -21,6 +21,10 @@ export class ReportedAuthorService {
   static async getReportedAuthors(params: {
     page?: number
     size?: number
+    email?: string
+    name?: string
+    phone?: string
+    blockEligible?: boolean
   }): Promise<ApiResponse<ReportedAuthorListResponse>> {
     return apiRequest<ReportedAuthorListResponse>({
       method: 'GET',
