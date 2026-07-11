@@ -576,39 +576,6 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                             {t('review.hidden')}
                           </Badge>
                         )}
-
-                        {/* Temporary hide / unhide toggle */}
-                        {listingDetails.moderationStatus === 'SUSPENDED' ? (
-                          <Button
-                            size='sm'
-                            variant='outline'
-                            className='ml-auto text-sm'
-                            onClick={handleUnhideListing}
-                            disabled={visibilityLoading}
-                          >
-                            {visibilityLoading ? (
-                              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                            ) : (
-                              <Eye className='mr-2 h-4 w-4' />
-                            )}
-                            {t('review.unhide')}
-                          </Button>
-                        ) : (
-                          <Button
-                            size='sm'
-                            variant='outline'
-                            className='ml-auto border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground text-sm'
-                            onClick={handleHideListing}
-                            disabled={visibilityLoading}
-                          >
-                            {visibilityLoading ? (
-                              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                            ) : (
-                              <EyeOff className='mr-2 h-4 w-4' />
-                            )}
-                            {t('review.hide')}
-                          </Button>
-                        )}
                       </div>
                     </div>
                   ) : (
@@ -646,65 +613,102 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
           )}
 
           {/* Fixed action footer */}
-          {report?.status === 'PENDING' && (
+          {report && (listingDetails || report.status === 'PENDING') && (
             <div className='shrink-0 border-t border-border/60 bg-card/95 px-6 py-4 backdrop-blur supports-[backdrop-filter]:bg-card/80'>
-              <div className='mb-3'>
-                <label
-                  htmlFor='action-reason'
-                  className='text-sm font-medium text-foreground/80 block mb-2'
-                >
-                  {t('review.adminNotesLabel')}{' '}
-                  <span className='text-destructive'>*</span>
-                </label>
-                <textarea
-                  id='action-reason'
-                  value={actionReason}
-                  onChange={(e) => setActionReason(e.target.value)}
-                  placeholder={t('review.adminNotesPlaceholder')}
-                  className='w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-ring'
-                  rows={2}
-                />
-              </div>
-              <div className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end'>
-                {onRequestRevision && (
-                  <Button
-                    onClick={handleRequestRevision}
-                    disabled={actionLoading}
-                    variant='outline'
-                    className='border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground text-sm'
+              {report.status === 'PENDING' && (
+                <div className='mb-3'>
+                  <label
+                    htmlFor='action-reason'
+                    className='text-sm font-medium text-foreground/80 block mb-2'
                   >
-                    {actionLoading ? (
-                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                    ) : (
-                      <Edit className='mr-2 h-4 w-4' />
+                    {t('review.adminNotesLabel')}{' '}
+                    <span className='text-destructive'>*</span>
+                  </label>
+                  <textarea
+                    id='action-reason'
+                    value={actionReason}
+                    onChange={(e) => setActionReason(e.target.value)}
+                    placeholder={t('review.adminNotesPlaceholder')}
+                    className='w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary/60 focus:outline-none focus:ring-2 focus:ring-ring'
+                    rows={2}
+                  />
+                </div>
+              )}
+              <div className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end'>
+                {/* Temporary hide / unhide — opposite toggle, kept apart on the left */}
+                {listingDetails &&
+                  (listingDetails.moderationStatus === 'SUSPENDED' ? (
+                    <Button
+                      onClick={handleUnhideListing}
+                      disabled={visibilityLoading}
+                      variant='outline'
+                      className='text-sm sm:mr-auto'
+                    >
+                      {visibilityLoading ? (
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      ) : (
+                        <Eye className='mr-2 h-4 w-4' />
+                      )}
+                      {t('review.unhide')}
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleHideListing}
+                      disabled={visibilityLoading}
+                      variant='outline'
+                      className='border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground text-sm sm:mr-auto'
+                    >
+                      {visibilityLoading ? (
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      ) : (
+                        <EyeOff className='mr-2 h-4 w-4' />
+                      )}
+                      {t('review.hide')}
+                    </Button>
+                  ))}
+                {report.status === 'PENDING' && (
+                  <>
+                    {onRequestRevision && (
+                      <Button
+                        onClick={handleRequestRevision}
+                        disabled={actionLoading}
+                        variant='outline'
+                        className='border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground text-sm'
+                      >
+                        {actionLoading ? (
+                          <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                        ) : (
+                          <Edit className='mr-2 h-4 w-4' />
+                        )}
+                        {t('review.requestRevision')}
+                      </Button>
                     )}
-                    {t('review.requestRevision')}
-                  </Button>
+                    <Button
+                      onClick={handleRemoveListing}
+                      disabled={actionLoading}
+                      className='bg-destructive text-destructive-foreground hover:bg-destructive/90 text-sm'
+                    >
+                      {actionLoading ? (
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      ) : (
+                        <Ban className='mr-2 h-4 w-4' />
+                      )}
+                      {t('review.removeListing')}
+                    </Button>
+                    <Button
+                      onClick={handleDismiss}
+                      disabled={actionLoading}
+                      className='bg-success text-success-foreground hover:bg-success/90 text-sm'
+                    >
+                      {actionLoading ? (
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      ) : (
+                        <CheckCircle className='mr-2 h-4 w-4' />
+                      )}
+                      {t('review.dismiss')}
+                    </Button>
+                  </>
                 )}
-                <Button
-                  onClick={handleRemoveListing}
-                  disabled={actionLoading}
-                  className='bg-destructive text-destructive-foreground hover:bg-destructive/90 text-sm'
-                >
-                  {actionLoading ? (
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  ) : (
-                    <Ban className='mr-2 h-4 w-4' />
-                  )}
-                  {t('review.removeListing')}
-                </Button>
-                <Button
-                  onClick={handleDismiss}
-                  disabled={actionLoading}
-                  className='bg-success text-success-foreground hover:bg-success/90 text-sm'
-                >
-                  {actionLoading ? (
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  ) : (
-                    <CheckCircle className='mr-2 h-4 w-4' />
-                  )}
-                  {t('review.dismiss')}
-                </Button>
               </div>
             </div>
           )}
