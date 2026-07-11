@@ -207,8 +207,8 @@ const BrokerPendingPage = () => {
   }
 
   return (
-    <div className='flex flex-col lg:min-h-0 lg:flex-1'>
-      <div className='flex flex-col gap-6 lg:min-h-0 lg:flex-1'>
+    <div>
+      <div className='space-y-6'>
         {error && (
           <div className='rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
             <div className='flex items-center justify-between gap-3'>

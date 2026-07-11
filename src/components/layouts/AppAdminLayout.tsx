@@ -105,10 +105,8 @@ const AppAdminLayout: React.FC<AppAdminLayoutProps> = ({
         />
 
         <div className='flex-1 overflow-hidden'>
-          <main className='flex h-full w-full flex-col overflow-y-auto'>
-            <div className='app-container flex flex-col lg:min-h-0 lg:flex-1'>
-              {children}
-            </div>
+          <main className='h-full w-full overflow-y-auto'>
+            <div className='app-container'>{children}</div>
           </main>
         </div>
       </div>
