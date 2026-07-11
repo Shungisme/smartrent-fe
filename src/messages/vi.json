@@ -1909,7 +1909,11 @@
       "dismissError": "Không thể bác bỏ báo cáo. Vui lòng thử lại.",
       "revisionDetailsRequired": "Vui lòng cung cấp chi tiết cần chỉnh sửa.",
       "revisionSuccess": "Đã yêu cầu chỉnh sửa. Chủ tin đăng sẽ được thông báo.",
-      "revisionError": "Không thể yêu cầu chỉnh sửa. Vui lòng thử lại."
+      "revisionError": "Không thể yêu cầu chỉnh sửa. Vui lòng thử lại.",
+      "removeListingNoteRequired": "Vui lòng nhập lý do đình chỉ tin đăng",
+      "removeListingConfirm": "Bạn có chắc chắn muốn đình chỉ vĩnh viễn tin đăng này? Chủ tin đăng sẽ không thể đăng lại tin này.",
+      "removeListingSuccess": "Đã đình chỉ tin đăng vĩnh viễn",
+      "removeListingError": "Không thể đình chỉ tin đăng. Vui lòng thử lại."
     },
     "table": {
       "viewDetails": "Xem Chi Tiết",
@@ -1927,8 +1931,9 @@
       "reportedAt": "Thời Gian Báo Cáo",
       "additionalFeedback": "Phản Hồi Bổ Sung",
       "currentStatus": "Trạng Thái Hiện Tại",
-      "resolve": "Xử Lý",
+      "acknowledge": "Ghi Nhận",
       "requestRevision": "Yêu Cầu Sửa Đổi",
+      "removeListing": "Đình Chỉ Tin Đăng",
       "dismiss": "Bỏ Qua",
       "actions": "Thao tác",
       "description": "Mô tả",

@@ -24,6 +24,7 @@ import {
   ChevronRight,
   X,
   Edit,
+  Ban,
 } from 'lucide-react'
 import cn from 'classnames'
 import { ListingReport } from '@/api/types/listing-report.type'
@@ -133,7 +134,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
     }
   }
 
-  const handleResolve = async () => {
+  const handleAcknowledge = async () => {
     if (!report) return
 
     if (!actionReason.trim()) {
@@ -153,6 +154,36 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
     } catch (e) {
       console.error(e)
       toast.error(t('toasts.resolveError'))
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleRemoveListing = async () => {
+    if (!report) return
+
+    if (!actionReason.trim()) {
+      toast.warning(t('toasts.removeListingNoteRequired'))
+      return
+    }
+
+    if (!window.confirm(t('toasts.removeListingConfirm'))) {
+      return
+    }
+
+    try {
+      setActionLoading(true)
+      await ListingService.resolveReport(report.reportId, {
+        status: 'RESOLVED',
+        adminNotes: actionReason,
+        removeListing: true,
+      })
+      toast.success(t('toasts.removeListingSuccess'))
+      onOpenChange(false)
+      onActionComplete()
+    } catch (e) {
+      console.error(e)
+      toast.error(t('toasts.removeListingError'))
     } finally {
       setActionLoading(false)
     }
@@ -587,7 +618,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                   rows={2}
                 />
               </div>
-              <div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end'>
+              <div className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end'>
                 {onRequestRevision && (
                   <Button
                     onClick={handleRequestRevision}
@@ -604,6 +635,18 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                   </Button>
                 )}
                 <Button
+                  onClick={handleRemoveListing}
+                  disabled={actionLoading}
+                  className='bg-destructive text-destructive-foreground hover:bg-destructive/90 text-sm'
+                >
+                  {actionLoading ? (
+                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                  ) : (
+                    <Ban className='mr-2 h-4 w-4' />
+                  )}
+                  {t('review.removeListing')}
+                </Button>
+                <Button
                   onClick={handleDismiss}
                   disabled={actionLoading}
                   variant='outline'
@@ -617,7 +660,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                   {t('review.dismiss')}
                 </Button>
                 <Button
-                  onClick={handleResolve}
+                  onClick={handleAcknowledge}
                   disabled={actionLoading}
                   className='bg-success text-success-foreground hover:bg-success/90 text-sm'
                 >
@@ -626,7 +669,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                   ) : (
                     <CheckCircle className='mr-2 h-4 w-4' />
                   )}
-                  {t('review.resolve')}
+                  {t('review.acknowledge')}
                 </Button>
               </div>
             </div>

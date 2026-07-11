@@ -35,9 +35,12 @@ export interface ListingReportListResponse {
 export interface ResolveReportRequest {
   status: 'RESOLVED' | 'REJECTED'
   adminNotes?: string
-  // Extended fields for owner action workflow
+  // Owner is required to fix and resubmit the listing (-> REVISION_REQUIRED).
+  // Mutually exclusive with removeListing.
   ownerActionRequired?: boolean
-  ownerActionType?: 'UPDATE_LISTING' | 'REMOVE_LISTING' | 'CONTACT_ADMIN'
+  ownerActionType?: 'UPDATE_LISTING' | 'CONTACT_SUPPORT'
   ownerActionDeadlineAt?: string // ISO 8601 datetime
-  listingVisibilityAction?: 'KEEP_VISIBLE' | 'HIDE_UNTIL_REVIEW' | 'SUSPEND'
+  // Confirmed violation: permanently suspends the listing, owner cannot
+  // resubmit it. Mutually exclusive with ownerActionRequired.
+  removeListing?: boolean
 }
