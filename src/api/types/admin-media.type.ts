@@ -44,5 +44,33 @@ export interface AdminMediaListFilter {
   size?: number
 }
 
+export interface AdminCreateUploadUrlRequest {
+  mediaType: AdminMediaType
+  filename: string
+  contentType: string
+  fileSize: number
+  listingId?: number
+  title?: string
+  description?: string
+  altText?: string
+  isPrimary?: boolean
+  sortOrder?: number
+}
+
+export interface AdminCreateUploadUrlResponse {
+  mediaId: number
+  uploadUrl: string
+  expiresIn: number
+  storageKey: string
+  message: string
+}
+
+export interface AdminConfirmUploadRequest {
+  checksum?: string
+  contentType?: string
+}
+
 export type AdminMediaApiResponse = ApiResponse<AdminMediaResponse>
 export type AdminMediaListApiResponse = ApiResponse<AdminMediaResponse[]>
+export type AdminCreateUploadUrlApiResponse =
+  ApiResponse<AdminCreateUploadUrlResponse>

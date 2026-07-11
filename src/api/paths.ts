@@ -118,6 +118,8 @@ export const PATHS = {
   // Admin media endpoints
   ADMIN_MEDIA: {
     UPLOAD: '/v1/admin/media/upload',
+    UPLOAD_URL: '/v1/admin/media/upload-url',
+    CONFIRM: '/v1/admin/media/:mediaId/confirm',
     LIST: '/v1/admin/media',
     DETAIL: '/v1/admin/media/:mediaId',
     DELETE: '/v1/admin/media/:mediaId',
