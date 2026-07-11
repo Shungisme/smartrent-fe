@@ -2,7 +2,9 @@
   "common": {
     "or": "Or",
     "noData": "No data",
-    "total": "Total"
+    "total": "Total",
+    "cancel": "Cancel",
+    "retry": "Retry"
   },
   "notFound": {
     "title": "404",
@@ -984,44 +986,66 @@
           "clearMembership": "Clear Membership"
         },
         "loading": "Loading users...",
-        "noUsersFound": "No users found"
+        "noUsersFound": "No users found",
+        "loadError": "Failed to load users"
       },
       "delete": {
         "title": "Delete User",
         "confirm": "Are you sure you want to delete this user? This action cannot be undone.",
         "deleting": "Deleting...",
         "cancel": "Cancel",
-        "delete": "Delete"
+        "delete": "Delete",
+        "deleteFailed": "Failed to delete user",
+        "deleteError": "Error deleting user"
       },
       "edit": {
         "title": "Edit User",
         "email": "Email",
         "firstName": "First Name",
         "lastName": "Last Name",
-        "phoneCode": "Phone Code",
         "phoneNumber": "Phone Number",
         "idDocument": "ID Document",
         "taxNumber": "Tax Number",
         "contactPhone": "Contact Phone",
-        "verified": "Verified",
         "save": "Save Changes",
         "saving": "Saving...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "updateFailed": "Failed to update user",
+        "updateError": "Error updating user",
+        "validation": {
+          "firstNameRequired": "First name is required",
+          "lastNameRequired": "Last name is required",
+          "emailRequired": "Email is required",
+          "emailInvalid": "Invalid email address"
+        }
       },
       "create": {
         "title": "Create New User",
         "firstName": "First Name",
         "lastName": "Last Name",
         "email": "Email",
-        "phoneCode": "Code",
         "phoneNumber": "Phone Number",
         "password": "Password",
+        "generatePassword": "Generate password",
+        "showPassword": "Show password",
+        "hidePassword": "Hide password",
         "idDocument": "ID Document",
         "taxNumber": "Tax Number",
         "create": "Create",
         "creating": "Creating...",
         "cancel": "Cancel",
-        "button": "Create New User"
+        "button": "Create New User",
+        "createFailed": "Failed to create user",
+        "createError": "Error creating user",
+        "validation": {
+          "firstNameRequired": "First name is required",
+          "lastNameRequired": "Last name is required",
+          "emailRequired": "Email is required",
+          "emailInvalid": "Invalid email address",
+          "phoneNumberRequired": "Phone number is required",
+          "passwordRequired": "Password is required",
+          "passwordMinLength": "Password must be at least 8 characters"
+        }
       },
       "clearMembership": {
         "title": "Clear User Membership",
@@ -1115,6 +1139,10 @@
       },
       "posts": {
         "stats": {
+          "newListings": "New Listings",
+          "totalListings": "Total Listings",
+          "verifiedShare": "Verified",
+          "rentShare": "For Rent",
           "totalPosts": "Total Posts",
           "pending": "Pending",
           "totalViews": "Total Views",
@@ -1122,26 +1150,65 @@
           "inThisPeriod": "in this period"
         },
         "charts": {
-          "postActivity": "Post Activity",
+          "postActivity": "New Listings Over Time",
+          "cumulativeListings": "Total Listings Over Time",
+          "listingTypeBreakdown": "By Listing Type",
+          "productTypeBreakdown": "By Property Type",
+          "verificationBreakdown": "By Verification Status",
           "viewsAndClicks": "Views & Clicks",
           "statusDistribution": "Post Status Distribution",
-          "newPosts": "New posts",
+          "newPosts": "New listings",
           "views": "Views",
           "clicks": "Clicks"
+        },
+        "listingTypes": {
+          "RENT": "For rent",
+          "SALE": "For sale",
+          "SHARE": "Shared room"
+        },
+        "productTypes": {
+          "ROOM": "Room",
+          "APARTMENT": "Apartment",
+          "HOUSE": "House",
+          "OFFICE": "Office",
+          "STUDIO": "Studio",
+          "STORE": "Storefront",
+          "OTHER": "Other"
+        },
+        "verification": {
+          "VERIFIED": "Verified",
+          "UNVERIFIED": "Unverified"
         }
       },
       "users": {
         "stats": {
+          "newUsers": "New Users",
           "totalUsers": "Total Users",
+          "brokerShare": "Brokers in New Signups",
+          "brokerPending": "Brokers Pending Review",
           "landlords": "Landlords",
           "tenants": "Tenants",
           "ofTotal": "of total"
         },
         "charts": {
-          "userGrowthOverTime": "User Growth Over Time",
+          "newUsersOverTime": "New Users Over Time",
+          "userGrowthOverTime": "Total Users Over Time",
+          "roleBreakdown": "New Signups by Role",
+          "brokerVerificationBreakdown": "Broker Verification Status",
           "userTypeDistribution": "User Type Distribution",
           "newUsers": "New users"
-        }
+        },
+        "roles": {
+          "REGULAR": "Regular user",
+          "BROKER": "Broker"
+        },
+        "brokerStatus": {
+          "NONE": "Not registered",
+          "PENDING": "Pending review",
+          "APPROVED": "Approved",
+          "REJECTED": "Rejected"
+        },
+        "emptyBrokerBreakdown": "No broker signups in this period"
       },
       "revenue": {
         "stats": {
@@ -1171,6 +1238,7 @@
         "transactionTypes": {
           "membershipPurchase": "Membership purchase",
           "membershipUpgrade": "Membership upgrade",
+          "membershipRenewal": "Membership renewal",
           "postFee": "Post fee",
           "repostFee": "Repost fee",
           "pushFee": "Push fee",
@@ -1190,6 +1258,8 @@
       },
       "reports": {
         "stats": {
+          "newReports": "New Reports",
+          "resolutionRate": "Resolution Rate",
           "totalReports": "Total Reports",
           "pending": "Pending",
           "resolved": "Resolved",
@@ -1198,9 +1268,25 @@
           "ofTotal": "of total"
         },
         "charts": {
-          "reportsOverTime": "Reports Over Time",
+          "reportsOverTime": "New Reports Over Time",
+          "cumulativeReports": "Total Reports Over Time",
+          "categoryBreakdown": "By Category",
+          "statusBreakdown": "By Status",
           "typeDistribution": "Report Type Distribution",
           "reports": "Reports"
+        },
+        "categories": {
+          "LISTING": "Listing",
+          "MAP": "Map"
+        },
+        "status": {
+          "PENDING": "Pending",
+          "RESOLVED": "Resolved",
+          "REJECTED": "Rejected"
+        },
+        "units": {
+          "days": "days",
+          "notAvailable": "—"
         }
       }
     },
@@ -1270,14 +1356,27 @@
         "roles": "Roles",
         "save": "Save Changes",
         "saving": "Saving...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "loadingRoles": "Loading roles...",
+        "updateFailed": "Failed to update admin",
+        "updateError": "Error updating admin",
+        "validation": {
+          "emailRequired": "Email is required",
+          "emailInvalid": "Invalid email address",
+          "firstNameRequired": "First name is required",
+          "lastNameRequired": "Last name is required",
+          "phoneCodeRequired": "Phone code is required",
+          "phoneNumberRequired": "Phone number is required"
+        }
       },
       "delete": {
         "title": "Delete Admin",
         "confirm": "Are you sure you want to delete this admin?",
         "delete": "Delete",
         "deleting": "Deleting...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "deleteFailed": "Failed to delete admin",
+        "deleteError": "Error deleting admin"
       },
       "create": {
         "title": "Create New Admin",
@@ -1291,7 +1390,23 @@
         "selectRoles": "Select at least one",
         "create": "Create Admin",
         "creating": "Creating...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "loadingRoles": "Loading roles...",
+        "successMessage": "Admin created successfully!\nTemporary Password: {password}\n\nPlease save this password securely.",
+        "errorPrefix": "Error: {message}",
+        "failedGeneric": "Failed to create admin: {message}",
+        "copyPassword": "Copy password",
+        "passwordCopied": "Password copied to clipboard",
+        "validation": {
+          "firstNameRequired": "First name is required",
+          "lastNameRequired": "Last name is required",
+          "emailRequired": "Email is required",
+          "emailInvalid": "Invalid email address",
+          "phoneNumberRequired": "Phone number is required",
+          "passwordRequired": "Password is required",
+          "passwordMinLength": "Password must be at least 8 characters",
+          "rolesRequired": "At least one role must be selected"
+        }
       }
     },
     "roles": {
@@ -1307,7 +1422,10 @@
         "actions": {
           "edit": "Edit",
           "delete": "Delete"
-        }
+        },
+        "roleNamePlaceholder": "e.g. Administrator",
+        "loading": "Loading roles...",
+        "empty": "No roles found"
       },
       "create": {
         "title": "Create Role",
@@ -1315,20 +1433,33 @@
         "roleName": "Role Name",
         "create": "Create",
         "creating": "Creating...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "createFailed": "Failed to create role",
+        "createError": "Error creating role",
+        "validation": {
+          "roleIdRequired": "Role ID is required",
+          "roleNameRequired": "Role name is required"
+        }
       },
       "edit": {
         "title": "Edit Role",
         "save": "Save Changes",
         "saving": "Saving...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "updateFailed": "Failed to update role",
+        "updateError": "Error updating role",
+        "validation": {
+          "roleNameRequired": "Role name is required"
+        }
       },
       "delete": {
         "title": "Delete Role",
         "confirm": "Are you sure you want to delete this role?",
         "delete": "Delete",
         "deleting": "Deleting...",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "deleteFailed": "Failed to delete role",
+        "deleteError": "Error deleting role"
       }
     },
     "finance": {
@@ -1361,7 +1492,7 @@
       "charts": {
         "revenueChart": {
           "title": "Revenue Trend",
-          "unit": "Unit: Million ₫"
+          "unit": "Unit: Million đ"
         },
         "donutChart": {
           "title": "Invoice Status Distribution",
@@ -1371,8 +1502,8 @@
           "title": "Monthly Performance",
           "revenue": "Revenue",
           "avgValue": "Avg Value",
-          "revenueUnit": "Revenue: Million ₫",
-          "avgUnit": "Avg Value: Million ₫"
+          "revenueUnit": "Revenue: Million đ",
+          "avgUnit": "Avg Value: Million đ"
         }
       },
       "invoice": {
@@ -1425,6 +1556,7 @@
       "users": "Users"
     },
     "actions": {
+      "view": "View",
       "edit": "Edit",
       "delete": "Delete"
     },
@@ -1434,24 +1566,65 @@
       "table": {
         "package": "Package",
         "price": "Price",
+        "description": "Description",
         "features": "Features",
         "discount": "Discount",
         "status": "Status",
         "actions": "Actions",
-        "activeUsers": "active users",
         "moreFeatures": "{count} more features",
-        "noDiscount": "No discount"
+        "noDiscount": "No discount",
+        "month": "month"
+      },
+      "levels": {
+        "BASIC": "Basic",
+        "STANDARD": "Standard",
+        "ADVANCED": "Advanced"
+      },
+      "view": {
+        "title": "Membership package details",
+        "fields": {
+          "originalPrice": "Original price",
+          "salePrice": "Sale price",
+          "discount": "Discount",
+          "duration": "Duration",
+          "level": "Level",
+          "status": "Status",
+          "description": "Description"
+        },
+        "unit": {
+          "month": "month"
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "benefits": {
+          "title": "Benefits",
+          "empty": "No benefits",
+          "mediaLimit": "up to {images} images, {videos} videos"
+        },
+        "createdAt": "Created at",
+        "updatedAt": "Last updated",
+        "close": "Close"
       },
       "edit": {
         "title": "Edit membership package",
         "fields": {
           "packageName": "Package name",
+          "originalPrice": "Original price (đ)",
           "salePrice": "Sale price (đ)",
           "discountPercentage": "Discount (%)",
           "isActive": "Active"
         },
         "placeholders": {
           "packageName": "e.g. Premium 12 Months"
+        },
+        "originalPriceHint": "Original price is managed by the system and can't be edited here.",
+        "validation": {
+          "packageNameRequired": "Package name is required",
+          "packageNameMaxLength": "Package name must be at most 120 characters",
+          "discountPercentageRequired": "Discount is required",
+          "discountPercentageRange": "Discount must be between 0 and 100"
         },
         "cancel": "Cancel",
         "save": "Save changes",
@@ -1489,7 +1662,6 @@
       "inactive": "Inactive",
       "columns": {
         "tier": "Tier",
-        "badge": "Badge",
         "pricePerDay": "Price/day",
         "status": "Status"
       },
@@ -1970,7 +2142,52 @@
         "uploadThumbnailFailed": "Failed to upload thumbnail"
       },
       "menuBar": {
-        "enterUrl": "Enter URL:"
+        "enterUrl": "Enter URL:",
+        "linkTitle": "Insert link",
+        "insert": "Insert",
+        "tooltips": {
+          "bold": "Bold (Ctrl+B)",
+          "italic": "Italic (Ctrl+I)",
+          "underline": "Underline (Ctrl+U)",
+          "strikethrough": "Strikethrough",
+          "inlineCode": "Inline Code",
+          "highlight": "Highlight",
+          "subscript": "Subscript",
+          "superscript": "Superscript",
+          "textColor": "Text Color",
+          "clearFormatting": "Clear Formatting",
+          "heading1": "Heading 1",
+          "heading2": "Heading 2",
+          "heading3": "Heading 3",
+          "bulletList": "Bullet List",
+          "numberedList": "Numbered List",
+          "taskList": "Task List",
+          "alignLeft": "Align Left",
+          "alignCenter": "Align Center",
+          "alignRight": "Align Right",
+          "justify": "Justify",
+          "insertImage": "Insert Image",
+          "insertLink": "Insert Link",
+          "quote": "Quote",
+          "horizontalRule": "Horizontal Rule",
+          "insertTable": "Insert Table",
+          "addRow": "Add Row",
+          "deleteRow": "Delete Row",
+          "addColumn": "Add Column",
+          "deleteColumn": "Delete Column",
+          "duplicateRow": "Duplicate Row",
+          "duplicateColumn": "Duplicate Column",
+          "mergeCells": "Merge Cells",
+          "splitCell": "Split Cell",
+          "toggleHeaderRow": "Toggle Header Row",
+          "toggleHeaderColumn": "Toggle Header Column",
+          "deleteTable": "Delete Table",
+          "undo": "Undo (Ctrl+Z)",
+          "redo": "Redo (Ctrl+Y)"
+        }
+      },
+      "validation": {
+        "titleRequired": "Title is required"
       }
     }
   },
@@ -2045,10 +2262,8 @@
       "title": "Transaction Management"
     },
     "table": {
-      "transaction": "Transaction",
-      "invoice": "Invoice",
+      "transactionId": "Transaction ID",
       "customer": "Customer",
-      "landlord": "Landlord",
       "type": "Type",
       "gateway": "Gateway",
       "amount": "Amount",
@@ -2063,6 +2278,12 @@
       "search": "Search by transaction code, invoice code or gateway code...",
       "status": "Status",
       "gateway": "Gateway",
+      "paymentType": "Payment Type",
+      "transactionId": "Transaction ID",
+      "transactionIdPlaceholder": "Search by transaction ID...",
+      "customer": "Customer",
+      "customerPlaceholder": "Search by customer name or phone...",
+      "createdAt": "Created Date",
       "fromDate": "From Date",
       "toDate": "To Date",
       "quick": "Quick:",
@@ -2109,7 +2330,6 @@
       "roomName": "Room Name",
       "address": "Address",
       "gatewayInfo": "Gateway Information",
-      "gatewayTransaction": "Gateway Transaction Code",
       "responseCode": "Response Code",
       "payload": "Payload from Gateway",
       "failureReason": "Failure Reason",
@@ -2142,6 +2362,7 @@
       "MONTHLY_INVOICE": "Monthly Invoice",
       "MEMBERSHIP_PURCHASE": "Membership Purchase",
       "MEMBERSHIP_UPGRADE": "Membership Upgrade",
+      "MEMBERSHIP_RENEWAL": "Membership Renewal",
       "LISTING_BOOST": "Listing Boost",
       "LISTING_POST": "Listing Post",
       "POST_FEE": "Post Fee",
@@ -2150,6 +2371,13 @@
       "WALLET_TOPUP": "Wallet Top-up",
       "DEPOSIT": "Deposit",
       "REFUND": "Refund"
+    },
+    "method": {
+      "BANK_TRANSFER": "Bank Transfer",
+      "CASH": "Cash",
+      "CREDIT_CARD": "Credit Card",
+      "E_WALLET": "E-Wallet",
+      "QR_CODE": "QR Code"
     },
     "dashboard": {
       "title": "Transactions Overview",

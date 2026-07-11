@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -20,12 +20,10 @@ interface RoleCreateDialogProps {
   onSuccess: () => void
 }
 
-const roleCreateSchema = z.object({
-  roleId: z.string().trim().min(1, 'Role ID is required'),
-  roleName: z.string().trim().min(1, 'Role name is required'),
-})
-
-type RoleCreateFormData = z.infer<typeof roleCreateSchema>
+type RoleCreateFormData = {
+  roleId: string
+  roleName: string
+}
 
 export const RoleCreateDialog: React.FC<RoleCreateDialogProps> = ({
   open,
@@ -34,6 +32,18 @@ export const RoleCreateDialog: React.FC<RoleCreateDialogProps> = ({
 }) => {
   const t = useTranslations('admin.roles')
   const [serverError, setServerError] = React.useState<string | null>(null)
+
+  const roleCreateSchema = useMemo(
+    () =>
+      z.object({
+        roleId: z.string().trim().min(1, t('create.validation.roleIdRequired')),
+        roleName: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.roleNameRequired')),
+      }),
+    [t],
+  )
 
   const {
     register,
@@ -62,11 +72,11 @@ export const RoleCreateDialog: React.FC<RoleCreateDialogProps> = ({
         onOpenChange(false)
         onSuccess()
       } else {
-        setServerError(resp.message || 'Failed to create role')
+        setServerError(resp.message || t('create.createFailed'))
       }
     } catch (err: unknown) {
       const error = err as { message?: string }
-      setServerError(error.message || 'Error creating role')
+      setServerError(error.message || t('create.createError'))
     }
   }
 

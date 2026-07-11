@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useEditor, EditorContent } from '@tiptap/react'
@@ -35,27 +35,6 @@ import { NewsMetaForm } from '@/components/organisms/news/NewsMetaForm'
 
 const SUCCESS_CODE = '999999'
 
-const newsEditorSchema = z.object({
-  title: z.string().trim().min(1, 'Title is required'),
-  slug: z.string(),
-  summary: z.string(),
-  category: z.enum([
-    'NEWS',
-    'BLOG',
-    'POLICY',
-    'MARKET',
-    'PROJECT',
-    'INVESTMENT',
-    'GUIDE',
-  ]),
-  tags: z.string(),
-  thumbnailUrl: z.string(),
-  status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']),
-  metaTitle: z.string(),
-  metaDescription: z.string(),
-  metaKeywords: z.string(),
-})
-
 const NewsEditor = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -73,6 +52,31 @@ const NewsEditor = () => {
   const [uploadingContentImage, setUploadingContentImage] = useState(false)
   const [uploadingThumbnail, setUploadingThumbnail] = useState(false)
   const contentImageInputRef = useRef<HTMLInputElement | null>(null)
+
+  const newsEditorSchema = useMemo(
+    () =>
+      z.object({
+        title: z.string().trim().min(1, t('validation.titleRequired')),
+        slug: z.string(),
+        summary: z.string(),
+        category: z.enum([
+          'NEWS',
+          'BLOG',
+          'POLICY',
+          'MARKET',
+          'PROJECT',
+          'INVESTMENT',
+          'GUIDE',
+        ]),
+        tags: z.string(),
+        thumbnailUrl: z.string(),
+        status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']),
+        metaTitle: z.string(),
+        metaDescription: z.string(),
+        metaKeywords: z.string(),
+      }),
+    [t],
+  )
 
   const {
     register,
@@ -429,7 +433,7 @@ const NewsEditor = () => {
                     onSelectImage={() => contentImageInputRef.current?.click()}
                     isUploadingImage={uploadingContentImage}
                   />
-                  <div className='min-h-[50vh] max-h-[50vh] overflow-y-auto'>
+                  <div className='min-h-[420px] max-h-[60vh] overflow-y-auto'>
                     <EditorContent editor={editor} />
                   </div>
                 </>

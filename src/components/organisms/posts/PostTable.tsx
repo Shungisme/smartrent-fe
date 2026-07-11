@@ -1,5 +1,4 @@
 import React from 'react'
-import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import {
   DataTable,
@@ -9,22 +8,23 @@ import {
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { Avatar } from '@/components/atoms/avatar'
+import { MediaThumbnail } from '@/components/molecules/mediaPreview'
 import { Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PostStatus, UIPostData } from '@/types/posts.type'
 import { getPropertyIcon, getStatusColor } from '@/utils/post.utils'
 import { TIER_STYLES, FALLBACK_TIER_STYLE } from '@/utils/premium.utils'
 
-const TIER_LABEL_OVERRIDES: Record<string, string> = {
-  NORMAL: 'Thường',
-  SILVER: 'Bạc',
-  GOLD: 'Vàng',
-  DIAMOND: 'Kim cương',
-}
-
 const VipTypeBadge: React.FC<{ vipType: string }> = ({ vipType }) => {
+  const t = useTranslations('posts.filters')
   const style = TIER_STYLES[vipType] ?? FALLBACK_TIER_STYLE
-  const label = TIER_LABEL_OVERRIDES[vipType] ?? vipType
+  const labels: Record<string, string> = {
+    NORMAL: t('vipNormal'),
+    SILVER: t('vipSilver'),
+    GOLD: t('vipGold'),
+    DIAMOND: t('vipDiamond'),
+  }
+  const label = labels[vipType] ?? vipType
   return (
     <Badge
       variant='outline'
@@ -37,12 +37,6 @@ const VipTypeBadge: React.FC<{ vipType: string }> = ({ vipType }) => {
     </Badge>
   )
 }
-
-// Re-implementing helper functions that need translations inside the component or pass t
-// Since utils cannot use hooks directly unless valid custom hook.
-// The utils I created in previous step used JSX but not translations for labels.
-// getPropertyTypeLabel in posts.tsx used t().
-// I should probably move the label logic back here or pass t to utils if possible (but utils are functions).
 
 interface PostTableProps {
   data: UIPostData[]
@@ -98,15 +92,9 @@ export const PostTable: React.FC<PostTableProps> = ({
       accessor: (row) => row.title,
       sortable: true,
       render: (_, row) => (
-        <div className='flex min-w-0 items-start gap-3 text-left'>
+        <div className='flex min-w-0 items-start justify-end gap-3 text-left lg:justify-start'>
           <div className='relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted'>
-            <Image
-              src={row.images[0]}
-              alt={row.title}
-              width={56}
-              height={56}
-              className='h-full w-full object-cover'
-            />
+            <MediaThumbnail src={row.images[0]} alt={row.title} />
             {row.images.length > 1 && (
               <div className='absolute bottom-1 right-1 rounded bg-black/70 px-1.5 py-0.5 text-[10px] font-medium text-white'>
                 +{row.images.length - 1}
@@ -144,7 +132,7 @@ export const PostTable: React.FC<PostTableProps> = ({
       accessor: (row) => row.poster.name,
       sortable: true,
       render: (_, row) => (
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center justify-end gap-2 lg:justify-start'>
           <Avatar className='h-10 w-10'>
             <div className='h-full w-full bg-muted flex items-center justify-center text-foreground font-semibold'>
               {row.poster.name.charAt(0).toUpperCase()}
@@ -219,24 +207,6 @@ export const PostTable: React.FC<PostTableProps> = ({
         >
           {getStatusLabel(value as PostStatus)}
         </Badge>
-      ),
-    },
-    {
-      id: 'actions',
-      header: t('table.actions'),
-      accessor: () => '',
-      render: (_, row) => (
-        <div className='flex items-center justify-center gap-0.5'>
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={() => onReview(row)}
-            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
-            title={t('table.reviewButton')}
-          >
-            <Eye className='h-4 w-4' />
-          </Button>
-        </div>
       ),
     },
   ]
@@ -346,6 +316,7 @@ export const PostTable: React.FC<PostTableProps> = ({
 
   return (
     <DataTable
+      fillHeight
       data={data}
       columns={columns}
       filters={filters}
@@ -361,6 +332,19 @@ export const PostTable: React.FC<PostTableProps> = ({
       defaultSort={{ key: 'postedDate', direction: 'desc' }}
       emptyMessage={t('table.noPostsFound')}
       getRowKey={(row) => row.id}
+      actions={(row) => (
+        <div className='flex items-center justify-center gap-0.5'>
+          <Button
+            variant='ghost'
+            size='sm'
+            onClick={() => onReview(row)}
+            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+            title={t('table.reviewButton')}
+          >
+            <Eye className='h-4 w-4' />
+          </Button>
+        </div>
+      )}
     />
   )
 }

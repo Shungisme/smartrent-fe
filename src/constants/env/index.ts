@@ -7,7 +7,7 @@ export const ENV = {
   // API Configuration
   URL_API_BASE:
     process.env.NEXT_PUBLIC_URL_API_BASE || 'http://localhost:8080/',
-  API_TIMEOUT: parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '30000', 10),
+  API_TIMEOUT: parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '60000', 10),
 
   // Cookie Configuration
   ACCESS_TOKEN_COOKIE:

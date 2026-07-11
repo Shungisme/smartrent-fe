@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
+import { toast } from 'sonner'
 import {
   Dialog,
   DialogContent,
@@ -24,24 +25,16 @@ interface AdminCreateDialogProps {
   onSuccess: (admin: AdminProfile) => void
 }
 
-const adminCreateSchema = z.object({
-  firstName: z.string().trim().min(1, 'First name is required'),
-  lastName: z.string().trim().min(1, 'Last name is required'),
-  email: z
-    .string()
-    .trim()
-    .min(1, 'Email is required')
-    .regex(VALIDATION_PATTERNS.EMAIL, 'Invalid email address'),
-  phoneCode: z.string().trim().min(1, 'Phone code is required'),
-  phoneNumber: z.string().trim().min(1, 'Phone number is required'),
-  password: z
-    .string()
-    .min(1, 'Password is required')
-    .min(8, 'Password must be at least 8 characters'),
-  roles: z.array(z.string()).min(1, 'At least one role must be selected'),
-})
+const DEFAULT_PHONE_CODE = '+84'
 
-type AdminCreateFormData = z.infer<typeof adminCreateSchema>
+type AdminCreateFormData = {
+  firstName: string
+  lastName: string
+  email: string
+  phoneNumber: string
+  password: string
+  roles: string[]
+}
 
 export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
   open,
@@ -53,6 +46,38 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
   const [roles, setRoles] = useState<Role[]>([])
   const [rolesLoading, setRolesLoading] = useState(true)
 
+  const adminCreateSchema = useMemo(
+    () =>
+      z.object({
+        firstName: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.firstNameRequired')),
+        lastName: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.lastNameRequired')),
+        email: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.emailRequired'))
+          .regex(
+            VALIDATION_PATTERNS.EMAIL,
+            t('create.validation.emailInvalid'),
+          ),
+        phoneNumber: z
+          .string()
+          .trim()
+          .min(1, t('create.validation.phoneNumberRequired')),
+        password: z
+          .string()
+          .min(1, t('create.validation.passwordRequired'))
+          .min(8, t('create.validation.passwordMinLength')),
+        roles: z.array(z.string()).min(1, t('create.validation.rolesRequired')),
+      }),
+    [t],
+  )
+
   const {
     register,
     handleSubmit,
@@ -62,7 +87,6 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
   } = useForm<AdminCreateFormData>({
     resolver: zodResolver(adminCreateSchema),
     defaultValues: {
-      phoneCode: '+84',
       phoneNumber: '',
       email: '',
       password: '',
@@ -91,10 +115,29 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
   const onSubmit = async (data: AdminCreateFormData) => {
     setLoading(true)
     try {
-      const response = await createAdmin(data)
+      const response = await createAdmin({
+        ...data,
+        phoneCode: DEFAULT_PHONE_CODE,
+      })
       if (response.success && response.data) {
-        alert(
-          `Admin created successfully!\nTemporary Password: ${response.data.password}\n\nPlease save this password securely.`,
+        const password = response.data.password
+        // Persistent toast (won't auto-dismiss) so the admin can read/copy the
+        // one-time temporary password before it disappears.
+        toast.success(
+          <span className='whitespace-pre-line'>
+            {t('create.successMessage', { password })}
+          </span>,
+          {
+            duration: Infinity,
+            closeButton: true,
+            action: {
+              label: t('create.copyPassword'),
+              onClick: () => {
+                void navigator.clipboard?.writeText(password)
+                toast.success(t('create.passwordCopied'))
+              },
+            },
+          },
         )
         const newAdmin: AdminProfile = {
           adminId: response.data.adminId,
@@ -111,11 +154,13 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
         onOpenChange(false)
         reset()
       } else {
-        alert(`Error: ${response.message}`)
+        toast.error(
+          t('create.errorPrefix', { message: response.message ?? '' }),
+        )
       }
     } catch (error: unknown) {
       const err = error as { message?: string }
-      alert(`Failed to create admin: ${err.message}`)
+      toast.error(t('create.failedGeneric', { message: err.message ?? '' }))
     } finally {
       setLoading(false)
     }
@@ -123,7 +168,7 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='min-w-[20vw] max-w-md max-h-[80vh] overflow-y-auto'>
+      <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
         <DialogHeader>
           <DialogTitle>{t('create.title')}</DialogTitle>
         </DialogHeader>
@@ -156,25 +201,14 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
             )}
           </div>
 
-          <div className='grid grid-cols-3 gap-2'>
-            <div className='space-y-2'>
-              <Label htmlFor='phoneCode'>{t('create.phoneCode')} *</Label>
-              <Input id='phoneCode' {...register('phoneCode')} />
-              {errors.phoneCode && (
-                <p className='text-xs text-destructive'>
-                  {errors.phoneCode.message}
-                </p>
-              )}
-            </div>
-            <div className='col-span-2 space-y-2'>
-              <Label htmlFor='phoneNumber'>{t('create.phoneNumber')} *</Label>
-              <Input id='phoneNumber' {...register('phoneNumber')} />
-              {errors.phoneNumber && (
-                <p className='text-xs text-destructive'>
-                  {errors.phoneNumber.message}
-                </p>
-              )}
-            </div>
+          <div className='space-y-2'>
+            <Label htmlFor='phoneNumber'>{t('create.phoneNumber')} *</Label>
+            <Input id='phoneNumber' {...register('phoneNumber')} />
+            {errors.phoneNumber && (
+              <p className='text-xs text-destructive'>
+                {errors.phoneNumber.message}
+              </p>
+            )}
           </div>
 
           <div className='space-y-2'>
@@ -192,7 +226,9 @@ export const AdminCreateDialog: React.FC<AdminCreateDialogProps> = ({
               {t('create.roles')} * ({t('create.selectRoles')})
             </Label>
             {rolesLoading ? (
-              <p className='text-sm text-muted-foreground'>Loading roles...</p>
+              <p className='text-sm text-muted-foreground'>
+                {t('create.loadingRoles')}
+              </p>
             ) : (
               <Controller
                 name='roles'

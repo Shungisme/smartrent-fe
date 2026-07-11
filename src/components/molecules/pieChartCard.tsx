@@ -23,6 +23,8 @@ type PieChartCardProps = {
   data: PieChartData[]
   showPercentage?: boolean
   height?: string
+  /** Overrides the generic "no data" empty state when there's nothing to show. */
+  emptyLabel?: string
 }
 
 const PieChartCard: React.FC<PieChartCardProps> = ({
@@ -31,6 +33,7 @@ const PieChartCard: React.FC<PieChartCardProps> = ({
   data,
   showPercentage = true,
   height = 'h-64',
+  emptyLabel,
 }) => {
   const t = useTranslations('common')
   const total = data.reduce((sum, item) => sum + item.value, 0)
@@ -62,7 +65,7 @@ const PieChartCard: React.FC<PieChartCardProps> = ({
         isEmpty ? (
           <div className='flex h-full flex-col items-center justify-center gap-2 text-muted-foreground'>
             <PieIcon className='h-6 w-6 opacity-50' />
-            <span className='text-xs'>{t('noData')}</span>
+            <span className='text-xs'>{emptyLabel ?? t('noData')}</span>
           </div>
         ) : undefined
       }

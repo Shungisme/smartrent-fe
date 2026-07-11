@@ -13,6 +13,7 @@ import {
   AdminTransactionFilters,
   PaymentGateway,
   PaymentStatus,
+  PaymentType,
 } from '@/types/transaction.type'
 import {
   formatCurrency,
@@ -57,31 +58,15 @@ export const AdminTransactionTable = ({
   const columns: Column<AdminTransaction>[] = [
     {
       id: 'transaction',
-      header: t('table.transaction'),
+      header: t('table.transactionId'),
       accessor: (row) => row.transactionCode,
+      defaultHidden: true,
       render: (_, row) => (
         <div className='flex flex-col gap-1'>
           <span className='font-semibold'>{row.transactionCode}</span>
           {row.gatewayTransactionCode && (
             <span className='text-xs text-muted-foreground'>
               {t('table.gatewayPrefix')}: {row.gatewayTransactionCode}
-            </span>
-          )}
-        </div>
-      ),
-    },
-    {
-      id: 'invoiceRoom',
-      header: t('table.invoice'),
-      accessor: (row) => row.invoice?.invoiceCode ?? '',
-      render: (_, row) => (
-        <div className='flex flex-col gap-1'>
-          {row.invoice && (
-            <span className='text-sm'>{row.invoice.invoiceCode}</span>
-          )}
-          {row.room && (
-            <span className='text-xs text-muted-foreground'>
-              {row.room.roomCode} - {row.room.roomName}
             </span>
           )}
         </div>
@@ -99,22 +84,6 @@ export const AdminTransactionTable = ({
           </span>
         </div>
       ),
-    },
-    {
-      id: 'landlord',
-      header: t('table.landlord'),
-      accessor: (row) => row.landlord?.name ?? '',
-      render: (_, row) =>
-        row.landlord ? (
-          <div className='flex flex-col gap-1'>
-            <span className='text-sm font-medium'>{row.landlord.name}</span>
-            <span className='text-xs text-muted-foreground'>
-              {formatPhoneNumber(row.landlord.phone)}
-            </span>
-          </div>
-        ) : (
-          <span className='text-muted-foreground'>-</span>
-        ),
     },
     {
       id: 'paymentType',
@@ -154,14 +123,14 @@ export const AdminTransactionTable = ({
       accessor: (row) => row.status,
       render: (_, row) => (
         <span
-          className={`rounded-full px-3 py-1 text-sm font-medium ${
+          className={`inline-block whitespace-nowrap rounded-full px-3 py-1 text-sm font-medium ${
             STATUS_BADGE_CLASS[row.status] ?? STATUS_BADGE_CLASS.PENDING
           }`}
         >
           {t(`status.${row.status}`)}
         </span>
       ),
-      minWidth: 120,
+      minWidth: 160,
     },
     {
       id: 'createdAt',
@@ -173,12 +142,31 @@ export const AdminTransactionTable = ({
     },
   ]
 
+  const paymentTypeOptions: PaymentType[] = [
+    'MONTHLY_INVOICE',
+    'MEMBERSHIP_PURCHASE',
+    'MEMBERSHIP_UPGRADE',
+    'MEMBERSHIP_RENEWAL',
+    'LISTING_BOOST',
+    'LISTING_POST',
+    'POST_FEE',
+    'REPOST_FEE',
+    'PUSH_FEE',
+  ]
+
   const filterConfig: FilterConfig[] = [
     {
-      id: 'q',
+      id: 'transactionId',
       type: 'search',
-      label: t('filters.keyword'),
-      placeholder: t('filters.search'),
+      label: t('filters.transactionId'),
+      placeholder: t('filters.transactionIdPlaceholder'),
+      isFilterField: true,
+    },
+    {
+      id: 'customer',
+      type: 'search',
+      label: t('filters.customer'),
+      placeholder: t('filters.customerPlaceholder'),
       isFilterField: true,
     },
     {
@@ -187,16 +175,14 @@ export const AdminTransactionTable = ({
       label: t('filters.status'),
       options: [
         { value: 'PENDING', label: t('status.PENDING') },
-        { value: 'SUCCESS', label: t('status.SUCCESS') },
         { value: 'COMPLETED', label: t('status.COMPLETED') },
         { value: 'FAILED', label: t('status.FAILED') },
         { value: 'CANCELLED', label: t('status.CANCELLED') },
-        { value: 'REFUNDED', label: t('status.REFUNDED') },
       ],
       isFilterField: true,
     },
     {
-      id: 'gateway',
+      id: 'paymentGateway',
       type: 'select',
       label: t('filters.gateway'),
       options: [
@@ -208,44 +194,49 @@ export const AdminTransactionTable = ({
       isFilterField: true,
     },
     {
-      id: 'fromDate',
-      type: 'search',
-      label: t('filters.fromDate'),
-      placeholder: t('filters.datePlaceholder'),
+      id: 'paymentType',
+      type: 'select',
+      label: t('filters.paymentType'),
+      options: paymentTypeOptions.map((value) => ({
+        value,
+        label: t.has(`type.${value}`) ? t(`type.${value}`) : value,
+      })),
       isFilterField: true,
     },
     {
-      id: 'toDate',
-      type: 'search',
-      label: t('filters.toDate'),
-      placeholder: t('filters.datePlaceholder'),
+      id: 'createdAt',
+      type: 'date-range',
+      label: t('filters.createdAt'),
       isFilterField: true,
     },
   ]
 
   return (
     <DataTable<AdminTransaction>
+      fillHeight
       data={transactions}
       columns={columns}
       filters={filterConfig}
       filterMode='api'
       filterValues={{
-        q: filters.q ?? '',
+        transactionId: filters.transactionId ?? '',
+        customer: filters.customer ?? '',
         status: filters.status ?? '',
-        gateway: filters.gateway ?? '',
-        fromDate: filters.fromDate ?? '',
-        toDate: filters.toDate ?? '',
+        paymentGateway: filters.paymentGateway ?? '',
+        paymentType: filters.paymentType ?? '',
+        createdAt: filters.createdAt ?? '',
         page: filters.page ?? 1,
         pageSize,
       }}
       onFilterChange={(next) =>
         onFiltersChange({
           ...filters,
-          q: (next.q as string) || undefined,
+          transactionId: (next.transactionId as string) || undefined,
+          customer: (next.customer as string) || undefined,
           status: (next.status as PaymentStatus) || undefined,
-          gateway: (next.gateway as PaymentGateway) || undefined,
-          fromDate: (next.fromDate as string) || undefined,
-          toDate: (next.toDate as string) || undefined,
+          paymentGateway: (next.paymentGateway as PaymentGateway) || undefined,
+          paymentType: (next.paymentType as PaymentType) || undefined,
+          createdAt: (next.createdAt as string) || undefined,
           page: Number(next.page) || 1,
           size: Number(next.pageSize) || pageSize,
         })
@@ -257,15 +248,17 @@ export const AdminTransactionTable = ({
       emptyMessage={t('table.noData')}
       getRowKey={(row) => row.transactionId}
       actions={(row) => (
-        <Button
-          size='sm'
-          variant='ghost'
-          onClick={() => onViewDetails(row.transactionId)}
-          className='h-8 w-8 p-0'
-          title={t('table.viewDetails')}
-        >
-          <Eye className='h-4 w-4' />
-        </Button>
+        <div className='flex items-center justify-center gap-0.5'>
+          <Button
+            size='sm'
+            variant='ghost'
+            onClick={() => onViewDetails(row.transactionId)}
+            className='h-8 w-8 p-0'
+            title={t('table.viewDetails')}
+          >
+            <Eye className='h-4 w-4' />
+          </Button>
+        </div>
       )}
     />
   )

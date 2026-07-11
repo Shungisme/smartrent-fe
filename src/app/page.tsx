@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
+import { DEFAULT_HOME_ROUTE } from '@/constants/navigation'
 
 export default function HomePage() {
-  redirect('/management/users')
+  redirect(DEFAULT_HOME_ROUTE)
 }

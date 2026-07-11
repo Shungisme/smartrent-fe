@@ -28,10 +28,7 @@ export const TransactionsDashboardPage = () => {
 
   return (
     <div className='space-y-6'>
-      <PageHeader
-        title={t('dashboard.title')}
-        description={t('dashboard.description')}
-      />
+      <PageHeader title={t('dashboard.title')} />
 
       <div className='flex gap-2'>
         {(['week', 'month', 'quarter'] as const).map((range) => (

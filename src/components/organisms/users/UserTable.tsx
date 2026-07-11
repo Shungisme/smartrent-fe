@@ -65,7 +65,7 @@ export const UserTable: React.FC<UserTableProps> = ({
       accessor: (row) => row.name,
       sortable: true,
       render: (_, row) => (
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center justify-end gap-3 lg:justify-start'>
           <InitialsAvatar name={row.name} src={row.avatar} size='md' />
           <span className='font-medium text-foreground'>{row.name}</span>
         </div>
@@ -92,11 +92,66 @@ export const UserTable: React.FC<UserTableProps> = ({
         </span>
       ),
     },
+  ]
+
+  const filterConfig: FilterConfig[] = [
     {
-      id: 'actions',
-      header: t('table.headers.actions'),
-      accessor: () => '',
-      render: (_, row) => {
+      id: 'firstName',
+      type: 'search',
+      label: t('filters.firstName'),
+      placeholder: t('filters.firstNamePlaceholder'),
+      isFilterField: true,
+    },
+    {
+      id: 'lastName',
+      type: 'search',
+      label: t('filters.lastName'),
+      placeholder: t('filters.lastNamePlaceholder'),
+      isFilterField: true,
+    },
+    {
+      id: 'email',
+      type: 'search',
+      label: t('filters.email'),
+      placeholder: t('filters.emailPlaceholder'),
+      isFilterField: true,
+    },
+    {
+      id: 'phoneNumber',
+      type: 'search',
+      label: t('filters.phoneNumber'),
+      placeholder: t('filters.phoneNumberPlaceholder'),
+      isFilterField: true,
+    },
+    {
+      id: 'isBroker',
+      type: 'select',
+      label: t('filters.userType'),
+      options: [
+        { value: 'true', label: t('filters.broker') },
+        { value: 'false', label: t('filters.normalUser') },
+      ],
+      isFilterField: true,
+    },
+  ]
+
+  return (
+    <DataTable
+      data={transformedUsers}
+      columns={columns}
+      filters={filterConfig}
+      fillHeight
+      filterMode='api'
+      filterValues={filterValues}
+      onFilterChange={onFilterChange}
+      totalItems={totalItems}
+      itemsPerPageOptions={[5, 10, 20, 50]}
+      sortable
+      defaultSort={{ key: 'joinDate', direction: 'desc' }}
+      loading={loading}
+      emptyMessage={loading ? t('table.loading') : t('table.noUsersFound')}
+      getRowKey={(row) => row.id}
+      actions={(row) => {
         const user = users.find((u) => u.userId === row.id)
 
         return (
@@ -149,66 +204,7 @@ export const UserTable: React.FC<UserTableProps> = ({
             </Button>
           </div>
         )
-      },
-    },
-  ]
-
-  const filterConfig: FilterConfig[] = [
-    {
-      id: 'firstName',
-      type: 'search',
-      label: t('filters.firstName'),
-      placeholder: t('filters.firstNamePlaceholder'),
-      isFilterField: true,
-    },
-    {
-      id: 'lastName',
-      type: 'search',
-      label: t('filters.lastName'),
-      placeholder: t('filters.lastNamePlaceholder'),
-      isFilterField: true,
-    },
-    {
-      id: 'email',
-      type: 'search',
-      label: t('filters.email'),
-      placeholder: t('filters.emailPlaceholder'),
-      isFilterField: true,
-    },
-    {
-      id: 'phoneNumber',
-      type: 'search',
-      label: t('filters.phoneNumber'),
-      placeholder: t('filters.phoneNumberPlaceholder'),
-      isFilterField: true,
-    },
-    {
-      id: 'isBroker',
-      type: 'select',
-      label: t('filters.userType'),
-      options: [
-        { value: 'true', label: t('filters.broker') },
-        { value: 'false', label: t('filters.normalUser') },
-      ],
-      isFilterField: true,
-    },
-  ]
-
-  return (
-    <DataTable
-      data={transformedUsers}
-      columns={columns}
-      filters={filterConfig}
-      filterMode='api'
-      filterValues={filterValues}
-      onFilterChange={onFilterChange}
-      totalItems={totalItems}
-      itemsPerPageOptions={[5, 10, 20, 50]}
-      sortable
-      defaultSort={{ key: 'joinDate', direction: 'desc' }}
-      loading={loading}
-      emptyMessage={loading ? t('table.loading') : t('table.noUsersFound')}
-      getRowKey={(row) => row.id}
+      }}
     />
   )
 }

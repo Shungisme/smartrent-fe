@@ -14,6 +14,7 @@ import { UserEditDialog } from '@/components/organisms/users/UserEditDialog'
 import { UserDeleteDialog } from '@/components/organisms/users/UserDeleteDialog'
 import { UserClearMembershipDialog } from '@/components/organisms/users/UserClearMembershipDialog'
 import { PageHeader } from '@/components/molecules/pageHeader'
+import { ConfirmDialog } from '@/components/molecules/confirmDialog'
 
 const UserManagement = () => {
   // Modal states
@@ -22,7 +23,12 @@ const UserManagement = () => {
   const [showClearMembership, setShowClearMembership] =
     useState<UserProfile | null>(null)
   const [showCreate, setShowCreate] = useState(false)
+  const [removeBrokerUser, setRemoveBrokerUser] = useState<UserProfile | null>(
+    null,
+  )
+  const [removingBroker, setRemovingBroker] = useState(false)
   const t = useTranslations('admin.users')
+  const tCommon = useTranslations('common')
 
   // State for API data
   const [users, setUsers] = useState<UserProfile[]>([])
@@ -68,7 +74,7 @@ const UserManagement = () => {
         setUsers(response.data.data)
         setTotalItems(response.data.totalElements)
       } else {
-        setError(response.message || 'Failed to load users')
+        setError(response.message || t('table.loadError'))
       }
     } catch (err: unknown) {
       const error = err as { message?: string }
@@ -95,22 +101,20 @@ const UserManagement = () => {
     }))
   }
 
-  const handleRemoveBroker = async (user: UserProfile) => {
-    const displayName =
-      `${user.firstName} ${user.lastName}`.trim() || user.userId
-    const confirmed = window.confirm(
-      t('table.actions.removeBrokerConfirm', { name: displayName }),
-    )
+  const removeBrokerName = removeBrokerUser
+    ? `${removeBrokerUser.firstName} ${removeBrokerUser.lastName}`.trim() ||
+      removeBrokerUser.userId
+    : ''
 
-    if (!confirmed) {
-      return
-    }
-
+  const confirmRemoveBroker = async () => {
+    if (!removeBrokerUser) return
+    setRemovingBroker(true)
     try {
-      const response = await BrokerService.removeBroker(user.userId)
+      const response = await BrokerService.removeBroker(removeBrokerUser.userId)
 
       if (response.success) {
         toast.success(t('table.actions.removeBrokerSuccess'))
+        setRemoveBrokerUser(null)
         await fetchUsers()
       } else {
         toast.error(response.message || t('table.actions.removeBrokerError'))
@@ -118,6 +122,8 @@ const UserManagement = () => {
     } catch (err) {
       console.error('Error removing broker role:', err)
       toast.error(t('table.actions.removeBrokerError'))
+    } finally {
+      setRemovingBroker(false)
     }
   }
 
@@ -132,7 +138,7 @@ const UserManagement = () => {
             size='sm'
             onClick={() => window.location.reload()}
           >
-            Retry
+            {tCommon('retry')}
           </Button>
         </div>
       </div>
@@ -140,18 +146,17 @@ const UserManagement = () => {
   }
 
   return (
-    <div>
-      <div className='space-y-6'>
+    <div className='flex flex-col lg:min-h-0 lg:flex-1'>
+      <div className='flex flex-col gap-6 lg:min-h-0 lg:flex-1'>
         <PageHeader
           title={t('title')}
-          description={t('subtitle')}
           actions={
             <Button
               className='w-full sm:w-auto'
               onClick={() => setShowCreate(true)}
             >
               <Plus className='h-4 w-4' />
-              {t('create.button') || 'Create User'}
+              {t('create.button')}
             </Button>
           }
         />
@@ -165,7 +170,7 @@ const UserManagement = () => {
           onFilterChange={handleFilterChange}
           onEdit={setEditingUser}
           onDelete={setShowDelete}
-          onRemoveBroker={handleRemoveBroker}
+          onRemoveBroker={(user) => setRemoveBrokerUser(user)}
           onClearMembership={setShowClearMembership}
         />
       </div>
@@ -210,6 +215,21 @@ const UserManagement = () => {
           toast.success(t('clearMembership.success'))
           setShowClearMembership(null)
         }}
+      />
+
+      {/* Remove Broker Confirmation */}
+      <ConfirmDialog
+        open={!!removeBrokerUser}
+        onOpenChange={(open) => !open && setRemoveBrokerUser(null)}
+        title={t('table.actions.removeBroker')}
+        description={t('table.actions.removeBrokerConfirm', {
+          name: removeBrokerName,
+        })}
+        confirmLabel={t('table.actions.removeBroker')}
+        cancelLabel={tCommon('cancel')}
+        onConfirm={confirmRemoveBroker}
+        loading={removingBroker}
+        destructive
       />
     </div>
   )

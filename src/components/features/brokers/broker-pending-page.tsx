@@ -207,10 +207,10 @@ const BrokerPendingPage = () => {
   }
 
   return (
-    <div>
-      <div className='space-y-6'>
+    <div className='flex flex-col lg:min-h-0 lg:flex-1'>
+      <div className='flex flex-col gap-6 lg:min-h-0 lg:flex-1'>
         {error && (
-          <div className='rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700'>
+          <div className='rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
             <div className='flex items-center justify-between gap-3'>
               <span>{error || t('states.error')}</span>
               <Button variant='outline' size='sm' onClick={fetchPendingBrokers}>

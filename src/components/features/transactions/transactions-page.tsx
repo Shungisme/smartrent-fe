@@ -25,9 +25,11 @@ export const TransactionsPage = () => {
 
   const { data: transactionsList, isLoading: isLoadingTransactions } =
     useAdminTransactions(filters)
+
+  const [statsFromDate, statsToDate] = (filters.createdAt ?? '').split('..')
   const { data: statistics } = useTransactionStatistics(
-    filters.fromDate,
-    filters.toDate,
+    statsFromDate || undefined,
+    statsToDate || undefined,
   )
 
   const handleFiltersChange = (newFilters: AdminTransactionFilters) => {
@@ -47,8 +49,8 @@ export const TransactionsPage = () => {
   }
 
   return (
-    <div className='space-y-6'>
-      <PageHeader title={t('title')} description={t('description')} />
+    <div className='flex flex-col gap-6 lg:min-h-0 lg:flex-1'>
+      <PageHeader title={t('title')} />
 
       <TransactionStatisticsCards statistics={statistics} />
 

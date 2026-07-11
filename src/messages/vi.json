@@ -2,7 +2,9 @@
   "common": {
     "or": "Hoặc",
     "noData": "Không có dữ liệu",
-    "total": "Tổng"
+    "total": "Tổng",
+    "cancel": "Hủy",
+    "retry": "Thử lại"
   },
   "notFound": {
     "title": "404",
@@ -224,7 +226,7 @@
       },
       "brand": {
         "badge": "Bảng điều khiển quản trị",
-        "headline": "Vận hành SmartRent với sự rõ ràng và kiểm soát.",
+        "headline": "Vận hành Thuê Nhà Trọ với sự rõ ràng và kiểm soát.",
         "subheadline": "Quản lý người dùng, tin đăng, gói cao cấp và doanh thu trong một không gian làm việc duy nhất.",
         "subtitle": "Quản lý Bất động sản",
         "secure": "Kết nối bảo mật",
@@ -823,7 +825,7 @@
     "address": "123 Đường Chính, Thành phố Hồ Chí Minh, Việt Nam",
     "phone": "+84 123 456 789",
     "email": "info@smartrent.com",
-    "copyright": "© 2024 SmartRent. Tất cả quyền được bảo lưu.",
+    "copyright": "© 2024 Thuê Nhà Trọ. Tất cả quyền được bảo lưu.",
     "privacy": "Bảo mật",
     "terms": "Điều khoản",
     "followUs": "Theo dõi chúng tôi",
@@ -870,7 +872,7 @@
       "featureInDevelopment": "Chức năng đang phát triển"
     },
     "sidebar": {
-      "title": "SmartRent Admin",
+      "title": "Thuê Nhà Trọ Admin",
       "sections": {
         "management": "Quản Trị"
       },
@@ -948,44 +950,66 @@
           "clearMembership": "Xoá gói hội viên"
         },
         "loading": "Đang tải người dùng...",
-        "noUsersFound": "Không tìm thấy người dùng"
+        "noUsersFound": "Không tìm thấy người dùng",
+        "loadError": "Không thể tải danh sách người dùng"
       },
       "delete": {
         "title": "Xóa Người Dùng",
         "confirm": "Bạn có chắc chắn muốn xóa người dùng này không? Hành động này không thể hoàn tác.",
         "deleting": "Đang xóa...",
         "cancel": "Hủy",
-        "delete": "Xóa"
+        "delete": "Xóa",
+        "deleteFailed": "Không thể xóa người dùng",
+        "deleteError": "Lỗi khi xóa người dùng"
       },
       "edit": {
         "title": "Chỉnh sửa Người Dùng",
         "email": "Email",
         "firstName": "Tên",
         "lastName": "Họ",
-        "phoneCode": "Mã vùng",
         "phoneNumber": "Số điện thoại",
         "idDocument": "Giấy tờ tùy thân",
         "taxNumber": "Mã số thuế",
         "contactPhone": "Số điện thoại liên hệ",
-        "verified": "Đã Xác Minh",
         "save": "Lưu Thay Đổi",
         "saving": "Đang Lưu...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "updateFailed": "Không thể cập nhật người dùng",
+        "updateError": "Lỗi khi cập nhật người dùng",
+        "validation": {
+          "firstNameRequired": "Tên là bắt buộc",
+          "lastNameRequired": "Họ là bắt buộc",
+          "emailRequired": "Email là bắt buộc",
+          "emailInvalid": "Email không hợp lệ"
+        }
       },
       "create": {
         "title": "Tạo Người Dùng Mới",
         "firstName": "Tên",
         "lastName": "Họ",
         "email": "Email",
-        "phoneCode": "Mã vùng",
         "phoneNumber": "Số điện thoại",
         "password": "Mật khẩu",
+        "generatePassword": "Tạo mật khẩu",
+        "showPassword": "Hiện mật khẩu",
+        "hidePassword": "Ẩn mật khẩu",
         "idDocument": "Giấy tờ tùy thân",
         "taxNumber": "Mã số thuế",
         "create": "Tạo",
         "creating": "Đang Tạo...",
         "cancel": "Hủy",
-        "button": "Tạo Người Dùng Mới"
+        "button": "Tạo Người Dùng Mới",
+        "createFailed": "Không thể tạo người dùng",
+        "createError": "Lỗi khi tạo người dùng",
+        "validation": {
+          "firstNameRequired": "Tên là bắt buộc",
+          "lastNameRequired": "Họ là bắt buộc",
+          "emailRequired": "Email là bắt buộc",
+          "emailInvalid": "Email không hợp lệ",
+          "phoneNumberRequired": "Số điện thoại là bắt buộc",
+          "passwordRequired": "Mật khẩu là bắt buộc",
+          "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự"
+        }
       },
       "clearMembership": {
         "title": "Xoá gói hội viên",
@@ -1079,6 +1103,10 @@
       },
       "posts": {
         "stats": {
+          "newListings": "Tin Đăng Mới",
+          "totalListings": "Tổng Tin Đăng",
+          "verifiedShare": "Đã Xác Minh",
+          "rentShare": "Cho Thuê",
           "totalPosts": "Tổng Bài Đăng",
           "pending": "Chờ Duyệt",
           "totalViews": "Tổng Lượt Xem",
@@ -1086,26 +1114,65 @@
           "inThisPeriod": "trong kỳ này"
         },
         "charts": {
-          "postActivity": "Hoạt Động Bài Đăng",
+          "postActivity": "Tin Đăng Mới Theo Thời Gian",
+          "cumulativeListings": "Tổng Tin Đăng Theo Thời Gian",
+          "listingTypeBreakdown": "Theo Loại Tin Đăng",
+          "productTypeBreakdown": "Theo Loại Bất Động Sản",
+          "verificationBreakdown": "Theo Trạng Thái Xác Minh",
           "viewsAndClicks": "Lượt Xem & Lượt Nhấp",
           "statusDistribution": "Phân Bố Trạng Thái Bài Đăng",
-          "newPosts": "Bài đăng mới",
+          "newPosts": "Tin đăng mới",
           "views": "Lượt xem",
           "clicks": "Lượt nhấp"
+        },
+        "listingTypes": {
+          "RENT": "Cho thuê",
+          "SALE": "Bán",
+          "SHARE": "Ở ghép"
+        },
+        "productTypes": {
+          "ROOM": "Phòng trọ",
+          "APARTMENT": "Căn hộ",
+          "HOUSE": "Nhà nguyên căn",
+          "OFFICE": "Văn phòng",
+          "STUDIO": "Studio",
+          "STORE": "Mặt bằng kinh doanh",
+          "OTHER": "Khác"
+        },
+        "verification": {
+          "VERIFIED": "Đã xác minh",
+          "UNVERIFIED": "Chưa xác minh"
         }
       },
       "users": {
         "stats": {
+          "newUsers": "Người Dùng Mới",
           "totalUsers": "Tổng Người Dùng",
+          "brokerShare": "Môi Giới Trong Đăng Ký Mới",
+          "brokerPending": "Môi Giới Chờ Duyệt",
           "landlords": "Chủ Nhà",
           "tenants": "Người Thuê",
           "ofTotal": "tổng số"
         },
         "charts": {
-          "userGrowthOverTime": "Tăng Trưởng Người Dùng Theo Thời Gian",
+          "newUsersOverTime": "Người Dùng Mới Theo Thời Gian",
+          "userGrowthOverTime": "Tổng Người Dùng Theo Thời Gian",
+          "roleBreakdown": "Đăng Ký Mới Theo Vai Trò",
+          "brokerVerificationBreakdown": "Trạng Thái Duyệt Môi Giới",
           "userTypeDistribution": "Phân Bố Loại Người Dùng",
           "newUsers": "Người dùng mới"
-        }
+        },
+        "roles": {
+          "REGULAR": "Người dùng thường",
+          "BROKER": "Môi giới"
+        },
+        "brokerStatus": {
+          "NONE": "Chưa đăng ký",
+          "PENDING": "Chờ duyệt",
+          "APPROVED": "Đã duyệt",
+          "REJECTED": "Bị từ chối"
+        },
+        "emptyBrokerBreakdown": "Chưa có môi giới đăng ký mới trong kỳ này"
       },
       "revenue": {
         "stats": {
@@ -1135,6 +1202,7 @@
         "transactionTypes": {
           "membershipPurchase": "Mua gói thành viên",
           "membershipUpgrade": "Nâng cấp gói thành viên",
+          "membershipRenewal": "Gia hạn gói thành viên",
           "postFee": "Phí đăng tin",
           "repostFee": "Phí đăng lại tin",
           "pushFee": "Phí đẩy tin",
@@ -1154,6 +1222,8 @@
       },
       "reports": {
         "stats": {
+          "newReports": "Báo Cáo Mới",
+          "resolutionRate": "Tỉ Lệ Xử Lý",
           "totalReports": "Tổng Báo Cáo",
           "pending": "Chờ Xử Lý",
           "resolved": "Đã Giải Quyết",
@@ -1162,9 +1232,25 @@
           "ofTotal": "tổng số"
         },
         "charts": {
-          "reportsOverTime": "Số Lượng Báo Cáo Theo Thời Gian",
+          "reportsOverTime": "Báo Cáo Mới Theo Thời Gian",
+          "cumulativeReports": "Tổng Báo Cáo Theo Thời Gian",
+          "categoryBreakdown": "Theo Danh Mục",
+          "statusBreakdown": "Theo Trạng Thái",
           "typeDistribution": "Phân Loại Báo Cáo Vi Phạm",
           "reports": "Báo cáo"
+        },
+        "categories": {
+          "LISTING": "Tin đăng",
+          "MAP": "Bản đồ"
+        },
+        "status": {
+          "PENDING": "Chờ xử lý",
+          "RESOLVED": "Đã xử lý",
+          "REJECTED": "Đã từ chối"
+        },
+        "units": {
+          "days": "ngày",
+          "notAvailable": "—"
         }
       }
     },
@@ -1234,14 +1320,27 @@
         "roles": "Vai trò",
         "save": "Lưu thay đổi",
         "saving": "Đang lưu...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "loadingRoles": "Đang tải vai trò...",
+        "updateFailed": "Không thể cập nhật admin",
+        "updateError": "Lỗi khi cập nhật admin",
+        "validation": {
+          "emailRequired": "Email là bắt buộc",
+          "emailInvalid": "Email không hợp lệ",
+          "firstNameRequired": "Tên là bắt buộc",
+          "lastNameRequired": "Họ là bắt buộc",
+          "phoneCodeRequired": "Mã vùng là bắt buộc",
+          "phoneNumberRequired": "Số điện thoại là bắt buộc"
+        }
       },
       "delete": {
         "title": "Xóa Admin",
         "confirm": "Bạn có chắc chắn muốn xóa admin này không?",
         "delete": "Xóa",
         "deleting": "Đang xóa...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "deleteFailed": "Không thể xóa admin",
+        "deleteError": "Lỗi khi xóa admin"
       },
       "create": {
         "title": "Tạo Admin Mới",
@@ -1255,7 +1354,23 @@
         "selectRoles": "Chọn ít nhất một vai trò",
         "create": "Tạo Admin",
         "creating": "Đang tạo...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "loadingRoles": "Đang tải vai trò...",
+        "successMessage": "Tạo admin thành công!\nMật khẩu tạm thời: {password}\n\nVui lòng lưu mật khẩu này cẩn thận.",
+        "errorPrefix": "Lỗi: {message}",
+        "failedGeneric": "Không thể tạo admin: {message}",
+        "copyPassword": "Sao chép mật khẩu",
+        "passwordCopied": "Đã sao chép mật khẩu",
+        "validation": {
+          "firstNameRequired": "Tên là bắt buộc",
+          "lastNameRequired": "Họ là bắt buộc",
+          "emailRequired": "Email là bắt buộc",
+          "emailInvalid": "Email không hợp lệ",
+          "phoneNumberRequired": "Số điện thoại là bắt buộc",
+          "passwordRequired": "Mật khẩu là bắt buộc",
+          "passwordMinLength": "Mật khẩu phải có ít nhất 8 ký tự",
+          "rolesRequired": "Phải chọn ít nhất một vai trò"
+        }
       }
     },
     "roles": {
@@ -1271,7 +1386,10 @@
         "actions": {
           "edit": "Chỉnh sửa",
           "delete": "Xóa"
-        }
+        },
+        "roleNamePlaceholder": "VD: Quản trị viên",
+        "loading": "Đang tải vai trò...",
+        "empty": "Không tìm thấy vai trò"
       },
       "create": {
         "title": "Tạo Vai Trò",
@@ -1279,20 +1397,33 @@
         "roleName": "Tên Vai Trò",
         "create": "Tạo",
         "creating": "Đang tạo...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "createFailed": "Không thể tạo vai trò",
+        "createError": "Lỗi khi tạo vai trò",
+        "validation": {
+          "roleIdRequired": "ID vai trò là bắt buộc",
+          "roleNameRequired": "Tên vai trò là bắt buộc"
+        }
       },
       "edit": {
         "title": "Chỉnh sửa Vai Trò",
         "save": "Lưu Thay Đổi",
         "saving": "Đang lưu...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "updateFailed": "Không thể cập nhật vai trò",
+        "updateError": "Lỗi khi cập nhật vai trò",
+        "validation": {
+          "roleNameRequired": "Tên vai trò là bắt buộc"
+        }
       },
       "delete": {
         "title": "Xóa Vai Trò",
         "confirm": "Bạn có chắc chắn muốn xóa vai trò này không?",
         "delete": "Xóa",
         "deleting": "Đang xóa...",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "deleteFailed": "Không thể xóa vai trò",
+        "deleteError": "Lỗi khi xóa vai trò"
       }
     },
     "finance": {
@@ -1325,7 +1456,7 @@
       "charts": {
         "revenueChart": {
           "title": "Xu Hướng Doanh Thu",
-          "unit": "Đơn vị: Triệu ₫"
+          "unit": "Đơn vị: Triệu đ"
         },
         "donutChart": {
           "title": "Phân Bố Trạng Thái Hóa Đơn",
@@ -1335,8 +1466,8 @@
           "title": "Hiệu Suất Hàng Tháng",
           "revenue": "Doanh thu",
           "avgValue": "Giá trị TB",
-          "revenueUnit": "Doanh thu: Triệu ₫",
-          "avgUnit": "Giá trị TB: Triệu ₫"
+          "revenueUnit": "Doanh thu: Triệu đ",
+          "avgUnit": "Giá trị TB: Triệu đ"
         }
       },
       "invoice": {
@@ -1389,6 +1520,7 @@
       "users": "Người dùng"
     },
     "actions": {
+      "view": "Xem",
       "edit": "Sửa",
       "delete": "Xóa"
     },
@@ -1398,24 +1530,65 @@
       "table": {
         "package": "Gói",
         "price": "Giá",
+        "description": "Mô tả",
         "features": "Tính Năng",
         "discount": "Giảm Giá",
         "status": "Trạng Thái",
         "actions": "Thao tác",
-        "activeUsers": "người dùng đang dùng",
         "moreFeatures": "thêm {count} tính năng",
-        "noDiscount": "Không giảm giá"
+        "noDiscount": "Không giảm giá",
+        "month": "tháng"
+      },
+      "levels": {
+        "BASIC": "Cơ Bản",
+        "STANDARD": "Tiêu Chuẩn",
+        "ADVANCED": "Nâng Cao"
+      },
+      "view": {
+        "title": "Chi tiết gói thành viên",
+        "fields": {
+          "originalPrice": "Giá gốc",
+          "salePrice": "Giá bán",
+          "discount": "Giảm giá",
+          "duration": "Thời hạn",
+          "level": "Cấp bậc",
+          "status": "Trạng thái",
+          "description": "Mô tả"
+        },
+        "unit": {
+          "month": "tháng"
+        },
+        "status": {
+          "active": "Đang hoạt động",
+          "inactive": "Ngừng hoạt động"
+        },
+        "benefits": {
+          "title": "Quyền lợi",
+          "empty": "Không có quyền lợi nào",
+          "mediaLimit": "tối đa {images} ảnh, {videos} video"
+        },
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Cập nhật lần cuối",
+        "close": "Đóng"
       },
       "edit": {
         "title": "Chỉnh sửa gói thành viên",
         "fields": {
           "packageName": "Tên gói",
+          "originalPrice": "Giá gốc (đ)",
           "salePrice": "Giá bán (đ)",
           "discountPercentage": "Giảm giá (%)",
           "isActive": "Đang hoạt động"
         },
         "placeholders": {
           "packageName": "Ví dụ: Premium 12 tháng"
+        },
+        "originalPriceHint": "Giá gốc do hệ thống quản lý, không thể chỉnh sửa tại đây.",
+        "validation": {
+          "packageNameRequired": "Tên gói là bắt buộc",
+          "packageNameMaxLength": "Tên gói tối đa 120 ký tự",
+          "discountPercentageRequired": "Giảm giá là bắt buộc",
+          "discountPercentageRange": "Giảm giá phải từ 0 đến 100"
         },
         "cancel": "Hủy",
         "save": "Lưu thay đổi",
@@ -1453,7 +1626,6 @@
       "inactive": "Không Hoạt Động",
       "columns": {
         "tier": "Bậc",
-        "badge": "Huy hiệu",
         "pricePerDay": "Giá/ngày",
         "status": "Trạng thái"
       },
@@ -1934,7 +2106,52 @@
         "uploadThumbnailFailed": "Không thể tải ảnh đại diện lên"
       },
       "menuBar": {
-        "enterUrl": "Nhập URL:"
+        "enterUrl": "Nhập URL:",
+        "linkTitle": "Chèn liên kết",
+        "insert": "Chèn",
+        "tooltips": {
+          "bold": "Đậm (Ctrl+B)",
+          "italic": "Nghiêng (Ctrl+I)",
+          "underline": "Gạch chân (Ctrl+U)",
+          "strikethrough": "Gạch ngang",
+          "inlineCode": "Mã nội dòng",
+          "highlight": "Tô sáng",
+          "subscript": "Chỉ số dưới",
+          "superscript": "Chỉ số trên",
+          "textColor": "Màu chữ",
+          "clearFormatting": "Xóa định dạng",
+          "heading1": "Tiêu đề 1",
+          "heading2": "Tiêu đề 2",
+          "heading3": "Tiêu đề 3",
+          "bulletList": "Danh sách dấu đầu dòng",
+          "numberedList": "Danh sách đánh số",
+          "taskList": "Danh sách công việc",
+          "alignLeft": "Căn trái",
+          "alignCenter": "Căn giữa",
+          "alignRight": "Căn phải",
+          "justify": "Căn đều",
+          "insertImage": "Chèn ảnh",
+          "insertLink": "Chèn liên kết",
+          "quote": "Trích dẫn",
+          "horizontalRule": "Đường kẻ ngang",
+          "insertTable": "Chèn bảng",
+          "addRow": "Thêm hàng",
+          "deleteRow": "Xóa hàng",
+          "addColumn": "Thêm cột",
+          "deleteColumn": "Xóa cột",
+          "duplicateRow": "Nhân đôi hàng",
+          "duplicateColumn": "Nhân đôi cột",
+          "mergeCells": "Gộp ô",
+          "splitCell": "Tách ô",
+          "toggleHeaderRow": "Bật/tắt hàng tiêu đề",
+          "toggleHeaderColumn": "Bật/tắt cột tiêu đề",
+          "deleteTable": "Xóa bảng",
+          "undo": "Hoàn tác (Ctrl+Z)",
+          "redo": "Làm lại (Ctrl+Y)"
+        }
+      },
+      "validation": {
+        "titleRequired": "Tiêu đề là bắt buộc"
       }
     }
   },
@@ -2009,10 +2226,8 @@
       "title": "Quản Lý Giao Dịch"
     },
     "table": {
-      "transaction": "Giao Dịch",
-      "invoice": "Hóa Đơn",
+      "transactionId": "Mã Giao Dịch",
       "customer": "Khách Hàng",
-      "landlord": "Chủ Nhà",
       "type": "Loại",
       "gateway": "Cổng Thanh Toán",
       "amount": "Số Tiền",
@@ -2027,6 +2242,12 @@
       "search": "Tìm kiếm theo mã giao dịch, mã hóa đơn hoặc mã cổng...",
       "status": "Trạng Thái",
       "gateway": "Cổng Thanh Toán",
+      "paymentType": "Loại Giao Dịch",
+      "transactionId": "Mã Giao Dịch",
+      "transactionIdPlaceholder": "Tìm theo mã giao dịch...",
+      "customer": "Khách Hàng",
+      "customerPlaceholder": "Tìm theo tên hoặc số điện thoại khách hàng...",
+      "createdAt": "Ngày Tạo",
       "fromDate": "Từ Ngày",
       "toDate": "Đến Ngày",
       "quick": "Nhanh:",
@@ -2073,7 +2294,6 @@
       "roomName": "Tên Phòng",
       "address": "Địa Chỉ",
       "gatewayInfo": "Thông Tin Cổng Thanh Toán",
-      "gatewayTransaction": "Mã Giao Dịch Cổng",
       "responseCode": "Mã Phản Hồi",
       "payload": "Tải Từ Cổng",
       "failureReason": "Lý Do Thất Bại",
@@ -2106,6 +2326,7 @@
       "MONTHLY_INVOICE": "Hóa đơn hàng tháng",
       "MEMBERSHIP_PURCHASE": "Mua gói thành viên",
       "MEMBERSHIP_UPGRADE": "Nâng cấp gói thành viên",
+      "MEMBERSHIP_RENEWAL": "Gia hạn gói thành viên",
       "LISTING_BOOST": "Đẩy tin đăng",
       "LISTING_POST": "Đăng tin",
       "POST_FEE": "Phí đăng tin",
@@ -2114,6 +2335,13 @@
       "WALLET_TOPUP": "Nạp ví",
       "DEPOSIT": "Ký quỹ",
       "REFUND": "Hoàn tiền"
+    },
+    "method": {
+      "BANK_TRANSFER": "Chuyển khoản ngân hàng",
+      "CASH": "Tiền mặt",
+      "CREDIT_CARD": "Thẻ tín dụng",
+      "E_WALLET": "Ví điện tử",
+      "QR_CODE": "Mã QR"
     },
     "dashboard": {
       "title": "Tổng quan giao dịch",

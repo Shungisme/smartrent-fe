@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -25,20 +25,14 @@ interface AdminEditDialogProps {
   onSuccess: (admin: AdminProfile) => void
 }
 
-const adminEditSchema = z.object({
-  email: z
-    .string()
-    .trim()
-    .min(1, 'Email is required')
-    .regex(VALIDATION_PATTERNS.EMAIL, 'Invalid email address'),
-  firstName: z.string().trim().min(1, 'First name is required'),
-  lastName: z.string().trim().min(1, 'Last name is required'),
-  phoneCode: z.string().trim().min(1, 'Phone code is required'),
-  phoneNumber: z.string().trim().min(1, 'Phone number is required'),
-  roles: z.array(z.string()),
-})
-
-type AdminEditFormData = z.infer<typeof adminEditSchema>
+type AdminEditFormData = {
+  email: string
+  firstName: string
+  lastName: string
+  phoneCode: string
+  phoneNumber: string
+  roles: string[]
+}
 
 export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
   admin,
@@ -51,6 +45,35 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
   const [serverError, setServerError] = useState<string | null>(null)
   const [roles, setRoles] = useState<Role[]>([])
   const [rolesLoading, setRolesLoading] = useState(true)
+
+  const adminEditSchema = useMemo(
+    () =>
+      z.object({
+        email: z
+          .string()
+          .trim()
+          .min(1, t('edit.validation.emailRequired'))
+          .regex(VALIDATION_PATTERNS.EMAIL, t('edit.validation.emailInvalid')),
+        firstName: z
+          .string()
+          .trim()
+          .min(1, t('edit.validation.firstNameRequired')),
+        lastName: z
+          .string()
+          .trim()
+          .min(1, t('edit.validation.lastNameRequired')),
+        phoneCode: z
+          .string()
+          .trim()
+          .min(1, t('edit.validation.phoneCodeRequired')),
+        phoneNumber: z
+          .string()
+          .trim()
+          .min(1, t('edit.validation.phoneNumberRequired')),
+        roles: z.array(z.string()),
+      }),
+    [t],
+  )
 
   const {
     register,
@@ -110,11 +133,11 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
         onSuccess(resp.data)
         onOpenChange(false)
       } else {
-        setServerError(resp.message || 'Failed to update admin')
+        setServerError(resp.message || t('edit.updateFailed'))
       }
     } catch (err: unknown) {
       const error = err as { message?: string }
-      setServerError(error.message || 'Error updating admin')
+      setServerError(error.message || t('edit.updateError'))
     } finally {
       setLoading(false)
     }
@@ -122,13 +145,13 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className='min-w-[20vw] max-w-md max-h-[80vh] overflow-y-auto'>
+      <DialogContent className='max-w-md max-h-[80vh] overflow-y-auto'>
         <DialogHeader>
-          <DialogTitle>{t('edit.title') || 'Edit Admin'}</DialogTitle>
+          <DialogTitle>{t('edit.title')}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className='space-y-2'>
           <div className='space-y-2'>
-            <Label htmlFor='editEmail'>{t('edit.email') || 'Email'} *</Label>
+            <Label htmlFor='editEmail'>{t('edit.email')} *</Label>
             <Input id='editEmail' type='email' {...register('email')} />
             {errors.email && (
               <p className='text-xs text-destructive'>{errors.email.message}</p>
@@ -136,9 +159,7 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
           </div>
 
           <div className='space-y-2'>
-            <Label htmlFor='editFirstName'>
-              {t('edit.firstName') || 'First Name'} *
-            </Label>
+            <Label htmlFor='editFirstName'>{t('edit.firstName')} *</Label>
             <Input id='editFirstName' {...register('firstName')} />
             {errors.firstName && (
               <p className='text-xs text-destructive'>
@@ -148,9 +169,7 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
           </div>
 
           <div className='space-y-2'>
-            <Label htmlFor='editLastName'>
-              {t('edit.lastName') || 'Last Name'} *
-            </Label>
+            <Label htmlFor='editLastName'>{t('edit.lastName')} *</Label>
             <Input id='editLastName' {...register('lastName')} />
             {errors.lastName && (
               <p className='text-xs text-destructive'>
@@ -161,9 +180,7 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
 
           <div className='grid grid-cols-3 gap-2'>
             <div className='space-y-2'>
-              <Label htmlFor='editPhoneCode'>
-                {t('edit.phoneCode') || 'Code'} *
-              </Label>
+              <Label htmlFor='editPhoneCode'>{t('edit.phoneCode')} *</Label>
               <Input id='editPhoneCode' {...register('phoneCode')} />
               {errors.phoneCode && (
                 <p className='text-xs text-destructive'>
@@ -172,9 +189,7 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
               )}
             </div>
             <div className='col-span-2 space-y-2'>
-              <Label htmlFor='editPhoneNumber'>
-                {t('edit.phoneNumber') || 'Phone Number'} *
-              </Label>
+              <Label htmlFor='editPhoneNumber'>{t('edit.phoneNumber')} *</Label>
               <Input id='editPhoneNumber' {...register('phoneNumber')} />
               {errors.phoneNumber && (
                 <p className='text-xs text-destructive'>
@@ -185,9 +200,11 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
           </div>
 
           <div className='space-y-2'>
-            <Label>{t('edit.roles') || 'Roles'}</Label>
+            <Label>{t('edit.roles')}</Label>
             {rolesLoading ? (
-              <p className='text-sm text-muted-foreground'>Loading roles...</p>
+              <p className='text-sm text-muted-foreground'>
+                {t('edit.loadingRoles')}
+              </p>
             ) : (
               <Controller
                 name='roles'
@@ -238,12 +255,10 @@ export const AdminEditDialog: React.FC<AdminEditDialogProps> = ({
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >
-              {t('edit.cancel') || 'Cancel'}
+              {t('edit.cancel')}
             </Button>
             <Button type='submit' disabled={loading}>
-              {loading
-                ? t('edit.saving') || 'Saving...'
-                : t('edit.save') || 'Save'}
+              {loading ? t('edit.saving') : t('edit.save')}
             </Button>
           </div>
         </form>

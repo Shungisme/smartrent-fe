@@ -2,7 +2,10 @@ import React from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { useSwitchLanguage } from '@/contexts/switchLanguage/index.context'
-import { getSidebarNavigationGroups } from '@/constants/navigation'
+import {
+  DEFAULT_HOME_ROUTE,
+  getSidebarNavigationGroups,
+} from '@/constants/navigation'
 import {
   ChevronRight,
   PanelLeftClose,
@@ -176,9 +179,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     [navigationGroups, pathname],
   )
 
-  const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>({
-    management: true,
-  })
+  // All groups start expanded; the collapse/expand toggle stays available.
+  const [openGroups, setOpenGroups] = React.useState<Record<string, boolean>>(
+    () =>
+      Object.fromEntries(navigationGroups.map((group) => [group.key, true])),
+  )
   const openGroupsBeforeCollapseRef = React.useRef<Record<
     string,
     boolean
@@ -260,39 +265,27 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             collapsed ? 'justify-center' : 'justify-between',
           )}
         >
-          <button
-            type='button'
-            onClick={() => handleNavigate('/management/users')}
-            className={cn(
-              'group flex min-w-0 flex-1 items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent',
-              collapsed && 'hidden',
-            )}
-            aria-label='SmartRent Admin'
-          >
-            <span
-              aria-hidden
-              className='flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/70 text-[11px] font-bold tracking-tight text-primary-foreground shadow-sm ring-1 ring-primary/20'
-            >
-              SR
-            </span>
-            <span className='flex min-w-0 flex-col leading-tight'>
-              <span className='truncate text-sm font-semibold text-sidebar-foreground'>
-                SmartRent
-              </span>
-              <span className='truncate text-[11px] text-muted-foreground'>
-                Admin Console
-              </span>
-            </span>
-          </button>
-
-          {collapsed && (
+          {!collapsed && (
             <button
               type='button'
-              onClick={() => handleNavigate('/management/users')}
-              className='flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/70 text-[11px] font-bold text-primary-foreground shadow-sm ring-1 ring-primary/20'
-              aria-label='SmartRent Admin'
+              onClick={() => handleNavigate(DEFAULT_HOME_ROUTE)}
+              className='group flex min-w-0 flex-1 items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent'
+              aria-label='Thuê Nhà Trọ Admin'
             >
-              SR
+              <span
+                aria-hidden
+                className='flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/70 text-[11px] font-bold tracking-tight text-primary-foreground shadow-sm ring-1 ring-primary/20'
+              >
+                SR
+              </span>
+              <span className='flex min-w-0 flex-col leading-tight'>
+                <span className='truncate text-sm font-semibold text-sidebar-foreground'>
+                  Thuê Nhà Trọ
+                </span>
+                <span className='truncate text-[11px] text-muted-foreground'>
+                  Admin Console
+                </span>
+              </span>
             </button>
           )}
 

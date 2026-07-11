@@ -1,4 +1,4 @@
-import { InternalAxiosRequestConfig, AxiosInstance } from 'axios'
+import { InternalAxiosRequestConfig, AxiosInstance, AxiosError } from 'axios'
 import { ENV } from '@/constants'
 import { CustomAxiosRequestConfig } from './types'
 import { getAccessToken, getRefreshToken } from './utils'
@@ -109,7 +109,6 @@ export function createAuthRequestInterceptor(
 
       // Add X-Admin-Id header for admin requests
       const adminId = getAdminIdFromToken(accessToken)
-      console.log('Extracted adminId from token:', adminId)
       if (adminId) {
         config.headers['X-Admin-Id'] = adminId
       }
@@ -127,11 +126,53 @@ export function createAuthRequestInterceptor(
   }
 }
 
+export function createAuthResponseInterceptor(axiosInstance: AxiosInstance) {
+  return async (error: AxiosError) => {
+    const originalRequest = error.config as CustomAxiosRequestConfig | undefined
+
+    if (
+      error.response?.status !== 401 ||
+      !originalRequest ||
+      originalRequest.skipAuth ||
+      originalRequest._retry
+    ) {
+      return Promise.reject(error)
+    }
+
+    originalRequest._retry = true
+
+    const refreshTokenValue = getRefreshToken()
+    const newToken =
+      refreshTokenValue && !isTokenExpired(refreshTokenValue)
+        ? await refreshToken()
+        : null
+
+    if (!newToken) {
+      clearAuthTokens()
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('auth:unauthorized'))
+      }
+
+      return Promise.reject(error)
+    }
+
+    originalRequest.headers = originalRequest.headers || {}
+    originalRequest.headers.Authorization = `Bearer ${newToken}`
+
+    return axiosInstance(originalRequest)
+  }
+}
+
 export function setupInterceptors(
   axiosInstance: AxiosInstance,
   cookies?: Record<string, unknown>,
 ) {
   axiosInstance.interceptors.request.use(createAuthRequestInterceptor(cookies))
+  axiosInstance.interceptors.response.use(
+    (response) => response,
+    createAuthResponseInterceptor(axiosInstance),
+  )
 
   return axiosInstance
 }
