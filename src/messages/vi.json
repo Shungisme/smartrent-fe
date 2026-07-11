@@ -1901,9 +1901,6 @@
     },
     "toasts": {
       "loadListingError": "Không thể tải thông tin tin đăng",
-      "adminNotesRequired": "Vui lòng nhập ghi chú xử lý",
-      "resolveSuccess": "Báo cáo đã được giải quyết thành công",
-      "resolveError": "Không thể giải quyết báo cáo. Vui lòng thử lại.",
       "dismissNoteRequired": "Vui lòng cung cấp lý do bác bỏ",
       "dismissSuccess": "Báo cáo đã được bác bỏ",
       "dismissError": "Không thể bác bỏ báo cáo. Vui lòng thử lại.",
@@ -1931,7 +1928,6 @@
       "reportedAt": "Thời Gian Báo Cáo",
       "additionalFeedback": "Phản Hồi Bổ Sung",
       "currentStatus": "Trạng Thái Hiện Tại",
-      "acknowledge": "Ghi Nhận",
       "requestRevision": "Yêu Cầu Sửa Đổi",
       "removeListing": "Đình Chỉ Tin Đăng",
       "dismiss": "Bỏ Qua",
