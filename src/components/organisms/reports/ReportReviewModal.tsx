@@ -134,31 +134,6 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
     }
   }
 
-  const handleAcknowledge = async () => {
-    if (!report) return
-
-    if (!actionReason.trim()) {
-      toast.warning(t('toasts.adminNotesRequired'))
-      return
-    }
-
-    try {
-      setActionLoading(true)
-      await ListingService.resolveReport(report.reportId, {
-        status: 'RESOLVED',
-        adminNotes: actionReason,
-      })
-      toast.success(t('toasts.resolveSuccess'))
-      onOpenChange(false)
-      onActionComplete()
-    } catch (e) {
-      console.error(e)
-      toast.error(t('toasts.resolveError'))
-    } finally {
-      setActionLoading(false)
-    }
-  }
-
   const handleRemoveListing = async () => {
     if (!report) return
 
@@ -649,19 +624,6 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                 <Button
                   onClick={handleDismiss}
                   disabled={actionLoading}
-                  variant='outline'
-                  className='border-destructive/30 text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive text-sm'
-                >
-                  {actionLoading ? (
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  ) : (
-                    <XCircle className='mr-2 h-4 w-4' />
-                  )}
-                  {t('review.dismiss')}
-                </Button>
-                <Button
-                  onClick={handleAcknowledge}
-                  disabled={actionLoading}
                   className='bg-success text-success-foreground hover:bg-success/90 text-sm'
                 >
                   {actionLoading ? (
@@ -669,7 +631,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                   ) : (
                     <CheckCircle className='mr-2 h-4 w-4' />
                   )}
-                  {t('review.acknowledge')}
+                  {t('review.dismiss')}
                 </Button>
               </div>
             </div>

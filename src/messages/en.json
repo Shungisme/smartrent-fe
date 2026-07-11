@@ -1937,9 +1937,6 @@
     },
     "toasts": {
       "loadListingError": "Failed to load listing details",
-      "adminNotesRequired": "Please provide admin notes for resolution",
-      "resolveSuccess": "Report has been resolved successfully",
-      "resolveError": "Failed to resolve report. Please try again.",
       "dismissNoteRequired": "Please provide a reason for dismissal",
       "dismissSuccess": "Report has been dismissed",
       "dismissError": "Failed to dismiss report. Please try again.",
@@ -1967,7 +1964,6 @@
       "reportedAt": "Reported At",
       "additionalFeedback": "Additional Feedback",
       "currentStatus": "Current Status",
-      "acknowledge": "Acknowledge Report",
       "requestRevision": "Request Revision",
       "removeListing": "Suspend Listing",
       "dismiss": "Dismiss Report",
