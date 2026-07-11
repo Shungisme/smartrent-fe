@@ -18,6 +18,7 @@ import { ListingTypeTable } from '@/components/organisms/premium/ListingTypeTabl
 import { EditMembershipDialog } from '@/components/organisms/premium/EditMembershipDialog'
 import { DeleteMembershipDialog } from '@/components/organisms/premium/DeleteMembershipDialog'
 import { ViewMembershipDialog } from '@/components/organisms/premium/ViewMembershipDialog'
+import { useCanWrite } from '@/hooks/usePermissions'
 
 export type PremiumSection = 'overview' | 'membership' | 'listing-types'
 
@@ -27,6 +28,7 @@ type PremiumSectionPageProps = {
 
 const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
   const t = useTranslations('premium')
+  const canWrite = useCanWrite('premiumMembership')
 
   const [apiMemberships, setApiMemberships] = useState<APIMembershipPackage[]>(
     [],
@@ -237,6 +239,7 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
             onEdit={handleEdit}
             onDelete={handleDelete}
             onToggleStatus={handleToggleStatus}
+            canWrite={canWrite}
           />
         </>
       )}

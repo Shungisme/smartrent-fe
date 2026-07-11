@@ -11,7 +11,8 @@ import { useAdminLogin } from '@/hooks/useAuth'
 import { toast } from 'sonner'
 import { VALIDATION_PATTERNS } from '@/api/types/auth.type'
 import { useRouter } from 'next/navigation'
-import { DEFAULT_HOME_ROUTE } from '@/constants/navigation'
+import { resolveHomeRoute, toRoleIds } from '@/constants/navigation'
+import { useAuthStore } from '@/store/auth/index.store'
 
 type AdminLoginFormProps = {
   onSuccess?: () => void
@@ -65,7 +66,10 @@ const AdminLoginForm: NextPage<AdminLoginFormProps> = (props) => {
       if (result.success) {
         toast.success(t('homePage.auth.login.successMessage'))
         onSuccess?.()
-        router.push(DEFAULT_HOME_ROUTE)
+        // Land on the first page this admin's roles can actually open — the
+        // static default (/insights/users) is off-limits to some roles.
+        const roleIds = toRoleIds(useAuthStore.getState().user?.roles)
+        router.push(resolveHomeRoute(roleIds))
       } else {
         toast.error(result.message || t('homePage.auth.login.errorMessage'))
       }

@@ -3,9 +3,11 @@ import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { useSwitchLanguage } from '@/contexts/switchLanguage/index.context'
 import {
-  DEFAULT_HOME_ROUTE,
   getSidebarNavigationGroups,
+  resolveHomeRoute,
+  toRoleIds,
 } from '@/constants/navigation'
+import { useAuthStore } from '@/store/auth/index.store'
 import {
   ChevronRight,
   PanelLeftClose,
@@ -173,9 +175,11 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const router = useRouter()
   const pathname = usePathname() ?? ''
   const { language, updateLanguage } = useSwitchLanguage()
+  const userRoles = useAuthStore((state) => state.user?.roles)
+  const roleIds = React.useMemo(() => toRoleIds(userRoles), [userRoles])
   const navigationGroups = React.useMemo(
-    () => getSidebarNavigationGroups(language),
-    [language],
+    () => getSidebarNavigationGroups(language, roleIds),
+    [language, roleIds],
   )
 
   const activeGroupKey = React.useMemo(
@@ -279,7 +283,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
           {!collapsed && (
             <button
               type='button'
-              onClick={() => handleNavigate(DEFAULT_HOME_ROUTE)}
+              onClick={() => handleNavigate(resolveHomeRoute(roleIds))}
               className='group flex min-w-0 flex-1 items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-sidebar-accent'
               aria-label='Thuê Nhà Trọ Admin'
             >

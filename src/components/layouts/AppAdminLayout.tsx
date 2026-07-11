@@ -8,7 +8,13 @@ import { useAuth, useAuthGuard } from '@/hooks/useAuth'
 import { useSwitchLanguage } from '@/contexts/switchLanguage/index.context'
 import { Skeleton } from '@/components/atoms/skeleton'
 import Breadcrumb from '@/components/molecules/breadcrumb'
-import { getBreadcrumbItems } from '@/constants/navigation'
+import {
+  canAccessPath,
+  getBreadcrumbItems,
+  resolveHomeRoute,
+  toRoleIds,
+} from '@/constants/navigation'
+import { useAuthStore } from '@/store/auth/index.store'
 
 type AppAdminLayoutProps = {
   children: React.ReactNode
@@ -23,9 +29,16 @@ const AppAdminLayout: React.FC<AppAdminLayoutProps> = ({
   const pathname = usePathname() ?? ''
   const { language } = useSwitchLanguage()
   const { isAuthenticated, isLoading } = useAuth()
+  const userRoles = useAuthStore((state) => state.user?.roles)
+  const roleIds = React.useMemo(() => toRoleIds(userRoles), [userRoles])
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const breadcrumbItems = getBreadcrumbItems(pathname, language)
+
+  // Skip the RBAC check until roles hydrate (empty) so we don't bounce a valid
+  // admin mid-load; the auth guard above still handles the unauthenticated case.
+  const isForbidden =
+    isAuthenticated && roleIds.length > 0 && !canAccessPath(pathname, roleIds)
 
   useAuthGuard()
 
@@ -34,6 +47,13 @@ const AppAdminLayout: React.FC<AppAdminLayoutProps> = ({
       router.push('/login')
     }
   }, [isAuthenticated, isLoading, router])
+
+  // Block direct-URL access to pages this admin's roles can't open.
+  useEffect(() => {
+    if (!isLoading && isForbidden) {
+      router.replace(resolveHomeRoute(roleIds))
+    }
+  }, [isLoading, isForbidden, roleIds, router])
 
   useEffect(() => {
     setMobileSidebarOpen(false)
@@ -58,7 +78,7 @@ const AppAdminLayout: React.FC<AppAdminLayoutProps> = ({
     )
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || isForbidden) {
     return null
   }
 

@@ -14,6 +14,7 @@ import { UserEditDialog } from '@/components/organisms/users/UserEditDialog'
 import { UserDeleteDialog } from '@/components/organisms/users/UserDeleteDialog'
 import { UserClearMembershipDialog } from '@/components/organisms/users/UserClearMembershipDialog'
 import { ConfirmDialog } from '@/components/molecules/confirmDialog'
+import { useCanWrite } from '@/hooks/usePermissions'
 
 const UserManagement = () => {
   // Modal states
@@ -28,6 +29,7 @@ const UserManagement = () => {
   const [removingBroker, setRemovingBroker] = useState(false)
   const t = useTranslations('admin.users')
   const tCommon = useTranslations('common')
+  const canWrite = useCanWrite('users')
 
   // State for API data
   const [users, setUsers] = useState<UserProfile[]>([])
@@ -158,11 +160,14 @@ const UserManagement = () => {
           onDelete={setShowDelete}
           onRemoveBroker={(user) => setRemoveBrokerUser(user)}
           onClearMembership={setShowClearMembership}
+          canWrite={canWrite}
           toolbarActions={
-            <Button size='sm' onClick={() => setShowCreate(true)}>
-              <Plus className='h-4 w-4' />
-              {t('create.button')}
-            </Button>
+            canWrite ? (
+              <Button size='sm' onClick={() => setShowCreate(true)}>
+                <Plus className='h-4 w-4' />
+                {t('create.button')}
+              </Button>
+            ) : undefined
           }
         />
       </div>
