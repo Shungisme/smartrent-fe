@@ -1773,7 +1773,11 @@
       "dismissError": "Failed to dismiss report. Please try again.",
       "revisionDetailsRequired": "Please provide details on what needs to be revised.",
       "revisionSuccess": "Revision requested. Listing owner will be notified.",
-      "revisionError": "Failed to request revision. Please try again."
+      "revisionError": "Failed to request revision. Please try again.",
+      "removeListingNoteRequired": "Please provide a reason for suspending this listing",
+      "removeListingConfirm": "Are you sure you want to permanently suspend this listing? The owner will not be able to resubmit it.",
+      "removeListingSuccess": "Listing has been permanently suspended",
+      "removeListingError": "Failed to suspend the listing. Please try again."
     },
     "table": {
       "viewDetails": "View Details",
@@ -1791,8 +1795,9 @@
       "reportedAt": "Reported At",
       "additionalFeedback": "Additional Feedback",
       "currentStatus": "Current Status",
-      "resolve": "Resolve Report",
+      "acknowledge": "Acknowledge Report",
       "requestRevision": "Request Revision",
+      "removeListing": "Suspend Listing",
       "dismiss": "Dismiss Report",
       "actions": "Actions",
       "description": "Description",
