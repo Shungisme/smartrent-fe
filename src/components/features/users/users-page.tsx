@@ -13,7 +13,6 @@ import { UserCreateDialog } from '@/components/organisms/users/UserCreateDialog'
 import { UserEditDialog } from '@/components/organisms/users/UserEditDialog'
 import { UserDeleteDialog } from '@/components/organisms/users/UserDeleteDialog'
 import { UserClearMembershipDialog } from '@/components/organisms/users/UserClearMembershipDialog'
-import { PageHeader } from '@/components/molecules/pageHeader'
 import { ConfirmDialog } from '@/components/molecules/confirmDialog'
 
 const UserManagement = () => {
@@ -148,19 +147,6 @@ const UserManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
-        <PageHeader
-          title={t('title')}
-          actions={
-            <Button
-              className='w-full sm:w-auto'
-              onClick={() => setShowCreate(true)}
-            >
-              <Plus className='h-4 w-4' />
-              {t('create.button')}
-            </Button>
-          }
-        />
-
         {/* User Table Component */}
         <UserTable
           users={users}
@@ -172,6 +158,12 @@ const UserManagement = () => {
           onDelete={setShowDelete}
           onRemoveBroker={(user) => setRemoveBrokerUser(user)}
           onClearMembership={setShowClearMembership}
+          toolbarActions={
+            <Button size='sm' onClick={() => setShowCreate(true)}>
+              <Plus className='h-4 w-4' />
+              {t('create.button')}
+            </Button>
+          }
         />
       </div>
 

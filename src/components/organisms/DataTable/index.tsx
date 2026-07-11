@@ -20,6 +20,7 @@ function DataTableContent<T = any>({
   onSelectionChange,
   filterMode = 'frontend',
   itemsPerPageOptions,
+  toolbarActions,
 }: Omit<DataTableProps<T>, 'data'>) {
   const {
     paginatedData,
@@ -99,8 +100,10 @@ function DataTableContent<T = any>({
 
   return (
     <div className='space-y-4'>
-      {/* Filters + Views (grouped on the left) */}
-      {(filters && filters.length > 0) || columns.length > 0 ? (
+      {/* Toolbar: filters + views on the left, actions on the right */}
+      {(filters && filters.length > 0) ||
+      columns.length > 0 ||
+      toolbarActions ? (
         <div className='flex flex-wrap items-center gap-2'>
           {filters && filters.length > 0 && (
             <TableFilters
@@ -119,6 +122,11 @@ function DataTableContent<T = any>({
             onShowAll={showAllColumns}
             onReset={resetColumns}
           />
+          {toolbarActions && (
+            <div className='ml-auto flex items-center gap-2'>
+              {toolbarActions}
+            </div>
+          )}
         </div>
       ) : null}
 

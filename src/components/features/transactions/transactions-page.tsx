@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { Download } from 'lucide-react'
 import { Button } from '@/components/atoms/button'
-import { PageHeader } from '@/components/molecules/pageHeader'
 import { AdminTransactionTable } from '@/components/organisms/transactions/AdminTransactionTable'
 import { TransactionStatisticsCards } from '@/components/organisms/transactions/TransactionStatisticsCards'
 import { TransactionService } from '@/api/services/transaction.service'
@@ -50,16 +49,7 @@ export const TransactionsPage = () => {
 
   return (
     <div className='space-y-6'>
-      <PageHeader title={t('title')} />
-
       <TransactionStatisticsCards statistics={statistics} />
-
-      <div className='flex justify-end'>
-        <Button variant='outline' size='sm' onClick={handleExport}>
-          <Download className='h-4 w-4' />
-          {t('filters.export')}
-        </Button>
-      </div>
 
       <AdminTransactionTable
         transactions={transactionsList?.data || []}
@@ -68,6 +58,12 @@ export const TransactionsPage = () => {
         onFiltersChange={handleFiltersChange}
         isLoading={isLoadingTransactions}
         onViewDetails={handleViewDetails}
+        toolbarActions={
+          <Button variant='outline' size='sm' onClick={handleExport}>
+            <Download className='h-4 w-4' />
+            {t('filters.export')}
+          </Button>
+        }
       />
     </div>
   )

@@ -113,6 +113,9 @@ export interface DataTableProps<T = Record<string, unknown>> {
   selectable?: boolean // Checkbox để chọn nhiều rows
   onSelectionChange?: (selectedRows: T[]) => void
 
+  /** Right-aligned content in the filter/views toolbar row (e.g. a "Create" button). */
+  toolbarActions?: ReactNode
+
   // Styling
   className?: string
 

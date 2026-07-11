@@ -26,6 +26,7 @@ interface NewsTableProps {
   onPreview: (news: NewsSummaryResponse) => void
   onEdit: (news: NewsSummaryResponse) => void
   onDelete: (news: NewsSummaryResponse) => void
+  toolbarActions?: React.ReactNode
 }
 
 const getStatusColor = (status: NewsStatus): string => {
@@ -77,6 +78,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
   onPreview,
   onEdit,
   onDelete,
+  toolbarActions,
 }) => {
   const t = useTranslations('news')
 
@@ -251,6 +253,7 @@ export const NewsTable: React.FC<NewsTableProps> = ({
       data={data}
       columns={columns}
       filters={filterConfig}
+      toolbarActions={toolbarActions}
       filterValues={filterValues}
       onFilterChange={onFilterChange}
       totalItems={totalItems}

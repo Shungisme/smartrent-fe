@@ -8,7 +8,6 @@ import { ListingService } from '@/api/services/listing.service'
 import { ReportStats } from '@/components/organisms/reports/ReportStats'
 import { ReportTable } from '@/components/organisms/reports/ReportTable'
 import { ReportReviewModal } from '@/components/organisms/reports/ReportReviewModal'
-import { PageHeader } from '@/components/molecules/pageHeader'
 
 const ViolationReportManagement = () => {
   const t = useTranslations('reports')
@@ -110,8 +109,6 @@ const ViolationReportManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
-        <PageHeader title={t('title')} />
-
         {/* Stats Cards */}
         <ReportStats stats={stats} />
 

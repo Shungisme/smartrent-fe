@@ -39,6 +39,7 @@ interface AdminTableProps {
   onFilterChange: (newFilters: Record<string, unknown>) => void
   onEdit: (admin: AdminProfile) => void
   onDelete: (admin: AdminProfile) => void
+  toolbarActions?: React.ReactNode
 }
 
 export const AdminTable: React.FC<AdminTableProps> = ({
@@ -49,6 +50,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
   onFilterChange,
   onEdit,
   onDelete,
+  toolbarActions,
 }) => {
   const t = useTranslations('admin.admins')
   const roleLabels: Record<AdminRole, string> = {
@@ -183,6 +185,7 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       data={transformedAdmins}
       columns={columns}
       filters={filterConfig}
+      toolbarActions={toolbarActions}
       filterMode='api'
       filterValues={filterValues}
       onFilterChange={onFilterChange}
