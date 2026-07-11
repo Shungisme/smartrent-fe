@@ -20,7 +20,7 @@ const ReportedAuthors = () => {
   const [totalItems, setTotalItems] = useState(0)
   const [filterValues, setFilterValues] = useState<Record<string, unknown>>({
     page: 1,
-    pageSize: 20,
+    pageSize: 10,
   })
 
   // Dialog state
@@ -36,7 +36,7 @@ const ReportedAuthors = () => {
     try {
       const res = await ReportedAuthorService.getReportedAuthors({
         page: filterValues.page ? Number(filterValues.page) : 1,
-        size: filterValues.pageSize ? Number(filterValues.pageSize) : 20,
+        size: filterValues.pageSize ? Number(filterValues.pageSize) : 10,
       })
       if (res.success && res.data) {
         setAuthors(res.data.data)
@@ -61,7 +61,7 @@ const ReportedAuthors = () => {
       ...newFilters,
       page: (newFilters.page as number | undefined) ?? 1,
       pageSize:
-        (newFilters.pageSize as number | undefined) ?? prev.pageSize ?? 20,
+        (newFilters.pageSize as number | undefined) ?? prev.pageSize ?? 10,
     }))
   }
 
