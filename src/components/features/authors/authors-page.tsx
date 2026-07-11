@@ -34,9 +34,19 @@ const ReportedAuthors = () => {
     setLoading(true)
     setError(null)
     try {
+      const blockEligibleRaw = filterValues.blockEligible as string | undefined
       const res = await ReportedAuthorService.getReportedAuthors({
         page: filterValues.page ? Number(filterValues.page) : 1,
         size: filterValues.pageSize ? Number(filterValues.pageSize) : 10,
+        email: (filterValues.email as string) || undefined,
+        name: (filterValues.name as string) || undefined,
+        phone: (filterValues.phone as string) || undefined,
+        blockEligible:
+          blockEligibleRaw === 'true'
+            ? true
+            : blockEligibleRaw === 'false'
+              ? false
+              : undefined,
       })
       if (res.success && res.data) {
         setAuthors(res.data.data)
@@ -84,8 +94,22 @@ const ReportedAuthors = () => {
         toast.success(
           blocked ? t('toasts.blockSuccess') : t('toasts.unblockSuccess'),
         )
+        // Update just the toggled row in place — a block/unblock never changes
+        // the report counts, so avoid re-running the whole reported-authors
+        // aggregate query (which made the toggle feel slow).
+        setAuthors((prev) =>
+          prev.map((a) =>
+            a.userId === blockAuthor.userId
+              ? {
+                  ...a,
+                  postingBlocked: res.data?.postingBlocked ?? blocked,
+                  postingBlockedReason: res.data?.postingBlockedReason ?? null,
+                  postingBlockedAt: res.data?.postingBlockedAt ?? null,
+                }
+              : a,
+          ),
+        )
         setBlockAuthor(null)
-        await fetchAuthors()
       } else {
         toast.error(res.message || t('toasts.blockError'))
       }
