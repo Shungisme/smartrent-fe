@@ -74,7 +74,9 @@ export const AuthorReportsDialog: React.FC<AuthorReportsDialogProps> = ({
 
   if (!author) return null
 
-  const eligible = author.resolvedReports > BLOCK_ELIGIBLE_THRESHOLD
+  // Trust the server-computed flag (based on TOTAL reports, any status) rather
+  // than recomputing client-side — avoids drift if the threshold ever changes.
+  const eligible = author.blockEligible
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -95,7 +97,7 @@ export const AuthorReportsDialog: React.FC<AuthorReportsDialogProps> = ({
               <AlertTriangle className='mt-0.5 h-4 w-4 shrink-0' />
               <span>
                 {t('reportsDialog.eligibleNotice', {
-                  count: author.resolvedReports,
+                  count: author.totalReports,
                   threshold: BLOCK_ELIGIBLE_THRESHOLD,
                 })}
               </span>

@@ -2452,7 +2452,7 @@
       "approved": "Approved",
       "listingPrefix": "Listing #",
       "adminNotes": "Admin notes",
-      "eligibleNotice": "This author has {count} approved reports (more than {threshold}) and is eligible to be blocked from posting.",
+      "eligibleNotice": "This author has {count} total reports (more than {threshold}) and is eligible to be blocked from posting.",
       "blockedNotice": "This author is currently blocked from posting."
     },
     "blockDialog": {

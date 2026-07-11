@@ -2416,7 +2416,7 @@
       "approved": "Đã duyệt",
       "listingPrefix": "Tin #",
       "adminNotes": "Ghi chú admin",
-      "eligibleNotice": "Người này có {count} report đã duyệt (trên {threshold}), đủ điều kiện bị chặn đăng tin.",
+      "eligibleNotice": "Người này có tổng cộng {count} report (trên {threshold}), đủ điều kiện bị chặn đăng tin.",
       "blockedNotice": "Người này hiện đang bị chặn đăng tin."
     },
     "blockDialog": {
