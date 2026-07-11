@@ -54,22 +54,22 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     <div
       onClick={disabled ? undefined : onClick}
       className={cn(
-        'relative mx-2 flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-colors',
-        collapsed ? 'justify-center' : 'gap-3',
+        'relative mx-2 flex items-center rounded-lg px-3 py-2.5 text-sm transition-colors',
+        collapsed ? 'justify-center' : 'gap-2.5',
         disabled
-          ? 'cursor-not-allowed text-muted-foreground/60'
+          ? 'cursor-not-allowed font-medium text-muted-foreground/60'
           : 'cursor-pointer',
         !disabled &&
           (isActive
-            ? 'bg-sidebar-primary/10 text-sidebar-primary'
-            : 'text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'),
+            ? 'bg-sidebar-primary/12 font-semibold text-sidebar-primary'
+            : 'font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'),
       )}
       title={collapsed ? label : undefined}
     >
       {!disabled && isActive && !collapsed && (
         <span
           aria-hidden
-          className='absolute left-0 top-1/2 h-5 w-0.5 -translate-y-1/2 rounded-full bg-sidebar-primary'
+          className='absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-full bg-sidebar-primary'
         />
       )}
       {icon && (
@@ -93,6 +93,7 @@ type SidebarSectionProps = {
   collapsed?: boolean
   open: boolean
   onToggle: () => void
+  isActiveGroup?: boolean
   children: React.ReactNode
 }
 
@@ -102,14 +103,20 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({
   collapsed = false,
   open,
   onToggle,
+  isActiveGroup = false,
   children,
 }) => {
   return (
-    <div className='mb-2 last:mb-0'>
+    <div className='mt-6 first:mt-0'>
       <button
         type='button'
         onClick={collapsed ? undefined : onToggle}
-        className='mb-1 flex w-full items-center justify-between rounded-md px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-sidebar-foreground'
+        className={cn(
+          'mb-1.5 flex w-full items-center justify-between rounded-md px-2 py-1 text-[11px] uppercase tracking-wider transition-colors',
+          isActiveGroup && !collapsed
+            ? 'font-bold text-sidebar-foreground'
+            : 'font-semibold text-muted-foreground/80 hover:text-sidebar-foreground',
+        )}
         title={collapsed ? title : undefined}
       >
         <span
@@ -118,13 +125,15 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({
             collapsed && 'mx-auto',
           )}
         >
-          {icon && <span className='h-4 w-4'>{icon}</span>}
+          {/* Group icon only in the collapsed icon rail; expanded groups are
+              plain text labels so they read as sections, not items. */}
+          {collapsed && icon && <span className='h-4 w-4'>{icon}</span>}
           {!collapsed && <span>{title}</span>}
         </span>
         {!collapsed && (
           <ChevronRight
             className={cn(
-              'h-3.5 w-3.5 transition-transform duration-300 ease-in-out',
+              'h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-transform duration-300 ease-in-out',
               open && 'rotate-90',
             )}
           />
@@ -138,7 +147,7 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({
             open ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0',
           )}
         >
-          <div className='space-y-0.5 overflow-hidden'>{children}</div>
+          <div className='space-y-1 overflow-hidden'>{children}</div>
         </div>
       )}
     </div>
@@ -316,6 +325,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
             collapsed={collapsed}
             open={!!openGroups[group.key]}
             onToggle={() => toggleGroup(group.key)}
+            isActiveGroup={activeGroupKey === group.key}
           >
             {group.items.map((item) => (
               <SidebarItem
