@@ -124,7 +124,6 @@ const RoleManagement = () => {
           }
         />
         <DataTable
-          fillHeight
           data={transformedRoles}
           columns={columns}
           filters={filterConfig}
