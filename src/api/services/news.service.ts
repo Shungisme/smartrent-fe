@@ -42,7 +42,7 @@ const buildQuery = (
 
 export class NewsService {
   static async uploadImage(file: File): Promise<ApiResponse<{ url: string }>> {
-    const response = await AdminMediaService.uploadMedia({
+    const response = await AdminMediaService.uploadViaPresign({
       file,
       mediaType: 'IMAGE',
       title: file.name,
