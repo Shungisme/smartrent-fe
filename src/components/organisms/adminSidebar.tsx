@@ -17,6 +17,7 @@ import {
   Shield,
   UserCheck,
   UserCogIcon,
+  UserSearch,
   Users,
   Newspaper,
   Crown,
@@ -250,6 +251,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
     news: <Newspaper width={20} />,
     brokerPending: <UserCheck width={20} />,
     reports: <Shield width={20} />,
+    authors: <UserSearch width={20} />,
   }
 
   const groupIconMap: Record<string, React.ReactNode> = {

@@ -239,6 +239,57 @@ export class ListingService {
   }
 
   /**
+   * Temporarily hide a reported listing from the public (moderation SUSPEND).
+   * Owner is still able to resubmit later — this is not a permanent removal.
+   * PUT /v1/admin/listings/{listingId}/status with decision=SUSPEND
+   *
+   * @param listingId - Listing ID
+   * @param reasonText - Reason for hiding (required by the moderation service)
+   */
+  static async hideListing(
+    listingId: number | string,
+    reasonText: string,
+  ): Promise<
+    ApiResponse<{
+      listingId: number
+      title: string
+      verified: boolean
+      isVerify: boolean
+      userId: string
+      price: number
+      listingType: string
+    }>
+  > {
+    return this.changeListingStatus(listingId, {
+      decision: 'SUSPEND',
+      reasonText,
+      ownerActionRequired: false,
+    })
+  }
+
+  /**
+   * Unhide a previously hidden listing (restore to APPROVED / public).
+   * PUT /v1/admin/listings/{listingId}/status with decision=APPROVE
+   *
+   * @param listingId - Listing ID
+   */
+  static async unhideListing(listingId: number | string): Promise<
+    ApiResponse<{
+      listingId: number
+      title: string
+      verified: boolean
+      isVerify: boolean
+      userId: string
+      price: number
+      listingType: string
+    }>
+  > {
+    return this.changeListingStatus(listingId, {
+      decision: 'APPROVE',
+    })
+  }
+
+  /**
    * Get all listing reports
    * GET /v1/admin/reports
    *

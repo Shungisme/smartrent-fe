@@ -19,6 +19,7 @@ const ACTIVE_MAP: Record<string, string> = {
   '/monetization/listing-types': 'premiumListingTypes',
   '/moderation/broker-pending': 'brokerPending',
   '/moderation/reports': 'reports',
+  '/moderation/authors': 'authors',
 }
 
 export default function DashboardLayout({

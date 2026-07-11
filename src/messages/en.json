@@ -1946,7 +1946,11 @@
       "removeListingNoteRequired": "Please provide a reason for suspending this listing",
       "removeListingConfirm": "Are you sure you want to permanently suspend this listing? The owner will not be able to resubmit it.",
       "removeListingSuccess": "Listing has been permanently suspended",
-      "removeListingError": "Failed to suspend the listing. Please try again."
+      "removeListingError": "Failed to suspend the listing. Please try again.",
+      "hideSuccess": "Listing has been temporarily hidden.",
+      "hideError": "Failed to hide the listing.",
+      "unhideSuccess": "Listing is visible again.",
+      "unhideError": "Failed to unhide the listing."
     },
     "table": {
       "viewDetails": "View Details",
@@ -1989,7 +1993,11 @@
       "couldNotLoad": "Could not load listing details",
       "reportPrefix": "Report #",
       "loadingDetails": "Loading listing details...",
-      "listingIdPrefix": "Listing ID: #"
+      "listingIdPrefix": "Listing ID: #",
+      "hide": "Hide temporarily",
+      "unhide": "Unhide",
+      "hidden": "Hidden",
+      "hideReason": "Temporarily hidden due to a report under review"
     },
     "categories": {
       "LISTING": "Listing",
@@ -2408,6 +2416,56 @@
       "newReport": "A new report has been submitted",
       "listingResubmitted": "A listing has been resubmitted for review",
       "brokerRegistrationReceived": "A broker registration request was received"
+    }
+  },
+  "authors": {
+    "title": "Post Authors",
+    "subtitle": "Track listing authors by their reports and block repeat offenders from posting.",
+    "table": {
+      "loadError": "Failed to load authors. Please try again.",
+      "empty": "No reported authors yet.",
+      "headers": {
+        "author": "Author",
+        "phone": "Phone",
+        "totalReports": "Total reports",
+        "approvedReports": "Approved reports",
+        "status": "Status"
+      },
+      "actions": {
+        "viewReports": "View reports",
+        "block": "Block posting",
+        "unblock": "Unblock",
+        "blockDisabledHint": "Needs more than 3 approved reports to be blocked"
+      }
+    },
+    "status": {
+      "active": "Active",
+      "eligible": "Eligible to block",
+      "blocked": "Blocked"
+    },
+    "reportsDialog": {
+      "title": "Approved reports — {name}",
+      "subtitle": "{count} report(s) approved by admins across this author's listings.",
+      "loadError": "Failed to load reports.",
+      "empty": "This author has no admin-approved reports.",
+      "approved": "Approved",
+      "listingPrefix": "Listing #",
+      "adminNotes": "Admin notes",
+      "eligibleNotice": "This author has {count} approved reports (more than {threshold}) and is eligible to be blocked from posting.",
+      "blockedNotice": "This author is currently blocked from posting."
+    },
+    "blockDialog": {
+      "blockTitle": "Block author from posting",
+      "unblockTitle": "Unblock author",
+      "blockDescription": "{name} will no longer be able to create new listings. They will see a notice and be blocked on the backend.",
+      "unblockDescription": "{name} will be able to post listings again.",
+      "reasonLabel": "Reason (optional)",
+      "reasonPlaceholder": "e.g. Multiple listings with approved violation reports"
+    },
+    "toasts": {
+      "blockSuccess": "Author has been blocked from posting.",
+      "unblockSuccess": "Author can post listings again.",
+      "blockError": "Failed to update posting block. Please try again."
     }
   }
 }
