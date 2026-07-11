@@ -30,6 +30,7 @@ type PageKey =
   | 'news'
   | 'newsEditor'
   | 'reports'
+  | 'authors'
 
 const ROUTE_META: Record<string, { category: CategoryKey; page: PageKey }> = {
   '/management/users': { category: 'management', page: 'users' },
@@ -68,6 +69,7 @@ const ROUTE_META: Record<string, { category: CategoryKey; page: PageKey }> = {
   '/content/news': { category: 'content', page: 'news' },
   '/content/news-editor': { category: 'content', page: 'newsEditor' },
   '/moderation/reports': { category: 'moderation', page: 'reports' },
+  '/moderation/authors': { category: 'moderation', page: 'authors' },
 }
 
 const CATEGORY_ROUTES: Record<CategoryKey, string[]> = {
@@ -84,7 +86,11 @@ const CATEGORY_ROUTES: Record<CategoryKey, string[]> = {
     '/management/transactions',
   ],
   content: ['/content/posts', '/content/news'],
-  moderation: ['/moderation/reports', '/moderation/broker-pending'],
+  moderation: [
+    '/moderation/reports',
+    '/moderation/authors',
+    '/moderation/broker-pending',
+  ],
   monetization: ['/monetization/membership', '/monetization/listing-types'],
 }
 
@@ -122,6 +128,7 @@ const LABELS = {
       news: 'News',
       newsEditor: 'Editor',
       reports: 'Reports',
+      authors: 'Post Authors',
     } as Record<PageKey, string>,
   } satisfies NavigationLabels,
   vi: {
@@ -150,6 +157,7 @@ const LABELS = {
       news: 'Tin tức',
       newsEditor: 'Trình biên tập',
       reports: 'Báo cáo',
+      authors: 'Người đăng tin',
     } as Record<PageKey, string>,
   } satisfies NavigationLabels,
 }

@@ -13,6 +13,7 @@ import { Avatar } from '@/components/atoms/avatar'
 import {
   AlertTriangle,
   Eye,
+  EyeOff,
   CheckCircle,
   XCircle,
   Loader2,
@@ -104,6 +105,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
   const [loadingListing, setLoadingListing] = useState(false)
   const [actionReason, setActionReason] = useState('')
   const [actionLoading, setActionLoading] = useState(false)
+  const [visibilityLoading, setVisibilityLoading] = useState(false)
 
   // Lightbox state
   const [lightboxOpen, setLightboxOpen] = useState(false)
@@ -186,6 +188,38 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
       toast.error(t('toasts.dismissError'))
     } finally {
       setActionLoading(false)
+    }
+  }
+
+  const handleHideListing = async () => {
+    if (!report) return
+    try {
+      setVisibilityLoading(true)
+      await ListingService.hideListing(report.listingId, t('review.hideReason'))
+      toast.success(t('toasts.hideSuccess'))
+      await fetchListingDetails(report.listingId)
+      onActionComplete()
+    } catch (e) {
+      console.error('Error hiding listing:', e)
+      toast.error(t('toasts.hideError'))
+    } finally {
+      setVisibilityLoading(false)
+    }
+  }
+
+  const handleUnhideListing = async () => {
+    if (!report) return
+    try {
+      setVisibilityLoading(true)
+      await ListingService.unhideListing(report.listingId)
+      toast.success(t('toasts.unhideSuccess'))
+      await fetchListingDetails(report.listingId)
+      onActionComplete()
+    } catch (e) {
+      console.error('Error unhiding listing:', e)
+      toast.error(t('toasts.unhideError'))
+    } finally {
+      setVisibilityLoading(false)
     }
   }
 
@@ -536,6 +570,44 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                           <Badge className='text-xs bg-muted text-muted-foreground border-border/70'>
                             {t('review.expired')}
                           </Badge>
+                        )}
+                        {listingDetails.moderationStatus === 'SUSPENDED' && (
+                          <Badge className='text-xs bg-destructive/10 text-destructive border-destructive/30'>
+                            {t('review.hidden')}
+                          </Badge>
+                        )}
+
+                        {/* Temporary hide / unhide toggle */}
+                        {listingDetails.moderationStatus === 'SUSPENDED' ? (
+                          <Button
+                            size='sm'
+                            variant='outline'
+                            className='ml-auto text-sm'
+                            onClick={handleUnhideListing}
+                            disabled={visibilityLoading}
+                          >
+                            {visibilityLoading ? (
+                              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                            ) : (
+                              <Eye className='mr-2 h-4 w-4' />
+                            )}
+                            {t('review.unhide')}
+                          </Button>
+                        ) : (
+                          <Button
+                            size='sm'
+                            variant='outline'
+                            className='ml-auto border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground text-sm'
+                            onClick={handleHideListing}
+                            disabled={visibilityLoading}
+                          >
+                            {visibilityLoading ? (
+                              <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                            ) : (
+                              <EyeOff className='mr-2 h-4 w-4' />
+                            )}
+                            {t('review.hide')}
+                          </Button>
                         )}
                       </div>
                     </div>

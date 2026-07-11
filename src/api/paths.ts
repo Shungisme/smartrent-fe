@@ -50,6 +50,13 @@ export const PATHS = {
     BROKER_REMOVE: '/v1/admin/users/:userId/broker',
   },
 
+  // Admin reported-authors endpoints (track post authors + block posting)
+  REPORTED_AUTHORS: {
+    LIST: '/v1/admin/reported-authors',
+    REPORTS: '/v1/admin/reported-authors/:userId/reports',
+    POSTING_BLOCK: '/v1/admin/reported-authors/:userId/posting-block',
+  },
+
   // Admin analytics endpoints (formerly /v1/admin/dashboard/*)
   ADMIN_ANALYTICS: {
     REVENUE: '/v1/admin/analytics/revenue',

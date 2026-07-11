@@ -28,7 +28,11 @@ export type ModerationStatus =
   | 'RESUBMITTED'
 
 // Decision for moderation action
-export type ModerationDecision = 'APPROVE' | 'REJECT' | 'REQUEST_REVISION'
+export type ModerationDecision =
+  | 'APPROVE'
+  | 'REJECT'
+  | 'REQUEST_REVISION'
+  | 'SUSPEND'
 
 // Admin Verification Info
 export interface AdminVerification {
