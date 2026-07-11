@@ -18,7 +18,6 @@ import { ListingTypeTable } from '@/components/organisms/premium/ListingTypeTabl
 import { EditMembershipDialog } from '@/components/organisms/premium/EditMembershipDialog'
 import { DeleteMembershipDialog } from '@/components/organisms/premium/DeleteMembershipDialog'
 import { ViewMembershipDialog } from '@/components/organisms/premium/ViewMembershipDialog'
-import { PageHeader } from '@/components/molecules/pageHeader'
 
 export type PremiumSection = 'overview' | 'membership' | 'listing-types'
 
@@ -225,15 +224,12 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
     <div className='space-y-6'>
       {section === 'overview' && (
         <>
-          <PageHeader title={t('title')} />
           <PremiumStats stats={stats} />
         </>
       )}
 
       {section === 'membership' && (
         <>
-          <PageHeader title={t('title')} />
-
           <MembershipTable
             memberships={displayMemberships}
             loading={membershipsLoading}
@@ -247,7 +243,6 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
 
       {section === 'listing-types' && (
         <>
-          <PageHeader title={t('title')} />
           <ListingTypeTable tiers={apiVIPTiers} loading={vipTiersLoading} />
         </>
       )}

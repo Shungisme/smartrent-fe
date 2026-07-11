@@ -1,5 +1,6 @@
 'use client'
 
+import { ReactNode } from 'react'
 import { useTranslations } from 'next-intl'
 import { Eye } from 'lucide-react'
 import { Button } from '@/components/atoms/button'
@@ -29,6 +30,7 @@ interface AdminTransactionTableProps {
   onFiltersChange: (filters: AdminTransactionFilters) => void
   isLoading?: boolean
   onViewDetails: (transactionId: string) => void
+  toolbarActions?: ReactNode
 }
 
 const STATUS_BADGE_CLASS: Record<PaymentStatus, string> = {
@@ -51,6 +53,7 @@ export const AdminTransactionTable = ({
   onFiltersChange,
   isLoading,
   onViewDetails,
+  toolbarActions,
 }: AdminTransactionTableProps) => {
   const t = useTranslations('transactions')
   const pageSize = filters.size ?? 20
@@ -214,6 +217,7 @@ export const AdminTransactionTable = ({
   return (
     <DataTable<AdminTransaction>
       data={transactions}
+      toolbarActions={toolbarActions}
       columns={columns}
       filters={filterConfig}
       filterMode='api'

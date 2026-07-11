@@ -11,7 +11,6 @@ import { getRoles } from '@/api/services/role.service'
 import { Role } from '@/api/types/role.type'
 import { useTranslations } from 'next-intl'
 import { Plus, Pencil, Trash2 } from 'lucide-react'
-import { PageHeader } from '@/components/molecules/pageHeader'
 import { RoleCreateDialog } from '@/components/organisms/roles/RoleCreateDialog'
 import { RoleEditDialog } from '@/components/organisms/roles/RoleEditDialog'
 import { RoleDeleteDialog } from '@/components/organisms/roles/RoleDeleteDialog'
@@ -111,22 +110,16 @@ const RoleManagement = () => {
   return (
     <div>
       <div className='space-y-6'>
-        <PageHeader
-          title={t('title')}
-          actions={
-            <Button
-              className='w-full sm:w-auto'
-              onClick={() => setShowCreate(true)}
-            >
-              <Plus className='h-4 w-4' />
-              {t('createNewRole')}
-            </Button>
-          }
-        />
         <DataTable
           data={transformedRoles}
           columns={columns}
           filters={filterConfig}
+          toolbarActions={
+            <Button size='sm' onClick={() => setShowCreate(true)}>
+              <Plus className='h-4 w-4' />
+              {t('createNewRole')}
+            </Button>
+          }
           filterMode='api'
           filterValues={filterValues}
           onFilterChange={handleFilterChange}

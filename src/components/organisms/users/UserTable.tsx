@@ -23,6 +23,7 @@ interface UserTableProps {
   onDelete: (user: UserProfile) => void
   onRemoveBroker: (user: UserProfile) => void
   onClearMembership: (user: UserProfile) => void
+  toolbarActions?: React.ReactNode
 }
 
 export const UserTable: React.FC<UserTableProps> = ({
@@ -35,6 +36,7 @@ export const UserTable: React.FC<UserTableProps> = ({
   onDelete,
   onRemoveBroker,
   onClearMembership,
+  toolbarActions,
 }) => {
   const t = useTranslations('admin.users')
 
@@ -140,6 +142,7 @@ export const UserTable: React.FC<UserTableProps> = ({
       data={transformedUsers}
       columns={columns}
       filters={filterConfig}
+      toolbarActions={toolbarActions}
       filterMode='api'
       filterValues={filterValues}
       onFilterChange={onFilterChange}

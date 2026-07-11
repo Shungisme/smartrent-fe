@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { PageHeader } from '@/components/molecules/pageHeader'
 import { TransactionStatisticsCards } from '@/components/organisms/transactions/TransactionStatisticsCards'
 import { RevenueChart } from '@/components/organisms/transactions/RevenueChart'
 import {
@@ -28,8 +27,6 @@ export const TransactionsDashboardPage = () => {
 
   return (
     <div className='space-y-6'>
-      <PageHeader title={t('dashboard.title')} />
-
       <div className='flex gap-2'>
         {(['week', 'month', 'quarter'] as const).map((range) => (
           <button

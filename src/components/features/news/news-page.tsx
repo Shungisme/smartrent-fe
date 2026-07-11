@@ -190,16 +190,6 @@ const NewsManagement = () => {
         </div>
       ) : (
         <div className='space-y-6'>
-          <div className='flex items-center justify-stretch sm:justify-end'>
-            <Button
-              onClick={handleCreate}
-              className='w-full sm:w-auto flex items-center justify-center gap-2'
-            >
-              <Plus className='h-4 w-4' />
-              {t('createButton')}
-            </Button>
-          </div>
-
           {/* Hidden by request */}
           {false && <NewsStats stats={stats} />}
 
@@ -212,6 +202,12 @@ const NewsManagement = () => {
             onPreview={handlePreview}
             onEdit={handleEdit}
             onDelete={handleDeleteClick}
+            toolbarActions={
+              <Button size='sm' onClick={handleCreate}>
+                <Plus className='h-4 w-4' />
+                {t('createButton')}
+              </Button>
+            }
           />
 
           <NewsPreviewModal
