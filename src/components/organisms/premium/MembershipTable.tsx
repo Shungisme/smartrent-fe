@@ -13,6 +13,8 @@ interface MembershipTableProps {
   onEdit: (id: string) => void
   onDelete: (id: string) => void
   onToggleStatus: (id: string, currentStatus: string) => void
+  // When false, edit / delete actions and the status toggle are read-only.
+  canWrite?: boolean
 }
 
 export const MembershipTable: React.FC<MembershipTableProps> = ({
@@ -22,6 +24,7 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
   onEdit,
   onDelete,
   onToggleStatus,
+  canWrite = true,
 }) => {
   const t = useTranslations('premium')
 
@@ -107,11 +110,14 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
       render: (_, pkg) => {
         const isActive = pkg.status === 'active'
         return (
-          <label className='relative inline-flex cursor-pointer items-center'>
+          <label
+            className={`relative inline-flex items-center ${canWrite ? 'cursor-pointer' : 'cursor-default'}`}
+          >
             <input
               type='checkbox'
               className='peer sr-only'
               checked={isActive}
+              disabled={!canWrite}
               onChange={() => onToggleStatus(pkg.id, pkg.status)}
             />
             <div
@@ -146,24 +152,28 @@ export const MembershipTable: React.FC<MembershipTableProps> = ({
           >
             <Eye className='h-4 w-4' />
           </Button>
-          <Button
-            variant='ghost'
-            size='sm'
-            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
-            title={t('actions.edit')}
-            onClick={() => onEdit(row.id)}
-          >
-            <Pencil className='h-4 w-4' />
-          </Button>
-          <Button
-            variant='ghost'
-            size='sm'
-            className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
-            title={t('actions.delete')}
-            onClick={() => onDelete(row.id)}
-          >
-            <Trash2 className='h-4 w-4' />
-          </Button>
+          {canWrite && (
+            <>
+              <Button
+                variant='ghost'
+                size='sm'
+                className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+                title={t('actions.edit')}
+                onClick={() => onEdit(row.id)}
+              >
+                <Pencil className='h-4 w-4' />
+              </Button>
+              <Button
+                variant='ghost'
+                size='sm'
+                className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
+                title={t('actions.delete')}
+                onClick={() => onDelete(row.id)}
+              >
+                <Trash2 className='h-4 w-4' />
+              </Button>
+            </>
+          )}
         </div>
       )}
     />

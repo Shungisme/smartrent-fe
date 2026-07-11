@@ -10,20 +10,22 @@ import { Skeleton } from '@/components/atoms/skeleton'
 import ThemeSwitch from '@/components/molecules/themeSwitch'
 import { useSwitchLanguage } from '@/contexts/switchLanguage/index.context'
 import { cn } from '@/lib/utils'
-import { DEFAULT_HOME_ROUTE } from '@/constants/navigation'
+import { resolveHomeRoute, toRoleIds } from '@/constants/navigation'
+import { useAuthStore } from '@/store/auth/index.store'
 
 const LoginPage = () => {
   const router = useRouter()
   const t = useTranslations('homePage.auth.login')
   const tBrand = useTranslations('homePage.auth.brand')
   const { isAuthenticated, isLoading } = useAuth()
+  const userRoles = useAuthStore((state) => state.user?.roles)
   const { language, updateLanguage } = useSwitchLanguage()
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push(DEFAULT_HOME_ROUTE)
+      router.push(resolveHomeRoute(toRoleIds(userRoles)))
     }
-  }, [isAuthenticated, isLoading, router])
+  }, [isAuthenticated, isLoading, userRoles, router])
 
   if (isLoading) {
     return (

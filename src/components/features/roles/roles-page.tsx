@@ -14,6 +14,7 @@ import { Plus, Pencil, Trash2 } from 'lucide-react'
 import { RoleCreateDialog } from '@/components/organisms/roles/RoleCreateDialog'
 import { RoleEditDialog } from '@/components/organisms/roles/RoleEditDialog'
 import { RoleDeleteDialog } from '@/components/organisms/roles/RoleDeleteDialog'
+import { useCanWrite } from '@/hooks/usePermissions'
 
 type RoleRow = {
   id: string
@@ -22,6 +23,7 @@ type RoleRow = {
 
 const RoleManagement = () => {
   const t = useTranslations('admin.roles')
+  const canWrite = useCanWrite('roles')
   const [roles, setRoles] = useState<Role[]>([])
   const [loading, setLoading] = useState(true)
   const [filterValues, setFilterValues] = useState<Record<string, unknown>>({
@@ -115,10 +117,12 @@ const RoleManagement = () => {
           columns={columns}
           filters={filterConfig}
           toolbarActions={
-            <Button size='sm' onClick={() => setShowCreate(true)}>
-              <Plus className='h-4 w-4' />
-              {t('createNewRole')}
-            </Button>
+            canWrite ? (
+              <Button size='sm' onClick={() => setShowCreate(true)}>
+                <Plus className='h-4 w-4' />
+                {t('createNewRole')}
+              </Button>
+            ) : undefined
           }
           filterMode='api'
           filterValues={filterValues}
@@ -130,34 +134,38 @@ const RoleManagement = () => {
           loading={loading}
           emptyMessage={loading ? t('table.loading') : t('table.empty')}
           getRowKey={(row) => row.id}
-          actions={(row) => (
-            <div className='flex items-center justify-center gap-0.5'>
-              <Button
-                variant='ghost'
-                size='sm'
-                className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
-                title={t('table.actions.edit')}
-                onClick={() => {
-                  const role = roles.find((r) => r.roleId === row.id)
-                  if (role) setShowEdit(role)
-                }}
-              >
-                <Pencil className='h-4 w-4' />
-              </Button>
-              <Button
-                variant='ghost'
-                size='sm'
-                className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
-                title={t('table.actions.delete')}
-                onClick={() => {
-                  const role = roles.find((r) => r.roleId === row.id)
-                  if (role) setShowDelete(role)
-                }}
-              >
-                <Trash2 className='h-4 w-4' />
-              </Button>
-            </div>
-          )}
+          actions={
+            canWrite
+              ? (row) => (
+                  <div className='flex items-center justify-center gap-0.5'>
+                    <Button
+                      variant='ghost'
+                      size='sm'
+                      className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+                      title={t('table.actions.edit')}
+                      onClick={() => {
+                        const role = roles.find((r) => r.roleId === row.id)
+                        if (role) setShowEdit(role)
+                      }}
+                    >
+                      <Pencil className='h-4 w-4' />
+                    </Button>
+                    <Button
+                      variant='ghost'
+                      size='sm'
+                      className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
+                      title={t('table.actions.delete')}
+                      onClick={() => {
+                        const role = roles.find((r) => r.roleId === row.id)
+                        if (role) setShowDelete(role)
+                      }}
+                    >
+                      <Trash2 className='h-4 w-4' />
+                    </Button>
+                  </div>
+                )
+              : undefined
+          }
         />
 
         <RoleCreateDialog
