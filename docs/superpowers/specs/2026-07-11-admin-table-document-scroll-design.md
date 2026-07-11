@@ -36,20 +36,21 @@ no viewport-fraction (`vh`) sizing.
   revert their wrappers (`flex flex-col lg:min-h-0 lg:flex-1` → the original
   simple wrappers, e.g. `space-y-6`).
 
-### 2. Sticky column header (the UX highlight)
-- `<thead>` is `sticky top-0 z-10` relative to the page scroll (`main`), with a
-  solid background + a bottom hairline so column names stay visible while
-  scrolling rows. (`<thead>` already has `sticky top-0`; today it sticks inside
-  the nested scroll div — after removing that div it must stick to `main`.)
-- **Constraint:** `position: sticky` is disabled by an ancestor with
-  `overflow: hidden/clip/auto`. The `.table-surface` card uses `overflow-hidden`
-  for rounded corners, which sits between `<thead>` and `main`. The
-  implementation must preserve the rounded card while letting the sticky work —
-  e.g. drop the clip and round the first/last header cells, or clip only the
-  x-axis. (Exact CSS technique decided in the plan.)
-- No manual `top` offset needed: the app topbar is fixed **outside** `main`, so
-  `top-0` sticks just beneath it.
-- The page title + Filter/Views toolbar **scroll away naturally** (not sticky).
+### 2. Wide-table horizontal scroll (no sticky header)
+- **No sticky `<thead>`.** During planning we confirmed a hard CSS conflict:
+  wide tables need horizontal scroll (`overflow-x: auto`), which per spec
+  promotes the container to a y-scroll context too — making a *page-relative*
+  `sticky` header impossible without reintroducing a bounded-height inner frame
+  (the very thing we're removing). GitHub / Stripe lists scroll their headers
+  with content; we follow that.
+- Wide tables (e.g. posts, transactions, `min-w-[800px]`) scroll **horizontally**
+  inside their card via an inner `overflow-x-auto` wrapper. The `.table-surface`
+  card keeps its rounded corners (`overflow-hidden` unchanged) — the *inner*
+  wrapper owns the horizontal scroll, so there is no clip-vs-sticky conflict.
+- Vertically the table is natural height; the page (`main`) scrolls. The
+  existing `sticky top-0` class on `<thead>` becomes inert (no bounded scroll
+  parent) and is left as-is — harmless, avoids churn.
+- The page title + Filter/Views toolbar scroll naturally.
 
 ### 3. Density & page size
 - Keep default page size **20** and the **10 / 20 / 50** options (users who want
@@ -60,13 +61,15 @@ no viewport-fraction (`vh`) sizing.
 - `src/components/layouts/AppAdminLayout.tsx` — revert `main` / `.app-container`
   flex-fill.
 - `src/components/organisms/DataTable/{types.ts,index.tsx,TableDesktop.tsx}` —
-  remove `fillHeight`; natural-height body; sticky `<thead>`; fix
-  `.table-surface` overflow so sticky works.
+  remove `fillHeight` (and the now-obsolete `tableClassName`/`maxHeightClassName`
+  height override); table body renders at natural height inside an inner
+  `overflow-x-auto` wrapper (horizontal scroll for wide tables).
 - List pages + their table organisms — remove `fillHeight` and revert flex-fill
   wrappers: **users, admins, roles, reports, posts, news, transactions,
   broker-pending** (page + organism where applicable).
-- `src/styles/globals.css` — `.table-surface` overflow handling if changed
-  there.
+- `src/styles/globals.css` — **no change**; `.table-surface` keeps
+  `overflow-hidden` (rounded corners). Horizontal scroll lives on the inner
+  wrapper, so no sticky conflict.
 
 ## Non-goals
 - Sticky filter/toolbar bar (deferred enhancement).
@@ -79,7 +82,8 @@ no viewport-fraction (`vh`) sizing.
 - On a list page (e.g. Users) at 16:9, the table shows all 20 rows at natural
   height; scrolling the page reveals the rows then pagination at the end — **no
   nested scrollbar inside the table**.
-- Column headers stay visible (sticky) while scrolling rows.
+- Wide tables scroll horizontally inside their card; there is **no nested
+  vertical scrollbar** inside the table.
 - No leftover `fillHeight` prop, no `h-[..vh]` on the table body, no
   `lg:min-h-0 lg:flex-1` fill chain on list pages.
 - `tsc --noEmit`, ESLint, Prettier all clean.
