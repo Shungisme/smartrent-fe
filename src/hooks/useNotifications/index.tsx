@@ -129,8 +129,8 @@ export function useNotifications(
    * Setup WebSocket connection for realtime notifications
    */
   useEffect(() => {
-    // Only connect if enabled and we have adminId
-    if (!enabled || !adminId) {
+    // Only connect if enabled and we have both adminId and a valid token
+    if (!enabled || !adminId || !token) {
       return
     }
 
@@ -151,6 +151,9 @@ export function useNotifications(
     // Create WebSocket client
     const client = new Client({
       webSocketFactory: () => new SockJS(`${baseUrl}/ws`),
+      connectHeaders: {
+        Authorization: `Bearer ${token}`,
+      },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
@@ -190,9 +193,16 @@ export function useNotifications(
       },
 
       onStompError: (frame: IFrame) => {
-        console.error('[Notifications] STOMP error:', frame.headers['message'])
-        setError(frame.headers['message'] || 'WebSocket connection error')
+        const message = frame.headers['message'] || 'WebSocket connection error'
+        console.error('[Notifications] STOMP error:', message)
+        setError(message)
         setIsConnected(false)
+
+        // Auth errors won't resolve by retrying with the same stale token,
+        // so stop the built-in reconnect loop instead of retrying forever.
+        if (/bearer|token|auth/i.test(message)) {
+          client.deactivate()
+        }
       },
 
       onWebSocketError: (event: Event) => {
@@ -212,7 +222,7 @@ export function useNotifications(
       clientRef.current = null
       setIsConnected(false)
     }
-  }, [enabled, adminId]) // Removed onNotificationReceived from deps
+  }, [enabled, adminId, token]) // Removed onNotificationReceived from deps
 
   /**
    * Fetch initial data on mount
