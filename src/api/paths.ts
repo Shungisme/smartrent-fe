@@ -5,6 +5,7 @@ export const PATHS = {
     LOGOUT: '/v1/auth/logout',
     REFRESH: '/v1/auth/refresh',
     ADMIN_LOGIN: '/v1/auth/admin',
+    ADMIN_REFRESH: '/v1/auth/admin/refresh',
     VERIFICATION: '/v1/verification',
     RE_SEND_VERIFICATION: '/v1/verification/code',
     INTROSPECT: '/v1/auth/introspect',

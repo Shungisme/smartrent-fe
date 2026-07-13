@@ -72,6 +72,12 @@ export class AuthService {
 
   /**
    * Refresh authentication token
+   *
+   * This is an admin console: sessions are always issued via the admin login
+   * endpoint, so the refresh token's subject is an adminId. It MUST be refreshed
+   * through the admin refresh endpoint (which looks the subject up in the admin
+   * repository). Hitting the user refresh endpoint (/v1/auth/refresh) fails with
+   * USER_NOT_FOUND and silently logs the admin out when the access token expires.
    * @param refreshToken - Valid refresh token
    * @returns New authentication tokens
    */
@@ -80,7 +86,7 @@ export class AuthService {
   ): Promise<ApiResponse<AuthTokens>> {
     const response = await apiRequest<AuthTokens>({
       method: 'POST',
-      url: ENV.API.AUTH.REFRESH,
+      url: ENV.API.AUTH.ADMIN_REFRESH,
       data: { refreshToken },
       skipAuth: true,
     })
