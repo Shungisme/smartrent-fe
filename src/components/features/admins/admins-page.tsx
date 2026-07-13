@@ -60,6 +60,19 @@ const AdminManagement = () => {
             : filterValues.role
           filterArray.push(`role:${roleValue}`)
         }
+        // Visible quick-search box (id 'keyword'): fan the term out across
+        // name/email/phone. The backend OR-combines these search filters.
+        if (filterValues.keyword) {
+          const kw = String(filterValues.keyword).trim()
+          if (kw) {
+            filterArray.push(
+              `firstName:${kw}`,
+              `lastName:${kw}`,
+              `email:${kw}`,
+              `phoneNumber:${kw}`,
+            )
+          }
+        }
 
         const response = await getAdminList({
           page: filterValues.page ? Number(filterValues.page) : 1,

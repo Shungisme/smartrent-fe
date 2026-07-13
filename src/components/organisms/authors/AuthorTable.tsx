@@ -117,17 +117,19 @@ export const AuthorTable: React.FC<AuthorTableProps> = ({
 
   const filterConfig: FilterConfig[] = [
     {
+      // Visible quick-search mapped to the `name` param, which the backend
+      // OR-matches against first + last name. email/phone stay in the dialog —
+      // the backend AND-combines them, so they can't share one search box.
+      id: 'name',
+      type: 'search',
+      label: t('filters.searchPlaceholder'),
+      placeholder: t('filters.searchPlaceholder'),
+    },
+    {
       id: 'email',
       type: 'search',
       label: t('table.headers.email'),
       placeholder: t('filters.emailPlaceholder'),
-      isFilterField: true,
-    },
-    {
-      id: 'name',
-      type: 'search',
-      label: t('table.headers.author'),
-      placeholder: t('filters.namePlaceholder'),
       isFilterField: true,
     },
     {

@@ -77,6 +77,14 @@ const NewsManagement = () => {
       if (filterValues.tag) {
         filterArray.push(`tag:${filterValues.tag}`)
       }
+      // Visible quick-search box (id 'keyword'): map to the `title` key, which
+      // the backend matches against title OR summary.
+      if (filterValues.keyword) {
+        const kw = String(filterValues.keyword).trim()
+        if (kw) {
+          filterArray.push(`title:${kw}`)
+        }
+      }
 
       const apiFilters: NewsFilterRequest = {
         page: filterValues.page ? Number(filterValues.page) : 1,

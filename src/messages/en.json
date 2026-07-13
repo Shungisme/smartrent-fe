@@ -1303,6 +1303,7 @@
         "placeholder": "Search by name, ID or email..."
       },
       "filters": {
+        "searchPlaceholder": "Search by name, email, or phone…",
         "allRoles": "All Roles",
         "SA": "Super Admin",
         "UA": "User Admin",
@@ -1711,6 +1712,7 @@
       "placeholder": "Search by title, poster name, or address..."
     },
     "filters": {
+      "searchPlaceholder": "Search by title, address, or description…",
       "status": "Status",
       "pending": "Pending",
       "approved": "Approved",
@@ -2474,6 +2476,7 @@
       "blockError": "Failed to update posting block. Please try again."
     },
     "filters": {
+      "searchPlaceholder": "Search authors by name…",
       "emailPlaceholder": "Search by email",
       "namePlaceholder": "Search by name",
       "phonePlaceholder": "Search by phone",

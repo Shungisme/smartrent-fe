@@ -213,6 +213,14 @@ export const PostTable: React.FC<PostTableProps> = ({
 
   const filters: FilterConfig[] = [
     {
+      // Visible quick-search mapped (via mapUIFiltersToAPI) to the backend
+      // `keyword` FULLTEXT search across title, address and description.
+      id: 'keyword',
+      type: 'search',
+      label: t('filters.searchPlaceholder'),
+      placeholder: t('filters.searchPlaceholder'),
+    },
+    {
       id: 'title',
       type: 'search',
       label: t('filters.titleSearch'),
