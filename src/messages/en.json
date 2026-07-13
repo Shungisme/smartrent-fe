@@ -2007,6 +2007,10 @@
       "wrong_information": "Wrong Information",
       "other": "Other"
     },
+    "filters": {
+      "searchPlaceholder": "Search by reporter, phone, or report ID…",
+      "statusAll": "All statuses"
+    },
     "statuses": {
       "pending": "Pending",
       "resolved": "Resolved",
