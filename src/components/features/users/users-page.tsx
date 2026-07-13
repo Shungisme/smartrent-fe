@@ -65,6 +65,20 @@ const UserManagement = () => {
       if (filterValues.isBroker) {
         filterArray.push(`isBroker:${filterValues.isBroker}`)
       }
+      // Visible quick-search box (id 'keyword'): fan the term out across
+      // name/email/phone. The backend OR-combines these search filters, so this
+      // becomes a single "match any of these fields" search.
+      if (filterValues.keyword) {
+        const kw = String(filterValues.keyword).trim()
+        if (kw) {
+          filterArray.push(
+            `firstName:${kw}`,
+            `lastName:${kw}`,
+            `email:${kw}`,
+            `phoneNumber:${kw}`,
+          )
+        }
+      }
 
       const response = await getUserList({
         page: filterValues.page ? Number(filterValues.page) : 1,
