@@ -162,8 +162,13 @@ export function useNotifications(
         console.log('[Notifications] WebSocket connected')
         setIsConnected(true)
 
-        // Subscribe to admin's notification channel
-        client.subscribe(`/topic/notifications/${adminId}`, (message) => {
+        // Subscribe to this session's private user-destination. The backend
+        // authenticates the STOMP CONNECT and pins recipientId as the Principal,
+        // then sends via convertAndSendToUser(recipientId, "/queue/notifications", ...).
+        // Spring routes that to this client's private "/user/queue/notifications"
+        // (the old public "/topic/notifications/{adminId}" broadcast was removed
+        // server-side to close a notification IDOR).
+        client.subscribe(`/user/queue/notifications`, (message) => {
           try {
             const notification: Notification = JSON.parse(message.body)
 
