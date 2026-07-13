@@ -17,6 +17,9 @@ import { PostTable } from '@/components/organisms/posts/PostTable'
 import { PostReviewModal } from '@/components/organisms/posts/PostReviewModal'
 import { AiSchedulerControl } from '@/components/molecules/aiServiceStatus/AiSchedulerControl'
 
+// Backend success envelope code (see constants/env API_RESPONSE_CODES.SUCCESS).
+const SUCCESS_CODE = '999999'
+
 const PostVerification = () => {
   const t = useTranslations('posts')
   const [posts, setPosts] = useState<UIPostData[]>([])
@@ -114,12 +117,13 @@ const PostVerification = () => {
       setActionLoading(true)
       const response = await ListingService.approveListing(selectedPost.id)
 
-      if (response && response.code !== '9999') {
+      if (response.success && response.code === SUCCESS_CODE) {
         toast.success(t('toasts.approveSuccess'))
-
-        await fetchListings()
+        // Close the dialog immediately, then refresh the table in the
+        // background — don't leave the modal open during the refetch.
         setReviewModalOpen(false)
         setSelectedPost(null)
+        await fetchListings()
       } else {
         const errorMessage = response.message || t('toasts.approveError')
         toast.error(errorMessage)
@@ -152,12 +156,11 @@ const PostVerification = () => {
         deadline.toISOString(),
       )
 
-      if (response && response.code !== '9999') {
+      if (response.success && response.code === SUCCESS_CODE) {
         toast.success(t('toasts.rejectSuccess'))
-
-        await fetchListings()
         setReviewModalOpen(false)
         setSelectedPost(null)
+        await fetchListings()
       } else {
         const errorMessage = response.message || t('toasts.rejectError')
         toast.error(errorMessage)
@@ -186,12 +189,11 @@ const PostVerification = () => {
         true,
       )
 
-      if (response && response.code !== '9999') {
+      if (response.success && response.code === SUCCESS_CODE) {
         toast.success(t('toasts.revisionSuccess'))
-
-        await fetchListings()
         setReviewModalOpen(false)
         setSelectedPost(null)
+        await fetchListings()
       } else {
         const errorMessage = response.message || t('toasts.revisionError')
         toast.error(errorMessage)

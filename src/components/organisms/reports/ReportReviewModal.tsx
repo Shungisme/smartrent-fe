@@ -150,11 +150,15 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
 
     try {
       setActionLoading(true)
-      await ListingService.resolveReport(report.reportId, {
+      const response = await ListingService.resolveReport(report.reportId, {
         status: 'RESOLVED',
         adminNotes: actionReason,
         removeListing: true,
       })
+      if (!response.success) {
+        toast.error(response.message || t('toasts.removeListingError'))
+        return
+      }
       toast.success(t('toasts.removeListingSuccess'))
       onOpenChange(false)
       onActionComplete()
@@ -176,10 +180,14 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
 
     try {
       setActionLoading(true)
-      await ListingService.resolveReport(report.reportId, {
+      const response = await ListingService.resolveReport(report.reportId, {
         status: 'REJECTED',
         adminNotes: actionReason,
       })
+      if (!response.success) {
+        toast.error(response.message || t('toasts.dismissError'))
+        return
+      }
       toast.success(t('toasts.dismissSuccess'))
       onOpenChange(false)
       onActionComplete()
@@ -195,7 +203,14 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
     if (!report) return
     try {
       setVisibilityLoading(true)
-      await ListingService.hideListing(report.listingId, t('review.hideReason'))
+      const response = await ListingService.hideListing(
+        report.listingId,
+        t('review.hideReason'),
+      )
+      if (!response.success) {
+        toast.error(response.message || t('toasts.hideError'))
+        return
+      }
       toast.success(t('toasts.hideSuccess'))
       await fetchListingDetails(report.listingId)
       onActionComplete()
@@ -211,7 +226,11 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
     if (!report) return
     try {
       setVisibilityLoading(true)
-      await ListingService.unhideListing(report.listingId)
+      const response = await ListingService.unhideListing(report.listingId)
+      if (!response.success) {
+        toast.error(response.message || t('toasts.unhideError'))
+        return
+      }
       toast.success(t('toasts.unhideSuccess'))
       await fetchListingDetails(report.listingId)
       onActionComplete()
@@ -635,37 +654,39 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                 </div>
               )}
               <div className='flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end'>
-                {/* Temporary hide / unhide — opposite toggle, kept apart on the left */}
-                {listingDetails &&
-                  (listingDetails.moderationStatus === 'SUSPENDED' ? (
-                    <Button
-                      onClick={handleUnhideListing}
-                      disabled={visibilityLoading}
-                      variant='outline'
-                      className='text-sm sm:mr-auto'
-                    >
-                      {visibilityLoading ? (
-                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                      ) : (
-                        <Eye className='mr-2 h-4 w-4' />
-                      )}
-                      {t('review.unhide')}
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={handleHideListing}
-                      disabled={visibilityLoading}
-                      variant='outline'
-                      className='border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground text-sm sm:mr-auto'
-                    >
-                      {visibilityLoading ? (
-                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                      ) : (
-                        <EyeOff className='mr-2 h-4 w-4' />
-                      )}
-                      {t('review.hide')}
-                    </Button>
-                  ))}
+                {/* Temporary hide / unhide — only meaningful for a live listing
+                    (Hide) or one already hidden under this review (Unhide).
+                    A rejected/removed listing is terminal, so neither shows. */}
+                {listingDetails?.moderationStatus === 'SUSPENDED' && (
+                  <Button
+                    onClick={handleUnhideListing}
+                    disabled={visibilityLoading}
+                    variant='outline'
+                    className='text-sm sm:mr-auto'
+                  >
+                    {visibilityLoading ? (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    ) : (
+                      <Eye className='mr-2 h-4 w-4' />
+                    )}
+                    {t('review.unhide')}
+                  </Button>
+                )}
+                {listingDetails?.moderationStatus === 'APPROVED' && (
+                  <Button
+                    onClick={handleHideListing}
+                    disabled={visibilityLoading}
+                    variant='outline'
+                    className='border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground text-sm sm:mr-auto'
+                  >
+                    {visibilityLoading ? (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    ) : (
+                      <EyeOff className='mr-2 h-4 w-4' />
+                    )}
+                    {t('review.hide')}
+                  </Button>
+                )}
                 {report.status === 'PENDING' && (
                   <>
                     {onRequestRevision && (
