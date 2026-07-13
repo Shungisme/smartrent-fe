@@ -102,6 +102,14 @@ export const UserTable: React.FC<UserTableProps> = ({
 
   const filterConfig: FilterConfig[] = [
     {
+      // Visible quick-search: mapped in users-page to firstName/lastName/email/
+      // phoneNumber, which the backend OR-combines into one search.
+      id: 'keyword',
+      type: 'search',
+      label: t('filters.searchPlaceholder'),
+      placeholder: t('filters.searchPlaceholder'),
+    },
+    {
       id: 'firstName',
       type: 'search',
       label: t('filters.firstName'),

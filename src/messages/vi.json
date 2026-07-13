@@ -904,6 +904,7 @@
         "placeholder": "Tìm kiếm theo tên hoặc ID người dùng..."
       },
       "filters": {
+        "searchPlaceholder": "Tìm theo tên, email, SĐT…",
         "allUsers": "Tất Cả Người Dùng",
         "broker": "Môi giới",
         "normalUser": "Người dùng thường",

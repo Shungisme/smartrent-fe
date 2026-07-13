@@ -940,6 +940,7 @@
         "placeholder": "Search by name or user ID..."
       },
       "filters": {
+        "searchPlaceholder": "Search by name, email, or phone…",
         "allUsers": "All Users",
         "broker": "Broker",
         "normalUser": "Normal User",

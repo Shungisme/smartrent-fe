@@ -1,10 +1,51 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { Input } from '@/components/atoms/input'
 import { Button } from '@/components/atoms/button'
 import { Search, X } from 'lucide-react'
 import { FilterDialog } from './FilterDialog'
 import type { TableFiltersProps, FilterConfig } from './types'
+
+// Debounced search input. Keeps a local value and only pushes it upstream after
+// a short pause, so API-mode tables don't refetch on every keystroke. Re-syncs
+// when the external value changes (e.g. cleared via the filter dialog or reset).
+function SearchFilterInput({
+  filter,
+  value,
+  onChange,
+}: {
+  filter: FilterConfig
+  value: string
+  onChange: (value: string) => void
+}) {
+  const [local, setLocal] = useState(value)
+
+  // Re-sync when the value changes from outside (clear/reset).
+  useEffect(() => {
+    setLocal(value)
+  }, [value])
+
+  // Debounce pushing the typed value upstream. The `local === value` guard makes
+  // the mount and re-sync runs no-ops, so only real typing schedules a change.
+  useEffect(() => {
+    if (local === value) return
+    const id = setTimeout(() => onChange(local), 300)
+    return () => clearTimeout(id)
+  }, [local])
+
+  return (
+    <div className='relative flex-1 min-w-[200px]'>
+      <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
+      <Input
+        type='text'
+        placeholder={filter.placeholder || filter.label}
+        value={local}
+        onChange={(e) => setLocal(e.target.value)}
+        className={`w-full pl-10 ${filter.className || ''}`}
+      />
+    </div>
+  )
+}
 
 export function TableFilters({
   filters,
@@ -17,7 +58,10 @@ export function TableFilters({
 
   if (!filters || filters.length === 0) return null
 
-  // Check if there are filter fields meant for FilterDialog
+  // Inline filters render directly in the toolbar (e.g. a visible search box);
+  // isFilterField filters are collected into the "Bộ lọc" dialog. A table can
+  // use either or both.
+  const inlineFilters = filters.filter((f) => !f.isFilterField)
   const filterDialogFilters = filters.filter((f) => f.isFilterField)
   const hasFilterDialog = filterDialogFilters.length > 0
 
@@ -29,27 +73,29 @@ export function TableFilters({
     )
   })
 
-  // If we have FilterDialog filters, show only the FilterDialog
-  if (hasFilterDialog) {
-    return (
-      <FilterDialog
-        filterConfig={filterDialogFilters}
-        currentFilters={values}
-        onFilterChange={(newFilters) => {
-          if (onChangeMultiple) {
-            onChangeMultiple(newFilters)
-          } else {
-            Object.entries(newFilters).forEach(([key, value]) => {
-              onChange(key, value)
-            })
-          }
-        }}
-        onClear={() => onClear?.()}
-      />
-    )
+  // When applying dialog filters, preserve the inline filter values (e.g. the
+  // search box). FilterDialog only returns its own configured fields and the
+  // DataTable replaces the whole filter set, which would otherwise drop the
+  // inline search term.
+  const applyDialogFilters = (newFilters: Record<string, unknown>) => {
+    const preserved: Record<string, unknown> = {}
+    inlineFilters.forEach((f) => {
+      const v = values[f.id]
+      if (v !== undefined && v !== null && v !== '') {
+        preserved[f.id] = v
+      }
+    })
+    const merged = { ...preserved, ...newFilters }
+
+    if (onChangeMultiple) {
+      onChangeMultiple(merged)
+    } else {
+      Object.entries(merged).forEach(([key, value]) => {
+        onChange(key, value)
+      })
+    }
   }
 
-  // Original filter rendering for backward compatibility
   const renderFilter = (filter: FilterConfig) => {
     const value = Object.prototype.hasOwnProperty.call(values, filter.id)
       ? values[filter.id]
@@ -69,19 +115,15 @@ export function TableFilters({
       )
     }
 
-    // Search filter
+    // Search filter (debounced)
     if (filter.type === 'search') {
       return (
-        <div key={filter.id} className='relative flex-1 min-w-[200px]'>
-          <Search className='absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground' />
-          <Input
-            type='text'
-            placeholder={filter.placeholder || filter.label}
-            value={stringValue}
-            onChange={(e) => onChange(filter.id, e.target.value)}
-            className={`w-full pl-10 ${filter.className || ''}`}
-          />
-        </div>
+        <SearchFilterInput
+          key={filter.id}
+          filter={filter}
+          value={stringValue}
+          onChange={(newValue) => onChange(filter.id, newValue)}
+        />
       )
     }
 
@@ -151,9 +193,18 @@ export function TableFilters({
 
   return (
     <div className='flex flex-col flex-wrap items-stretch gap-2 sm:flex-row sm:items-center'>
-      {filters.map((filter) => renderFilter(filter))}
+      {inlineFilters.map((filter) => renderFilter(filter))}
 
-      {hasActiveFilters && onClear && (
+      {hasFilterDialog && (
+        <FilterDialog
+          filterConfig={filterDialogFilters}
+          currentFilters={values}
+          onFilterChange={applyDialogFilters}
+          onClear={() => onClear?.()}
+        />
+      )}
+
+      {!hasFilterDialog && hasActiveFilters && onClear && (
         <Button
           variant='ghost'
           size='sm'
