@@ -107,7 +107,8 @@ export const getStatusColor = (status: PostStatus): string => {
     rejected: 'border-destructive/30 bg-destructive/10 text-destructive',
     revision_required: 'border-orange-500/30 bg-orange-500/10 text-orange-700',
     suspended: 'border-destructive/30 bg-destructive/10 text-destructive',
-    hidden: 'border-amber-500/30 bg-amber-500/10 text-amber-700',
+    hidden: 'border-sky-500/30 bg-sky-500/10 text-sky-700',
+    removed: 'border-destructive/30 bg-destructive/10 text-destructive',
     expired: 'border-border bg-muted text-foreground/70',
     pending_payment: 'border-purple-500/30 bg-purple-500/10 text-purple-700',
   }
@@ -143,21 +144,11 @@ export const mapUIFiltersToAPI = (
   }
 
   // moderationStatus filter (primary moderation workflow field)
-  // Also send the corresponding listingStatus — mirrors smartrent-fe's LISTING_STATUS_MODERATION_MAP pattern
-  //
-  // 'SUSPENDED_REJECTED' / 'SUSPENDED_HIDDEN' are UI-only synthetic values (see
-  // PostTable's status filter options) — moderationStatus=SUSPENDED alone is shared
-  // by rejecting a listing in the review queue and temporarily hiding it under
-  // report review, so the dropdown splits it into two using hasPendingOwnerAction.
-  const rawModerationStatus = str('moderationStatus')
-  let moderationStatus = rawModerationStatus
-  if (rawModerationStatus === 'SUSPENDED_REJECTED') {
-    moderationStatus = 'SUSPENDED'
-    apiFilters.hasPendingOwnerAction = true
-  } else if (rawModerationStatus === 'SUSPENDED_HIDDEN') {
-    moderationStatus = 'SUSPENDED'
-    apiFilters.hasPendingOwnerAction = false
-  }
+  // Also send the corresponding listingStatus — mirrors smartrent-fe's LISTING_STATUS_MODERATION_MAP pattern.
+  // Every value is a real ModerationStatus now (REJECTED / SUSPENDED / REMOVED are
+  // distinct), so the same status sent from here and from smartrent-fe hits the
+  // same backend filter and returns the same rows.
+  const moderationStatus = str('moderationStatus')
   if (moderationStatus) {
     apiFilters.moderationStatus = moderationStatus as ModerationStatus
     const moderationToListingStatus: Partial<
@@ -169,6 +160,7 @@ export const mapUIFiltersToAPI = (
       REVISION_REQUIRED: 'REJECTED',
       SUSPENDED: 'REJECTED',
       REJECTED: 'REJECTED',
+      REMOVED: 'REJECTED',
     }
     const mappedListingStatus =
       moderationToListingStatus[moderationStatus as ModerationStatus]
@@ -294,16 +286,26 @@ const deriveStatusFromVerification = (
   }
 }
 
+// Map a raw ModerationStatus straight to the UI PostStatus. Used by the detail
+// modal (which carries moderationStatus but not the computed listingStatus) so
+// its image badge matches the table — and, in turn, matches smartrent-fe, which
+// labels the same statuses identically.
+const MODERATION_TO_POST_STATUS: Partial<Record<ModerationStatus, PostStatus>> =
+  {
+    PENDING_REVIEW: 'pending',
+    RESUBMITTED: 'resubmitted',
+    APPROVED: 'approved',
+    REVISION_REQUIRED: 'revision_required',
+    REJECTED: 'rejected',
+    SUSPENDED: 'hidden',
+    REMOVED: 'removed',
+  }
+
 const deriveStatusFromListingStatus = (
   listingStatus: SummaryListingStatus | null | undefined,
   moderationStatus: ModerationStatus | null | undefined,
   verificationStatus: string | null | undefined,
   expired: boolean | null | undefined,
-  // moderationStatus=SUSPENDED is shared by two unrelated admin actions:
-  // rejecting a listing in the review queue (always creates an owner
-  // action) and temporarily hiding a listing under report review (never
-  // does). Split on that signal instead of showing both as "suspended".
-  hasPendingOwnerAction?: boolean | null,
 ): PostStatus => {
   switch (listingStatus) {
     case 'EXPIRED':
@@ -319,10 +321,10 @@ const deriveStatusFromListingStatus = (
     case 'VERIFIED':
       return 'approved'
     case 'REJECTED':
+      // moderationStatus now carries the exact outcome — no owner-action lookup.
       if (moderationStatus === 'REVISION_REQUIRED') return 'revision_required'
-      if (moderationStatus === 'SUSPENDED') {
-        return hasPendingOwnerAction ? 'rejected' : 'hidden'
-      }
+      if (moderationStatus === 'SUSPENDED') return 'hidden'
+      if (moderationStatus === 'REMOVED') return 'removed'
       return 'rejected'
     default:
       return deriveStatusFromVerification(verificationStatus, expired)
@@ -382,7 +384,6 @@ export const mapSummaryToUI = (item: AdminListingSummary): UIPostData => {
       item.moderationStatus,
       item.adminVerification?.verificationStatus,
       item.expired,
-      item.hasPendingOwnerAction,
     ),
     verified: item.verified ?? false,
     isVerify: false,
@@ -427,10 +428,13 @@ export const mapDetailToUI = (item: ListingResponseWithAdmin): UIPostData => {
     postedDate: date,
     postedTime: time,
     expiryDate,
-    status: deriveStatusFromVerification(
-      item.adminVerification?.verificationStatus,
-      item.expired,
-    ),
+    status:
+      (item.moderationStatus &&
+        MODERATION_TO_POST_STATUS[item.moderationStatus]) ||
+      deriveStatusFromVerification(
+        item.adminVerification?.verificationStatus,
+        item.expired,
+      ),
     verified: item.verified,
     isVerify: item.isVerify,
     rejectionReason: item.adminVerification?.rejectionReason,

@@ -80,6 +80,7 @@ export const PostTable: React.FC<PostTableProps> = ({
       revision_required: t('statuses.revision_required'),
       suspended: t('statuses.suspended'),
       hidden: t('statuses.hidden'),
+      removed: t('statuses.removed'),
       expired: t('statuses.expired'),
       pending_payment: t('statuses.pending_payment'),
     }
@@ -256,8 +257,8 @@ export const PostTable: React.FC<PostTableProps> = ({
         { value: 'APPROVED', label: t('tabs.approved') },
         { value: 'REJECTED', label: t('tabs.rejected') },
         { value: 'REVISION_REQUIRED', label: t('tabs.revisionRequired') },
-        { value: 'SUSPENDED_REJECTED', label: t('tabs.suspendedRejected') },
-        { value: 'SUSPENDED_HIDDEN', label: t('tabs.suspended') },
+        { value: 'SUSPENDED', label: t('tabs.suspended') },
+        { value: 'REMOVED', label: t('tabs.removed') },
         { value: 'RESUBMITTED', label: t('tabs.resubmitted') },
       ],
       isFilterField: true,

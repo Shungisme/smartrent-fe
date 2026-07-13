@@ -1695,8 +1695,8 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "revisionRequired": "Revision Required",
-      "suspendedRejected": "Rejected (Admin)",
       "suspended": "Temporarily Hidden",
+      "removed": "Permanently Removed",
       "resubmitted": "Resubmitted"
     },
     "stats": {
@@ -1908,13 +1908,14 @@
       "unfurnished": "Unfurnished"
     },
     "statuses": {
-      "pending": "Pending",
+      "pending": "Pending Review",
       "resubmitted": "Resubmitted",
       "approved": "Approved",
       "rejected": "Rejected",
       "revision_required": "Revision Required",
-      "suspended": "Suspended",
+      "suspended": "Temporarily Hidden",
       "hidden": "Temporarily Hidden",
+      "removed": "Permanently Removed",
       "expired": "Expired",
       "pending_payment": "Pending Payment"
     },

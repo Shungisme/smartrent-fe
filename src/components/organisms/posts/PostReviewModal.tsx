@@ -153,9 +153,15 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   const _getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
       pending: t('statuses.pending'),
+      resubmitted: t('statuses.resubmitted'),
       approved: t('statuses.approved'),
       rejected: t('statuses.rejected'),
+      revision_required: t('statuses.revision_required'),
+      suspended: t('statuses.suspended'),
+      hidden: t('statuses.hidden'),
+      removed: t('statuses.removed'),
       expired: t('statuses.expired'),
+      pending_payment: t('statuses.pending_payment'),
     }
     return labels[status] || status
   }
