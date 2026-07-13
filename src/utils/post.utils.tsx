@@ -144,7 +144,20 @@ export const mapUIFiltersToAPI = (
 
   // moderationStatus filter (primary moderation workflow field)
   // Also send the corresponding listingStatus — mirrors smartrent-fe's LISTING_STATUS_MODERATION_MAP pattern
-  const moderationStatus = str('moderationStatus')
+  //
+  // 'SUSPENDED_REJECTED' / 'SUSPENDED_HIDDEN' are UI-only synthetic values (see
+  // PostTable's status filter options) — moderationStatus=SUSPENDED alone is shared
+  // by rejecting a listing in the review queue and temporarily hiding it under
+  // report review, so the dropdown splits it into two using hasPendingOwnerAction.
+  const rawModerationStatus = str('moderationStatus')
+  let moderationStatus = rawModerationStatus
+  if (rawModerationStatus === 'SUSPENDED_REJECTED') {
+    moderationStatus = 'SUSPENDED'
+    apiFilters.hasPendingOwnerAction = true
+  } else if (rawModerationStatus === 'SUSPENDED_HIDDEN') {
+    moderationStatus = 'SUSPENDED'
+    apiFilters.hasPendingOwnerAction = false
+  }
   if (moderationStatus) {
     apiFilters.moderationStatus = moderationStatus as ModerationStatus
     const moderationToListingStatus: Partial<
