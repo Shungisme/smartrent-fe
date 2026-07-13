@@ -1659,6 +1659,7 @@
       "approved": "Đã Duyệt",
       "rejected": "Đã Từ Chối",
       "revisionRequired": "Cần Sửa",
+      "suspendedRejected": "Đã Từ Chối (Admin)",
       "suspended": "Tạm Ngưng",
       "resubmitted": "Đã Gửi Lại"
     },

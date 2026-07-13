@@ -1695,6 +1695,7 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "revisionRequired": "Revision Required",
+      "suspendedRejected": "Rejected (Admin)",
       "suspended": "Suspended",
       "resubmitted": "Resubmitted"
     },
