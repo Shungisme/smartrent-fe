@@ -223,6 +223,12 @@ export interface AdminListingSummary {
   revisionCount: number | null
   lastModerationReasonCode: string | null
   lastModerationReasonText: string | null
+  /**
+   * True when moderationStatus=SUSPENDED came from rejecting the listing in
+   * the review queue (creates an owner action). False/absent when it came
+   * from temporarily hiding the listing during report review instead.
+   */
+  hasPendingOwnerAction?: boolean | null
 }
 
 // Statistics for Admin Dashboard

@@ -107,6 +107,7 @@ export const getStatusColor = (status: PostStatus): string => {
     rejected: 'border-destructive/30 bg-destructive/10 text-destructive',
     revision_required: 'border-orange-500/30 bg-orange-500/10 text-orange-700',
     suspended: 'border-destructive/30 bg-destructive/10 text-destructive',
+    hidden: 'border-amber-500/30 bg-amber-500/10 text-amber-700',
     expired: 'border-border bg-muted text-foreground/70',
     pending_payment: 'border-purple-500/30 bg-purple-500/10 text-purple-700',
   }
@@ -285,6 +286,11 @@ const deriveStatusFromListingStatus = (
   moderationStatus: ModerationStatus | null | undefined,
   verificationStatus: string | null | undefined,
   expired: boolean | null | undefined,
+  // moderationStatus=SUSPENDED is shared by two unrelated admin actions:
+  // rejecting a listing in the review queue (always creates an owner
+  // action) and temporarily hiding a listing under report review (never
+  // does). Split on that signal instead of showing both as "suspended".
+  hasPendingOwnerAction?: boolean | null,
 ): PostStatus => {
   switch (listingStatus) {
     case 'EXPIRED':
@@ -301,7 +307,9 @@ const deriveStatusFromListingStatus = (
       return 'approved'
     case 'REJECTED':
       if (moderationStatus === 'REVISION_REQUIRED') return 'revision_required'
-      if (moderationStatus === 'SUSPENDED') return 'suspended'
+      if (moderationStatus === 'SUSPENDED') {
+        return hasPendingOwnerAction ? 'rejected' : 'hidden'
+      }
       return 'rejected'
     default:
       return deriveStatusFromVerification(verificationStatus, expired)
@@ -361,6 +369,7 @@ export const mapSummaryToUI = (item: AdminListingSummary): UIPostData => {
       item.moderationStatus,
       item.adminVerification?.verificationStatus,
       item.expired,
+      item.hasPendingOwnerAction,
     ),
     verified: item.verified ?? false,
     isVerify: false,

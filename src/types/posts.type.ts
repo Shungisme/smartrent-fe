@@ -7,6 +7,7 @@ export type PostStatus =
   | 'rejected'
   | 'revision_required'
   | 'suspended'
+  | 'hidden'
   | 'expired'
   | 'pending_payment'
 

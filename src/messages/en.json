@@ -1913,6 +1913,7 @@
       "rejected": "Rejected",
       "revision_required": "Revision Required",
       "suspended": "Suspended",
+      "hidden": "Temporarily Hidden",
       "expired": "Expired",
       "pending_payment": "Pending Payment"
     },

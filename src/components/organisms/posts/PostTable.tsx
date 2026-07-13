@@ -79,6 +79,7 @@ export const PostTable: React.FC<PostTableProps> = ({
       rejected: t('statuses.rejected'),
       revision_required: t('statuses.revision_required'),
       suspended: t('statuses.suspended'),
+      hidden: t('statuses.hidden'),
       expired: t('statuses.expired'),
       pending_payment: t('statuses.pending_payment'),
     }
