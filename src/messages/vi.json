@@ -1877,6 +1877,7 @@
       "rejected": "Từ Chối",
       "revision_required": "Cần Chỉnh Sửa",
       "suspended": "Tạm Ngưng",
+      "hidden": "Đang Ẩn Tạm Thời",
       "expired": "Hết Hạn",
       "pending_payment": "Chờ Thanh Toán"
     },
