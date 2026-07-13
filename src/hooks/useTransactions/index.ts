@@ -30,16 +30,3 @@ export const useTransactionStatistics = (
     staleTime: 5 * 60 * 1000,
   })
 }
-
-export const useRevenueSeries = (
-  groupBy: 'DAY' | 'MONTH' = 'DAY',
-  fromDate?: string,
-  toDate?: string,
-) => {
-  return useQuery({
-    queryKey: ['revenueSeries', groupBy, fromDate, toDate],
-    queryFn: () =>
-      TransactionService.getRevenueSeries(groupBy, fromDate, toDate),
-    staleTime: 5 * 60 * 1000,
-  })
-}

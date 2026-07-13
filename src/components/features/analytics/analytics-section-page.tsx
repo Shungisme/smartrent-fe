@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import OverviewTab from '@/components/molecules/overviewTab'
 import UsersTab from '@/components/molecules/usersTab'
 import PostsTab from '@/components/molecules/postsTab'
 import RevenueTabAnalytics from '@/components/molecules/revenueTabAnalytics'
@@ -11,12 +10,7 @@ import DateRangePicker, {
   type DateRangeValue,
 } from '@/components/molecules/dateRangePicker'
 
-export type AnalyticsSection =
-  | 'overview'
-  | 'users'
-  | 'posts'
-  | 'revenue'
-  | 'reports'
+export type AnalyticsSection = 'users' | 'posts' | 'revenue' | 'reports'
 
 type AnalyticsSectionPageProps = {
   section: AnalyticsSection
@@ -35,7 +29,6 @@ const AnalyticsSectionPage: React.FC<AnalyticsSectionPageProps> = ({
         <DateRangePicker value={dateRange} onChange={setDateRange} />
       </div>
 
-      {section === 'overview' && <OverviewTab dateRange={dateRange} />}
       {section === 'users' && <UsersTab dateRange={dateRange} />}
       {section === 'posts' && <PostsTab dateRange={dateRange} />}
       {section === 'revenue' && <RevenueTabAnalytics dateRange={dateRange} />}
