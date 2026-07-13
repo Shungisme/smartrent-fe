@@ -1971,6 +1971,10 @@
       "wrong_information": "Thông Tin Sai",
       "other": "Khác"
     },
+    "filters": {
+      "searchPlaceholder": "Tìm theo người báo cáo, SĐT, mã tin…",
+      "statusAll": "Tất cả trạng thái"
+    },
     "statuses": {
       "pending": "Chờ Xử Lý",
       "resolved": "Đã Xử Lý",

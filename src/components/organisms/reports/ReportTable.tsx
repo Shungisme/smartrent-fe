@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslations } from 'next-intl'
-import { DataTable, Column } from '@/components/organisms/DataTable'
+import { DataTable, Column, FilterConfig } from '@/components/organisms/DataTable'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
@@ -48,6 +48,47 @@ export const ReportTable: React.FC<ReportTableProps> = ({
   onReview,
 }) => {
   const t = useTranslations('reports')
+
+  // Build a combined, searchable string per row. The DataTable frontend filter
+  // matches a single field (item[filter.id]) via case-insensitive substring, so
+  // we expose `searchIndex` to let one search box match reporter name, phone,
+  // report id or listing id at once.
+  const searchableData = React.useMemo<
+    (ListingReport & { searchIndex: string })[]
+  >(
+    () =>
+      data.map((report) => ({
+        ...report,
+        searchIndex: [
+          report.reporterName,
+          report.reporterPhone,
+          report.reportId,
+          report.listingId,
+        ]
+          .filter((value) => value !== undefined && value !== null && value !== '')
+          .join(' '),
+      })),
+    [data],
+  )
+
+  const filters: FilterConfig[] = [
+    {
+      id: 'searchIndex',
+      type: 'search',
+      label: t('filters.searchPlaceholder'),
+      placeholder: t('filters.searchPlaceholder'),
+    },
+    {
+      id: 'status',
+      type: 'select',
+      label: t('filters.statusAll'),
+      options: [
+        { value: 'PENDING', label: t('statuses.pending') },
+        { value: 'RESOLVED', label: t('statuses.resolved') },
+        { value: 'REJECTED', label: t('statuses.dismissed') },
+      ],
+    },
+  ]
 
   const columns: Column<ListingReport>[] = [
     {
@@ -168,5 +209,12 @@ export const ReportTable: React.FC<ReportTableProps> = ({
     },
   ]
 
-  return <DataTable columns={columns} data={data} loading={loading} />
+  return (
+    <DataTable<ListingReport>
+      columns={columns}
+      data={searchableData}
+      filters={filters}
+      loading={loading}
+    />
+  )
 }
