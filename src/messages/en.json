@@ -1696,7 +1696,7 @@
       "rejected": "Rejected",
       "revisionRequired": "Revision Required",
       "suspendedRejected": "Rejected (Admin)",
-      "suspended": "Suspended",
+      "suspended": "Temporarily Hidden",
       "resubmitted": "Resubmitted"
     },
     "stats": {
