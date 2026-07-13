@@ -12,7 +12,6 @@ import { MembershipPackage as APIMembershipPackage } from '@/api/types/membershi
 import { VIPTierService } from '@/api/services/vip-tier.service'
 import { VIPTier } from '@/api/types/vip-tier.type'
 import { MembershipPackage } from '@/types/premium.type'
-import { PremiumStats } from '@/components/molecules/premium/PremiumStats'
 import { MembershipTable } from '../../organisms/premium/MembershipTable'
 import { ListingTypeTable } from '@/components/organisms/premium/ListingTypeTable'
 import { EditMembershipDialog } from '@/components/organisms/premium/EditMembershipDialog'
@@ -20,7 +19,7 @@ import { DeleteMembershipDialog } from '@/components/organisms/premium/DeleteMem
 import { ViewMembershipDialog } from '@/components/organisms/premium/ViewMembershipDialog'
 import { useCanWrite } from '@/hooks/usePermissions'
 
-export type PremiumSection = 'overview' | 'membership' | 'listing-types'
+export type PremiumSection = 'membership' | 'listing-types'
 
 type PremiumSectionPageProps = {
   section: PremiumSection
@@ -54,8 +53,8 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
   )
   const [deleteSubmitting, setDeleteSubmitting] = useState(false)
 
-  const needsMemberships = section === 'overview' || section === 'membership'
-  const needsVIPTiers = section === 'overview' || section === 'listing-types'
+  const needsMemberships = section === 'membership'
+  const needsVIPTiers = section === 'listing-types'
 
   const fetchMemberships = React.useCallback(async () => {
     setMembershipsLoading(true)
@@ -217,19 +216,8 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
     }
   }
 
-  const stats = {
-    activeMemberships: `${displayMemberships.filter((m) => m.status === 'active').length}/${displayMemberships.length}`,
-    listingTypes: apiVIPTiers.filter((t) => t.isActive).length,
-  }
-
   return (
     <div className='space-y-6'>
-      {section === 'overview' && (
-        <>
-          <PremiumStats stats={stats} />
-        </>
-      )}
-
       {section === 'membership' && (
         <>
           <MembershipTable
