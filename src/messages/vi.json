@@ -1657,10 +1657,10 @@
     "tabs": {
       "pendingReview": "Chờ Duyệt",
       "approved": "Đã Duyệt",
-      "rejected": "Đã Từ Chối",
+      "rejected": "Bị từ chối",
       "revisionRequired": "Cần Sửa",
-      "suspendedRejected": "Đã Từ Chối (Admin)",
-      "suspended": "Đang Ẩn Tạm Thời",
+      "suspended": "Đang ẩn tạm thời",
+      "removed": "Đã gỡ vĩnh viễn",
       "resubmitted": "Đã Gửi Lại"
     },
     "stats": {
@@ -1872,15 +1872,16 @@
       "unfurnished": "Chưa có nội thất"
     },
     "statuses": {
-      "pending": "Chờ Duyệt",
-      "resubmitted": "Đã Gửi Lại",
-      "approved": "Đã Duyệt",
-      "rejected": "Từ Chối",
-      "revision_required": "Cần Chỉnh Sửa",
-      "suspended": "Tạm Ngưng",
-      "hidden": "Đang Ẩn Tạm Thời",
-      "expired": "Hết Hạn",
-      "pending_payment": "Chờ Thanh Toán"
+      "pending": "Đang chờ duyệt",
+      "resubmitted": "Đã gửi lại",
+      "approved": "Đã duyệt",
+      "rejected": "Bị từ chối",
+      "revision_required": "Cần chỉnh sửa",
+      "suspended": "Đang ẩn tạm thời",
+      "hidden": "Đang ẩn tạm thời",
+      "removed": "Đã gỡ vĩnh viễn",
+      "expired": "Hết hạn",
+      "pending_payment": "Chờ thanh toán"
     },
     "toasts": {
       "loadListingsError": "Không thể tải danh sách tin đăng. Vui lòng thử lại.",
