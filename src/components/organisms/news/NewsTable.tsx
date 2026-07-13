@@ -199,6 +199,14 @@ export const NewsTable: React.FC<NewsTableProps> = ({
 
   const filterConfig: FilterConfig[] = [
     {
+      // Visible quick-search mapped in news-page to the `title` key, which the
+      // backend matches against title OR summary.
+      id: 'keyword',
+      type: 'search',
+      label: t('filters.search'),
+      placeholder: t('filters.searchPlaceholder'),
+    },
+    {
       id: 'title',
       type: 'search',
       label: t('filters.title'),

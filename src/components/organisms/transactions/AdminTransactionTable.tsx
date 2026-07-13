@@ -159,6 +159,14 @@ export const AdminTransactionTable = ({
 
   const filterConfig: FilterConfig[] = [
     {
+      // Visible quick-search mapped to the backend `q` param, which OR-searches
+      // transaction/gateway/reference/invoice codes and order info.
+      id: 'q',
+      type: 'search',
+      label: t('filters.search'),
+      placeholder: t('filters.search'),
+    },
+    {
       id: 'transactionId',
       type: 'search',
       label: t('filters.transactionId'),
@@ -222,6 +230,7 @@ export const AdminTransactionTable = ({
       filters={filterConfig}
       filterMode='api'
       filterValues={{
+        q: filters.q ?? '',
         transactionId: filters.transactionId ?? '',
         customer: filters.customer ?? '',
         status: filters.status ?? '',
@@ -234,6 +243,7 @@ export const AdminTransactionTable = ({
       onFilterChange={(next) =>
         onFiltersChange({
           ...filters,
+          q: (next.q as string) || undefined,
           transactionId: (next.transactionId as string) || undefined,
           customer: (next.customer as string) || undefined,
           status: (next.status as PaymentStatus) || undefined,

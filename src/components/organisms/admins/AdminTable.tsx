@@ -64,6 +64,14 @@ export const AdminTable: React.FC<AdminTableProps> = ({
 
   const filterConfig: FilterConfig[] = [
     {
+      // Visible quick-search: mapped in admins-page to firstName/lastName/email/
+      // phoneNumber, which the backend OR-combines into one search.
+      id: 'keyword',
+      type: 'search',
+      label: t('filters.searchPlaceholder'),
+      placeholder: t('filters.searchPlaceholder'),
+    },
+    {
       id: 'firstName',
       type: 'search',
       label: t('filters.firstName'),

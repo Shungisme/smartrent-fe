@@ -1267,6 +1267,7 @@
         "placeholder": "Tìm kiếm theo tên, ID hoặc email..."
       },
       "filters": {
+        "searchPlaceholder": "Tìm theo tên, email, SĐT…",
         "allRoles": "Tất Cả Vai Trò",
         "SA": "Super Admin",
         "UA": "User Admin",
@@ -1675,6 +1676,7 @@
       "placeholder": "Tìm theo tiêu đề, tên người đăng hoặc địa chỉ..."
     },
     "filters": {
+      "searchPlaceholder": "Tìm theo tiêu đề, địa chỉ, mô tả…",
       "status": "Trạng Thái",
       "pending": "Chờ Duyệt",
       "approved": "Đã Duyệt",
@@ -2438,6 +2440,7 @@
       "blockError": "Cập nhật chặn đăng tin thất bại. Vui lòng thử lại."
     },
     "filters": {
+      "searchPlaceholder": "Tìm người đăng tin theo tên…",
       "emailPlaceholder": "Tìm theo email",
       "namePlaceholder": "Tìm theo tên",
       "phonePlaceholder": "Tìm theo SĐT",
