@@ -3,7 +3,6 @@ import {
   AdminTransactionDetail,
   AdminTransactionFilters,
   AdminTransactionListResponse,
-  RevenueSeries,
   TransactionStatistics,
 } from '@/types/transaction.type'
 
@@ -56,22 +55,6 @@ export const TransactionService = {
 
     const response = await axiosInstance.get<{ data: TransactionStatistics }>(
       `/v1/admin/transactions/statistics?${params.toString()}`,
-    )
-    return response.data.data
-  },
-
-  getRevenueSeries: async (
-    groupBy: 'DAY' | 'MONTH',
-    fromDate?: string,
-    toDate?: string,
-  ) => {
-    const params = new URLSearchParams()
-    params.append('groupBy', groupBy)
-    const createdAt = buildCreatedAtParam(fromDate, toDate)
-    if (createdAt) params.append('createdAt', createdAt)
-
-    const response = await axiosInstance.get<{ data: RevenueSeries[] }>(
-      `/v1/admin/transactions/revenue-series?${params.toString()}`,
     )
     return response.data.data
   },
