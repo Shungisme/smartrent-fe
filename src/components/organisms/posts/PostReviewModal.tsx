@@ -166,6 +166,19 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
     return labels[status] || status
   }
 
+  // Reject/Request-revision only send `rejectionReason` to the backend as the
+  // single reasonText the owner sees — the "Ghi chú xác minh" box above it is a
+  // separate piece of state that's otherwise only wired to Approve. An admin
+  // who types context into that first box (it's the first field on the form)
+  // and leaves the second one blank/brief would have that note silently
+  // dropped on reject. Fold it in so nothing typed anywhere is lost.
+  const buildRejectionReason = () => {
+    const notes = verificationNotes.trim()
+    const reason = rejectionReason.trim()
+    if (!notes) return reason
+    return reason ? `${reason}\n\n${notes}` : notes
+  }
+
   const openLightbox = (index: number) => {
     setCurrentImageIndex(index)
     setLightboxOpen(true)
@@ -529,7 +542,7 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
               <div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end'>
                 <Button
                   variant='outline'
-                  onClick={() => onRequestRevision(rejectionReason)}
+                  onClick={() => onRequestRevision(buildRejectionReason())}
                   disabled={actionLoading}
                   className='border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground'
                 >
@@ -542,7 +555,7 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                 </Button>
                 <Button
                   variant='outline'
-                  onClick={() => onReject(rejectionReason)}
+                  onClick={() => onReject(buildRejectionReason())}
                   disabled={actionLoading}
                   className='border-destructive/30 text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive'
                 >
