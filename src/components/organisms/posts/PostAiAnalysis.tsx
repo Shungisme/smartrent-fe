@@ -157,11 +157,13 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
     }
   }, [post, t])
 
-  // On open: reset, then show any already-stored AI result instantly (no
-  // re-run, no re-spent Gemini tokens). If nothing is stored yet, auto-run the
-  // analysis when the admin's auto-verify setting is on — so the dialog shows
-  // AI results on open without a manual "Verify" click. Falls back to the
-  // manual button when auto-verify is off or the status check fails.
+  // On open: reset, then show the AI result the background job already computed
+  // and stored — instantly, with no live AI call to wait on. When auto-verify is
+  // enabled, that result is normally ready by the time an admin gets here. If
+  // nothing is stored yet (auto-verify off, or the job hasn't reached this
+  // listing), the panel stays empty and the admin runs it with the manual button
+  // — we deliberately never kick off a live run here, since that would make them
+  // sit through a ~30s analysis just for opening the dialog.
   useEffect(() => {
     setResult(null)
     setDuplicate(null)
@@ -183,18 +185,10 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
           if (data.duplicateCheck) setDuplicate(data.duplicateCheck)
           setLoadedFromStore(true)
           setAnalyzedAt(data.analyzedAt ?? null)
-          return
         }
-        // Nothing stored — auto-run when auto-verify is enabled.
-        return AiVerificationService.getAutoVerifyStatus().then((statusRes) => {
-          if (cancelled) return
-          if (statusRes.success && statusRes.data?.aiAutoVerifyEnabled) {
-            runAnalysis()
-          }
-        })
       })
       .catch(() => {
-        // No stored result / status — silent; admin can run analysis manually.
+        // Nothing stored — silent; the admin can run the analysis manually.
       })
       .finally(() => {
         if (!cancelled) setLoadingStore(false)
@@ -203,7 +197,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
     return () => {
       cancelled = true
     }
-  }, [post, open, runAnalysis])
+  }, [post, open])
 
   const duplicateDecisionColor = (decision: AiDuplicateDecision) =>
     decision === 'DUPLICATE'
