@@ -3,6 +3,7 @@ import { PATHS } from '@/api/paths'
 import {
   AiVerificationRequest,
   AiVerificationResult,
+  AiDuplicateCheckResult,
   AiServiceStatus,
   AiSchedulerStatus,
   ApiResponse,
@@ -34,6 +35,26 @@ export class AiVerificationService {
       url: PATHS.AI_VERIFICATION.VERIFY,
       data: payload,
       // AI multimodal analysis can take ~20-30s; override the default timeout.
+      timeout: 60000,
+    })
+  }
+
+  /**
+   * Run the AI duplicate-detection pipeline for an existing listing by ID.
+   * POST /v1/ai/listings/:listingId/check-duplicate
+   *
+   * Stateless: persists nothing. Returns the decision (PASS/SUSPICIOUS/DUPLICATE),
+   * highest similarity score, and matched listings for the admin to review.
+   *
+   * @param listingId - ID of the listing to check
+   */
+  static async checkDuplicate(
+    listingId: string,
+  ): Promise<ApiResponse<AiDuplicateCheckResult>> {
+    return apiRequest<AiDuplicateCheckResult>({
+      method: 'POST',
+      url: PATHS.AI_VERIFICATION.CHECK_DUPLICATE.replace(':listingId', listingId),
+      // Candidate retrieval + LLM + image hashing can take a while.
       timeout: 60000,
     })
   }

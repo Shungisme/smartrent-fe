@@ -1836,6 +1836,20 @@
         "watermark": "Watermark / SĐT",
         "stockPhoto": "Ảnh mẫu"
       },
+      "duplicate": {
+        "title": "Kiểm tra trùng lặp",
+        "highestScore": "Điểm cao nhất",
+        "none": "Không phát hiện tin tương tự.",
+        "image": "Ảnh",
+        "text": "Nội dung",
+        "address": "Địa chỉ",
+        "price": "Giá",
+        "decision": {
+          "PASS": "Không trùng",
+          "SUSPICIOUS": "Nghi ngờ",
+          "DUPLICATE": "Trùng lặp"
+        }
+      },
       "level": {
         "low": "Thấp",
         "medium": "Trung bình",

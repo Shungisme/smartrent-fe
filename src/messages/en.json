@@ -1872,6 +1872,20 @@
         "watermark": "Watermark / phone",
         "stockPhoto": "Stock photo"
       },
+      "duplicate": {
+        "title": "Duplicate check",
+        "highestScore": "Highest score",
+        "none": "No similar listings found.",
+        "image": "Image",
+        "text": "Content",
+        "address": "Address",
+        "price": "Price",
+        "decision": {
+          "PASS": "No match",
+          "SUSPICIOUS": "Suspicious",
+          "DUPLICATE": "Duplicate"
+        }
+      },
       "level": {
         "low": "Low",
         "medium": "Medium",
