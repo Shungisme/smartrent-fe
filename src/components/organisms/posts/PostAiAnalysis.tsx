@@ -9,6 +9,7 @@ import {
   Lightbulb,
   CheckCircle2,
   XCircle,
+  Files,
 } from 'lucide-react'
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
@@ -17,6 +18,8 @@ import { UIPostData } from '@/types/posts.type'
 import { AiVerificationService } from '@/api/services/ai-verification.service'
 import {
   AiVerificationResult,
+  AiDuplicateCheckResult,
+  AiDuplicateDecision,
   AiSeverity,
   AiPriority,
 } from '@/api/types/ai-verification.type'
@@ -102,12 +105,14 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
   const t = useTranslations('posts')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<AiVerificationResult | null>(null)
+  const [duplicate, setDuplicate] = useState<AiDuplicateCheckResult | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [serviceAvailable, setServiceAvailable] = useState<boolean | null>(null)
 
   // Reset whenever the modal closes or the selected post changes.
   useEffect(() => {
     setResult(null)
+    setDuplicate(null)
     setError(null)
     setLoading(false)
   }, [post, open])
@@ -117,13 +122,33 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
     setLoading(true)
     setError(null)
     setResult(null)
+    setDuplicate(null)
     try {
       const payload = buildAiVerificationRequest(post)
-      const res = await AiVerificationService.verifyListing(payload)
-      if (res.success && res.data) {
-        setResult(res.data)
+      // Run verification + duplicate check concurrently. Each is independent:
+      // a duplicate-check failure is silent (advisory), while a verify failure
+      // surfaces the error banner.
+      const [verifyRes, dupRes] = await Promise.allSettled([
+        AiVerificationService.verifyListing(payload),
+        AiVerificationService.checkDuplicate(post.id),
+      ])
+
+      if (
+        verifyRes.status === 'fulfilled' &&
+        verifyRes.value.success &&
+        verifyRes.value.data
+      ) {
+        setResult(verifyRes.value.data)
       } else {
-        setError(res.message || t('aiAnalysis.error'))
+        setError(t('aiAnalysis.error'))
+      }
+
+      if (
+        dupRes.status === 'fulfilled' &&
+        dupRes.value.success &&
+        dupRes.value.data
+      ) {
+        setDuplicate(dupRes.value.data)
       }
     } catch {
       setError(t('aiAnalysis.error'))
@@ -131,6 +156,13 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
       setLoading(false)
     }
   }
+
+  const duplicateDecisionColor = (decision: AiDuplicateDecision) =>
+    decision === 'DUPLICATE'
+      ? 'bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30'
+      : decision === 'SUSPICIOUS'
+        ? 'bg-warning/10 text-warning-foreground dark:bg-warning/20 border-warning/30'
+        : 'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30'
 
   if (!post) return null
 
@@ -452,6 +484,75 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Duplicate detection — independent of the verify result */}
+      {duplicate && !loading && (
+        <div className='mt-4 rounded-xl border border-border/70 bg-card p-4'>
+          <div className='flex flex-wrap items-center justify-between gap-2'>
+            <div className='flex items-center gap-2'>
+              <Files className='h-4 w-4 text-primary' />
+              <span className='text-sm font-semibold text-foreground'>
+                {t('aiAnalysis.duplicate.title')}
+              </span>
+            </div>
+            <div className='flex items-center gap-2'>
+              <Badge
+                variant='outline'
+                className={cn(
+                  'text-xs',
+                  duplicateDecisionColor(duplicate.decision),
+                )}
+              >
+                {t(`aiAnalysis.duplicate.decision.${duplicate.decision}`)}
+              </Badge>
+              <span className='text-xs text-muted-foreground'>
+                {t('aiAnalysis.duplicate.highestScore')}:{' '}
+                <span className='font-semibold'>
+                  {toPercent(duplicate.highestScore)}%
+                </span>
+              </span>
+            </div>
+          </div>
+
+          {duplicate.suspiciousMatches.length === 0 ? (
+            <p className='mt-2 text-sm text-muted-foreground'>
+              {t('aiAnalysis.duplicate.none')}
+            </p>
+          ) : (
+            <div className='mt-3 space-y-2'>
+              {duplicate.suspiciousMatches.map((m, i) => (
+                <div key={i} className='rounded-lg border border-border/70 p-3'>
+                  <div className='flex items-center justify-between gap-2'>
+                    <span className='line-clamp-1 text-sm font-medium text-foreground'>
+                      {m.title || `#${m.listingId}`}
+                    </span>
+                    <Badge variant='outline' className='text-xs'>
+                      {toPercent(m.score)}%
+                    </Badge>
+                  </div>
+                  <div className='mt-1 text-[11px] text-muted-foreground'>
+                    #{m.listingId} · {t('aiAnalysis.duplicate.image')}:{' '}
+                    <span className='font-semibold'>
+                      {toPercent(m.imageSimilarity)}%
+                    </span>{' '}
+                    · {t('aiAnalysis.duplicate.text')}:{' '}
+                    {toPercent(m.descriptionSimilarity)}% ·{' '}
+                    {t('aiAnalysis.duplicate.address')}:{' '}
+                    {toPercent(m.addressSimilarity)}% ·{' '}
+                    {t('aiAnalysis.duplicate.price')}:{' '}
+                    {toPercent(m.priceSimilarity)}%
+                  </div>
+                  {m.llmReason && (
+                    <p className='mt-1 text-xs text-foreground/80'>
+                      {m.llmReason}
+                    </p>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>

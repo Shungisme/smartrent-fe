@@ -134,6 +134,35 @@ export interface AiVerificationResult {
 }
 
 // ---------------------------------------------------------------------------
+// Response data for POST /v1/ai/listings/{listingId}/check-duplicate
+//
+// NOTE: unlike the snake_case Python verification payload, the duplicate result
+// is a Spring Boot DTO (DuplicateCheckResponse) and comes back camelCase.
+// ---------------------------------------------------------------------------
+
+export type AiDuplicateDecision = 'PASS' | 'SUSPICIOUS' | 'DUPLICATE'
+
+export interface AiDuplicateMatch {
+  listingId: number | string | null
+  title: string
+  score: number
+  titleSimilarity: number
+  descriptionSimilarity: number
+  addressSimilarity: number
+  priceSimilarity: number
+  imageSimilarity: number
+  llmScore: number | null
+  llmReason: string | null
+}
+
+export interface AiDuplicateCheckResult {
+  isDuplicate: boolean
+  highestScore: number
+  decision: AiDuplicateDecision
+  suspiciousMatches: AiDuplicateMatch[]
+}
+
+// ---------------------------------------------------------------------------
 // Response data for GET /v1/ai/listings/service-status
 // ---------------------------------------------------------------------------
 

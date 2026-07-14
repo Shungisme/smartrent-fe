@@ -102,6 +102,7 @@ export const PATHS = {
   // AI listing verification endpoints (Spring Boot -> Python AI service)
   AI_VERIFICATION: {
     VERIFY: '/v1/ai/listings/verify', // POST run AI moderation on a listing payload
+    CHECK_DUPLICATE: '/v1/ai/listings/:listingId/check-duplicate', // POST run AI duplicate check for an existing listing
     SERVICE_STATUS: '/v1/ai/listings/service-status', // GET Python AI service reachability
     SCHEDULER_STATUS: '/v1/ai/listings/scheduler/status', // GET auto-moderation cronjob enabled state (admin)
     SCHEDULER_TOGGLE: '/v1/ai/listings/scheduler/toggle', // PUT enable/disable auto-moderation scheduler (admin)
