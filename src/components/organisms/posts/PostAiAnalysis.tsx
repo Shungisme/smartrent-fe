@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   XCircle,
   Files,
+  History,
 } from 'lucide-react'
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
@@ -104,17 +105,51 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
 }) => {
   const t = useTranslations('posts')
   const [loading, setLoading] = useState(false)
+  const [loadingStore, setLoadingStore] = useState(false)
   const [result, setResult] = useState<AiVerificationResult | null>(null)
   const [duplicate, setDuplicate] = useState<AiDuplicateCheckResult | null>(null)
+  const [loadedFromStore, setLoadedFromStore] = useState(false)
+  const [analyzedAt, setAnalyzedAt] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [serviceAvailable, setServiceAvailable] = useState<boolean | null>(null)
 
-  // Reset whenever the modal closes or the selected post changes.
+  // On open, reset and load any result the auto-moderation cronjob already
+  // stored — so reopening the modal shows the analysis instantly instead of
+  // re-running the AI (and re-spending Gemini tokens). Falls back to the manual
+  // "Run analysis" flow when nothing is stored yet.
   useEffect(() => {
     setResult(null)
     setDuplicate(null)
     setError(null)
     setLoading(false)
+    setLoadedFromStore(false)
+    setAnalyzedAt(null)
+
+    if (!open || !post) return
+
+    let cancelled = false
+    setLoadingStore(true)
+    AiVerificationService.getStoredResult(post.id)
+      .then((res) => {
+        if (cancelled) return
+        const data = res.success ? res.data : null
+        if (data && (data.verification || data.duplicateCheck)) {
+          if (data.verification) setResult(data.verification)
+          if (data.duplicateCheck) setDuplicate(data.duplicateCheck)
+          setLoadedFromStore(true)
+          setAnalyzedAt(data.analyzedAt ?? null)
+        }
+      })
+      .catch(() => {
+        // No stored result — silent; admin can run analysis manually.
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingStore(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
   }, [post, open])
 
   const runAnalysis = async () => {
@@ -123,6 +158,8 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
     setError(null)
     setResult(null)
     setDuplicate(null)
+    setLoadedFromStore(false)
+    setAnalyzedAt(null)
     try {
       const payload = buildAiVerificationRequest(post)
       // Run verification + duplicate check concurrently. Each is independent:
@@ -188,6 +225,26 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
         </div>
         <AiServiceStatusBadge onStatusChange={setServiceAvailable} />
       </div>
+
+      {/* Loaded from the auto-moderation cronjob's stored result */}
+      {loadedFromStore && !loading && (
+        <div className='mt-3 flex items-center gap-1.5 text-xs text-muted-foreground'>
+          <History className='h-3.5 w-3.5' />
+          {analyzedAt
+            ? t('aiAnalysis.storedNotice', {
+                time: new Date(analyzedAt).toLocaleString('vi-VN'),
+              })
+            : t('aiAnalysis.storedResult')}
+        </div>
+      )}
+
+      {/* Fetching the stored result */}
+      {loadingStore && !loading && !result && (
+        <div className='mt-3 flex items-center gap-2 text-sm text-muted-foreground'>
+          <Loader2 className='h-4 w-4 animate-spin' />
+          {t('aiAnalysis.loadingStored')}
+        </div>
+      )}
 
       {/* Loading */}
       {loading && (

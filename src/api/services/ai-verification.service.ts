@@ -4,6 +4,7 @@ import {
   AiVerificationRequest,
   AiVerificationResult,
   AiDuplicateCheckResult,
+  AiStoredModerationResult,
   AiServiceStatus,
   AiSchedulerStatus,
   ApiResponse,
@@ -56,6 +57,28 @@ export class AiVerificationService {
       url: PATHS.AI_VERIFICATION.CHECK_DUPLICATE.replace(':listingId', listingId),
       // Candidate retrieval + LLM + image hashing can take a while.
       timeout: 60000,
+    })
+  }
+
+  /**
+   * Fetch the AI moderation result the auto-moderation cronjob already stored
+   * for a listing, so the review UI can show it without re-running the AI.
+   * GET /v1/ai/listings/:listingId/moderation-result
+   *
+   * `data` is null when no stored result exists (e.g. the scheduler hasn't
+   * processed the listing yet).
+   *
+   * @param listingId - ID of the listing
+   */
+  static async getStoredResult(
+    listingId: string,
+  ): Promise<ApiResponse<AiStoredModerationResult | null>> {
+    return apiRequest<AiStoredModerationResult | null>({
+      method: 'GET',
+      url: PATHS.AI_VERIFICATION.MODERATION_RESULT.replace(
+        ':listingId',
+        listingId,
+      ),
     })
   }
 
