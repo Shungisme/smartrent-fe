@@ -51,6 +51,13 @@ const PostVerification = () => {
     fetchListings()
   }, [filterValues])
 
+  useEffect(() => {
+    const handleRefresh = () => fetchListings()
+    window.addEventListener('listing-pending-refresh', handleRefresh)
+    return () =>
+      window.removeEventListener('listing-pending-refresh', handleRefresh)
+  }, [filterValues])
+
   const fetchListings = async () => {
     try {
       if (initialLoading) {

@@ -44,6 +44,12 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
       if (notification.type === NotificationType.BROKER_REGISTRATION_RECEIVED) {
         window.dispatchEvent(new CustomEvent('broker-pending-refresh'))
       }
+      if (
+        notification.type === NotificationType.NEW_LISTING_PENDING_REVIEW ||
+        notification.type === NotificationType.LISTING_RESUBMITTED
+      ) {
+        window.dispatchEvent(new CustomEvent('listing-pending-refresh'))
+      }
       console.log('[NotificationProvider] New notification:', notification)
     },
   })
