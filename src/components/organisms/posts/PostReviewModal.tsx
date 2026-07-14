@@ -271,8 +271,20 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
             </DialogTitle>
           </DialogHeader>
 
-          <div className='min-h-0 flex-1 overflow-y-auto px-6 py-5'>
-            <div className='space-y-5'>
+          <div
+            className={cn(
+              'flex min-h-0 flex-1 flex-col overflow-y-auto',
+              isPending && 'lg:flex-row lg:overflow-hidden',
+            )}
+          >
+            {/* Left column — listing details */}
+            <div
+              className={cn(
+                'space-y-5 px-6 py-5',
+                isPending &&
+                  'lg:flex-1 lg:overflow-y-auto lg:border-r lg:border-border/60',
+              )}
+            >
               {/* Hero: title, code, listing type, status & price */}
               <div className='rounded-xl border border-border/70 bg-gradient-to-br from-primary/5 via-card to-card p-5 shadow-sm md:p-6'>
                 <div className='flex items-start justify-between gap-4'>
@@ -467,11 +479,40 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                 </div>
               </div>
 
-              {/* AI-assisted analysis (advisory only) */}
-              {isPending && <PostAiAnalysis post={selectedPost} open={open} />}
+              {/* Display existing notes if already reviewed (single-column view) */}
+              {!isPending && (
+                <>
+                  {selectedPost.verificationNotes && (
+                    <div>
+                      <SectionLabel icon={FileText}>
+                        {t('review.verificationNotes')}
+                      </SectionLabel>
+                      <div className='rounded-lg border border-border/70 bg-muted/30 p-4 text-sm text-muted-foreground'>
+                        {selectedPost.verificationNotes}
+                      </div>
+                    </div>
+                  )}
+                  {selectedPost.rejectionReason && (
+                    <div>
+                      <SectionLabel icon={XCircle}>
+                        {t('review.rejectionReason')}
+                      </SectionLabel>
+                      <div className='rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive'>
+                        {selectedPost.rejectionReason}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
 
-              {/* Rejection Reason / Verification Notes */}
-              {isPending && (
+            {/* Right column — AI analysis + moderation form (pending only) */}
+            {isPending && (
+              <div className='space-y-5 px-6 py-5 lg:w-[440px] lg:shrink-0 lg:overflow-y-auto'>
+                {/* AI-assisted analysis (advisory only) */}
+                <PostAiAnalysis post={selectedPost} open={open} />
+
+                {/* Rejection Reason / Verification Notes */}
                 <div className='space-y-4 rounded-lg border border-border/70 bg-muted/30 p-4'>
                   <div>
                     <label
@@ -506,34 +547,8 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                     />
                   </div>
                 </div>
-              )}
-
-              {/* Display existing notes if already reviewed */}
-              {!isPending && (
-                <>
-                  {selectedPost.verificationNotes && (
-                    <div>
-                      <SectionLabel icon={FileText}>
-                        {t('review.verificationNotes')}
-                      </SectionLabel>
-                      <div className='rounded-lg border border-border/70 bg-muted/30 p-4 text-sm text-muted-foreground'>
-                        {selectedPost.verificationNotes}
-                      </div>
-                    </div>
-                  )}
-                  {selectedPost.rejectionReason && (
-                    <div>
-                      <SectionLabel icon={XCircle}>
-                        {t('review.rejectionReason')}
-                      </SectionLabel>
-                      <div className='rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive'>
-                        {selectedPost.rejectionReason}
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* Action Buttons */}
