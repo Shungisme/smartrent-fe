@@ -62,12 +62,14 @@ const ValidationCard: React.FC<{
   issuesLabel,
 }) => (
   <div className='rounded-lg border border-border/70 p-3'>
-    <div className='flex items-center justify-between gap-2'>
-      <span className='text-sm font-medium text-foreground'>{title}</span>
+    <div className='flex items-start justify-between gap-2'>
+      <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
+        {title}
+      </span>
       <Badge
         variant='outline'
         className={cn(
-          'text-xs',
+          'shrink-0 text-xs',
           valid
             ? 'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30'
             : 'bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30',
@@ -76,10 +78,12 @@ const ValidationCard: React.FC<{
         {valid ? validLabel : invalidLabel}
       </Badge>
     </div>
-    <div className='mt-2 text-xs text-muted-foreground'>
-      {scoreLabel}: <span className='font-semibold'>{scorePct}%</span>
+    <div className='mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground'>
+      <span>
+        {scoreLabel}: <span className='font-semibold'>{scorePct}%</span>
+      </span>
       {stats?.map((s) => (
-        <span key={s.label} className='ml-2'>
+        <span key={s.label}>
           {s.label}: <span className='font-semibold'>{s.value}</span>
         </span>
       ))}
@@ -91,7 +95,9 @@ const ValidationCard: React.FC<{
         </div>
         <ul className='mt-1 list-inside list-disc space-y-0.5 text-xs text-muted-foreground'>
           {issues.map((issue, i) => (
-            <li key={i}>{issue}</li>
+            <li key={i} className='break-words'>
+              {issue}
+            </li>
           ))}
         </ul>
       </div>
@@ -214,7 +220,14 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
   }
 
   return (
-    <div className='rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10 p-4'>
+    // @container: this panel is rendered at very different widths depending on
+    // context — a fixed ~440px sidebar on desktop review, but the full modal
+    // width when the dialog stacks to a single column on smaller screens. The
+    // grids below key off the panel's own rendered width (container queries)
+    // rather than the viewport (`sm:`/`md:`), which previously made them try to
+    // fit 2-3 columns into ~400px any time the viewport itself was wide enough
+    // — cramming badges and labels until they wrapped and broke the layout.
+    <div className='@container rounded-xl border border-primary/20 bg-primary/5 dark:bg-primary/10 p-4'>
       {/* Header */}
       <div className='flex flex-wrap items-center justify-between gap-3'>
         <div className='flex items-center gap-2'>
@@ -292,8 +305,10 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
 
           {/* Score + suggestion summary — three cards on one baseline grid.
               Each card is a flex column with a pinned footer (mt-auto) so the
-              rows line up no matter which card is tallest. */}
-          <div className='grid grid-cols-1 gap-3 sm:grid-cols-3'>
+              rows line up no matter which card is tallest. @lg (>=512px of
+              panel width, not viewport) is the point at which 3 columns have
+              room to breathe; below that they stack full-width. */}
+          <div className='grid grid-cols-1 gap-3 @lg:grid-cols-3'>
             <div
               className={cn(
                 'flex flex-col rounded-lg border p-3',
@@ -365,7 +380,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
             <div className='text-xs font-medium text-foreground/80'>
               {t('aiAnalysis.reasonTitle')}
             </div>
-            <p className='mt-1 text-sm text-muted-foreground'>
+            <p className='mt-1 break-words text-sm text-muted-foreground'>
               {result.reason.details || t('aiAnalysis.noIssues')}
             </p>
             <div className='mt-2 flex flex-wrap gap-1.5'>
@@ -429,7 +444,10 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
             <div className='mb-1.5 text-xs font-medium text-foreground/80'>
               {t('aiAnalysis.validations')}
             </div>
-            <div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+            {/* @md (>=448px of panel width): the 440px desktop sidebar stays
+                single-column here on purpose — each ValidationCard's stat row
+                needs more than ~200px to stay on one line. */}
+            <div className='grid grid-cols-1 gap-3 @md:grid-cols-2'>
               <ValidationCard
                 title={t('aiAnalysis.imageValidation')}
                 valid={result.image_validation.is_valid}
@@ -521,22 +539,25 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     key={i}
                     className='rounded-lg border border-destructive/30 bg-destructive/10 dark:bg-destructive/20 p-3'
                   >
-                    <div className='flex items-center justify-between gap-2'>
-                      <span className='text-sm font-medium text-foreground'>
+                    <div className='flex items-start justify-between gap-2'>
+                      <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
                         {v.category}
                       </span>
                       <Badge
                         variant='outline'
-                        className={cn('text-xs', getSeverityColor(v.severity))}
+                        className={cn(
+                          'shrink-0 text-xs',
+                          getSeverityColor(v.severity),
+                        )}
                       >
                         {levelLabel(v.severity)}
                       </Badge>
                     </div>
-                    <p className='mt-1 text-sm text-foreground/80'>
+                    <p className='mt-1 break-words text-sm text-foreground/80'>
                       {v.message}
                     </p>
                     {v.field && (
-                      <p className='mt-0.5 text-xs text-muted-foreground'>
+                      <p className='mt-0.5 break-words text-xs text-muted-foreground'>
                         {t('aiAnalysis.field')}: {v.field}
                       </p>
                     )}
@@ -559,22 +580,25 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     key={i}
                     className='rounded-lg border border-warning/30 bg-warning/10 dark:bg-warning/20 p-3'
                   >
-                    <div className='flex items-center justify-between gap-2'>
-                      <span className='text-sm font-medium text-foreground'>
+                    <div className='flex items-start justify-between gap-2'>
+                      <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
                         {s.category}
                       </span>
                       <Badge
                         variant='outline'
-                        className={cn('text-xs', getSeverityColor(s.priority))}
+                        className={cn(
+                          'shrink-0 text-xs',
+                          getSeverityColor(s.priority),
+                        )}
                       >
                         {levelLabel(s.priority)}
                       </Badge>
                     </div>
-                    <p className='mt-1 text-sm text-foreground/80'>
+                    <p className='mt-1 break-words text-sm text-foreground/80'>
                       {s.message}
                     </p>
                     {s.field && (
-                      <p className='mt-0.5 text-xs text-muted-foreground'>
+                      <p className='mt-0.5 break-words text-xs text-muted-foreground'>
                         {t('aiAnalysis.field')}: {s.field}
                       </p>
                     )}
@@ -624,10 +648,14 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
               {duplicate.suspiciousMatches.map((m, i) => (
                 <div key={i} className='rounded-lg border border-border/70 p-3'>
                   <div className='flex items-center justify-between gap-2'>
-                    <span className='line-clamp-1 text-sm font-medium text-foreground'>
+                    {/* min-w-0 is required for line-clamp to take effect inside
+                        a flex row — without it the item refuses to shrink below
+                        its content's natural width and just pushes the badge
+                        out / overflows instead of truncating. */}
+                    <span className='line-clamp-1 min-w-0 flex-1 text-sm font-medium text-foreground'>
                       {m.title || `#${m.listingId}`}
                     </span>
-                    <Badge variant='outline' className='text-xs'>
+                    <Badge variant='outline' className='shrink-0 text-xs'>
                       {toPercent(m.score)}%
                     </Badge>
                   </div>
@@ -644,7 +672,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     {toPercent(m.priceSimilarity)}%
                   </div>
                   {m.llmReason && (
-                    <p className='mt-1 text-xs text-foreground/80'>
+                    <p className='mt-1 break-words text-xs text-foreground/80'>
                       {m.llmReason}
                     </p>
                   )}
