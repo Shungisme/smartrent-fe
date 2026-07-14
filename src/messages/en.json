@@ -1830,10 +1830,6 @@
       "loadingStored": "Loading saved result…",
       "storedResult": "Auto-moderation result",
       "storedNotice": "Auto-moderation result at {time}",
-      "degraded": {
-        "title": "AI could not analyse — these are not AI scores",
-        "description": "The scores below come from basic checks (required fields, image count…), not an AI assessment. Please review this listing manually."
-      },
       "error": "AI verification failed. Please try again.",
       "serviceOnline": "AI service online",
       "serviceOffline": "AI service offline",
