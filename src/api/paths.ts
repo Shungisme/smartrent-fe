@@ -105,8 +105,8 @@ export const PATHS = {
     CHECK_DUPLICATE: '/v1/ai/listings/:listingId/check-duplicate', // POST run AI duplicate check for an existing listing
     MODERATION_RESULT: '/v1/ai/listings/:listingId/moderation-result', // GET stored auto-moderation AI result
     SERVICE_STATUS: '/v1/ai/listings/service-status', // GET Python AI service reachability
-    SCHEDULER_STATUS: '/v1/ai/listings/scheduler/status', // GET auto-moderation cronjob enabled state (admin)
-    SCHEDULER_TOGGLE: '/v1/ai/listings/scheduler/toggle', // PUT enable/disable auto-moderation scheduler (admin)
+    AUTO_VERIFY_STATUS: '/v1/ai/listings/auto-verify/status', // GET whether the review dialog auto-runs AI on open (admin)
+    AUTO_VERIFY_TOGGLE: '/v1/ai/listings/auto-verify/toggle', // PUT enable/disable dialog auto-verify (admin)
   },
 
   // News endpoints

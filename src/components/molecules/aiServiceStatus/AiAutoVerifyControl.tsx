@@ -9,7 +9,7 @@ import { AiVerificationService } from '@/api/services/ai-verification.service'
 import { useAuthStore } from '@/store/auth/index.store'
 
 /**
- * Admin roles allowed to read/toggle the auto-moderation scheduler.
+ * Admin roles allowed to read/toggle AI auto-verify.
  *
  * The JWT's `user.roles` carries human-readable role names (e.g. "Super Admin"),
  * not the short codes the admin-list API returns ("SA"). We accept both so the
@@ -24,21 +24,22 @@ const ALLOWED_ROLES = [
   'Support Admin',
 ]
 
-interface AiSchedulerControlProps {
+interface AiAutoVerifyControlProps {
   className?: string
 }
 
 /**
- * Admin control for the AI auto-moderation scheduler.
+ * Admin control for AI auto-verify.
  *
- * Reads the current enabled/paused state on mount and lets allowed admins
- * (SA / UA / SPA) flip the background cronjob ON or OFF at runtime. The
- * backend flag is in-memory and resets to enabled on server restart, which is
- * surfaced to the admin via the helper copy.
+ * Reads the current enabled/disabled state on mount and lets allowed admins
+ * (SA / UA / SPA) flip it ON or OFF. When ON, the post review dialog
+ * auto-runs AI analysis as soon as it opens instead of requiring a manual
+ * "Verify" click. The flag is persisted in the DB and survives server
+ * restarts.
  *
  * Renders nothing for admins whose roles are not permitted to manage it.
  */
-export const AiSchedulerControl: React.FC<AiSchedulerControlProps> = ({
+export const AiAutoVerifyControl: React.FC<AiAutoVerifyControlProps> = ({
   className,
 }) => {
   const t = useTranslations('posts')
@@ -52,9 +53,9 @@ export const AiSchedulerControl: React.FC<AiSchedulerControlProps> = ({
   const fetchStatus = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await AiVerificationService.getSchedulerStatus()
+      const res = await AiVerificationService.getAutoVerifyStatus()
       if (res.success && res.data) {
-        setEnabled(res.data.aiSchedulerEnabled)
+        setEnabled(res.data.aiAutoVerifyEnabled)
       } else {
         setEnabled(null)
       }
@@ -76,19 +77,21 @@ export const AiSchedulerControl: React.FC<AiSchedulerControlProps> = ({
     // Optimistic update; revert on failure.
     setEnabled(next)
     try {
-      const res = await AiVerificationService.toggleScheduler(next)
+      const res = await AiVerificationService.toggleAutoVerify(next)
       if (res.success && res.data) {
-        setEnabled(res.data.aiSchedulerEnabled)
+        setEnabled(res.data.aiAutoVerifyEnabled)
         toast.success(
-          next ? t('aiScheduler.enabledToast') : t('aiScheduler.disabledToast'),
+          next
+            ? t('aiAutoVerify.enabledToast')
+            : t('aiAutoVerify.disabledToast'),
         )
       } else {
         setEnabled(!next)
-        toast.error(res.message || t('aiScheduler.toggleError'))
+        toast.error(res.message || t('aiAutoVerify.toggleError'))
       }
     } catch {
       setEnabled(!next)
-      toast.error(t('aiScheduler.toggleError'))
+      toast.error(t('aiAutoVerify.toggleError'))
     } finally {
       setToggling(false)
     }
@@ -118,7 +121,7 @@ export const AiSchedulerControl: React.FC<AiSchedulerControlProps> = ({
         </span>
         <div className='space-y-0.5'>
           <div className='flex items-center gap-2 text-sm font-semibold text-foreground'>
-            {t('aiScheduler.title')}
+            {t('aiAutoVerify.title')}
             {!loading && enabled !== null && (
               <span
                 className={cn(
@@ -134,15 +137,14 @@ export const AiSchedulerControl: React.FC<AiSchedulerControlProps> = ({
                     isOn ? 'bg-success' : 'bg-muted-foreground',
                   )}
                 />
-                {isOn ? t('aiScheduler.statusOn') : t('aiScheduler.statusOff')}
+                {isOn
+                  ? t('aiAutoVerify.statusOn')
+                  : t('aiAutoVerify.statusOff')}
               </span>
             )}
           </div>
           <p className='max-w-md text-xs text-muted-foreground'>
-            {t('aiScheduler.description')}
-          </p>
-          <p className='text-[11px] text-muted-foreground/70'>
-            {t('aiScheduler.restartNote')}
+            {t('aiAutoVerify.description')}
           </p>
         </div>
       </div>
@@ -150,7 +152,7 @@ export const AiSchedulerControl: React.FC<AiSchedulerControlProps> = ({
       {loading ? (
         <div className='flex items-center gap-2 text-xs text-muted-foreground'>
           <Loader2 className='h-4 w-4 animate-spin' />
-          {t('aiScheduler.loading')}
+          {t('aiAutoVerify.loading')}
         </div>
       ) : enabled === null ? (
         <button
@@ -158,14 +160,14 @@ export const AiSchedulerControl: React.FC<AiSchedulerControlProps> = ({
           onClick={fetchStatus}
           className='text-xs font-medium text-primary transition-colors hover:text-primary/80'
         >
-          {t('aiScheduler.retry')}
+          {t('aiAutoVerify.retry')}
         </button>
       ) : (
         <button
           type='button'
           role='switch'
           aria-checked={isOn}
-          aria-label={t('aiScheduler.title')}
+          aria-label={t('aiAutoVerify.title')}
           onClick={handleToggle}
           disabled={toggling}
           className={cn(

@@ -188,19 +188,22 @@ export interface AiServiceStatus {
 }
 
 // ---------------------------------------------------------------------------
-// Admin scheduler control
-//   GET /v1/ai/listings/scheduler/status
-//   PUT /v1/ai/listings/scheduler/toggle?enabled={true|false}
+// Admin auto-verify control
+//   GET /v1/ai/listings/auto-verify/status
+//   PUT /v1/ai/listings/auto-verify/toggle?enabled={true|false}
 //
 // Requires an admin Bearer token + X-Admin-Id header (injected automatically by
 // the axios request interceptor). Roles allowed: SA, UA, SPA.
+//
+// When enabled, the post review dialog auto-runs AI analysis as soon as it
+// opens instead of requiring a manual "Verify" click. Persisted in the DB.
 //
 // NOTE: backend fields here are camelCase (Spring Boot DTO), unlike the
 // snake_case Python verification payload above.
 // ---------------------------------------------------------------------------
 
-export interface AiSchedulerStatus {
-  aiSchedulerEnabled: boolean
+export interface AiAutoVerifySetting {
+  aiAutoVerifyEnabled: boolean
   checkedAt?: string
   /** Present on toggle responses. */
   updatedAt?: string

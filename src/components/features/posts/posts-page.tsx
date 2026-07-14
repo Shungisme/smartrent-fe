@@ -15,7 +15,7 @@ import {
 import { PostStats } from '@/components/molecules/posts/PostStats'
 import { PostTable } from '@/components/organisms/posts/PostTable'
 import { PostReviewModal } from '@/components/organisms/posts/PostReviewModal'
-import { AiSchedulerControl } from '@/components/molecules/aiServiceStatus/AiSchedulerControl'
+import { AiAutoVerifyControl } from '@/components/molecules/aiServiceStatus/AiAutoVerifyControl'
 
 // Backend success envelope code (see constants/env API_RESPONSE_CODES.SUCCESS).
 const SUCCESS_CODE = '999999'
@@ -273,7 +273,7 @@ const PostVerification = () => {
         </div>
       ) : (
         <div className='space-y-6'>
-          <AiSchedulerControl />
+          <AiAutoVerifyControl />
 
           <PostStats stats={stats} />
 

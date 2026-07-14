@@ -6,7 +6,7 @@ import {
   AiDuplicateCheckResult,
   AiStoredModerationResult,
   AiServiceStatus,
-  AiSchedulerStatus,
+  AiAutoVerifySetting,
   ApiResponse,
 } from '@/api/types/ai-verification.type'
 
@@ -54,7 +54,10 @@ export class AiVerificationService {
   ): Promise<ApiResponse<AiDuplicateCheckResult>> {
     return apiRequest<AiDuplicateCheckResult>({
       method: 'POST',
-      url: PATHS.AI_VERIFICATION.CHECK_DUPLICATE.replace(':listingId', listingId),
+      url: PATHS.AI_VERIFICATION.CHECK_DUPLICATE.replace(
+        ':listingId',
+        listingId,
+      ),
       // Candidate retrieval + LLM + image hashing can take a while.
       timeout: 60000,
     })
@@ -94,33 +97,34 @@ export class AiVerificationService {
   }
 
   /**
-   * Read whether the background AI auto-moderation cronjob is enabled.
-   * GET /v1/ai/listings/scheduler/status
+   * Read whether the review dialog auto-runs AI analysis on open.
+   * GET /v1/ai/listings/auto-verify/status
    *
    * Admin only (Bearer token + X-Admin-Id added by the axios interceptor).
    */
-  static async getSchedulerStatus(): Promise<ApiResponse<AiSchedulerStatus>> {
-    return apiRequest<AiSchedulerStatus>({
+  static async getAutoVerifyStatus(): Promise<
+    ApiResponse<AiAutoVerifySetting>
+  > {
+    return apiRequest<AiAutoVerifySetting>({
       method: 'GET',
-      url: PATHS.AI_VERIFICATION.SCHEDULER_STATUS,
+      url: PATHS.AI_VERIFICATION.AUTO_VERIFY_STATUS,
     })
   }
 
   /**
-   * Enable or disable the AI auto-moderation scheduler at runtime.
-   * PUT /v1/ai/listings/scheduler/toggle?enabled={true|false}
+   * Enable or disable dialog auto-verify at runtime.
+   * PUT /v1/ai/listings/auto-verify/toggle?enabled={true|false}
    *
-   * Admin only. The toggle is an in-memory runtime flag on the backend and
-   * resets to enabled on server restart.
+   * Admin only. Persisted in the DB, survives server restarts.
    *
-   * @param enabled - true to resume batch processing, false to pause it
+   * @param enabled - true to auto-run AI analysis when the review dialog opens, false to require a manual click
    */
-  static async toggleScheduler(
+  static async toggleAutoVerify(
     enabled: boolean,
-  ): Promise<ApiResponse<AiSchedulerStatus>> {
-    return apiRequest<AiSchedulerStatus>({
+  ): Promise<ApiResponse<AiAutoVerifySetting>> {
+    return apiRequest<AiAutoVerifySetting>({
       method: 'PUT',
-      url: PATHS.AI_VERIFICATION.SCHEDULER_TOGGLE,
+      url: PATHS.AI_VERIFICATION.AUTO_VERIFY_TOGGLE,
       params: { enabled },
     })
   }

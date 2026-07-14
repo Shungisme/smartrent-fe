@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import {
   Sparkles,
@@ -107,52 +107,15 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
   const [loading, setLoading] = useState(false)
   const [loadingStore, setLoadingStore] = useState(false)
   const [result, setResult] = useState<AiVerificationResult | null>(null)
-  const [duplicate, setDuplicate] = useState<AiDuplicateCheckResult | null>(null)
+  const [duplicate, setDuplicate] = useState<AiDuplicateCheckResult | null>(
+    null,
+  )
   const [loadedFromStore, setLoadedFromStore] = useState(false)
   const [analyzedAt, setAnalyzedAt] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [serviceAvailable, setServiceAvailable] = useState<boolean | null>(null)
 
-  // On open, reset and load any result the auto-moderation cronjob already
-  // stored — so reopening the modal shows the analysis instantly instead of
-  // re-running the AI (and re-spending Gemini tokens). Falls back to the manual
-  // "Run analysis" flow when nothing is stored yet.
-  useEffect(() => {
-    setResult(null)
-    setDuplicate(null)
-    setError(null)
-    setLoading(false)
-    setLoadedFromStore(false)
-    setAnalyzedAt(null)
-
-    if (!open || !post) return
-
-    let cancelled = false
-    setLoadingStore(true)
-    AiVerificationService.getStoredResult(post.id)
-      .then((res) => {
-        if (cancelled) return
-        const data = res.success ? res.data : null
-        if (data && (data.verification || data.duplicateCheck)) {
-          if (data.verification) setResult(data.verification)
-          if (data.duplicateCheck) setDuplicate(data.duplicateCheck)
-          setLoadedFromStore(true)
-          setAnalyzedAt(data.analyzedAt ?? null)
-        }
-      })
-      .catch(() => {
-        // No stored result — silent; admin can run analysis manually.
-      })
-      .finally(() => {
-        if (!cancelled) setLoadingStore(false)
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [post, open])
-
-  const runAnalysis = async () => {
+  const runAnalysis = useCallback(async () => {
     if (!post) return
     setLoading(true)
     setError(null)
@@ -192,7 +155,55 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
     } finally {
       setLoading(false)
     }
-  }
+  }, [post, t])
+
+  // On open: reset, then show any already-stored AI result instantly (no
+  // re-run, no re-spent Gemini tokens). If nothing is stored yet, auto-run the
+  // analysis when the admin's auto-verify setting is on — so the dialog shows
+  // AI results on open without a manual "Verify" click. Falls back to the
+  // manual button when auto-verify is off or the status check fails.
+  useEffect(() => {
+    setResult(null)
+    setDuplicate(null)
+    setError(null)
+    setLoading(false)
+    setLoadedFromStore(false)
+    setAnalyzedAt(null)
+
+    if (!open || !post) return
+
+    let cancelled = false
+    setLoadingStore(true)
+    AiVerificationService.getStoredResult(post.id)
+      .then((res) => {
+        if (cancelled) return
+        const data = res.success ? res.data : null
+        if (data && (data.verification || data.duplicateCheck)) {
+          if (data.verification) setResult(data.verification)
+          if (data.duplicateCheck) setDuplicate(data.duplicateCheck)
+          setLoadedFromStore(true)
+          setAnalyzedAt(data.analyzedAt ?? null)
+          return
+        }
+        // Nothing stored — auto-run when auto-verify is enabled.
+        return AiVerificationService.getAutoVerifyStatus().then((statusRes) => {
+          if (cancelled) return
+          if (statusRes.success && statusRes.data?.aiAutoVerifyEnabled) {
+            runAnalysis()
+          }
+        })
+      })
+      .catch(() => {
+        // No stored result / status — silent; admin can run analysis manually.
+      })
+      .finally(() => {
+        if (!cancelled) setLoadingStore(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [post, open, runAnalysis])
 
   const duplicateDecisionColor = (decision: AiDuplicateDecision) =>
     decision === 'DUPLICATE'

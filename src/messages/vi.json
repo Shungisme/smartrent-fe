@@ -1774,17 +1774,16 @@
       "unhide": "Hiện lại",
       "hideReason": "Tạm ẩn bởi quản trị viên"
     },
-    "aiScheduler": {
-      "title": "Tự động kiểm duyệt AI",
-      "description": "Khi bật, các tin đang chờ sẽ được AI phân tích tự động mỗi 5 phút. Khi tạm dừng, các tin sẽ chờ duyệt thủ công.",
-      "restartNote": "Cài đặt thời gian chạy — sẽ tự bật lại khi máy chủ khởi động lại.",
-      "statusOn": "Đang hoạt động",
-      "statusOff": "Tạm dừng",
-      "loading": "Đang tải bộ lập lịch...",
+    "aiAutoVerify": {
+      "title": "Tự động phân tích AI khi mở bài đăng",
+      "description": "Khi bật, AI sẽ tự động phân tích ngay khi mở dialog xem xét bài đăng, không cần bấm nút Xác minh. Khi tắt, quản trị viên phải bấm nút để chạy AI thủ công.",
+      "statusOn": "Đang bật",
+      "statusOff": "Đang tắt",
+      "loading": "Đang tải cài đặt...",
       "retry": "Thử lại",
-      "enabledToast": "Đã bật tự động kiểm duyệt AI. Các tin sẽ được xử lý tự động.",
-      "disabledToast": "Đã tạm dừng tự động kiểm duyệt AI. Các tin sẽ cần duyệt thủ công.",
-      "toggleError": "Cập nhật bộ lập lịch thất bại. Vui lòng thử lại."
+      "enabledToast": "Đã bật tự động phân tích AI khi mở bài đăng.",
+      "disabledToast": "Đã tắt tự động phân tích AI. Cần bấm nút Xác minh thủ công.",
+      "toggleError": "Cập nhật cài đặt thất bại. Vui lòng thử lại."
     },
     "aiAnalysis": {
       "title": "Phân tích AI",

@@ -1810,17 +1810,16 @@
       "unhide": "Unhide",
       "hideReason": "Temporarily hidden by admin"
     },
-    "aiScheduler": {
-      "title": "AI Auto-Moderation",
-      "description": "When enabled, pending listings are automatically analyzed by AI every 5 minutes. When paused, listings wait for manual review.",
-      "restartNote": "Runtime setting — resets to enabled when the server restarts.",
-      "statusOn": "Active",
-      "statusOff": "Paused",
-      "loading": "Loading scheduler...",
+    "aiAutoVerify": {
+      "title": "Auto-run AI analysis on open",
+      "description": "When enabled, AI analysis runs automatically as soon as the post review dialog opens, no need to click Verify. When disabled, admins must click the button to run AI manually.",
+      "statusOn": "Enabled",
+      "statusOff": "Disabled",
+      "loading": "Loading setting...",
       "retry": "Retry",
-      "enabledToast": "AI auto-moderation enabled. Listings will be processed automatically.",
-      "disabledToast": "AI auto-moderation paused. Listings will require manual review.",
-      "toggleError": "Failed to update the scheduler. Please try again."
+      "enabledToast": "Auto-run AI analysis on dialog open is now enabled.",
+      "disabledToast": "Auto-run AI analysis is disabled. Admins must click Verify manually.",
+      "toggleError": "Failed to update the setting. Please try again."
     },
     "aiAnalysis": {
       "title": "AI Analysis",
