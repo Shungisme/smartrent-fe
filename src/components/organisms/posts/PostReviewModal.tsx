@@ -248,7 +248,8 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   const images = selectedPost.images ?? []
   const visibleImages = images.slice(0, MAX_VISIBLE_THUMBS)
   const hiddenCount = images.length - visibleImages.length
-  const isPending = selectedPost.status === 'pending'
+  const isPending =
+    selectedPost.status === 'pending' || selectedPost.status === 'resubmitted'
 
   return (
     <>
