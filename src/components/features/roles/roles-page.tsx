@@ -10,8 +10,7 @@ import { Button } from '@/components/atoms/button'
 import { getRoles } from '@/api/services/role.service'
 import { Role } from '@/api/types/role.type'
 import { useTranslations } from 'next-intl'
-import { Plus, Pencil, Trash2 } from 'lucide-react'
-import { RoleCreateDialog } from '@/components/organisms/roles/RoleCreateDialog'
+import { Pencil, Trash2 } from 'lucide-react'
 import { RoleEditDialog } from '@/components/organisms/roles/RoleEditDialog'
 import { RoleDeleteDialog } from '@/components/organisms/roles/RoleDeleteDialog'
 import { useCanWrite } from '@/hooks/usePermissions'
@@ -31,7 +30,6 @@ const RoleManagement = () => {
     pageSize: 20,
   })
   const [totalItems, setTotalItems] = useState(0)
-  const [showCreate, setShowCreate] = useState(false)
   const [showEdit, setShowEdit] = useState<Role | null>(null)
   const [showDelete, setShowDelete] = useState<Role | null>(null)
 
@@ -116,14 +114,6 @@ const RoleManagement = () => {
           data={transformedRoles}
           columns={columns}
           filters={filterConfig}
-          toolbarActions={
-            canWrite ? (
-              <Button size='sm' onClick={() => setShowCreate(true)}>
-                <Plus className='h-4 w-4' />
-                {t('createNewRole')}
-              </Button>
-            ) : undefined
-          }
           filterMode='api'
           filterValues={filterValues}
           onFilterChange={handleFilterChange}
@@ -166,12 +156,6 @@ const RoleManagement = () => {
                 )
               : undefined
           }
-        />
-
-        <RoleCreateDialog
-          open={showCreate}
-          onOpenChange={setShowCreate}
-          onSuccess={fetchRoles}
         />
 
         <RoleEditDialog
