@@ -32,10 +32,11 @@ interface AiAutoVerifyControlProps {
  * Admin control for AI auto-verify.
  *
  * Reads the current enabled/disabled state on mount and lets allowed admins
- * (SA / UA / SPA) flip it ON or OFF. When ON, the post review dialog
- * auto-runs AI analysis as soon as it opens instead of requiring a manual
- * "Verify" click. The flag is persisted in the DB and survives server
- * restarts.
+ * (SA / UA / SPA) flip it ON or OFF. When ON, a background job analyses pending
+ * listings ahead of time and stores the result, so the review dialog shows it
+ * the instant it opens rather than the admin clicking Verify and waiting. It
+ * never approves or rejects — the admin still decides. The flag is persisted in
+ * the DB and survives server restarts.
  *
  * Renders nothing for admins whose roles are not permitted to manage it.
  */

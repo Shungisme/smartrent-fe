@@ -1775,14 +1775,14 @@
       "hideReason": "Tạm ẩn bởi quản trị viên"
     },
     "aiAutoVerify": {
-      "title": "Tự động phân tích AI khi mở bài đăng",
-      "description": "Khi bật, AI sẽ tự động phân tích ngay khi mở dialog xem xét bài đăng, không cần bấm nút Xác minh. Khi tắt, quản trị viên phải bấm nút để chạy AI thủ công.",
+      "title": "Tự động phân tích AI nền",
+      "description": "Khi bật, AI chạy ngầm phân tích sẵn các tin đang chờ và lưu kết quả — mở dialog xem xét là thấy kết quả ngay, không phải đợi. AI không tự duyệt/từ chối, quản trị viên vẫn quyết định. Khi tắt, phải bấm nút Xác minh để chạy AI thủ công.",
       "statusOn": "Đang bật",
       "statusOff": "Đang tắt",
       "loading": "Đang tải cài đặt...",
       "retry": "Thử lại",
-      "enabledToast": "Đã bật tự động phân tích AI khi mở bài đăng.",
-      "disabledToast": "Đã tắt tự động phân tích AI. Cần bấm nút Xác minh thủ công.",
+      "enabledToast": "Đã bật phân tích AI nền. Kết quả sẽ có sẵn khi mở dialog xem xét.",
+      "disabledToast": "Đã tắt phân tích AI nền. Cần bấm nút Xác minh thủ công.",
       "toggleError": "Cập nhật cài đặt thất bại. Vui lòng thử lại."
     },
     "aiAnalysis": {

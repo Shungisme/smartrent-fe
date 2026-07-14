@@ -1811,14 +1811,14 @@
       "hideReason": "Temporarily hidden by admin"
     },
     "aiAutoVerify": {
-      "title": "Auto-run AI analysis on open",
-      "description": "When enabled, AI analysis runs automatically as soon as the post review dialog opens, no need to click Verify. When disabled, admins must click the button to run AI manually.",
+      "title": "Background AI analysis",
+      "description": "When enabled, pending listings are analysed by AI in the background and the result is stored — so the review dialog shows it instantly on open, with no waiting. It never approves or rejects; admins still decide. When disabled, admins click Verify to run the AI manually.",
       "statusOn": "Enabled",
       "statusOff": "Disabled",
       "loading": "Loading setting...",
       "retry": "Retry",
-      "enabledToast": "Auto-run AI analysis on dialog open is now enabled.",
-      "disabledToast": "Auto-run AI analysis is disabled. Admins must click Verify manually.",
+      "enabledToast": "Background AI analysis enabled. Results will be ready when the review dialog opens.",
+      "disabledToast": "Background AI analysis disabled. Admins must click Verify manually.",
       "toggleError": "Failed to update the setting. Please try again."
     },
     "aiAnalysis": {
