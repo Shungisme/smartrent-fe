@@ -131,6 +131,16 @@ export interface AiVerificationResult {
   model_used: string
   processing_time_seconds: number
   verification_timestamp: string
+  /**
+   * False when the LLM call failed and the scores above come from basic
+   * field-presence rules, not a real AI analysis. Absent (undefined) on older
+   * responses — treat only an explicit `false` as degraded.
+   */
+  ai_available?: boolean
+  /** Machine-readable reason the AI did not run, e.g. "LLM_QUOTA_EXCEEDED". */
+  error_code?: string | null
+  /** Underlying provider error, for admin diagnostics. */
+  error_detail?: string | null
 }
 
 // ---------------------------------------------------------------------------

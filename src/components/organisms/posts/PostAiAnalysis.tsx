@@ -270,55 +270,90 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
       {/* Result */}
       {result && !loading && (
         <div className='mt-4 space-y-4'>
-          {/* Score + suggestion summary */}
+          {/* Degraded notice: the AI never ran, the numbers below are placeholders */}
+          {result.ai_available === false && (
+            <div className='flex items-start gap-2.5 rounded-lg border border-warning/30 bg-warning/10 dark:bg-warning/20 p-3'>
+              <AlertTriangle className='mt-0.5 h-4 w-4 flex-shrink-0 text-warning-foreground' />
+              <div className='min-w-0 space-y-0.5'>
+                <div className='text-sm font-medium text-foreground'>
+                  {t('aiAnalysis.degraded.title')}
+                </div>
+                <p className='text-xs text-muted-foreground'>
+                  {t('aiAnalysis.degraded.description')}
+                </p>
+                {result.error_code && (
+                  <p className='pt-0.5 font-mono text-[11px] text-muted-foreground/70'>
+                    {result.error_code}
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Score + suggestion summary — three cards on one baseline grid.
+              Each card is a flex column with a pinned footer (mt-auto) so the
+              rows line up no matter which card is tallest. */}
           <div className='grid grid-cols-1 gap-3 sm:grid-cols-3'>
             <div
               className={cn(
-                'rounded-lg border p-3',
-                getScoreColorClasses(result.score),
+                'flex flex-col rounded-lg border p-3',
+                result.ai_available === false
+                  ? 'border-border/70 bg-muted/40'
+                  : getScoreColorClasses(result.score),
               )}
             >
               <div className='text-xs font-medium opacity-80'>
                 {t('aiAnalysis.score')}
               </div>
-              <div className='text-2xl font-bold'>
+              <div
+                className={cn(
+                  'mt-1 text-2xl font-bold tabular-nums leading-none',
+                  result.ai_available === false && 'text-muted-foreground',
+                )}
+              >
                 {toPercent(result.score)}%
               </div>
-              <div className='mt-1 h-1.5 w-full rounded-full bg-background/60'>
-                <div
-                  className={cn(
-                    'h-1.5 rounded-full',
-                    getScoreBarColor(result.score),
-                  )}
-                  style={{ width: `${toPercent(result.score)}%` }}
-                />
+              <div className='mt-auto pt-2'>
+                <div className='h-1.5 w-full rounded-full bg-background/60'>
+                  <div
+                    className={cn(
+                      'h-1.5 rounded-full',
+                      result.ai_available === false
+                        ? 'bg-muted-foreground/40'
+                        : getScoreBarColor(result.score),
+                    )}
+                    style={{ width: `${toPercent(result.score)}%` }}
+                  />
+                </div>
               </div>
             </div>
 
-            <div className='rounded-lg border border-border/70 bg-card p-3'>
+            <div className='flex flex-col rounded-lg border border-border/70 bg-card p-3'>
               <div className='text-xs font-medium text-muted-foreground'>
                 {t('aiAnalysis.suggestedStatus')}
               </div>
-              <Badge
-                variant='outline'
-                className={cn(
-                  'mt-2 text-sm',
-                  getSuggestedStatusColor(result.suggested_status),
-                )}
-              >
-                {t(`aiAnalysis.suggested.${result.suggested_status}`)}
-              </Badge>
+              <div className='mt-auto pt-2'>
+                <Badge
+                  variant='outline'
+                  className={cn(
+                    'text-sm',
+                    getSuggestedStatusColor(result.suggested_status),
+                  )}
+                >
+                  {t(`aiAnalysis.suggested.${result.suggested_status}`)}
+                </Badge>
+              </div>
             </div>
 
-            <div className='rounded-lg border border-border/70 bg-card p-3'>
+            <div className='flex flex-col rounded-lg border border-border/70 bg-card p-3'>
               <div className='text-xs font-medium text-muted-foreground'>
                 {t('aiAnalysis.confidence')}
               </div>
-              <div className='text-2xl font-bold text-foreground'>
+              <div className='mt-1 text-2xl font-bold tabular-nums leading-none text-foreground'>
                 {toPercent(result.confidence)}%
               </div>
-              <div className='mt-1 text-[11px] text-muted-foreground/80'>
-                {t('aiAnalysis.model')}: {result.model_used} ·{' '}
+              <div className='mt-auto truncate pt-2 text-[11px] text-muted-foreground/80'>
+                {result.model_used} ·{' '}
                 {result.processing_time_seconds.toFixed(1)}
                 {t('aiAnalysis.seconds')}
               </div>
