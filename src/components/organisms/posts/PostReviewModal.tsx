@@ -27,6 +27,8 @@ import {
   FileText,
   Sparkles,
   RotateCcw,
+  Eye,
+  EyeOff,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -51,7 +53,10 @@ interface PostReviewModalProps {
   onApprove: (notes: string) => void
   onReject: (reason: string) => void
   onRequestRevision: (reason: string) => void
+  onHide: () => void
+  onUnhide: () => void
   actionLoading: boolean
+  visibilityLoading: boolean
 }
 
 /** Consistent section heading with a leading accent icon. */
@@ -92,7 +97,10 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   onApprove,
   onReject,
   onRequestRevision,
+  onHide,
+  onUnhide,
   actionLoading,
+  visibilityLoading,
 }) => {
   const t = useTranslations('posts')
   const [rejectionReason, setRejectionReason] = useState('')
@@ -250,6 +258,8 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   const hiddenCount = images.length - visibleImages.length
   const isPending =
     selectedPost.status === 'pending' || selectedPost.status === 'resubmitted'
+  const isApproved = selectedPost.status === 'approved'
+  const isHidden = selectedPost.status === 'hidden'
 
   return (
     <>
@@ -553,46 +563,80 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
           </div>
 
           {/* Action Buttons */}
-          {isPending && (
+          {(isPending || isApproved || isHidden) && (
             <div className='shrink-0 border-t border-border/60 bg-card/95 px-6 py-4 backdrop-blur supports-[backdrop-filter]:bg-card/80'>
               <div className='flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end'>
-                <Button
-                  variant='outline'
-                  onClick={() => onRequestRevision(buildRejectionReason())}
-                  disabled={actionLoading}
-                  className='border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground'
-                >
-                  {actionLoading ? (
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  ) : (
-                    <RotateCcw className='mr-2 h-4 w-4' />
-                  )}
-                  {t('review.requestRevisionButton')}
-                </Button>
-                <Button
-                  variant='outline'
-                  onClick={() => onReject(buildRejectionReason())}
-                  disabled={actionLoading}
-                  className='border-destructive/30 text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive'
-                >
-                  {actionLoading ? (
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  ) : (
-                    <XCircle className='mr-2 h-4 w-4' />
-                  )}
-                  {t('review.rejectButton')}
-                </Button>
-                <Button
-                  onClick={() => onApprove(verificationNotes)}
-                  disabled={actionLoading}
-                >
-                  {actionLoading ? (
-                    <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-                  ) : (
-                    <CheckCircle className='mr-2 h-4 w-4' />
-                  )}
-                  {t('review.approveButton')}
-                </Button>
+                {isHidden && (
+                  <Button
+                    onClick={onUnhide}
+                    disabled={visibilityLoading}
+                    variant='outline'
+                    className='sm:mr-auto'
+                  >
+                    {visibilityLoading ? (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    ) : (
+                      <Eye className='mr-2 h-4 w-4' />
+                    )}
+                    {t('review.unhide')}
+                  </Button>
+                )}
+                {isApproved && (
+                  <Button
+                    onClick={onHide}
+                    disabled={visibilityLoading}
+                    variant='outline'
+                    className='border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground sm:mr-auto'
+                  >
+                    {visibilityLoading ? (
+                      <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                    ) : (
+                      <EyeOff className='mr-2 h-4 w-4' />
+                    )}
+                    {t('review.hide')}
+                  </Button>
+                )}
+                {isPending && (
+                  <>
+                    <Button
+                      variant='outline'
+                      onClick={() => onRequestRevision(buildRejectionReason())}
+                      disabled={actionLoading}
+                      className='border-warning/40 text-warning-foreground hover:border-warning/60 hover:bg-warning/15 hover:text-warning-foreground'
+                    >
+                      {actionLoading ? (
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      ) : (
+                        <RotateCcw className='mr-2 h-4 w-4' />
+                      )}
+                      {t('review.requestRevisionButton')}
+                    </Button>
+                    <Button
+                      variant='outline'
+                      onClick={() => onReject(buildRejectionReason())}
+                      disabled={actionLoading}
+                      className='border-destructive/30 text-destructive hover:border-destructive/50 hover:bg-destructive/10 hover:text-destructive'
+                    >
+                      {actionLoading ? (
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      ) : (
+                        <XCircle className='mr-2 h-4 w-4' />
+                      )}
+                      {t('review.rejectButton')}
+                    </Button>
+                    <Button
+                      onClick={() => onApprove(verificationNotes)}
+                      disabled={actionLoading}
+                    >
+                      {actionLoading ? (
+                        <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+                      ) : (
+                        <CheckCircle className='mr-2 h-4 w-4' />
+                      )}
+                      {t('review.approveButton')}
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           )}

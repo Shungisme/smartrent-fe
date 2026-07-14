@@ -29,6 +29,7 @@ const PostVerification = () => {
   const [reviewModalOpen, setReviewModalOpen] = useState(false)
   const [detailLoading, setDetailLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
+  const [visibilityLoading, setVisibilityLoading] = useState(false)
   const [stats, setStats] = useState<ListingStatisticsSummary>({
     pendingVerification: 0,
     verified: 0,
@@ -213,6 +214,57 @@ const PostVerification = () => {
     }
   }
 
+  const handleHide = async () => {
+    if (!selectedPost) return
+
+    try {
+      setVisibilityLoading(true)
+      const response = await ListingService.hideListing(
+        selectedPost.id,
+        t('review.hideReason'),
+      )
+
+      if (response.success && response.code === SUCCESS_CODE) {
+        toast.success(t('toasts.hideSuccess'))
+        setReviewModalOpen(false)
+        setSelectedPost(null)
+        await fetchListings()
+      } else {
+        const errorMessage = response.message || t('toasts.hideError')
+        toast.error(errorMessage)
+      }
+    } catch (error) {
+      console.error('Error hiding listing:', error)
+      toast.error(t('toasts.hideError'))
+    } finally {
+      setVisibilityLoading(false)
+    }
+  }
+
+  const handleUnhide = async () => {
+    if (!selectedPost) return
+
+    try {
+      setVisibilityLoading(true)
+      const response = await ListingService.unhideListing(selectedPost.id)
+
+      if (response.success && response.code === SUCCESS_CODE) {
+        toast.success(t('toasts.unhideSuccess'))
+        setReviewModalOpen(false)
+        setSelectedPost(null)
+        await fetchListings()
+      } else {
+        const errorMessage = response.message || t('toasts.unhideError')
+        toast.error(errorMessage)
+      }
+    } catch (error) {
+      console.error('Error unhiding listing:', error)
+      toast.error(t('toasts.unhideError'))
+    } finally {
+      setVisibilityLoading(false)
+    }
+  }
+
   return (
     <div>
       {initialLoading ? (
@@ -244,7 +296,10 @@ const PostVerification = () => {
         onApprove={handleApprove}
         onReject={handleReject}
         onRequestRevision={handleRequestRevision}
+        onHide={handleHide}
+        onUnhide={handleUnhide}
         actionLoading={actionLoading}
+        visibilityLoading={visibilityLoading}
       />
     </div>
   )
