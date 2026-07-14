@@ -163,6 +163,22 @@ export interface AiDuplicateCheckResult {
 }
 
 // ---------------------------------------------------------------------------
+// Response data for GET /v1/ai/listings/{listingId}/moderation-result
+//
+// The AI result the auto-moderation cronjob already stored, replayed so the
+// review UI shows it without re-running. `verification` and `duplicateCheck`
+// reuse the exact shapes the on-demand endpoints return.
+// ---------------------------------------------------------------------------
+
+export interface AiStoredModerationResult {
+  verification: AiVerificationResult | null
+  duplicateCheck: AiDuplicateCheckResult | null
+  aiScore: number | null
+  verificationStatus: string | null
+  analyzedAt: string | null
+}
+
+// ---------------------------------------------------------------------------
 // Response data for GET /v1/ai/listings/service-status
 // ---------------------------------------------------------------------------
 
