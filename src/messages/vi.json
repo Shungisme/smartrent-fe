@@ -1794,6 +1794,10 @@
       "loadingStored": "Đang tải kết quả đã lưu…",
       "storedResult": "Kết quả kiểm duyệt tự động",
       "storedNotice": "Kết quả kiểm duyệt tự động lúc {time}",
+      "degraded": {
+        "title": "AI không phân tích được — đây không phải kết quả của AI",
+        "description": "Điểm số bên dưới chỉ dựa trên quy tắc kiểm tra cơ bản (đủ trường, đủ ảnh…), không phải AI đánh giá. Vui lòng tự xem xét thủ công."
+      },
       "error": "Xác minh AI thất bại. Vui lòng thử lại.",
       "serviceOnline": "Dịch vụ AI đang hoạt động",
       "serviceOffline": "Dịch vụ AI ngừng hoạt động",
