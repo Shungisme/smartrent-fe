@@ -1805,7 +1805,10 @@
       "rejectionReasonPlaceholder": "Enter reason for rejection...",
       "approveButton": "Approve Post",
       "rejectButton": "Reject Post",
-      "requestRevisionButton": "Request Revision"
+      "requestRevisionButton": "Request Revision",
+      "hide": "Hide temporarily",
+      "unhide": "Unhide",
+      "hideReason": "Temporarily hidden by admin"
     },
     "aiScheduler": {
       "title": "AI Auto-Moderation",
@@ -1943,7 +1946,11 @@
       "rejectError": "Failed to reject listing. Please try again.",
       "revisionDetailsRequired": "Please provide details on what needs to be revised.",
       "revisionSuccess": "Revision requested. Owner will be notified to update the listing.",
-      "revisionError": "Failed to request revision. Please try again."
+      "revisionError": "Failed to request revision. Please try again.",
+      "hideSuccess": "Listing has been temporarily hidden.",
+      "hideError": "Failed to hide the listing.",
+      "unhideSuccess": "Listing is visible again.",
+      "unhideError": "Failed to unhide the listing."
     }
   },
   "reports": {
