@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import {
   Sparkles,
@@ -8,11 +8,10 @@ import {
   AlertTriangle,
   Lightbulb,
   CheckCircle2,
-  XCircle,
+  Info,
   Files,
   History,
 } from 'lucide-react'
-import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { cn } from '@/lib/utils'
 import { UIPostData } from '@/types/posts.type'
@@ -25,7 +24,6 @@ import {
   AiPriority,
 } from '@/api/types/ai-verification.type'
 import {
-  buildAiVerificationRequest,
   getScoreColorClasses,
   getScoreBarColor,
   getSuggestedStatusColor,
@@ -110,7 +108,6 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
   open,
 }) => {
   const t = useTranslations('posts')
-  const [loading, setLoading] = useState(false)
   const [loadingStore, setLoadingStore] = useState(false)
   const [result, setResult] = useState<AiVerificationResult | null>(null)
   const [duplicate, setDuplicate] = useState<AiDuplicateCheckResult | null>(
@@ -118,63 +115,15 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
   )
   const [loadedFromStore, setLoadedFromStore] = useState(false)
   const [analyzedAt, setAnalyzedAt] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [serviceAvailable, setServiceAvailable] = useState<boolean | null>(null)
 
-  const runAnalysis = useCallback(async () => {
-    if (!post) return
-    setLoading(true)
-    setError(null)
-    setResult(null)
-    setDuplicate(null)
-    setLoadedFromStore(false)
-    setAnalyzedAt(null)
-    try {
-      const payload = buildAiVerificationRequest(post)
-      // Run verification + duplicate check concurrently. Each is independent:
-      // a duplicate-check failure is silent (advisory), while a verify failure
-      // surfaces the error banner.
-      const [verifyRes, dupRes] = await Promise.allSettled([
-        AiVerificationService.verifyListing(payload),
-        AiVerificationService.checkDuplicate(post.id),
-      ])
-
-      if (
-        verifyRes.status === 'fulfilled' &&
-        verifyRes.value.success &&
-        verifyRes.value.data
-      ) {
-        setResult(verifyRes.value.data)
-      } else {
-        setError(t('aiAnalysis.error'))
-      }
-
-      if (
-        dupRes.status === 'fulfilled' &&
-        dupRes.value.success &&
-        dupRes.value.data
-      ) {
-        setDuplicate(dupRes.value.data)
-      }
-    } catch {
-      setError(t('aiAnalysis.error'))
-    } finally {
-      setLoading(false)
-    }
-  }, [post, t])
-
-  // On open: reset, then show the AI result the background job already computed
-  // and stored — instantly, with no live AI call to wait on. When auto-verify is
-  // enabled, that result is normally ready by the time an admin gets here. If
+  // On open: show the AI result the background auto-verify job already computed
+  // and stored — instantly, with no live AI call to wait on. There is no manual
+  // trigger: the panel purely reflects the auto-verify pipeline's output, so if
   // nothing is stored yet (auto-verify off, or the job hasn't reached this
-  // listing), the panel stays empty and the admin runs it with the manual button
-  // — we deliberately never kick off a live run here, since that would make them
-  // sit through a ~30s analysis just for opening the dialog.
+  // listing), the panel just stays empty below the header.
   useEffect(() => {
     setResult(null)
     setDuplicate(null)
-    setError(null)
-    setLoading(false)
     setLoadedFromStore(false)
     setAnalyzedAt(null)
 
@@ -194,7 +143,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
         }
       })
       .catch(() => {
-        // Nothing stored — silent; the admin can run the analysis manually.
+        // Nothing stored — silent, matches the "not computed yet" case.
       })
       .finally(() => {
         if (!cancelled) setLoadingStore(false)
@@ -241,11 +190,11 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
             </div>
           </div>
         </div>
-        <AiServiceStatusBadge onStatusChange={setServiceAvailable} />
+        <AiServiceStatusBadge />
       </div>
 
       {/* Loaded from the auto-moderation cronjob's stored result */}
-      {loadedFromStore && !loading && (
+      {loadedFromStore && (
         <div className='mt-3 flex items-center gap-1.5 text-xs text-muted-foreground'>
           <History className='h-3.5 w-3.5' />
           {analyzedAt
@@ -257,31 +206,23 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
       )}
 
       {/* Fetching the stored result */}
-      {loadingStore && !loading && !result && (
+      {loadingStore && !result && (
         <div className='mt-3 flex items-center gap-2 text-sm text-muted-foreground'>
           <Loader2 className='h-4 w-4 animate-spin' />
           {t('aiAnalysis.loadingStored')}
         </div>
       )}
 
-      {/* Loading */}
-      {loading && (
-        <div className='mt-4 flex items-center gap-2 text-sm text-muted-foreground'>
-          <Loader2 className='h-4 w-4 animate-spin' />
-          {t('aiAnalysis.analyzing')}
-        </div>
-      )}
-
-      {/* Error */}
-      {error && !loading && (
-        <div className='mt-4 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 dark:bg-destructive/20 p-3 text-sm text-destructive'>
-          <XCircle className='mt-0.5 h-4 w-4 flex-shrink-0' />
-          <span>{error}</span>
+      {/* Nothing stored yet — no manual trigger; nudge toward enabling auto-verify */}
+      {!loadingStore && !result && (
+        <div className='mt-3 flex items-start gap-2 rounded-lg border border-dashed border-border/60 bg-muted/30 p-3 text-xs text-muted-foreground'>
+          <Info className='mt-0.5 h-3.5 w-3.5 shrink-0' />
+          <span>{t('aiAnalysis.noResult')}</span>
         </div>
       )}
 
       {/* Result */}
-      {result && !loading && (
+      {result && (
         <div className='mt-4 space-y-4'>
           {/* Score + suggestion summary — three cards on one baseline grid.
               Each card is a flex column with a pinned footer (mt-auto) so the
@@ -582,7 +523,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
       )}
 
       {/* Duplicate detection — independent of the verify result */}
-      {duplicate && !loading && (
+      {duplicate && (
         <div className='mt-4 rounded-xl border border-border/70 bg-card p-4'>
           <div className='flex flex-wrap items-center justify-between gap-2'>
             <div className='flex items-center gap-2'>
@@ -654,31 +595,13 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
         </div>
       )}
 
-      {/* Footer: advisory note (when result) + run / re-run action */}
-      <div className='mt-4 flex items-center justify-between gap-3 border-t border-primary/20 pt-3'>
-        <div className='flex items-center gap-1.5 text-xs text-muted-foreground/80'>
-          {result && !loading && (
-            <>
-              <CheckCircle2 className='h-3.5 w-3.5' />
-              {t('aiAnalysis.advisoryNote')}
-            </>
-          )}
+      {/* Footer: advisory note, only relevant once a result is showing */}
+      {result && (
+        <div className='mt-4 flex items-center gap-1.5 border-t border-primary/20 pt-3 text-xs text-muted-foreground/80'>
+          <CheckCircle2 className='h-3.5 w-3.5' />
+          {t('aiAnalysis.advisoryNote')}
         </div>
-        <Button
-          type='button'
-          size='sm'
-          onClick={runAnalysis}
-          disabled={loading || serviceAvailable === false}
-          className='text-sm'
-        >
-          {loading ? (
-            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
-          ) : (
-            <Sparkles className='mr-2 h-4 w-4' />
-          )}
-          {result ? t('aiAnalysis.rerunButton') : t('aiAnalysis.runButton')}
-        </Button>
-      </div>
+      )}
     </div>
   )
 }
