@@ -260,6 +260,9 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
     selectedPost.status === 'pending' || selectedPost.status === 'resubmitted'
   const isApproved = selectedPost.status === 'approved'
   const isHidden = selectedPost.status === 'hidden'
+  // Hidden posts get the same AI analysis sidebar as pending ones (read-only —
+  // no moderation form), so admins reviewing a hidden post can still see/run it.
+  const showAiSidebar = isPending || isHidden
 
   return (
     <>
@@ -285,14 +288,14 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
           <div
             className={cn(
               'flex min-h-0 flex-1 flex-col overflow-y-auto',
-              isPending && 'lg:flex-row lg:overflow-hidden',
+              showAiSidebar && 'lg:flex-row lg:overflow-hidden',
             )}
           >
             {/* Left column — listing details */}
             <div
               className={cn(
                 'space-y-5 px-6 py-5',
-                isPending &&
+                showAiSidebar &&
                   'lg:flex-1 lg:overflow-y-auto lg:border-r lg:border-border/60',
               )}
             >
@@ -517,47 +520,49 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
               )}
             </div>
 
-            {/* Right column — AI analysis + moderation form (pending only) */}
-            {isPending && (
+            {/* Right column — AI analysis (pending + hidden) + moderation form (pending only) */}
+            {showAiSidebar && (
               <div className='space-y-5 px-6 py-5 lg:w-[440px] lg:shrink-0 lg:overflow-y-auto'>
                 {/* AI-assisted analysis (advisory only) */}
                 <PostAiAnalysis post={selectedPost} open={open} />
 
-                {/* Rejection Reason / Verification Notes */}
-                <div className='space-y-4 rounded-lg border border-border/70 bg-muted/30 p-4'>
-                  <div>
-                    <label
-                      htmlFor='verification-notes'
-                      className='text-sm font-medium text-foreground'
-                    >
-                      {t('review.verificationNotes')}
-                    </label>
-                    <textarea
-                      id='verification-notes'
-                      value={verificationNotes}
-                      onChange={(e) => setVerificationNotes(e.target.value)}
-                      placeholder={t('review.verificationNotesPlaceholder')}
-                      className='mt-2 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-ring'
-                      rows={2}
-                    />
+                {/* Rejection Reason / Verification Notes — only while a moderation decision is pending */}
+                {isPending && (
+                  <div className='space-y-4 rounded-lg border border-border/70 bg-muted/30 p-4'>
+                    <div>
+                      <label
+                        htmlFor='verification-notes'
+                        className='text-sm font-medium text-foreground'
+                      >
+                        {t('review.verificationNotes')}
+                      </label>
+                      <textarea
+                        id='verification-notes'
+                        value={verificationNotes}
+                        onChange={(e) => setVerificationNotes(e.target.value)}
+                        placeholder={t('review.verificationNotesPlaceholder')}
+                        className='mt-2 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-ring'
+                        rows={2}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor='rejection-reason'
+                        className='text-sm font-medium text-foreground'
+                      >
+                        {t('review.rejectionReasonRequired')}
+                      </label>
+                      <textarea
+                        id='rejection-reason'
+                        value={rejectionReason}
+                        onChange={(e) => setRejectionReason(e.target.value)}
+                        placeholder={t('review.rejectionReasonPlaceholder')}
+                        className='mt-2 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-ring'
+                        rows={3}
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label
-                      htmlFor='rejection-reason'
-                      className='text-sm font-medium text-foreground'
-                    >
-                      {t('review.rejectionReasonRequired')}
-                    </label>
-                    <textarea
-                      id='rejection-reason'
-                      value={rejectionReason}
-                      onChange={(e) => setRejectionReason(e.target.value)}
-                      placeholder={t('review.rejectionReasonPlaceholder')}
-                      className='mt-2 w-full rounded-lg border border-input bg-card px-3 py-2 text-sm outline-none transition-[border-color,box-shadow] focus-visible:border-primary/60 focus-visible:ring-4 focus-visible:ring-ring'
-                      rows={3}
-                    />
-                  </div>
-                </div>
+                )}
               </div>
             )}
           </div>
