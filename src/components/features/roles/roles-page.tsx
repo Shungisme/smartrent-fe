@@ -10,9 +10,8 @@ import { Button } from '@/components/atoms/button'
 import { getRoles } from '@/api/services/role.service'
 import { Role } from '@/api/types/role.type'
 import { useTranslations } from 'next-intl'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Pencil } from 'lucide-react'
 import { RoleEditDialog } from '@/components/organisms/roles/RoleEditDialog'
-import { RoleDeleteDialog } from '@/components/organisms/roles/RoleDeleteDialog'
 import { useCanWrite } from '@/hooks/usePermissions'
 
 type RoleRow = {
@@ -31,7 +30,6 @@ const RoleManagement = () => {
   })
   const [totalItems, setTotalItems] = useState(0)
   const [showEdit, setShowEdit] = useState<Role | null>(null)
-  const [showDelete, setShowDelete] = useState<Role | null>(null)
 
   const fetchRoles = useCallback(async () => {
     setLoading(true)
@@ -140,18 +138,6 @@ const RoleManagement = () => {
                     >
                       <Pencil className='h-4 w-4' />
                     </Button>
-                    <Button
-                      variant='ghost'
-                      size='sm'
-                      className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
-                      title={t('table.actions.delete')}
-                      onClick={() => {
-                        const role = roles.find((r) => r.roleId === row.id)
-                        if (role) setShowDelete(role)
-                      }}
-                    >
-                      <Trash2 className='h-4 w-4' />
-                    </Button>
                   </div>
                 )
               : undefined
@@ -162,13 +148,6 @@ const RoleManagement = () => {
           role={showEdit}
           open={!!showEdit}
           onOpenChange={(open) => !open && setShowEdit(null)}
-          onSuccess={fetchRoles}
-        />
-
-        <RoleDeleteDialog
-          role={showDelete}
-          open={!!showDelete}
-          onOpenChange={(open) => !open && setShowDelete(null)}
           onSuccess={fetchRoles}
         />
       </div>
