@@ -11,7 +11,6 @@ import { UserProfile } from '@/api/types/user.type'
 import { UserTable } from '@/components/organisms/users/UserTable'
 import { UserCreateDialog } from '@/components/organisms/users/UserCreateDialog'
 import { UserEditDialog } from '@/components/organisms/users/UserEditDialog'
-import { UserDeleteDialog } from '@/components/organisms/users/UserDeleteDialog'
 import { UserClearMembershipDialog } from '@/components/organisms/users/UserClearMembershipDialog'
 import { ConfirmDialog } from '@/components/molecules/confirmDialog'
 import { useCanWrite } from '@/hooks/usePermissions'
@@ -19,7 +18,6 @@ import { useCanWrite } from '@/hooks/usePermissions'
 const UserManagement = () => {
   // Modal states
   const [editingUser, setEditingUser] = useState<UserProfile | null>(null)
-  const [showDelete, setShowDelete] = useState<UserProfile | null>(null)
   const [showClearMembership, setShowClearMembership] =
     useState<UserProfile | null>(null)
   const [showCreate, setShowCreate] = useState(false)
@@ -171,7 +169,6 @@ const UserManagement = () => {
           filterValues={filterValues}
           onFilterChange={handleFilterChange}
           onEdit={setEditingUser}
-          onDelete={setShowDelete}
           onRemoveBroker={(user) => setRemoveBrokerUser(user)}
           onClearMembership={setShowClearMembership}
           canWrite={canWrite}
@@ -204,16 +201,6 @@ const UserManagement = () => {
               u.userId === updatedUser.userId ? updatedUser : u,
             ),
           )
-        }
-      />
-
-      {/* Delete User Modal */}
-      <UserDeleteDialog
-        user={showDelete}
-        open={!!showDelete}
-        onOpenChange={(open) => !open && setShowDelete(null)}
-        onSuccess={(userId) =>
-          setUsers((prev) => prev.filter((u) => u.userId !== userId))
         }
       />
 

@@ -7,7 +7,7 @@ import {
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
-import { Pencil, UserX, Trash2, ShieldOff } from 'lucide-react'
+import { Pencil, UserX, ShieldOff } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { UserProfile } from '@/api/types/user.type'
 import { UserData } from '@/types/users.type'
@@ -20,12 +20,11 @@ interface UserTableProps {
   filterValues: Record<string, unknown>
   onFilterChange: (newFilters: Record<string, unknown>) => void
   onEdit: (user: UserProfile) => void
-  onDelete: (user: UserProfile) => void
   onRemoveBroker: (user: UserProfile) => void
   onClearMembership: (user: UserProfile) => void
   toolbarActions?: React.ReactNode
-  // When false, the row action column (edit / remove broker / clear membership /
-  // delete) is hidden for read-only roles. Defaults to true.
+  // When false, the row action column (edit / remove broker / clear membership)
+  // is hidden for read-only roles. Defaults to true.
   canWrite?: boolean
 }
 
@@ -36,7 +35,6 @@ export const UserTable: React.FC<UserTableProps> = ({
   filterValues,
   onFilterChange,
   onEdit,
-  onDelete,
   onRemoveBroker,
   onClearMembership,
   toolbarActions,
@@ -207,17 +205,6 @@ export const UserTable: React.FC<UserTableProps> = ({
                     }}
                   >
                     <ShieldOff className='h-4 w-4' />
-                  </Button>
-                  <Button
-                    variant='ghost'
-                    size='sm'
-                    className='h-8 w-8 p-0 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'
-                    title={t('table.actions.delete')}
-                    onClick={() => {
-                      if (user) onDelete(user)
-                    }}
-                  >
-                    <Trash2 className='h-4 w-4' />
                   </Button>
                 </div>
               )
