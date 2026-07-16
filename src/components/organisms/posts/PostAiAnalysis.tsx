@@ -29,7 +29,6 @@ import {
   getSuggestedStatusColor,
   getSeverityColor,
   toPercent,
-  formatAiIssues,
 } from '@/utils/ai-verification.utils'
 import { AiServiceStatusBadge } from '@/components/molecules/aiServiceStatus/AiServiceStatusBadge'
 
@@ -59,54 +58,50 @@ const ValidationCard: React.FC<{
   stats,
   issues,
   issuesLabel,
-}) => {
-  const displayIssues = formatAiIssues(issues)
-
-  return (
-    <div className='rounded-lg border border-border/70 p-3'>
-      <div className='flex items-start justify-between gap-2'>
-        <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
-          {title}
-        </span>
-        <Badge
-          variant='outline'
-          className={cn(
-            'shrink-0 text-xs',
-            valid
-              ? 'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30'
-              : 'bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30',
-          )}
-        >
-          {valid ? validLabel : invalidLabel}
-        </Badge>
-      </div>
-      <div className='mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground'>
-        <span>
-          {scoreLabel}: <span className='font-semibold'>{scorePct}%</span>
-        </span>
-        {stats?.map((s) => (
-          <span key={s.label}>
-            {s.label}: <span className='font-semibold'>{s.value}</span>
-          </span>
-        ))}
-      </div>
-      {displayIssues.length > 0 && (
-        <div className='mt-2'>
-          <div className='text-xs font-medium text-foreground/80'>
-            {issuesLabel}
-          </div>
-          <ul className='mt-1 list-inside list-disc space-y-0.5 text-xs text-muted-foreground'>
-            {displayIssues.map((issue) => (
-              <li key={issue} className='break-words'>
-                {issue}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+}) => (
+  <div className='rounded-lg border border-border/70 p-3'>
+    <div className='flex items-start justify-between gap-2'>
+      <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
+        {title}
+      </span>
+      <Badge
+        variant='outline'
+        className={cn(
+          'shrink-0 text-xs',
+          valid
+            ? 'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30'
+            : 'bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30',
+        )}
+      >
+        {valid ? validLabel : invalidLabel}
+      </Badge>
     </div>
-  )
-}
+    <div className='mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground'>
+      <span>
+        {scoreLabel}: <span className='font-semibold'>{scorePct}%</span>
+      </span>
+      {stats?.map((s) => (
+        <span key={s.label}>
+          {s.label}: <span className='font-semibold'>{s.value}</span>
+        </span>
+      ))}
+    </div>
+    {issues.length > 0 && (
+      <div className='mt-2'>
+        <div className='text-xs font-medium text-foreground/80'>
+          {issuesLabel}
+        </div>
+        <ul className='mt-1 list-inside list-disc space-y-0.5 text-xs text-muted-foreground'>
+          {issues.map((issue, i) => (
+            <li key={i} className='break-words'>
+              {issue}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+)
 
 export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
   post,

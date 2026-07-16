@@ -114,31 +114,3 @@ export const getSeverityColor = (level: AiSeverity | AiPriority): string => {
 /** Round a 0..1 score to a whole percentage for display. */
 export const toPercent = (value: number): number =>
   Math.round((Number.isFinite(value) ? value : 0) * 100)
-
-// The AI prefixes each media issue with the index of the offending item
-// ("Ảnh 1: ...", "Video 2: ..."). The indices do not map to anything the
-// moderator can act on in the modal, so they are stripped for display.
-const MEDIA_INDEX_PREFIX =
-  /^\s*(?:ảnh|hình|image|photo|video)\s*(?:số\s*)?\d+\s*[:\-–]\s*/i
-
-/**
- * Strip the leading media index from AI issue strings and drop the duplicates
- * that stripping exposes (e.g. three separate "anime character" issues for
- * three bad photos collapse into one line).
- */
-export const formatAiIssues = (issues: string[]): string[] => {
-  const seen = new Set<string>()
-  const result: string[] = []
-
-  for (const issue of issues) {
-    const stripped = issue.replace(MEDIA_INDEX_PREFIX, '').trim()
-    if (!stripped) continue
-
-    const key = stripped.toLowerCase()
-    if (seen.has(key)) continue
-    seen.add(key)
-    result.push(stripped.charAt(0).toUpperCase() + stripped.slice(1))
-  }
-
-  return result
-}
