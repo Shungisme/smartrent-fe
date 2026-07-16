@@ -11,9 +11,48 @@ import type {
   SortConfig,
   PaginationConfig,
   FilterMode,
+  FilterConfig,
 } from './types'
 
 const DataTableContext = createContext<DataTableContextValue | null>(null)
+
+// Pagination state is kept in the same record as the filter values so API mode
+// can forward it in one payload. Frontend filtering must skip these keys — they
+// are not row fields, and matching them against `item[key]` drops every row.
+const PAGINATION_KEYS = new Set(['page', 'pageSize'])
+
+// Match one row against one active filter value. The filter's declared type
+// decides the strategy: only free-text search is a substring match, everything
+// else compares whole values — a `select` for status 'PENDING' must not match a
+// row whose status merely contains that text.
+function matchesFilter(
+  itemValue: unknown,
+  value: unknown,
+  filter?: FilterConfig,
+): boolean {
+  if (Array.isArray(value)) {
+    return value.some((v) => String(itemValue) === String(v))
+  }
+
+  // CSV values (e.g. role:SA,UA) stand for "any of these".
+  if (filter?.allowMultiple && typeof value === 'string') {
+    return value
+      .split(',')
+      .map((v) => v.trim())
+      .filter(Boolean)
+      .some((v) => String(itemValue) === v)
+  }
+
+  if (filter?.type === 'search' && typeof value === 'string') {
+    return String(itemValue).toLowerCase().includes(value.toLowerCase())
+  }
+
+  if (typeof value === 'string') {
+    return String(itemValue).toLowerCase() === value.toLowerCase()
+  }
+
+  return itemValue === value
+}
 
 export const useDataTable = <T = any,>() => {
   const context = useContext(
@@ -28,6 +67,8 @@ export const useDataTable = <T = any,>() => {
 interface DataTableProviderProps<T> {
   children: React.ReactNode
   data: T[]
+  /** Filter definitions, used by frontend mode to pick a match strategy per field. */
+  filterConfig?: FilterConfig[]
   filterMode?: FilterMode
   filterValues?: Record<string, any> // External filter values for controlled mode
   onFilterChange?: (filters: Record<string, any>) => void
@@ -42,6 +83,7 @@ interface DataTableProviderProps<T> {
 export function DataTableProvider<T = any>({
   children,
   data,
+  filterConfig,
   filterMode = 'frontend',
   filterValues: externalFilterValues,
   onFilterChange,
@@ -73,28 +115,19 @@ export function DataTableProvider<T = any>({
 
     // Apply filters
     Object.entries(filters).forEach(([key, value]) => {
+      if (PAGINATION_KEYS.has(key)) return
       if (!value || value === '' || value === 'all') return
+      if (Array.isArray(value) && value.length === 0) return
 
-      result = result.filter((item: any) => {
-        const itemValue = item[key]
+      const filter = filterConfig?.find((f) => f.id === key)
 
-        if (typeof value === 'string') {
-          // Search filter - case insensitive
-          return String(itemValue).toLowerCase().includes(value.toLowerCase())
-        }
-
-        if (Array.isArray(value)) {
-          // Multi-select filter
-          return value.includes(itemValue)
-        }
-
-        // Exact match filter
-        return itemValue === value
-      })
+      result = result.filter((item: any) =>
+        matchesFilter(item[key], value, filter),
+      )
     })
 
     return result
-  }, [data, filters, filterMode])
+  }, [data, filters, filterMode, filterConfig])
 
   // Sort data (frontend mode only)
   const sortedData = useMemo(() => {

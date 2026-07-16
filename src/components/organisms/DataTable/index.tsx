@@ -184,6 +184,7 @@ function DataTableContent<T = any>({
 export function DataTable<T = any>(props: DataTableProps<T>) {
   const {
     data,
+    filters,
     filterMode = 'frontend',
     filterValues,
     onFilterChange,
@@ -199,6 +200,7 @@ export function DataTable<T = any>(props: DataTableProps<T>) {
   return (
     <DataTableProvider
       data={data}
+      filterConfig={filters}
       filterMode={filterMode}
       filterValues={filterValues}
       onFilterChange={onFilterChange}
@@ -209,7 +211,11 @@ export function DataTable<T = any>(props: DataTableProps<T>) {
       totalItems={totalItems}
       loading={loading}
     >
-      <DataTableContent<T> {...contentProps} filterMode={filterMode} />
+      <DataTableContent<T>
+        {...contentProps}
+        filters={filters}
+        filterMode={filterMode}
+      />
     </DataTableProvider>
   )
 }
