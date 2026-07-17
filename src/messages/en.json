@@ -1824,6 +1824,10 @@
     "aiAnalysis": {
       "title": "AI Analysis",
       "disclaimer": "AI-assisted moderation. The AI does not make the final decision.",
+      "runButton": "Verify with AI",
+      "rerunButton": "Re-analyze",
+      "analyzing": "Analyzing the listing with AI — this can take up to 30 seconds...",
+      "error": "AI verification failed. Please try again.",
       "loadingStored": "Loading saved result…",
       "storedResult": "Auto-moderation result",
       "storedNotice": "Auto-moderation result at {time}",
@@ -1893,6 +1897,17 @@
         "medium": "Medium",
         "high": "High",
         "critical": "Critical"
+      },
+      "violationCodeLabels": {
+        "SCAM": "Signs of fraud",
+        "INCONSISTENT_INFO": "Information doesn't match the images",
+        "STOCK_PHOTO": "Stock image, not an actual photo",
+        "CONTACT_IN_LISTING": "Contact info embedded in the listing",
+        "BLURRY_IMAGE": "Blurry, low-quality images",
+        "MISSING_MEDIA": "Missing images or videos",
+        "PRICE_ANOMALY": "Abnormal price",
+        "INAPPROPRIATE_CONTENT": "Inappropriate content",
+        "other": "Other violation"
       }
     },
     "listingTypes": {
@@ -2436,7 +2451,6 @@
     "title": "Notifications",
     "markAllRead": "Mark all as read",
     "empty": "No notifications yet",
-    "viewAll": "View all notifications",
     "types": {
       "NEW_REPORT": "New Report",
       "LISTING_RESUBMITTED": "Listing Resubmitted",

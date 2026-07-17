@@ -41,6 +41,30 @@ export class AiVerificationService {
   }
 
   /**
+   * Re-run AI moderation (verify + duplicate check) for an existing listing by ID
+   * and PERSIST the fresh result as the latest stored moderation.
+   * POST /v1/ai/listings/:listingId/verify
+   *
+   * Unlike {@link verifyListing} (stateless), this writes to
+   * listing_ai_moderation, so the next {@link getStoredResult} — i.e. what the
+   * review dialog loads when the post is reopened — reflects this run. Returns
+   * the same shape as {@link getStoredResult} (verification + duplicateCheck +
+   * analyzedAt). Used by the manual "AI verify / re-verify" button.
+   *
+   * @param listingId - ID of the listing to re-verify
+   */
+  static async reVerifyById(
+    listingId: string,
+  ): Promise<ApiResponse<AiStoredModerationResult>> {
+    return apiRequest<AiStoredModerationResult>({
+      method: 'POST',
+      url: PATHS.AI_VERIFICATION.VERIFY_BY_ID.replace(':listingId', listingId),
+      // AI multimodal analysis can take ~20-30s; override the default timeout.
+      timeout: 60000,
+    })
+  }
+
+  /**
    * Run the AI duplicate-detection pipeline for an existing listing by ID.
    * POST /v1/ai/listings/:listingId/check-duplicate
    *
