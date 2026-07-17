@@ -1,4 +1,13 @@
 // Types for listing report API
+
+// Concrete action an admin took when resolving a report. Mirrors the backend
+// ReportResolutionAction enum. Null for pending reports and legacy rows.
+export type ReportResolutionAction =
+  | 'SUSPENDED'
+  | 'REVISION_REQUESTED'
+  | 'DISMISSED'
+  | 'RESOLVED'
+
 export interface ListingReportReason {
   reasonId: number
   reasonText: string
@@ -20,6 +29,7 @@ export interface ListingReport {
   resolvedByName: string | null
   resolvedAt: string | null
   adminNotes: string | null
+  resolutionAction?: ReportResolutionAction | null
   createdAt: string
   updatedAt: string
 }
@@ -35,6 +45,9 @@ export interface ListingReportListResponse {
 export interface ResolveReportRequest {
   status: 'RESOLVED' | 'REJECTED'
   adminNotes?: string
+  // Concrete action taken, persisted for later display. If omitted the backend
+  // derives it from status/removeListing/ownerActionRequired.
+  resolutionAction?: ReportResolutionAction
   // Owner is required to fix and resubmit the listing (-> REVISION_REQUIRED).
   // Mutually exclusive with removeListing.
   ownerActionRequired?: boolean

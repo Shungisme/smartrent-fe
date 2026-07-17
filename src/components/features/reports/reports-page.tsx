@@ -116,6 +116,7 @@ const ViolationReportManagement = () => {
       await ListingService.resolveReport(selectedReport.reportId, {
         status: 'RESOLVED',
         adminNotes: reason,
+        resolutionAction: 'REVISION_REQUESTED',
       })
 
       toast.success(t('toasts.revisionSuccess'))

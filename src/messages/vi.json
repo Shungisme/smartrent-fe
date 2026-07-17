@@ -2001,6 +2001,13 @@
       "direction": "Hướng",
       "location": "Địa điểm",
       "listingStatus": "Trạng thái bài đăng:",
+      "resolutionAction": "Kết quả xử lý:",
+      "outcomes": {
+        "suspended": "Đình Chỉ Tin Đăng",
+        "revision": "Yêu Cầu Sửa Đổi",
+        "dismissed": "Bỏ Qua",
+        "resolved": "Đã Xử Lý"
+      },
       "verified": "Đã xác thực",
       "pendingVerification": "Chờ xác thực",
       "expired": "Đã hết hạn",
