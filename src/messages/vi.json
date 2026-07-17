@@ -1788,6 +1788,10 @@
     "aiAnalysis": {
       "title": "Phân tích AI",
       "disclaimer": "Hỗ trợ kiểm duyệt bằng AI. AI không đưa ra quyết định cuối cùng.",
+      "runButton": "Xác minh bằng AI",
+      "rerunButton": "Phân tích lại",
+      "analyzing": "Đang phân tích nội dung bằng AI — có thể mất đến 30 giây...",
+      "error": "Xác minh AI thất bại. Vui lòng thử lại.",
       "loadingStored": "Đang tải kết quả đã lưu…",
       "storedResult": "Kết quả kiểm duyệt tự động",
       "storedNotice": "Kết quả kiểm duyệt tự động lúc {time}",
@@ -1857,6 +1861,17 @@
         "medium": "Trung bình",
         "high": "Cao",
         "critical": "Nghiêm trọng"
+      },
+      "violationCodeLabels": {
+        "SCAM": "Dấu hiệu lừa đảo",
+        "INCONSISTENT_INFO": "Thông tin không khớp với hình ảnh",
+        "STOCK_PHOTO": "Ảnh mạng, không phải ảnh thực tế",
+        "CONTACT_IN_LISTING": "Chèn thông tin liên hệ trong tin",
+        "BLURRY_IMAGE": "Ảnh mờ, kém chất lượng",
+        "MISSING_MEDIA": "Thiếu hình ảnh hoặc video",
+        "PRICE_ANOMALY": "Giá bất thường",
+        "INAPPROPRIATE_CONTENT": "Nội dung không phù hợp",
+        "other": "Vi phạm khác"
       }
     },
     "listingTypes": {
@@ -2400,7 +2415,6 @@
     "title": "Thông báo",
     "markAllRead": "Đánh dấu tất cả đã đọc",
     "empty": "Chưa có thông báo",
-    "viewAll": "Xem tất cả thông báo",
     "types": {
       "NEW_REPORT": "Báo cáo mới",
       "LISTING_RESUBMITTED": "Tin đăng gửi lại",
