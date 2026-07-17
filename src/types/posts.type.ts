@@ -24,12 +24,14 @@ export type UIPostData = {
     avatar?: string
     userId: string
     phone: string
+    email?: string
   }
   propertyInfo: {
     type: string
     area: number
     district: string
     fullAddress: string
+    fullNewAddress?: string | null
   }
   price: string
   priceRaw: number
@@ -47,4 +49,9 @@ export type UIPostData = {
   bathrooms?: number | null
   direction?: string | null
   furnishing?: string | null
+  roomCapacity?: number | null
+  waterPrice?: string | null
+  electricityPrice?: string | null
+  internetPrice?: string | null
+  serviceFee?: string | null
 }

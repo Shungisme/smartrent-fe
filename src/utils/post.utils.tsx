@@ -438,6 +438,7 @@ export const mapDetailToUI = (item: ListingResponseWithAdmin): UIPostData => {
       avatar: undefined,
       userId: item.user?.userId || '',
       phone: item.user?.contactPhoneNumber || '',
+      email: item.user?.email || undefined,
     },
     propertyInfo: {
       type: item.productType,
@@ -446,6 +447,7 @@ export const mapDetailToUI = (item: ListingResponseWithAdmin): UIPostData => {
         item.propertyInfo?.district || item.address?.legacyDistrictName || '',
       fullAddress:
         item.propertyInfo?.fullAddress || item.address?.fullAddress || '',
+      fullNewAddress: item.address?.fullNewAddress || null,
     },
     price: formatPrice(item.price, item.priceUnit),
     priceRaw: item.price,
@@ -469,5 +471,10 @@ export const mapDetailToUI = (item: ListingResponseWithAdmin): UIPostData => {
     bathrooms: item.bathrooms,
     direction: item.direction,
     furnishing: item.furnishing,
+    roomCapacity: item.roomCapacity,
+    waterPrice: item.waterPrice,
+    electricityPrice: item.electricityPrice,
+    internetPrice: item.internetPrice,
+    serviceFee: item.serviceFee,
   }
 }
