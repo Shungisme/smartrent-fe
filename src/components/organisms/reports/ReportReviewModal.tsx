@@ -26,6 +26,9 @@ import {
   X,
   Edit,
   Ban,
+  Phone,
+  Mail,
+  ShieldCheck,
 } from 'lucide-react'
 import cn from 'classnames'
 import { ListingReport } from '@/api/types/listing-report.type'
@@ -285,6 +288,13 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
     }
   }
 
+  // Owner of the reported listing — surfaced so admins can contact directly.
+  const owner = listingDetails?.user ?? null
+  const ownerName = owner
+    ? [owner.firstName, owner.lastName].filter(Boolean).join(' ').trim() ||
+      owner.email
+    : ''
+
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -384,28 +394,89 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                   </div>
                 )}
 
-                {/* Reporter Info */}
-                <div className='flex flex-col gap-2'>
-                  <h3 className='text-base md:text-lg font-semibold text-foreground mb-2'>
-                    {t('review.reporterInfo')}
-                  </h3>
-                  <div className='flex items-center gap-3 rounded-lg border border-border/70 p-3 md:p-4'>
-                    <Avatar className='h-12 w-12'>
-                      <div className='flex h-full w-full items-center justify-center bg-primary/10 text-primary dark:bg-primary/20 font-semibold text-lg'>
-                        {getInitials(report.reporterName)}
-                      </div>
-                    </Avatar>
-                    <div className='flex-1'>
-                      <div className='font-medium text-foreground text-base'>
-                        {report.reporterName}
-                      </div>
-                      <div className='text-sm text-muted-foreground mt-0.5'>
-                        {report.reporterEmail}
-                      </div>
-                      <div className='text-sm text-muted-foreground'>
-                        {report.reporterPhone}
+                {/* Contact Info — reporter and reported-post owner side by side */}
+                <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                  {/* Reporter Info */}
+                  <div className='flex flex-col gap-2'>
+                    <h3 className='text-base md:text-lg font-semibold text-foreground mb-2'>
+                      {t('review.reporterInfo')}
+                    </h3>
+                    <div className='flex h-full items-center gap-3 rounded-lg border border-border/70 p-3 md:p-4'>
+                      <Avatar className='h-12 w-12 shrink-0'>
+                        <div className='flex h-full w-full items-center justify-center bg-primary/10 text-primary dark:bg-primary/20 font-semibold text-lg'>
+                          {getInitials(report.reporterName)}
+                        </div>
+                      </Avatar>
+                      <div className='min-w-0 flex-1'>
+                        <div className='font-medium text-foreground text-base'>
+                          {report.reporterName}
+                        </div>
+                        <div className='text-sm text-muted-foreground mt-0.5 truncate'>
+                          {report.reporterEmail}
+                        </div>
+                        <div className='text-sm text-muted-foreground'>
+                          {report.reporterPhone}
+                        </div>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Reported-post Owner Info */}
+                  <div className='flex flex-col gap-2'>
+                    <h3 className='text-base md:text-lg font-semibold text-foreground mb-2'>
+                      {t('review.ownerInfo')}
+                    </h3>
+                    {loadingListing ? (
+                      <div className='flex h-full items-center gap-2 rounded-lg border border-border/70 p-3 md:p-4'>
+                        <Loader2 className='h-5 w-5 animate-spin text-primary' />
+                        <span className='text-sm text-muted-foreground'>
+                          {t('review.loadingDetails')}
+                        </span>
+                      </div>
+                    ) : owner ? (
+                      <div className='flex h-full items-center gap-3 rounded-lg border border-border/70 p-3 md:p-4'>
+                        <Avatar className='h-12 w-12 shrink-0'>
+                          <div className='flex h-full w-full items-center justify-center bg-primary/10 text-primary dark:bg-primary/20 font-semibold text-lg'>
+                            {getInitials(ownerName)}
+                          </div>
+                        </Avatar>
+                        <div className='min-w-0 flex-1'>
+                          <div className='font-medium text-foreground text-base'>
+                            {ownerName}
+                          </div>
+                          {owner.email && (
+                            <a
+                              href={`mailto:${owner.email}`}
+                              className='mt-0.5 flex min-w-0 items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary'
+                            >
+                              <Mail className='h-3.5 w-3.5 shrink-0' />
+                              <span className='truncate'>{owner.email}</span>
+                            </a>
+                          )}
+                          {owner.contactPhoneNumber && (
+                            <div className='flex flex-wrap items-center gap-x-2 gap-y-0.5'>
+                              <a
+                                href={`tel:${owner.contactPhoneNumber}`}
+                                className='flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary'
+                              >
+                                <Phone className='h-3.5 w-3.5 shrink-0' />
+                                <span>{owner.contactPhoneNumber}</span>
+                              </a>
+                              {owner.contactPhoneVerified && (
+                                <span className='inline-flex items-center gap-0.5 text-xs text-success-foreground'>
+                                  <ShieldCheck className='h-3 w-3' />
+                                  {t('review.phoneVerified')}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className='flex h-full items-center rounded-lg border border-border/70 p-3 md:p-4 text-sm text-muted-foreground'>
+                        {t('review.ownerUnavailable')}
+                      </div>
+                    )}
                   </div>
                 </div>
 

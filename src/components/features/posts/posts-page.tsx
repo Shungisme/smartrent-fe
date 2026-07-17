@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import { ListingService } from '@/api/services/listing.service'
@@ -48,6 +49,12 @@ const PostVerification = () => {
   })
   const [totalCount, setTotalCount] = useState(0)
 
+  // Deep link target, e.g. from a "pending review" / "resubmitted" notification:
+  // /content/posts?id=123
+  const searchParams = useSearchParams()
+  const deepLinkId = searchParams?.get('id') ?? null
+  const lastOpenedIdRef = useRef<string | null>(null)
+
   useEffect(() => {
     fetchListings()
   }, [filterValues])
@@ -89,26 +96,41 @@ const PostVerification = () => {
     setFilterValues(newFilters)
   }
 
-  const handleReview = async (post: UIPostData) => {
-    setReviewModalOpen(true)
-    setSelectedPost(null)
-    setDetailLoading(true)
-    try {
-      const response = await ListingService.getListingDetail(post.id)
-      if (response.success && response.data) {
-        setSelectedPost(mapDetailToUI(response.data))
-      } else {
-        toast.error(response.message || t('toasts.loadDetailError'))
+  const openReviewById = useCallback(
+    async (listingId: string) => {
+      setReviewModalOpen(true)
+      setSelectedPost(null)
+      setDetailLoading(true)
+      try {
+        const response = await ListingService.getListingDetail(listingId)
+        if (response.success && response.data) {
+          setSelectedPost(mapDetailToUI(response.data))
+        } else {
+          toast.error(response.message || t('toasts.loadDetailError'))
+          setReviewModalOpen(false)
+        }
+      } catch (error) {
+        console.error('Error fetching listing detail:', error)
+        toast.error(t('toasts.loadDetailError'))
         setReviewModalOpen(false)
+      } finally {
+        setDetailLoading(false)
       }
-    } catch (error) {
-      console.error('Error fetching listing detail:', error)
-      toast.error(t('toasts.loadDetailError'))
-      setReviewModalOpen(false)
-    } finally {
-      setDetailLoading(false)
-    }
-  }
+    },
+    [t],
+  )
+
+  const handleReview = (post: UIPostData) => openReviewById(post.id)
+
+  // Open the listing referenced by ?id= (from a notification) in the review
+  // modal. getListingDetail fetches by id, so this works even when the listing
+  // isn't in the current (PENDING_REVIEW-filtered) table — e.g. a RESUBMITTED one.
+  useEffect(() => {
+    if (!deepLinkId || lastOpenedIdRef.current === deepLinkId) return
+    if (Number.isNaN(Number(deepLinkId))) return
+    lastOpenedIdRef.current = deepLinkId
+    openReviewById(deepLinkId)
+  }, [deepLinkId, openReviewById])
 
   const handleReviewModalChange = (open: boolean) => {
     setReviewModalOpen(open)

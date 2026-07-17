@@ -7,7 +7,7 @@ import {
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
-import { Pencil, Trash2 } from 'lucide-react'
+import { Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 import { AdminProfile } from '@/api/types/admin.type'
@@ -37,7 +37,6 @@ interface AdminTableProps {
   loading: boolean
   filterValues: Record<string, unknown>
   onFilterChange: (newFilters: Record<string, unknown>) => void
-  onEdit: (admin: AdminProfile) => void
   onDelete: (admin: AdminProfile) => void
   toolbarActions?: React.ReactNode
 }
@@ -48,7 +47,6 @@ export const AdminTable: React.FC<AdminTableProps> = ({
   loading,
   filterValues,
   onFilterChange,
-  onEdit,
   onDelete,
   toolbarActions,
 }) => {
@@ -206,18 +204,6 @@ export const AdminTable: React.FC<AdminTableProps> = ({
       getRowKey={(row) => row.id}
       actions={(row) => (
         <div className='flex items-center justify-center gap-0.5'>
-          <Button
-            variant='ghost'
-            size='sm'
-            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
-            title={t('table.actions.edit')}
-            onClick={() => {
-              const admin = admins.find((a) => a.adminId === row.id)
-              if (admin) onEdit(admin)
-            }}
-          >
-            <Pencil className='h-4 w-4' />
-          </Button>
           <Button
             variant='ghost'
             size='sm'

@@ -1,6 +1,7 @@
 'use client'
 
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import { ListingReport } from '@/api/types/listing-report.type'
@@ -23,6 +24,11 @@ const ViolationReportManagement = () => {
   const [selectedReport, setSelectedReport] = useState<ListingReport | null>(
     null,
   )
+
+  // Deep link target, e.g. from a "new report" notification: /moderation/reports?id=616
+  const searchParams = useSearchParams()
+  const deepLinkId = searchParams?.get('id') ?? null
+  const lastOpenedIdRef = useRef<string | null>(null)
 
   // Fetch reports from API
   const fetchReports = useCallback(async () => {
@@ -66,6 +72,21 @@ const ViolationReportManagement = () => {
   useEffect(() => {
     fetchReports()
   }, [fetchReports])
+
+  // Open the report referenced by ?id= once the list has loaded. Reports come
+  // back newest-first, so a freshly reported listing is on the first page.
+  // Guard by id so closing the modal doesn't reopen it, while clicking a
+  // different notification still opens the new report.
+  useEffect(() => {
+    if (!deepLinkId || reports.length === 0) return
+    if (lastOpenedIdRef.current === deepLinkId) return
+    const target = reports.find((r) => String(r.reportId) === deepLinkId)
+    if (target) {
+      setSelectedReport(target)
+      setReviewModalOpen(true)
+      lastOpenedIdRef.current = deepLinkId
+    }
+  }, [deepLinkId, reports])
 
   const handleOpenReview = (report: ListingReport) => {
     setSelectedReport(report)
