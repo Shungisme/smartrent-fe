@@ -2037,6 +2037,13 @@
       "direction": "Direction",
       "location": "Location",
       "listingStatus": "Listing Status:",
+      "resolutionAction": "Resolution:",
+      "outcomes": {
+        "suspended": "Listing Suspended",
+        "revision": "Revision Requested",
+        "dismissed": "Dismissed",
+        "resolved": "Resolved"
+      },
       "verified": "Verified",
       "pendingVerification": "Pending Verification",
       "expired": "Expired",
