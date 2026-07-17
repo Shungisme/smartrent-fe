@@ -5,7 +5,10 @@ import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
 import { Eye } from 'lucide-react'
-import { ListingReport } from '@/api/types/listing-report.type'
+import {
+  ListingReport,
+  ReportResolutionAction,
+} from '@/api/types/listing-report.type'
 import { formatDateTimeParts } from '@/utils/format'
 
 type BadgeVariant =
@@ -40,6 +43,20 @@ const statusMap = {
   PENDING: 'pending',
   RESOLVED: 'resolved',
   REJECTED: 'dismissed',
+}
+
+// When a report was resolved, prefer showing the concrete action taken over the
+// coarse RESOLVED/REJECTED status (both "suspend" and "request revision" are
+// RESOLVED). Maps the backend action to the shared reports.review.outcomes label
+// and a badge variant. Legacy rows with no action fall back to the plain status.
+const resolutionActionOutcome: Record<
+  ReportResolutionAction,
+  { key: string; variant: BadgeVariant }
+> = {
+  SUSPENDED: { key: 'suspended', variant: 'destructive' },
+  REVISION_REQUESTED: { key: 'revision', variant: 'warning' },
+  DISMISSED: { key: 'dismissed', variant: 'secondary' },
+  RESOLVED: { key: 'resolved', variant: 'success' },
 }
 
 export const ReportTable: React.FC<ReportTableProps> = ({
@@ -183,11 +200,23 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       id: 'status',
       accessor: 'status',
       header: t('review.currentStatus'),
-      render: (_, row) => (
-        <Badge variant={getStatusVariant(row.status)}>
-          {t(`statuses.${statusMap[row.status as keyof typeof statusMap]}`)}
-        </Badge>
-      ),
+      render: (_, row) => {
+        const outcome = row.resolutionAction
+          ? resolutionActionOutcome[row.resolutionAction]
+          : null
+        if (outcome) {
+          return (
+            <Badge variant={outcome.variant}>
+              {t(`review.outcomes.${outcome.key}`)}
+            </Badge>
+          )
+        }
+        return (
+          <Badge variant={getStatusVariant(row.status)}>
+            {t(`statuses.${statusMap[row.status as keyof typeof statusMap]}`)}
+          </Badge>
+        )
+      },
     },
     {
       id: 'actions',
