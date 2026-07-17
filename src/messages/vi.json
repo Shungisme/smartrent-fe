@@ -1841,7 +1841,6 @@
       "missingFields": "Thiếu",
       "violations": "Vi phạm",
       "suggestions": "Gợi ý",
-      "field": "Trường",
       "advisoryNote": "Đánh giá AI chỉ mang tính tham khảo — quyết định kiểm duyệt vẫn thuộc về bạn.",
       "suggested": {
         "APPROVED": "Duyệt",

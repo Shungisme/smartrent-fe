@@ -1877,7 +1877,6 @@
       "missingFields": "Missing",
       "violations": "Violations",
       "suggestions": "Suggestions",
-      "field": "Field",
       "advisoryNote": "This AI assessment is advisory only — the moderation decision remains with you.",
       "suggested": {
         "APPROVED": "Approve",
