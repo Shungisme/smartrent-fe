@@ -508,7 +508,12 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     key={i}
                     className='rounded-lg border border-destructive/30 bg-destructive/10 dark:bg-destructive/20 p-3'
                   >
-                    <div className='flex items-center justify-between gap-2'>
+                    <div
+                      className={cn(
+                        'flex items-center gap-2',
+                        isMeaningful(v.category) && 'justify-between',
+                      )}
+                    >
                       {isMeaningful(v.category) && (
                         <span className='min-w-0 flex-1 truncate text-sm font-medium text-foreground'>
                           {v.category}
@@ -517,7 +522,8 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                       <Badge
                         variant='outline'
                         className={cn(
-                          'ml-auto shrink-0 text-xs',
+                          'shrink-0 text-xs',
+                          isMeaningful(v.category) && 'ml-auto',
                           getSeverityColor(v.severity),
                         )}
                       >
@@ -527,11 +533,6 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     <p className='mt-1 break-words text-sm text-foreground/80'>
                       {v.message}
                     </p>
-                    {isMeaningful(v.field) && (
-                      <p className='mt-0.5 break-words text-xs text-muted-foreground'>
-                        {t('aiAnalysis.field')}: {v.field}
-                      </p>
-                    )}
                   </div>
                 ))}
               </div>
@@ -551,7 +552,12 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     key={i}
                     className='rounded-lg border border-warning/30 bg-warning/10 dark:bg-warning/20 p-3'
                   >
-                    <div className='flex items-center justify-between gap-2'>
+                    <div
+                      className={cn(
+                        'flex items-center gap-2',
+                        isMeaningful(s.category) && 'justify-between',
+                      )}
+                    >
                       {isMeaningful(s.category) && (
                         <span className='min-w-0 flex-1 truncate text-sm font-medium text-foreground'>
                           {s.category}
@@ -560,7 +566,8 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                       <Badge
                         variant='outline'
                         className={cn(
-                          'ml-auto shrink-0 text-xs',
+                          'shrink-0 text-xs',
+                          isMeaningful(s.category) && 'ml-auto',
                           getSeverityColor(s.priority),
                         )}
                       >
@@ -570,11 +577,6 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     <p className='mt-1 break-words text-sm text-foreground/80'>
                       {s.message}
                     </p>
-                    {isMeaningful(s.field) && (
-                      <p className='mt-0.5 break-words text-xs text-muted-foreground'>
-                        {t('aiAnalysis.field')}: {s.field}
-                      </p>
-                    )}
                   </div>
                 ))}
               </div>
