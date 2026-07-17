@@ -233,7 +233,7 @@ const LABELS = {
       admins: 'Quản trị viên',
       roles: 'Vai trò',
       transactions: 'Giao dịch',
-      brokerPending: 'Đơn đăng ký môi giới chờ duyệt',
+      brokerPending: 'Đơn đăng ký môi giới',
       premiumMembership: 'Thành viên',
       premiumListingTypes: 'Loại tin đăng',
       analyticsUsers: 'Thống kê người dùng',
