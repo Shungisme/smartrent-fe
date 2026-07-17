@@ -508,9 +508,9 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     key={i}
                     className='rounded-lg border border-destructive/30 bg-destructive/10 dark:bg-destructive/20 p-3'
                   >
-                    <div className='flex items-start justify-between gap-2'>
+                    <div className='flex items-center justify-between gap-2'>
                       {isMeaningful(v.category) && (
-                        <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
+                        <span className='min-w-0 flex-1 truncate text-sm font-medium text-foreground'>
                           {v.category}
                         </span>
                       )}
@@ -551,9 +551,9 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     key={i}
                     className='rounded-lg border border-warning/30 bg-warning/10 dark:bg-warning/20 p-3'
                   >
-                    <div className='flex items-start justify-between gap-2'>
+                    <div className='flex items-center justify-between gap-2'>
                       {isMeaningful(s.category) && (
-                        <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
+                        <span className='min-w-0 flex-1 truncate text-sm font-medium text-foreground'>
                           {s.category}
                         </span>
                       )}
