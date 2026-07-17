@@ -143,6 +143,12 @@ export interface ListingResponseWithAdmin {
   direction: string | null
   furnishing: string | null
   roomCapacity: number | null
+  // Utility price fields: either a PriceType enum name (NEGOTIABLE /
+  // SET_BY_OWNER / PROVIDER_RATE) or a free-form amount string.
+  waterPrice?: string | null
+  electricityPrice?: string | null
+  internetPrice?: string | null
+  serviceFee?: string | null
   amenities: Amenity[]
   address?: ListingAddress
   propertyInfo?: {

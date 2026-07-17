@@ -207,6 +207,14 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
     return t.has(key) ? t(key) : t('aiAnalysis.violationCodeLabels.other')
   }
 
+  // The AI fills a violation/suggestion `category` (and sometimes `field`) with a
+  // generic English placeholder — "unknown" for violations, "improvement" for
+  // suggestions — when it has nothing specific. That's noise, not information, so
+  // hide those tokens; the message text carries the actual content.
+  const genericTokens = new Set(['unknown', 'improvement', 'other', 'n/a', 'none'])
+  const isMeaningful = (text?: string | null) =>
+    !!text && !genericTokens.has(text.trim().toLowerCase())
+
   return (
     // @container: this panel is rendered at very different widths depending on
     // context — a fixed ~440px sidebar on desktop review, but the full modal
@@ -501,13 +509,15 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     className='rounded-lg border border-destructive/30 bg-destructive/10 dark:bg-destructive/20 p-3'
                   >
                     <div className='flex items-start justify-between gap-2'>
-                      <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
-                        {v.category}
-                      </span>
+                      {isMeaningful(v.category) && (
+                        <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
+                          {v.category}
+                        </span>
+                      )}
                       <Badge
                         variant='outline'
                         className={cn(
-                          'shrink-0 text-xs',
+                          'ml-auto shrink-0 text-xs',
                           getSeverityColor(v.severity),
                         )}
                       >
@@ -517,7 +527,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     <p className='mt-1 break-words text-sm text-foreground/80'>
                       {v.message}
                     </p>
-                    {v.field && (
+                    {isMeaningful(v.field) && (
                       <p className='mt-0.5 break-words text-xs text-muted-foreground'>
                         {t('aiAnalysis.field')}: {v.field}
                       </p>
@@ -542,13 +552,15 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     className='rounded-lg border border-warning/30 bg-warning/10 dark:bg-warning/20 p-3'
                   >
                     <div className='flex items-start justify-between gap-2'>
-                      <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
-                        {s.category}
-                      </span>
+                      {isMeaningful(s.category) && (
+                        <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
+                          {s.category}
+                        </span>
+                      )}
                       <Badge
                         variant='outline'
                         className={cn(
-                          'shrink-0 text-xs',
+                          'ml-auto shrink-0 text-xs',
                           getSeverityColor(s.priority),
                         )}
                       >
@@ -558,7 +570,7 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     <p className='mt-1 break-words text-sm text-foreground/80'>
                       {s.message}
                     </p>
-                    {s.field && (
+                    {isMeaningful(s.field) && (
                       <p className='mt-0.5 break-words text-xs text-muted-foreground'>
                         {t('aiAnalysis.field')}: {s.field}
                       </p>
