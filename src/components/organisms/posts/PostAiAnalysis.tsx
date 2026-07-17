@@ -382,15 +382,18 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                 {t('aiAnalysis.violationCodes')}
               </div>
               <div className='flex flex-wrap gap-1.5'>
-                {result.violation_codes.map((code) => (
+                {/* Dedupe by displayed label: the AI can repeat a code, and two
+                    unknown codes can both fall back to the same "other" label —
+                    a Set collapses either case to a single chip. */}
+                {Array.from(
+                  new Set(result.violation_codes.map(violationLabel)),
+                ).map((label) => (
                   <span
-                    key={code}
+                    key={label}
                     className='inline-flex max-w-full items-start gap-1.5 rounded-md border border-destructive/30 bg-destructive/10 dark:bg-destructive/20 px-2 py-1 text-xs text-destructive'
                   >
                     <AlertTriangle className='mt-px h-3 w-3 shrink-0' />
-                    <span className='min-w-0 break-words'>
-                      {violationLabel(code)}
-                    </span>
+                    <span className='min-w-0 break-words'>{label}</span>
                   </span>
                 ))}
               </div>
