@@ -91,6 +91,7 @@ export const NotificationItem: React.FC<NotificationItemProps> = ({
         }
         break
       case NotificationType.LISTING_RESUBMITTED:
+      case NotificationType.NEW_LISTING_PENDING_REVIEW:
         if (notification.referenceId) {
           router.push(`/content/posts?id=${notification.referenceId}`)
         }

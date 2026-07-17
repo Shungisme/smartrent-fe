@@ -102,10 +102,9 @@ const UsersTab: React.FC<UsersTabProps> = ({ dateRange }) => {
     [data?.brokerVerificationBreakdown],
   )
 
-  const brokerPendingCount =
-    data?.brokerVerificationBreakdown.find(
-      (item) => item.category === 'PENDING',
-    )?.count ?? 0
+  // Live backlog across the whole system, independent of the selected range —
+  // the pie chart below still shows PENDING among brokers registered in-range.
+  const brokerPendingCount = data?.brokersPendingApproval ?? 0
   const brokerSharePercent =
     data?.roleBreakdown.find((item) => item.category === 'BROKER')
       ?.percentage ?? 0

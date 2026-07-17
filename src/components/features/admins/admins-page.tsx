@@ -8,7 +8,6 @@ import { getAdminList } from '@/api/services/admin.service'
 import { AdminProfile } from '@/api/types/admin.type'
 import { AdminTable } from '@/components/organisms/admins/AdminTable'
 import { AdminCreateDialog } from '@/components/organisms/admins/AdminCreateDialog'
-import { AdminEditDialog } from '@/components/organisms/admins/AdminEditDialog'
 import { AdminDeleteDialog } from '@/components/organisms/admins/AdminDeleteDialog'
 
 const AdminManagement = () => {
@@ -28,8 +27,7 @@ const AdminManagement = () => {
   })
   const [totalItems, setTotalItems] = useState(0)
 
-  // Edit/Delete modal state
-  const [editingAdmin, setEditingAdmin] = useState<AdminProfile | null>(null)
+  // Delete modal state
   const [showDelete, setShowDelete] = useState<AdminProfile | null>(null)
   const [createDialogOpen, setCreateDialogOpen] = useState(false)
 
@@ -117,7 +115,6 @@ const AdminManagement = () => {
           loading={loading}
           filterValues={filterValues}
           onFilterChange={handleFilterChange}
-          onEdit={setEditingAdmin}
           onDelete={setShowDelete}
           toolbarActions={
             <Button size='sm' onClick={() => setCreateDialogOpen(true)}>
@@ -132,19 +129,6 @@ const AdminManagement = () => {
           open={createDialogOpen}
           onOpenChange={setCreateDialogOpen}
           onSuccess={(newAdmin) => setAdmins((prev) => [newAdmin, ...prev])}
-        />
-
-        <AdminEditDialog
-          admin={editingAdmin}
-          open={!!editingAdmin}
-          onOpenChange={(open) => !open && setEditingAdmin(null)}
-          onSuccess={(updatedAdmin) =>
-            setAdmins((prev) =>
-              prev.map((a) =>
-                a.adminId === updatedAdmin.adminId ? updatedAdmin : a,
-              ),
-            )
-          }
         />
 
         <AdminDeleteDialog
