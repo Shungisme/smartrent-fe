@@ -1713,7 +1713,7 @@
       "placeholder": "Search by title, poster name, or address..."
     },
     "filters": {
-      "searchPlaceholder": "Search by title, address, or description…",
+      "searchPlaceholder": "Search by title, address, description, or listing ID…",
       "status": "Status",
       "pending": "Pending",
       "approved": "Approved",
@@ -1729,6 +1729,8 @@
       "forRent": "For Rent",
       "share": "Share",
       "pickDateRange": "Pick a date range",
+      "idSearch": "Listing ID",
+      "idSearchPlaceholder": "Enter listing ID",
       "titleSearch": "Title",
       "titleSearchPlaceholder": "Search by title",
       "ownerSearch": "Owner",

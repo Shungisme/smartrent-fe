@@ -164,9 +164,16 @@ export const mapUIFiltersToAPI = (
   }
 
   // Search keyword (new `keyword` id, backward compatible with legacy `search`)
+  // A purely-numeric keyword also matches the listing ID directly (server-side).
   const keyword = str('keyword') ?? str('search')
   if (keyword) {
     apiFilters.keyword = keyword
+  }
+
+  // Exact listing ID filter (advanced filter dialog)
+  const id = num('id')
+  if (id !== undefined) {
+    apiFilters.id = id
   }
 
   // moderationStatus filter (primary moderation workflow field)
