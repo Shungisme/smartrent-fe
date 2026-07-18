@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   XCircle,
   Clock,
-  RotateCcw,
   TrendingUp,
   Coins,
   type LucideIcon,
@@ -57,11 +56,6 @@ export const TransactionStatisticsCards = ({
       label: t('stats.pending'),
       value: statistics.pendingPayments,
       icon: Clock,
-    },
-    {
-      label: t('stats.refunded'),
-      value: statistics.refundedPayments,
-      icon: RotateCcw,
     },
     {
       label: t('stats.successRate'),
