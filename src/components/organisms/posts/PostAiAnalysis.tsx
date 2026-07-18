@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import {
   Sparkles,
@@ -8,10 +8,12 @@ import {
   AlertTriangle,
   Lightbulb,
   CheckCircle2,
+  XCircle,
   Info,
   Files,
   History,
 } from 'lucide-react'
+import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { cn } from '@/lib/utils'
 import { UIPostData } from '@/types/posts.type'
@@ -109,23 +111,52 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
 }) => {
   const t = useTranslations('posts')
   const [loadingStore, setLoadingStore] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<AiVerificationResult | null>(null)
   const [duplicate, setDuplicate] = useState<AiDuplicateCheckResult | null>(
     null,
   )
   const [loadedFromStore, setLoadedFromStore] = useState(false)
   const [analyzedAt, setAnalyzedAt] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [serviceAvailable, setServiceAvailable] = useState<boolean | null>(null)
 
-  // On open: show the AI result the background auto-verify job already computed
-  // and stored — instantly, with no live AI call to wait on. There is no manual
-  // trigger: the panel purely reflects the auto-verify pipeline's output, so if
-  // nothing is stored yet (auto-verify off, or the job hasn't reached this
-  // listing), the panel just stays empty below the header.
+  // Manually (re-)run AI moderation for this listing. Unlike the stateless
+  // /verify, this by-id endpoint PERSISTS the fresh result, so reopening the
+  // post loads this very run via getStoredResult — the latest verification wins.
+  const runAnalysis = useCallback(async () => {
+    if (!post) return
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await AiVerificationService.reVerifyById(post.id)
+      if (res.success && res.data) {
+        setResult(res.data.verification ?? null)
+        setDuplicate(res.data.duplicateCheck ?? null)
+        setLoadedFromStore(true)
+        setAnalyzedAt(res.data.analyzedAt ?? null)
+        if (!res.data.verification) setError(t('aiAnalysis.error'))
+      } else {
+        setError(t('aiAnalysis.error'))
+      }
+    } catch {
+      setError(t('aiAnalysis.error'))
+    } finally {
+      setLoading(false)
+    }
+  }, [post, t])
+
+  // On open: show the AI result the background auto-verify job (or a previous
+  // manual re-verify) already computed and stored — instantly, with no live AI
+  // call to wait on. The admin can also re-run it on demand via the button
+  // below; that run is persisted so the latest result is what loads next time.
   useEffect(() => {
     setResult(null)
     setDuplicate(null)
     setLoadedFromStore(false)
     setAnalyzedAt(null)
+    setError(null)
+    setLoading(false)
 
     if (!open || !post) return
 
@@ -168,6 +199,28 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
     return t.has(key) ? t(key) : String(level)
   }
 
+  // Never surface the raw code (e.g. "PRICE_ANOMALY") to admins. Map every known
+  // code to a human label; the AI can emit codes beyond the typed union, so any
+  // unrecognized code falls back to a generic label instead of the raw string.
+  const violationLabel = (code: string) => {
+    const key = `aiAnalysis.violationCodeLabels.${code}`
+    return t.has(key) ? t(key) : t('aiAnalysis.violationCodeLabels.other')
+  }
+
+  // The AI fills a violation/suggestion `category` (and sometimes `field`) with a
+  // generic English placeholder — "unknown" for violations, "improvement" for
+  // suggestions — when it has nothing specific. That's noise, not information, so
+  // hide those tokens; the message text carries the actual content.
+  const genericTokens = new Set([
+    'unknown',
+    'improvement',
+    'other',
+    'n/a',
+    'none',
+  ])
+  const isMeaningful = (text?: string | null) =>
+    !!text && !genericTokens.has(text.trim().toLowerCase())
+
   return (
     // @container: this panel is rendered at very different widths depending on
     // context — a fixed ~440px sidebar on desktop review, but the full modal
@@ -190,11 +243,11 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
             </div>
           </div>
         </div>
-        <AiServiceStatusBadge />
+        <AiServiceStatusBadge onStatusChange={setServiceAvailable} />
       </div>
 
       {/* Loaded from the auto-moderation cronjob's stored result */}
-      {loadedFromStore && (
+      {loadedFromStore && !loading && (
         <div className='mt-3 flex items-center gap-1.5 text-xs text-muted-foreground'>
           <History className='h-3.5 w-3.5' />
           {analyzedAt
@@ -206,15 +259,31 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
       )}
 
       {/* Fetching the stored result */}
-      {loadingStore && !result && (
+      {loadingStore && !loading && !result && (
         <div className='mt-3 flex items-center gap-2 text-sm text-muted-foreground'>
           <Loader2 className='h-4 w-4 animate-spin' />
           {t('aiAnalysis.loadingStored')}
         </div>
       )}
 
-      {/* Nothing stored yet — no manual trigger; nudge toward enabling auto-verify */}
-      {!loadingStore && !result && (
+      {/* Running a manual (re-)verification */}
+      {loading && (
+        <div className='mt-4 flex items-center gap-2 text-sm text-muted-foreground'>
+          <Loader2 className='h-4 w-4 animate-spin' />
+          {t('aiAnalysis.analyzing')}
+        </div>
+      )}
+
+      {/* Error from a manual run */}
+      {error && !loading && (
+        <div className='mt-4 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 dark:bg-destructive/20 p-3 text-sm text-destructive'>
+          <XCircle className='mt-0.5 h-4 w-4 shrink-0' />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {/* Nothing stored yet — nudge toward auto-verify or the manual button below */}
+      {!loadingStore && !loading && !error && !result && (
         <div className='mt-3 flex items-start gap-2 rounded-lg border border-dashed border-border/60 bg-muted/30 p-3 text-xs text-muted-foreground'>
           <Info className='mt-0.5 h-3.5 w-3.5 shrink-0' />
           <span>{t('aiAnalysis.noResult')}</span>
@@ -222,14 +291,14 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
       )}
 
       {/* Result */}
-      {result && (
+      {result && !loading && (
         <div className='mt-4 space-y-4'>
-          {/* Score + suggestion summary — three cards on one baseline grid.
+          {/* Score + suggestion summary — two cards on one baseline grid.
               Each card is a flex column with a pinned footer (mt-auto) so the
-              rows line up no matter which card is tallest. @lg (>=512px of
-              panel width, not viewport) is the point at which 3 columns have
+              rows line up no matter which card is taller. @lg (>=512px of
+              panel width, not viewport) is the point at which 2 columns have
               room to breathe; below that they stack full-width. */}
-          <div className='grid grid-cols-1 gap-3 @lg:grid-cols-3'>
+          <div className='grid grid-cols-1 gap-3 @lg:grid-cols-2'>
             <div
               className={cn(
                 'flex flex-col rounded-lg border p-3',
@@ -269,20 +338,6 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                 >
                   {t(`aiAnalysis.suggested.${result.suggested_status}`)}
                 </Badge>
-              </div>
-            </div>
-
-            <div className='flex flex-col rounded-lg border border-border/70 bg-card p-3'>
-              <div className='text-xs font-medium text-muted-foreground'>
-                {t('aiAnalysis.confidence')}
-              </div>
-              <div className='mt-1 text-2xl font-bold tabular-nums leading-none text-foreground'>
-                {toPercent(result.confidence)}%
-              </div>
-              <div className='mt-auto truncate pt-2 text-[11px] text-muted-foreground/80'>
-                {result.model_used} ·{' '}
-                {result.processing_time_seconds.toFixed(1)}
-                {t('aiAnalysis.seconds')}
               </div>
             </div>
           </div>
@@ -331,21 +386,29 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
             </div>
           </div>
 
-          {/* Violation codes */}
+          {/* Violation codes — mapped to human labels (never the raw code). The
+              labels are full phrases, so these are wrapping chips rather than
+              nowrap pills: they wrap onto new lines when there are many, and long
+              text wraps inside a chip instead of overflowing the narrow panel. */}
           {result.violation_codes.length > 0 && (
             <div>
               <div className='mb-1.5 text-xs font-medium text-foreground/80'>
                 {t('aiAnalysis.violationCodes')}
               </div>
               <div className='flex flex-wrap gap-1.5'>
-                {result.violation_codes.map((code) => (
-                  <Badge
-                    key={code}
-                    variant='outline'
-                    className='bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30 text-xs'
+                {/* Dedupe by displayed label: the AI can repeat a code, and two
+                    unknown codes can both fall back to the same "other" label —
+                    a Set collapses either case to a single chip. */}
+                {Array.from(
+                  new Set(result.violation_codes.map(violationLabel)),
+                ).map((label) => (
+                  <span
+                    key={label}
+                    className='inline-flex max-w-full items-start gap-1.5 rounded-md border border-destructive/30 bg-destructive/10 dark:bg-destructive/20 px-2 py-1 text-xs text-destructive'
                   >
-                    {code}
-                  </Badge>
+                    <AlertTriangle className='mt-px h-3 w-3 shrink-0' />
+                    <span className='min-w-0 break-words'>{label}</span>
+                  </span>
                 ))}
               </div>
             </div>
@@ -451,14 +514,22 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     key={i}
                     className='rounded-lg border border-destructive/30 bg-destructive/10 dark:bg-destructive/20 p-3'
                   >
-                    <div className='flex items-start justify-between gap-2'>
-                      <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
-                        {v.category}
-                      </span>
+                    <div
+                      className={cn(
+                        'flex items-center gap-2',
+                        isMeaningful(v.category) && 'justify-between',
+                      )}
+                    >
+                      {isMeaningful(v.category) && (
+                        <span className='min-w-0 flex-1 truncate text-sm font-medium text-foreground'>
+                          {v.category}
+                        </span>
+                      )}
                       <Badge
                         variant='outline'
                         className={cn(
                           'shrink-0 text-xs',
+                          isMeaningful(v.category) && 'ml-auto',
                           getSeverityColor(v.severity),
                         )}
                       >
@@ -468,11 +539,6 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     <p className='mt-1 break-words text-sm text-foreground/80'>
                       {v.message}
                     </p>
-                    {v.field && (
-                      <p className='mt-0.5 break-words text-xs text-muted-foreground'>
-                        {t('aiAnalysis.field')}: {v.field}
-                      </p>
-                    )}
                   </div>
                 ))}
               </div>
@@ -492,14 +558,22 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     key={i}
                     className='rounded-lg border border-warning/30 bg-warning/10 dark:bg-warning/20 p-3'
                   >
-                    <div className='flex items-start justify-between gap-2'>
-                      <span className='min-w-0 flex-1 break-words text-sm font-medium text-foreground'>
-                        {s.category}
-                      </span>
+                    <div
+                      className={cn(
+                        'flex items-center gap-2',
+                        isMeaningful(s.category) && 'justify-between',
+                      )}
+                    >
+                      {isMeaningful(s.category) && (
+                        <span className='min-w-0 flex-1 truncate text-sm font-medium text-foreground'>
+                          {s.category}
+                        </span>
+                      )}
                       <Badge
                         variant='outline'
                         className={cn(
                           'shrink-0 text-xs',
+                          isMeaningful(s.category) && 'ml-auto',
                           getSeverityColor(s.priority),
                         )}
                       >
@@ -509,11 +583,6 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                     <p className='mt-1 break-words text-sm text-foreground/80'>
                       {s.message}
                     </p>
-                    {s.field && (
-                      <p className='mt-0.5 break-words text-xs text-muted-foreground'>
-                        {t('aiAnalysis.field')}: {s.field}
-                      </p>
-                    )}
                   </div>
                 ))}
               </div>
@@ -595,13 +664,34 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
         </div>
       )}
 
-      {/* Footer: advisory note, only relevant once a result is showing */}
-      {result && (
-        <div className='mt-4 flex items-center gap-1.5 border-t border-primary/20 pt-3 text-xs text-muted-foreground/80'>
-          <CheckCircle2 className='h-3.5 w-3.5' />
-          {t('aiAnalysis.advisoryNote')}
+      {/* Footer: advisory note (when a result is showing) + manual (re-)verify.
+          The button always shows so admins can re-run AI on manually-verified
+          posts or ones that need another pass — the run is persisted, so the
+          latest result is what loads when the post is reopened. */}
+      <div className='mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-primary/20 pt-3'>
+        <div className='flex items-center gap-1.5 text-xs text-muted-foreground/80'>
+          {result && !loading && (
+            <>
+              <CheckCircle2 className='h-3.5 w-3.5' />
+              {t('aiAnalysis.advisoryNote')}
+            </>
+          )}
         </div>
-      )}
+        <Button
+          type='button'
+          size='sm'
+          onClick={runAnalysis}
+          disabled={loading || serviceAvailable === false}
+          className='text-sm'
+        >
+          {loading ? (
+            <Loader2 className='mr-2 h-4 w-4 animate-spin' />
+          ) : (
+            <Sparkles className='mr-2 h-4 w-4' />
+          )}
+          {result ? t('aiAnalysis.rerunButton') : t('aiAnalysis.runButton')}
+        </Button>
+      </div>
     </div>
   )
 }

@@ -29,6 +29,12 @@ import {
   RotateCcw,
   Eye,
   EyeOff,
+  Users,
+  Droplet,
+  Zap,
+  Wifi,
+  Receipt,
+  Mail,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -37,6 +43,7 @@ import { cn } from '@/lib/utils'
 import { UIPostData } from '@/types/posts.type'
 import { getAmenityIcon, getStatusColor } from '@/utils/post.utils' // Need to ensure these helpers are exported correctly or pass translations
 import { PostAiAnalysis } from '@/components/organisms/posts/PostAiAnalysis'
+import { VipTypeBadge } from '@/components/organisms/posts/PostTable'
 import {
   MediaThumbnail,
   MediaPlayer,
@@ -158,6 +165,29 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
     return key ? t(`furnishing.${key}`) : furnishing
   }
 
+  // Utility price fields come back as either a PriceType enum name or a
+  // free-form amount string — mirrors smartrent-fe's normalizeUtilityValue so
+  // the admin sees the same "Thỏa thuận / Do chủ nhà quy định / Theo nhà cung
+  // cấp" labels users do, instead of the raw enum constant.
+  const _getUtilityPriceLabel = (value?: string | null) => {
+    if (!value) return null
+    const trimmed = value.trim()
+    if (!trimmed) return null
+    const enumLabels: Record<string, string> = {
+      NEGOTIABLE: t('review.utilityPrice.negotiable'),
+      SET_BY_OWNER: t('review.utilityPrice.owner'),
+      PROVIDER_RATE: t('review.utilityPrice.provider'),
+    }
+    if (enumLabels[trimmed]) return enumLabels[trimmed]
+    if (/^[\d.,\s]+$/.test(trimmed)) {
+      const numeric = Number(trimmed.replace(/[\s.,]/g, ''))
+      if (Number.isFinite(numeric)) {
+        return new Intl.NumberFormat('vi-VN').format(numeric)
+      }
+    }
+    return trimmed
+  }
+
   const _getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
       pending: t('statuses.pending'),
@@ -264,6 +294,13 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   // no moderation form), so admins reviewing a hidden post can still see/run it.
   const showAiSidebar = isPending || isHidden
 
+  const waterPriceLabel = _getUtilityPriceLabel(selectedPost.waterPrice)
+  const electricityPriceLabel = _getUtilityPriceLabel(
+    selectedPost.electricityPrice,
+  )
+  const internetPriceLabel = _getUtilityPriceLabel(selectedPost.internetPrice)
+  const serviceFeeLabel = _getUtilityPriceLabel(selectedPost.serviceFee)
+
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -315,15 +352,18 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                       {selectedPost.title}
                     </h3>
                   </div>
-                  <Badge
-                    variant='outline'
-                    className={cn(
-                      'shrink-0',
-                      getStatusColor(selectedPost.status),
+                  <div className='flex shrink-0 items-center gap-1.5'>
+                    {(selectedPost.vipType === 'GOLD' ||
+                      selectedPost.vipType === 'DIAMOND') && (
+                      <VipTypeBadge vipType={selectedPost.vipType} />
                     )}
-                  >
-                    {_getStatusLabel(selectedPost.status)}
-                  </Badge>
+                    <Badge
+                      variant='outline'
+                      className={cn(getStatusColor(selectedPost.status))}
+                    >
+                      {_getStatusLabel(selectedPost.status)}
+                    </Badge>
+                  </div>
                 </div>
                 <div className='mt-5 flex items-baseline gap-2 border-t border-border/60 pt-4'>
                   <span className='text-2xl font-semibold tracking-tight text-foreground tabular-nums md:text-3xl'>
@@ -418,6 +458,42 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                       value={_getFurnishingLabel(selectedPost.furnishing)}
                     />
                   )}
+                  {selectedPost.roomCapacity !== null &&
+                    selectedPost.roomCapacity !== undefined && (
+                      <Fact
+                        icon={Users}
+                        label={t('review.roomCapacity')}
+                        value={selectedPost.roomCapacity}
+                      />
+                    )}
+                  {waterPriceLabel && (
+                    <Fact
+                      icon={Droplet}
+                      label={t('review.waterPrice')}
+                      value={waterPriceLabel}
+                    />
+                  )}
+                  {electricityPriceLabel && (
+                    <Fact
+                      icon={Zap}
+                      label={t('review.electricityPrice')}
+                      value={electricityPriceLabel}
+                    />
+                  )}
+                  {internetPriceLabel && (
+                    <Fact
+                      icon={Wifi}
+                      label={t('review.internetPrice')}
+                      value={internetPriceLabel}
+                    />
+                  )}
+                  {serviceFeeLabel && (
+                    <Fact
+                      icon={Receipt}
+                      label={t('review.serviceFee')}
+                      value={serviceFeeLabel}
+                    />
+                  )}
                 </div>
               </div>
 
@@ -426,12 +502,24 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                 <SectionLabel icon={MapPin}>
                   {t('review.location')}
                 </SectionLabel>
-                <div className='rounded-lg border border-border/70 bg-muted/30 p-4'>
-                  <div className='text-xs text-muted-foreground'>
-                    {selectedPost.propertyInfo.district}
-                  </div>
-                  <div className='mt-1 text-sm text-foreground'>
-                    {selectedPost.propertyInfo.fullAddress}
+                <div className='space-y-2'>
+                  {selectedPost.propertyInfo.fullNewAddress && (
+                    <div className='rounded-lg border border-border/70 bg-muted/30 p-4'>
+                      <div className='text-xs text-muted-foreground'>
+                        {t('review.newAddress')}
+                      </div>
+                      <div className='mt-1 text-sm text-foreground'>
+                        {selectedPost.propertyInfo.fullNewAddress}
+                      </div>
+                    </div>
+                  )}
+                  <div className='rounded-lg border border-border/70 bg-muted/30 p-4'>
+                    <div className='text-xs text-muted-foreground'>
+                      {selectedPost.propertyInfo.district}
+                    </div>
+                    <div className='mt-1 text-sm text-foreground'>
+                      {selectedPost.propertyInfo.fullAddress}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -490,6 +578,14 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                   <div className='text-xs text-muted-foreground md:text-sm'>
                     {selectedPost.poster.phone}
                   </div>
+                  {selectedPost.poster.email && (
+                    <div className='mt-0.5 flex items-center gap-1 text-xs text-muted-foreground md:text-sm'>
+                      <Mail className='h-3 w-3 shrink-0' />
+                      <span className='truncate'>
+                        {selectedPost.poster.email}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 

@@ -17,6 +17,7 @@ type ActionKind = 'approve' | 'reject' | 'remove'
 type BrokerFilterValues = {
   page: number
   pageSize: number
+  keyword?: string
 }
 
 const BrokerPendingPage = () => {
@@ -82,9 +83,11 @@ const BrokerPendingPage = () => {
     setError(null)
 
     try {
+      const keyword = filterValues.keyword?.trim()
       const response = await BrokerService.getPendingBrokers({
         page: filterValues.page,
         size: filterValues.pageSize,
+        keyword: keyword || undefined,
       })
 
       if (response.success && response.data) {
@@ -112,7 +115,7 @@ const BrokerPendingPage = () => {
     } finally {
       setLoading(false)
     }
-  }, [filterValues.page, filterValues.pageSize, t])
+  }, [filterValues.page, filterValues.pageSize, filterValues.keyword, t])
 
   useEffect(() => {
     fetchPendingBrokers()

@@ -79,20 +79,6 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
           </div>
         )}
       </div>
-
-      {/* Footer - optional, can add "View all" link */}
-      {hasNotifications && (
-        <div className='p-3 border-t border-border/70 bg-muted/50'>
-          <Button
-            variant='ghost'
-            size='sm'
-            className='w-full text-sm text-muted-foreground hover:text-foreground'
-            onClick={onClose}
-          >
-            {t('viewAll', { defaultValue: 'View all notifications' })}
-          </Button>
-        </div>
-      )}
     </div>
   )
 }

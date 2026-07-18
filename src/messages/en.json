@@ -1797,8 +1797,20 @@
       "furnishing": "Furnishing",
       "location": "Location",
       "fullAddress": "Full Address",
+      "newAddress": "New Address",
       "amenities": "Amenities",
       "postedBy": "Posted by",
+      "email": "Email",
+      "roomCapacity": "Room Capacity",
+      "waterPrice": "Water Price",
+      "electricityPrice": "Electricity Price",
+      "internetPrice": "Internet Price",
+      "serviceFee": "Service Fee",
+      "utilityPrice": {
+        "negotiable": "Negotiable",
+        "owner": "Set by owner",
+        "provider": "Provider rate"
+      },
       "verificationNotes": "Additional notes (optional)",
       "verificationNotesPlaceholder": "General notes — merged into the reason on reject/request-revision...",
       "rejectionReasonRequired": "Rejection Reason (required for rejection)",
@@ -1824,6 +1836,10 @@
     "aiAnalysis": {
       "title": "AI Analysis",
       "disclaimer": "AI-assisted moderation. The AI does not make the final decision.",
+      "runButton": "Verify with AI",
+      "rerunButton": "Re-analyze",
+      "analyzing": "Analyzing the listing with AI — this can take up to 30 seconds...",
+      "error": "AI verification failed. Please try again.",
       "loadingStored": "Loading saved result…",
       "storedResult": "Auto-moderation result",
       "storedNotice": "Auto-moderation result at {time}",
@@ -1861,7 +1877,6 @@
       "missingFields": "Missing",
       "violations": "Violations",
       "suggestions": "Suggestions",
-      "field": "Field",
       "advisoryNote": "This AI assessment is advisory only — the moderation decision remains with you.",
       "suggested": {
         "APPROVED": "Approve",
@@ -1893,6 +1908,17 @@
         "medium": "Medium",
         "high": "High",
         "critical": "Critical"
+      },
+      "violationCodeLabels": {
+        "SCAM": "Signs of fraud",
+        "INCONSISTENT_INFO": "Information doesn't match the images",
+        "STOCK_PHOTO": "Stock image, not an actual photo",
+        "CONTACT_IN_LISTING": "Contact info embedded in the listing",
+        "BLURRY_IMAGE": "Blurry, low-quality images",
+        "MISSING_MEDIA": "Missing images or videos",
+        "PRICE_ANOMALY": "Abnormal price",
+        "INAPPROPRIATE_CONTENT": "Inappropriate content",
+        "other": "Other violation"
       }
     },
     "listingTypes": {
@@ -2239,6 +2265,9 @@
         },
         "verifyLink": "Verify on official registry ↗"
       },
+      "filters": {
+        "searchPlaceholder": "Search by name, email, or phone..."
+      },
       "documents": {
         "cccdFront": "CCCD - Front",
         "cccdBack": "CCCD - Back",
@@ -2436,7 +2465,6 @@
     "title": "Notifications",
     "markAllRead": "Mark all as read",
     "empty": "No notifications yet",
-    "viewAll": "View all notifications",
     "types": {
       "NEW_REPORT": "New Report",
       "LISTING_RESUBMITTED": "Listing Resubmitted",

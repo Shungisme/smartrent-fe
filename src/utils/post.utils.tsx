@@ -4,20 +4,31 @@ import {
   Building2,
   Briefcase,
   MapPin,
+  AirVent,
   Refrigerator,
-  ShirtIcon,
-  Armchair,
+  WashingMachine,
+  Shirt,
+  Bed,
+  Sofa,
   Wifi,
-  Car,
+  ArrowUpDown,
+  SquareParking,
+  Square,
+  Blinds,
+  Bath,
+  Cctv,
+  Shield,
+  Lock,
+  Fingerprint,
+  Tv,
   Waves,
   Dumbbell,
-  Shield,
-  Wind,
-  ShowerHead,
-  Tv,
-  UtensilsCrossed,
-  WashingMachine,
-  Bed,
+  Bus,
+  Train,
+  Plane,
+  Hospital,
+  GraduationCap,
+  ShoppingCart,
   Circle,
 } from 'lucide-react'
 import {
@@ -42,31 +53,46 @@ export const getPropertyIcon = (type: string) => {
   return iconMap[type] || <Home className='h-4 w-4' />
 }
 
+// Amenity icon map mirrors smartrent-fe (AMENITIES_CONFIG / getAmenityIcon):
+// same amenity `icon` codes → same lucide icons, so the admin review dialog
+// shows the exact icon set users see on the listing detail page.
 export const getAmenityIcon = (iconName: string) => {
   const iconMap: Record<string, React.ReactElement> = {
+    // BASIC
+    ac: <AirVent className='h-4 w-4' />,
     fridge: <Refrigerator className='h-4 w-4' />,
-    refrigerator: <Refrigerator className='h-4 w-4' />,
-    wardrobe: <ShirtIcon className='h-4 w-4' />,
-    'table-chair': <Armchair className='h-4 w-4' />,
-    chair: <Armchair className='h-4 w-4' />,
+    'washing-machine': <WashingMachine className='h-4 w-4' />,
+    wardrobe: <Shirt className='h-4 w-4' />,
+    bed: <Bed className='h-4 w-4' />,
+    'table-chair': <Sofa className='h-4 w-4' />,
+    // CONVENIENCE
     wifi: <Wifi className='h-4 w-4' />,
-    parking: <Car className='h-4 w-4' />,
-    pool: <Waves className='h-4 w-4' />,
+    elevator: <ArrowUpDown className='h-4 w-4' />,
+    parking: <SquareParking className='h-4 w-4' />,
+    balcony: <Square className='h-4 w-4' />,
+    window: <Blinds className='h-4 w-4' />,
+    bathroom: <Bath className='h-4 w-4' />,
+    // SECURITY
+    'security-camera': <Cctv className='h-4 w-4' />,
+    'security-guard': <Shield className='h-4 w-4' />,
+    'magnetic-door': <Lock className='h-4 w-4' />,
+    fingerprint: <Fingerprint className='h-4 w-4' />,
+    // ENTERTAINMENT
+    tv: <Tv className='h-4 w-4' />,
     'swimming-pool': <Waves className='h-4 w-4' />,
     gym: <Dumbbell className='h-4 w-4' />,
-    security: <Shield className='h-4 w-4' />,
-    'air-conditioner': <Wind className='h-4 w-4' />,
-    ac: <Wind className='h-4 w-4' />,
-    'water-heater': <ShowerHead className='h-4 w-4' />,
-    tv: <Tv className='h-4 w-4' />,
-    television: <Tv className='h-4 w-4' />,
-    kitchen: <UtensilsCrossed className='h-4 w-4' />,
-    'washing-machine': <WashingMachine className='h-4 w-4' />,
-    washer: <WashingMachine className='h-4 w-4' />,
-    bed: <Bed className='h-4 w-4' />,
-    bedroom: <Bed className='h-4 w-4' />,
+    tennis: <Dumbbell className='h-4 w-4' />,
+    // TRANSPORT
+    'bus-stop': <Bus className='h-4 w-4' />,
+    'train-station': <Train className='h-4 w-4' />,
+    airport: <Plane className='h-4 w-4' />,
+    hospital: <Hospital className='h-4 w-4' />,
+    school: <GraduationCap className='h-4 w-4' />,
+    market: <ShoppingCart className='h-4 w-4' />,
   }
-  return iconMap[iconName.toLowerCase()] || <Circle className='h-4 w-4' />
+  return (
+    iconMap[iconName.toLowerCase().trim()] || <Circle className='h-4 w-4' />
+  )
 }
 
 export const formatPrice = (
@@ -414,6 +440,7 @@ export const mapDetailToUI = (item: ListingResponseWithAdmin): UIPostData => {
       avatar: undefined,
       userId: item.user?.userId || '',
       phone: item.user?.contactPhoneNumber || '',
+      email: item.user?.email || undefined,
     },
     propertyInfo: {
       type: item.productType,
@@ -422,6 +449,7 @@ export const mapDetailToUI = (item: ListingResponseWithAdmin): UIPostData => {
         item.propertyInfo?.district || item.address?.legacyDistrictName || '',
       fullAddress:
         item.propertyInfo?.fullAddress || item.address?.fullAddress || '',
+      fullNewAddress: item.address?.fullNewAddress || null,
     },
     price: formatPrice(item.price, item.priceUnit),
     priceRaw: item.price,
@@ -445,5 +473,10 @@ export const mapDetailToUI = (item: ListingResponseWithAdmin): UIPostData => {
     bathrooms: item.bathrooms,
     direction: item.direction,
     furnishing: item.furnishing,
+    roomCapacity: item.roomCapacity,
+    waterPrice: item.waterPrice,
+    electricityPrice: item.electricityPrice,
+    internetPrice: item.internetPrice,
+    serviceFee: item.serviceFee,
   }
 }

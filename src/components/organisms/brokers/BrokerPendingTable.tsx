@@ -3,7 +3,11 @@
 import React from 'react'
 import { useTranslations } from 'next-intl'
 import { Eye } from 'lucide-react'
-import { DataTable, Column } from '@/components/organisms/DataTable'
+import {
+  DataTable,
+  Column,
+  FilterConfig,
+} from '@/components/organisms/DataTable'
 import { Button } from '@/components/atoms/button'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/atoms/avatar'
 import { AdminBrokerUserResponse } from '@/api/types/broker.type'
@@ -97,10 +101,22 @@ export const BrokerPendingTable: React.FC<BrokerPendingTableProps> = ({
   const pageSize =
     typeof filterValues.pageSize === 'number' ? filterValues.pageSize : 10
 
+  const filterConfig: FilterConfig[] = [
+    {
+      // Backend OR-combines this against name/email/phone, so a single box
+      // searches all three at once.
+      id: 'keyword',
+      type: 'search',
+      label: t('filters.searchPlaceholder'),
+      placeholder: t('filters.searchPlaceholder'),
+    },
+  ]
+
   return (
     <DataTable
       data={data}
       columns={columns}
+      filters={filterConfig}
       filterMode='api'
       filterValues={filterValues}
       onFilterChange={onFilterChange}

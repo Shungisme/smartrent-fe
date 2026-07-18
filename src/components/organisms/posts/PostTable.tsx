@@ -15,7 +15,7 @@ import { PostStatus, UIPostData } from '@/types/posts.type'
 import { getPropertyIcon, getStatusColor } from '@/utils/post.utils'
 import { TIER_STYLES, FALLBACK_TIER_STYLE } from '@/utils/premium.utils'
 
-const VipTypeBadge: React.FC<{ vipType: string }> = ({ vipType }) => {
+export const VipTypeBadge: React.FC<{ vipType: string }> = ({ vipType }) => {
   const t = useTranslations('posts.filters')
   const style = TIER_STYLES[vipType] ?? FALLBACK_TIER_STYLE
   const labels: Record<string, string> = {

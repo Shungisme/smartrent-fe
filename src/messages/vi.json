@@ -1761,8 +1761,20 @@
       "furnishing": "Nội thất",
       "location": "Vị trí",
       "fullAddress": "Địa chỉ đầy đủ",
+      "newAddress": "Địa chỉ mới",
       "amenities": "Tiện nghi",
       "postedBy": "Đăng bởi",
+      "email": "Email",
+      "roomCapacity": "Sức chứa",
+      "waterPrice": "Giá nước",
+      "electricityPrice": "Giá điện",
+      "internetPrice": "Giá internet",
+      "serviceFee": "Phí dịch vụ",
+      "utilityPrice": {
+        "negotiable": "Thỏa thuận",
+        "owner": "Do chủ nhà quy định",
+        "provider": "Theo nhà cung cấp"
+      },
       "verificationNotes": "Ghi chú thêm (tùy chọn)",
       "verificationNotesPlaceholder": "Ghi chú chung — sẽ được gộp vào lý do khi từ chối/yêu cầu chỉnh sửa...",
       "rejectionReasonRequired": "Lý do từ chối (bắt buộc khi từ chối)",
@@ -1788,6 +1800,10 @@
     "aiAnalysis": {
       "title": "Phân tích AI",
       "disclaimer": "Hỗ trợ kiểm duyệt bằng AI. AI không đưa ra quyết định cuối cùng.",
+      "runButton": "Xác minh bằng AI",
+      "rerunButton": "Phân tích lại",
+      "analyzing": "Đang phân tích nội dung bằng AI — có thể mất đến 30 giây...",
+      "error": "Xác minh AI thất bại. Vui lòng thử lại.",
       "loadingStored": "Đang tải kết quả đã lưu…",
       "storedResult": "Kết quả kiểm duyệt tự động",
       "storedNotice": "Kết quả kiểm duyệt tự động lúc {time}",
@@ -1825,7 +1841,6 @@
       "missingFields": "Thiếu",
       "violations": "Vi phạm",
       "suggestions": "Gợi ý",
-      "field": "Trường",
       "advisoryNote": "Đánh giá AI chỉ mang tính tham khảo — quyết định kiểm duyệt vẫn thuộc về bạn.",
       "suggested": {
         "APPROVED": "Duyệt",
@@ -1857,6 +1872,17 @@
         "medium": "Trung bình",
         "high": "Cao",
         "critical": "Nghiêm trọng"
+      },
+      "violationCodeLabels": {
+        "SCAM": "Dấu hiệu lừa đảo",
+        "INCONSISTENT_INFO": "Thông tin không khớp với hình ảnh",
+        "STOCK_PHOTO": "Ảnh mạng, không phải ảnh thực tế",
+        "CONTACT_IN_LISTING": "Chèn thông tin liên hệ trong tin",
+        "BLURRY_IMAGE": "Ảnh mờ, kém chất lượng",
+        "MISSING_MEDIA": "Thiếu hình ảnh hoặc video",
+        "PRICE_ANOMALY": "Giá bất thường",
+        "INAPPROPRIATE_CONTENT": "Nội dung không phù hợp",
+        "other": "Vi phạm khác"
       }
     },
     "listingTypes": {
@@ -2203,6 +2229,9 @@
         },
         "verifyLink": "Xác minh trên cổng chính thức ↗"
       },
+      "filters": {
+        "searchPlaceholder": "Tìm theo tên, email hoặc số điện thoại..."
+      },
       "documents": {
         "cccdFront": "CCCD - Mặt trước",
         "cccdBack": "CCCD - Mặt sau",
@@ -2400,7 +2429,6 @@
     "title": "Thông báo",
     "markAllRead": "Đánh dấu tất cả đã đọc",
     "empty": "Chưa có thông báo",
-    "viewAll": "Xem tất cả thông báo",
     "types": {
       "NEW_REPORT": "Báo cáo mới",
       "LISTING_RESUBMITTED": "Tin đăng gửi lại",
