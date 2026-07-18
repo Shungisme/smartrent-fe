@@ -1,11 +1,18 @@
 import React from 'react'
 import { useTranslations } from 'next-intl'
-import { DataTable, Column, FilterConfig } from '@/components/organisms/DataTable'
+import {
+  DataTable,
+  Column,
+  FilterConfig,
+} from '@/components/organisms/DataTable'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
 import { Eye } from 'lucide-react'
-import { ListingReport } from '@/api/types/listing-report.type'
+import {
+  ListingReport,
+  ReportResolutionAction,
+} from '@/api/types/listing-report.type'
 import { formatDateTimeParts } from '@/utils/format'
 
 type BadgeVariant =
@@ -42,6 +49,29 @@ const statusMap = {
   REJECTED: 'dismissed',
 }
 
+// When a report was resolved, prefer showing the concrete action taken over the
+// coarse RESOLVED/REJECTED status (both "suspend" and "request revision" are
+// RESOLVED). Maps the backend action to the shared reports.review.outcomes label
+// and a badge variant. Legacy rows with no action fall back to the plain status.
+const resolutionActionOutcome: Record<
+  ReportResolutionAction,
+  { key: string; variant: BadgeVariant }
+> = {
+  SUSPENDED: { key: 'suspended', variant: 'destructive' },
+  REVISION_REQUESTED: { key: 'revision', variant: 'warning' },
+  DISMISSED: { key: 'dismissed', variant: 'secondary' },
+  RESOLVED: { key: 'resolved', variant: 'success' },
+}
+
+// The single source of truth for "what status does this row actually show" —
+// used to build both the status column and its filter, so the filter options
+// can never drift from what the column renders (e.g. a resolved report that
+// suspended the listing shows/filters as "suspended", not a generic "resolved").
+const getDisplayStatusKey = (report: ListingReport): string =>
+  report.resolutionAction
+    ? resolutionActionOutcome[report.resolutionAction].key
+    : statusMap[report.status as keyof typeof statusMap]
+
 export const ReportTable: React.FC<ReportTableProps> = ({
   data,
   loading,
@@ -52,9 +82,10 @@ export const ReportTable: React.FC<ReportTableProps> = ({
   // Build a combined, searchable string per row. The DataTable frontend filter
   // matches a single field (item[filter.id]) via case-insensitive substring, so
   // we expose `searchIndex` to let one search box match reporter name, phone,
-  // report id or listing id at once.
+  // report id or listing id at once. `displayStatus` is exposed the same way so
+  // the status filter matches exactly what the status column renders.
   const searchableData = React.useMemo<
-    (ListingReport & { searchIndex: string })[]
+    (ListingReport & { searchIndex: string; displayStatus: string })[]
   >(
     () =>
       data.map((report) => ({
@@ -65,8 +96,11 @@ export const ReportTable: React.FC<ReportTableProps> = ({
           report.reportId,
           report.listingId,
         ]
-          .filter((value) => value !== undefined && value !== null && value !== '')
+          .filter(
+            (value) => value !== undefined && value !== null && value !== '',
+          )
           .join(' '),
+        displayStatus: getDisplayStatusKey(report),
       })),
     [data],
   )
@@ -79,13 +113,15 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       placeholder: t('filters.searchPlaceholder'),
     },
     {
-      id: 'status',
+      id: 'displayStatus',
       type: 'select',
       label: t('filters.statusAll'),
       options: [
-        { value: 'PENDING', label: t('statuses.pending') },
-        { value: 'RESOLVED', label: t('statuses.resolved') },
-        { value: 'REJECTED', label: t('statuses.dismissed') },
+        { value: 'pending', label: t('statuses.pending') },
+        { value: 'suspended', label: t('review.outcomes.suspended') },
+        { value: 'revision', label: t('review.outcomes.revision') },
+        { value: 'resolved', label: t('statuses.resolved') },
+        { value: 'dismissed', label: t('statuses.dismissed') },
       ],
     },
   ]
@@ -181,13 +217,25 @@ export const ReportTable: React.FC<ReportTableProps> = ({
     },
     {
       id: 'status',
-      accessor: 'status',
+      accessor: (row) => getDisplayStatusKey(row),
       header: t('review.currentStatus'),
-      render: (_, row) => (
-        <Badge variant={getStatusVariant(row.status)}>
-          {t(`statuses.${statusMap[row.status as keyof typeof statusMap]}`)}
-        </Badge>
-      ),
+      render: (_, row) => {
+        const outcome = row.resolutionAction
+          ? resolutionActionOutcome[row.resolutionAction]
+          : null
+        if (outcome) {
+          return (
+            <Badge variant={outcome.variant}>
+              {t(`review.outcomes.${outcome.key}`)}
+            </Badge>
+          )
+        }
+        return (
+          <Badge variant={getStatusVariant(row.status)}>
+            {t(`statuses.${statusMap[row.status as keyof typeof statusMap]}`)}
+          </Badge>
+        )
+      },
     },
     {
       id: 'actions',

@@ -2016,6 +2016,9 @@
       "reportedBy": "Reported by",
       "reportedPost": "Reported Post",
       "reporterInfo": "Reporter Information",
+      "ownerInfo": "Post Owner Information",
+      "phoneVerified": "Verified",
+      "ownerUnavailable": "Owner information unavailable",
       "reportReasons": "Report Reasons",
       "reportedAt": "Reported At",
       "additionalFeedback": "Additional Feedback",
@@ -2033,6 +2036,13 @@
       "direction": "Direction",
       "location": "Location",
       "listingStatus": "Listing Status:",
+      "resolutionAction": "Resolution:",
+      "outcomes": {
+        "suspended": "Listing Suspended",
+        "revision": "Revision Requested",
+        "dismissed": "Dismissed",
+        "resolved": "Resolved"
+      },
       "verified": "Verified",
       "pendingVerification": "Pending Verification",
       "expired": "Expired",

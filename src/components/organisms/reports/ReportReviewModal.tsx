@@ -26,11 +26,20 @@ import {
   X,
   Edit,
   Ban,
+  Phone,
+  Mail,
+  ShieldCheck,
 } from 'lucide-react'
 import cn from 'classnames'
-import { ListingReport } from '@/api/types/listing-report.type'
+import {
+  ListingReport,
+  ReportResolutionAction,
+} from '@/api/types/listing-report.type'
 import { ListingService } from '@/api/services/listing.service'
-import { ListingResponseWithAdmin } from '@/api/types/listing.type'
+import {
+  ListingResponseWithAdmin,
+  ModerationStatus,
+} from '@/api/types/listing.type'
 import { toast } from 'sonner'
 import { formatPrice, formatDateTimeParts } from '@/utils/format'
 
@@ -78,6 +87,65 @@ const statusMap = {
   PENDING: 'pending',
   RESOLVED: 'resolved',
   REJECTED: 'dismissed',
+}
+
+// What action the admin actually took on the reported listing. Newer reports
+// carry the persisted `resolutionAction`; older rows (resolved before it was
+// tracked) fall back to inferring it from the listing's current moderationStatus.
+// Returns null while still pending.
+type ReportOutcome = 'suspended' | 'revision' | 'dismissed' | 'resolved'
+
+const RESOLUTION_ACTION_TO_OUTCOME: Record<
+  ReportResolutionAction,
+  ReportOutcome
+> = {
+  SUSPENDED: 'suspended',
+  REVISION_REQUESTED: 'revision',
+  DISMISSED: 'dismissed',
+  RESOLVED: 'resolved',
+}
+
+const getReportOutcome = (
+  status: string,
+  resolutionAction: ReportResolutionAction | null | undefined,
+  moderationStatus: ModerationStatus | null | undefined,
+): ReportOutcome | null => {
+  if (status === 'PENDING') return null
+  // Prefer the action the backend recorded at resolution time.
+  if (resolutionAction) return RESOLUTION_ACTION_TO_OUTCOME[resolutionAction]
+  // Legacy rows (no persisted action) — infer from status + moderation status.
+  if (status === 'REJECTED') return 'dismissed'
+  if (moderationStatus === 'SUSPENDED' || moderationStatus === 'REMOVED')
+    return 'suspended'
+  if (moderationStatus === 'REVISION_REQUIRED') return 'revision'
+  return 'resolved'
+}
+
+const getOutcomeColor = (outcome: ReportOutcome) => {
+  switch (outcome) {
+    case 'suspended':
+      return 'bg-destructive/10 text-destructive dark:bg-destructive/20 border-destructive/30'
+    case 'revision':
+      return 'bg-warning/10 text-warning-foreground dark:bg-warning/20 border-warning/30'
+    case 'resolved':
+      return 'bg-success/10 text-success-foreground dark:bg-success/20 border-success/30'
+    default:
+      return 'bg-muted text-muted-foreground border-border/70'
+  }
+}
+
+const getOutcomeIcon = (outcome: ReportOutcome) => {
+  const cls = 'h-3.5 w-3.5'
+  switch (outcome) {
+    case 'suspended':
+      return <Ban className={cls} />
+    case 'revision':
+      return <Edit className={cls} />
+    case 'resolved':
+      return <CheckCircle className={cls} />
+    default:
+      return <XCircle className={cls} />
+  }
 }
 
 const getPropertyIcon = (type: string) => {
@@ -154,6 +222,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
         status: 'RESOLVED',
         adminNotes: actionReason,
         removeListing: true,
+        resolutionAction: 'SUSPENDED',
       })
       if (!response.success) {
         toast.error(response.message || t('toasts.removeListingError'))
@@ -183,6 +252,7 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
       const response = await ListingService.resolveReport(report.reportId, {
         status: 'REJECTED',
         adminNotes: actionReason,
+        resolutionAction: 'DISMISSED',
       })
       if (!response.success) {
         toast.error(response.message || t('toasts.dismissError'))
@@ -285,6 +355,22 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
     }
   }
 
+  // Resolution outcome badge — what happened to the listing once handled.
+  const reportOutcome = report
+    ? getReportOutcome(
+        report.status,
+        report.resolutionAction,
+        listingDetails?.moderationStatus,
+      )
+    : null
+
+  // Owner of the reported listing — surfaced so admins can contact directly.
+  const owner = listingDetails?.user ?? null
+  const ownerName = owner
+    ? [owner.firstName, owner.lastName].filter(Boolean).join(' ').trim() ||
+      owner.email
+    : ''
+
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -328,6 +414,27 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                           </>
                         )}
                       </p>
+                      {reportOutcome &&
+                        !(
+                          report.status === 'RESOLVED' &&
+                          !report.resolutionAction &&
+                          loadingListing
+                        ) && (
+                          <div className='mt-2 flex flex-wrap items-center gap-2'>
+                            <span className='text-xs md:text-sm opacity-90'>
+                              {t('review.resolutionAction')}
+                            </span>
+                            <Badge
+                              className={cn(
+                                'inline-flex items-center gap-1 text-xs',
+                                getOutcomeColor(reportOutcome),
+                              )}
+                            >
+                              {getOutcomeIcon(reportOutcome)}
+                              {t(`review.outcomes.${reportOutcome}`)}
+                            </Badge>
+                          </div>
+                        )}
                     </div>
                     <Badge
                       className={cn(
@@ -384,28 +491,89 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                   </div>
                 )}
 
-                {/* Reporter Info */}
-                <div className='flex flex-col gap-2'>
-                  <h3 className='text-base md:text-lg font-semibold text-foreground mb-2'>
-                    {t('review.reporterInfo')}
-                  </h3>
-                  <div className='flex items-center gap-3 rounded-lg border border-border/70 p-3 md:p-4'>
-                    <Avatar className='h-12 w-12'>
-                      <div className='flex h-full w-full items-center justify-center bg-primary/10 text-primary dark:bg-primary/20 font-semibold text-lg'>
-                        {getInitials(report.reporterName)}
-                      </div>
-                    </Avatar>
-                    <div className='flex-1'>
-                      <div className='font-medium text-foreground text-base'>
-                        {report.reporterName}
-                      </div>
-                      <div className='text-sm text-muted-foreground mt-0.5'>
-                        {report.reporterEmail}
-                      </div>
-                      <div className='text-sm text-muted-foreground'>
-                        {report.reporterPhone}
+                {/* Contact Info — reporter and reported-post owner side by side */}
+                <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+                  {/* Reporter Info */}
+                  <div className='flex flex-col gap-2'>
+                    <h3 className='text-base md:text-lg font-semibold text-foreground mb-2'>
+                      {t('review.reporterInfo')}
+                    </h3>
+                    <div className='flex h-full items-center gap-3 rounded-lg border border-border/70 p-3 md:p-4'>
+                      <Avatar className='h-12 w-12 shrink-0'>
+                        <div className='flex h-full w-full items-center justify-center bg-primary/10 text-primary dark:bg-primary/20 font-semibold text-lg'>
+                          {getInitials(report.reporterName)}
+                        </div>
+                      </Avatar>
+                      <div className='min-w-0 flex-1'>
+                        <div className='font-medium text-foreground text-base'>
+                          {report.reporterName}
+                        </div>
+                        <div className='text-sm text-muted-foreground mt-0.5 truncate'>
+                          {report.reporterEmail}
+                        </div>
+                        <div className='text-sm text-muted-foreground'>
+                          {report.reporterPhone}
+                        </div>
                       </div>
                     </div>
+                  </div>
+
+                  {/* Reported-post Owner Info */}
+                  <div className='flex flex-col gap-2'>
+                    <h3 className='text-base md:text-lg font-semibold text-foreground mb-2'>
+                      {t('review.ownerInfo')}
+                    </h3>
+                    {loadingListing ? (
+                      <div className='flex h-full items-center gap-2 rounded-lg border border-border/70 p-3 md:p-4'>
+                        <Loader2 className='h-5 w-5 animate-spin text-primary' />
+                        <span className='text-sm text-muted-foreground'>
+                          {t('review.loadingDetails')}
+                        </span>
+                      </div>
+                    ) : owner ? (
+                      <div className='flex h-full items-center gap-3 rounded-lg border border-border/70 p-3 md:p-4'>
+                        <Avatar className='h-12 w-12 shrink-0'>
+                          <div className='flex h-full w-full items-center justify-center bg-primary/10 text-primary dark:bg-primary/20 font-semibold text-lg'>
+                            {getInitials(ownerName)}
+                          </div>
+                        </Avatar>
+                        <div className='min-w-0 flex-1'>
+                          <div className='font-medium text-foreground text-base'>
+                            {ownerName}
+                          </div>
+                          {owner.email && (
+                            <a
+                              href={`mailto:${owner.email}`}
+                              className='mt-0.5 flex min-w-0 items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary'
+                            >
+                              <Mail className='h-3.5 w-3.5 shrink-0' />
+                              <span className='truncate'>{owner.email}</span>
+                            </a>
+                          )}
+                          {owner.contactPhoneNumber && (
+                            <div className='flex flex-wrap items-center gap-x-2 gap-y-0.5'>
+                              <a
+                                href={`tel:${owner.contactPhoneNumber}`}
+                                className='flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary'
+                              >
+                                <Phone className='h-3.5 w-3.5 shrink-0' />
+                                <span>{owner.contactPhoneNumber}</span>
+                              </a>
+                              {owner.contactPhoneVerified && (
+                                <span className='inline-flex items-center gap-0.5 text-xs text-success-foreground'>
+                                  <ShieldCheck className='h-3 w-3' />
+                                  {t('review.phoneVerified')}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className='flex h-full items-center rounded-lg border border-border/70 p-3 md:p-4 text-sm text-muted-foreground'>
+                        {t('review.ownerUnavailable')}
+                      </div>
+                    )}
                   </div>
                 </div>
 

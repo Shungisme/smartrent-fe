@@ -78,6 +78,8 @@ export interface AdminUserAnalyticsResponse {
   totalUsersAsOfRangeEnd: number
   roleBreakdown: CategoryBreakdownItem<UserRoleCategory>[]
   brokerVerificationBreakdown: CategoryBreakdownItem<BrokerVerificationCategory>[]
+  /** Live, system-wide count of brokers awaiting approval — not scoped to the date range. */
+  brokersPendingApproval: number
 }
 
 export type ListingTypeCategory = 'RENT' | 'SALE' | 'SHARE'
