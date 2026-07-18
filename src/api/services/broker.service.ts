@@ -20,6 +20,7 @@ export class BrokerService {
   static async getPendingBrokers(params?: {
     page?: number
     size?: number
+    keyword?: string
   }): Promise<ApiResponse<PaginatedResponse<AdminBrokerUserResponse>>> {
     return apiRequest<PaginatedResponse<AdminBrokerUserResponse>>({
       method: 'GET',
