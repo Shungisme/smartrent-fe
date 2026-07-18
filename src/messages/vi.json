@@ -2239,6 +2239,9 @@
         },
         "verifyLink": "Xác minh trên cổng chính thức ↗"
       },
+      "filters": {
+        "searchPlaceholder": "Tìm theo tên, email hoặc số điện thoại..."
+      },
       "documents": {
         "cccdFront": "CCCD - Mặt trước",
         "cccdBack": "CCCD - Mặt sau",

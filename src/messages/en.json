@@ -2275,6 +2275,9 @@
         },
         "verifyLink": "Verify on official registry ↗"
       },
+      "filters": {
+        "searchPlaceholder": "Search by name, email, or phone..."
+      },
       "documents": {
         "cccdFront": "CCCD - Front",
         "cccdBack": "CCCD - Back",
