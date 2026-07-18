@@ -150,7 +150,14 @@ export const BrokerReviewDialog: React.FC<BrokerReviewDialogProps> = ({
   return (
     <>
       <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className='flex w-[80vw] max-w-[1200px] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0'>
+        <DialogContent
+          className='flex w-[80vw] max-w-[1200px] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0'
+          onPointerDownOutside={(event) => {
+            if (lightboxIndex !== null) {
+              event.preventDefault()
+            }
+          }}
+        >
           <>
             {/* Fixed header */}
             <DialogHeader className='shrink-0 border-b border-border/60 px-6 py-4'>
