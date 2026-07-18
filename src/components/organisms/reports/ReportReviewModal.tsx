@@ -553,7 +553,9 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                           {owner.contactPhoneNumber && (
                             <div className='flex flex-wrap items-center gap-x-2 gap-y-0.5'>
                               <a
-                                href={`tel:${owner.contactPhoneNumber}`}
+                                href={`https://zalo.me/${owner.contactPhoneNumber.replace(/\D/g, '')}`}
+                                target='_blank'
+                                rel='noopener noreferrer'
                                 className='flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-primary'
                               >
                                 <Phone className='h-3.5 w-3.5 shrink-0' />
