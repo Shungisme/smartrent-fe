@@ -17,12 +17,13 @@ with sticky column headers.
 ## Goal
 
 Replace the fixed-viewport internal-scroll model with **document-scroll** for
-all paginated admin list pages. Net result should be *less* code than today and
+all paginated admin list pages. Net result should be _less_ code than today and
 no viewport-fraction (`vh`) sizing.
 
 ## Design
 
 ### 1. Scroll model
+
 - `main` (in `AppAdminLayout`) stays the single scroll container
   (`overflow-y-auto`) but reverts to plain block flow — remove the
   `flex flex-col` on `main` and the `lg:min-h-0 lg:flex-1 flex flex-col` on the
@@ -37,15 +38,16 @@ no viewport-fraction (`vh`) sizing.
   simple wrappers, e.g. `space-y-6`).
 
 ### 2. Wide-table horizontal scroll (no sticky header)
+
 - **No sticky `<thead>`.** During planning we confirmed a hard CSS conflict:
   wide tables need horizontal scroll (`overflow-x: auto`), which per spec
-  promotes the container to a y-scroll context too — making a *page-relative*
+  promotes the container to a y-scroll context too — making a _page-relative_
   `sticky` header impossible without reintroducing a bounded-height inner frame
   (the very thing we're removing). GitHub / Stripe lists scroll their headers
   with content; we follow that.
 - Wide tables (e.g. posts, transactions, `min-w-[800px]`) scroll **horizontally**
   inside their card via an inner `overflow-x-auto` wrapper. The `.table-surface`
-  card keeps its rounded corners (`overflow-hidden` unchanged) — the *inner*
+  card keeps its rounded corners (`overflow-hidden` unchanged) — the _inner_
   wrapper owns the horizontal scroll, so there is no clip-vs-sticky conflict.
 - Vertically the table is natural height; the page (`main`) scrolls. The
   existing `sticky top-0` class on `<thead>` becomes inert (no bounded scroll
@@ -53,11 +55,13 @@ no viewport-fraction (`vh`) sizing.
 - The page title + Filter/Views toolbar scroll naturally.
 
 ### 3. Density & page size
+
 - Keep default page size **20** and the **10 / 20 / 50** options (users who want
   to see more pick 50).
 - Keep current row density.
 
 ## Scope (files)
+
 - `src/components/layouts/AppAdminLayout.tsx` — revert `main` / `.app-container`
   flex-fill.
 - `src/components/organisms/DataTable/{types.ts,index.tsx,TableDesktop.tsx}` —
@@ -72,6 +76,7 @@ no viewport-fraction (`vh`) sizing.
   wrapper, so no sticky conflict.
 
 ## Non-goals
+
 - Sticky filter/toolbar bar (deferred enhancement).
 - Infinite scroll / row virtualization.
 - Changing the pagination component or the page-size options.
@@ -79,6 +84,7 @@ no viewport-fraction (`vh`) sizing.
 - Mobile card view (unchanged).
 
 ## Acceptance criteria
+
 - On a list page (e.g. Users) at 16:9, the table shows all 20 rows at natural
   height; scrolling the page reveals the rows then pagination at the end — **no
   nested scrollbar inside the table**.

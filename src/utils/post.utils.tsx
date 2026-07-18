@@ -90,7 +90,9 @@ export const getAmenityIcon = (iconName: string) => {
     school: <GraduationCap className='h-4 w-4' />,
     market: <ShoppingCart className='h-4 w-4' />,
   }
-  return iconMap[iconName.toLowerCase().trim()] || <Circle className='h-4 w-4' />
+  return (
+    iconMap[iconName.toLowerCase().trim()] || <Circle className='h-4 w-4' />
+  )
 }
 
 export const formatPrice = (

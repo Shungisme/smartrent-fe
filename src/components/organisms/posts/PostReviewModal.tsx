@@ -258,7 +258,7 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
     if (!open) return null
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className='flex w-[80vw] max-w-[1200px] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0'>
+        <DialogContent className='flex w-[80vw] max-w-[1200px] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0 max-sm:inset-0 max-sm:top-0 max-sm:left-0 max-sm:h-dvh max-sm:w-screen max-sm:max-w-none max-sm:max-h-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:border-0'>
           <>
             <DialogHeader className='shrink-0 border-b border-border/60 px-6 py-4'>
               <DialogTitle className='text-base font-semibold'>
@@ -305,7 +305,7 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent
-          className='flex w-[80vw] max-w-[1200px] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0'
+          className='flex w-[80vw] max-w-[1200px] mx-auto max-h-[90vh] flex-col overflow-hidden p-0 gap-0 max-sm:inset-0 max-sm:top-0 max-sm:left-0 max-sm:h-dvh max-sm:w-screen max-sm:max-w-none max-sm:max-h-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-none max-sm:border-0'
           onPointerDownOutside={(e) => {
             if (lightboxOpen) e.preventDefault()
           }}
@@ -338,7 +338,7 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
             >
               {/* Hero: title, code, listing type, status & price */}
               <div className='rounded-xl border border-border/70 bg-gradient-to-br from-primary/5 via-card to-card p-5 shadow-sm md:p-6'>
-                <div className='flex items-start justify-between gap-4'>
+                <div className='flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4'>
                   <div className='min-w-0 space-y-2'>
                     <div className='flex flex-wrap items-center gap-1.5'>
                       <Badge variant='secondary' className='font-normal px-0'>
@@ -352,7 +352,7 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                       {selectedPost.title}
                     </h3>
                   </div>
-                  <div className='flex shrink-0 items-center gap-1.5'>
+                  <div className='flex flex-wrap items-center gap-1.5 sm:shrink-0'>
                     {(selectedPost.vipType === 'GOLD' ||
                       selectedPost.vipType === 'DIAMOND') && (
                       <VipTypeBadge vipType={selectedPost.vipType} />

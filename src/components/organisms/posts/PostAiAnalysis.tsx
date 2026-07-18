@@ -211,7 +211,13 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
   // generic English placeholder — "unknown" for violations, "improvement" for
   // suggestions — when it has nothing specific. That's noise, not information, so
   // hide those tokens; the message text carries the actual content.
-  const genericTokens = new Set(['unknown', 'improvement', 'other', 'n/a', 'none'])
+  const genericTokens = new Set([
+    'unknown',
+    'improvement',
+    'other',
+    'n/a',
+    'none',
+  ])
   const isMeaningful = (text?: string | null) =>
     !!text && !genericTokens.has(text.trim().toLowerCase())
 

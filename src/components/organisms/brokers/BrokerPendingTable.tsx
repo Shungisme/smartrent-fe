@@ -3,7 +3,11 @@
 import React from 'react'
 import { useTranslations } from 'next-intl'
 import { Eye } from 'lucide-react'
-import { DataTable, Column, FilterConfig } from '@/components/organisms/DataTable'
+import {
+  DataTable,
+  Column,
+  FilterConfig,
+} from '@/components/organisms/DataTable'
 import { Button } from '@/components/atoms/button'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/atoms/avatar'
 import { AdminBrokerUserResponse } from '@/api/types/broker.type'

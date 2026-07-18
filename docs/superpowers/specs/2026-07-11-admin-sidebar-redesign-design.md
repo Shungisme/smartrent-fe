@@ -4,24 +4,27 @@
 **Status:** Approved (design)
 
 ## Goal
+
 Redesign the Admin Console sidebar for a clearer visual hierarchy and faster
 scanning — **without changing menu structure, routes, labels, i18n, or the
 collapse / language features.** Visual-only, one component.
 
 ## Non-goals
+
 - **No label renames.** Original labels stay (duplicate names like "Người
   dùng" / "Tin đăng" / "Báo cáo" remain — the group header + hierarchy give
-  context). `navigation.ts` is untouched. *(User dropped the rename idea:
-  prefixes felt cluttered.)*
+  context). `navigation.ts` is untouched. _(User dropped the rename idea:
+  prefixes felt cluttered.)_
 - No route / structure / i18n changes.
 - Collapsed (icon-rail) behavior, the always-open default, and the collapse
   toggle stay exactly as today.
 
 ## Design — expanded mode
+
 1. **Group header = plain section label.** Drop the group icon in **expanded**
    mode so a group reads as an uppercase text label (icon-vs-no-icon instantly
    separates Group from Item). Keep `text-[11px] font-semibold uppercase
-   tracking-wider`, muted color. Bigger gap **above** each group (`mt-6`, first
+tracking-wider`, muted color. Bigger gap **above** each group (`mt-6`, first
    group none) so each group is its own block. Chevron stays (collapse), quiet
    on the right. **The group icon is still rendered in the collapsed icon rail**
    (that mode is unchanged).
@@ -37,6 +40,7 @@ collapse / language features.** Visual-only, one component.
    hover `bg-sidebar-accent`.
 
 ## Scope
+
 - `src/components/organisms/adminSidebar.tsx` only:
   - `SidebarItem`: height / gap / active styling + thicker accent bar +
     `font-semibold` when active + primary icon when active.
@@ -47,6 +51,7 @@ collapse / language features.** Visual-only, one component.
     section (activeGroupKey already computed).
 
 ## Acceptance
+
 - Expanded: groups clearly distinct from items (text label vs icon+label),
   visible indent, generous inter-group spacing.
 - Active item stands out (bg + text + icon + weight + accent bar); its group
