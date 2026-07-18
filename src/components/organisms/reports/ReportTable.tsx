@@ -1,6 +1,10 @@
 import React from 'react'
 import { useTranslations } from 'next-intl'
-import { DataTable, Column, FilterConfig } from '@/components/organisms/DataTable'
+import {
+  DataTable,
+  Column,
+  FilterConfig,
+} from '@/components/organisms/DataTable'
 import { Badge } from '@/components/atoms/badge'
 import { Button } from '@/components/atoms/button'
 import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
@@ -59,6 +63,15 @@ const resolutionActionOutcome: Record<
   RESOLVED: { key: 'resolved', variant: 'success' },
 }
 
+// The single source of truth for "what status does this row actually show" —
+// used to build both the status column and its filter, so the filter options
+// can never drift from what the column renders (e.g. a resolved report that
+// suspended the listing shows/filters as "suspended", not a generic "resolved").
+const getDisplayStatusKey = (report: ListingReport): string =>
+  report.resolutionAction
+    ? resolutionActionOutcome[report.resolutionAction].key
+    : statusMap[report.status as keyof typeof statusMap]
+
 export const ReportTable: React.FC<ReportTableProps> = ({
   data,
   loading,
@@ -69,9 +82,10 @@ export const ReportTable: React.FC<ReportTableProps> = ({
   // Build a combined, searchable string per row. The DataTable frontend filter
   // matches a single field (item[filter.id]) via case-insensitive substring, so
   // we expose `searchIndex` to let one search box match reporter name, phone,
-  // report id or listing id at once.
+  // report id or listing id at once. `displayStatus` is exposed the same way so
+  // the status filter matches exactly what the status column renders.
   const searchableData = React.useMemo<
-    (ListingReport & { searchIndex: string })[]
+    (ListingReport & { searchIndex: string; displayStatus: string })[]
   >(
     () =>
       data.map((report) => ({
@@ -82,8 +96,11 @@ export const ReportTable: React.FC<ReportTableProps> = ({
           report.reportId,
           report.listingId,
         ]
-          .filter((value) => value !== undefined && value !== null && value !== '')
+          .filter(
+            (value) => value !== undefined && value !== null && value !== '',
+          )
           .join(' '),
+        displayStatus: getDisplayStatusKey(report),
       })),
     [data],
   )
@@ -96,13 +113,15 @@ export const ReportTable: React.FC<ReportTableProps> = ({
       placeholder: t('filters.searchPlaceholder'),
     },
     {
-      id: 'status',
+      id: 'displayStatus',
       type: 'select',
       label: t('filters.statusAll'),
       options: [
-        { value: 'PENDING', label: t('statuses.pending') },
-        { value: 'RESOLVED', label: t('statuses.resolved') },
-        { value: 'REJECTED', label: t('statuses.dismissed') },
+        { value: 'pending', label: t('statuses.pending') },
+        { value: 'suspended', label: t('review.outcomes.suspended') },
+        { value: 'revision', label: t('review.outcomes.revision') },
+        { value: 'resolved', label: t('statuses.resolved') },
+        { value: 'dismissed', label: t('statuses.dismissed') },
       ],
     },
   ]
@@ -198,7 +217,7 @@ export const ReportTable: React.FC<ReportTableProps> = ({
     },
     {
       id: 'status',
-      accessor: 'status',
+      accessor: (row) => getDisplayStatusKey(row),
       header: t('review.currentStatus'),
       render: (_, row) => {
         const outcome = row.resolutionAction
