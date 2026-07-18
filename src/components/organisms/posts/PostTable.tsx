@@ -223,6 +223,13 @@ export const PostTable: React.FC<PostTableProps> = ({
       placeholder: t('filters.searchPlaceholder'),
     },
     {
+      id: 'id',
+      type: 'search',
+      label: t('filters.idSearch'),
+      placeholder: t('filters.idSearchPlaceholder'),
+      isFilterField: true,
+    },
+    {
       id: 'title',
       type: 'search',
       label: t('filters.titleSearch'),

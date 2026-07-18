@@ -1677,7 +1677,7 @@
       "placeholder": "Tìm theo tiêu đề, tên người đăng hoặc địa chỉ..."
     },
     "filters": {
-      "searchPlaceholder": "Tìm theo tiêu đề, địa chỉ, mô tả…",
+      "searchPlaceholder": "Tìm theo tiêu đề, địa chỉ, mô tả, ID tin đăng…",
       "status": "Trạng Thái",
       "pending": "Chờ Duyệt",
       "approved": "Đã Duyệt",
@@ -1693,6 +1693,8 @@
       "forRent": "Cho Thuê",
       "share": "Chia Sẻ",
       "pickDateRange": "Chọn khoảng thời gian",
+      "idSearch": "ID tin đăng",
+      "idSearchPlaceholder": "Nhập ID tin đăng",
       "titleSearch": "Tiêu đề",
       "titleSearchPlaceholder": "Tìm theo tiêu đề",
       "ownerSearch": "Chủ tin",

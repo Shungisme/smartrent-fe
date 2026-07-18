@@ -263,8 +263,10 @@ export interface ListingFilterRequest {
   size?: number
   sortBy?: 'DEFAULT' | 'PRICE_ASC' | 'PRICE_DESC' | 'NEWEST' | 'OLDEST'
   sortDirection?: 'ASC' | 'DESC'
-  /** Legacy: search in title and description. Prefer `title` and `ownerSearch`. */
+  /** Legacy: search in title and description. Prefer `title` and `ownerSearch`. A purely-numeric keyword also matches the listing ID exactly. */
   keyword?: string
+  /** Exact match on listing ID (PK lookup). */
+  id?: number
   /** Case-insensitive substring match on the listing title only. */
   title?: string
   /** Matches owner firstName/lastName/contactPhoneNumber/phoneNumber (case-insensitive contains). */
