@@ -444,7 +444,7 @@ export const mapDetailToUI = (item: ListingResponseWithAdmin): UIPostData => {
       name: item.user
         ? `${item.user.firstName} ${item.user.lastName}`
         : 'Unknown User',
-      avatar: undefined,
+      avatar: item.user?.avatarUrl ?? undefined,
       userId: item.user?.userId || '',
       phone: item.user?.contactPhoneNumber || '',
       email: item.user?.email || undefined,
