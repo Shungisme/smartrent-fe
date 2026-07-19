@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import {
@@ -12,6 +12,7 @@ import { Calendar, User, Eye, Tag, ImageOff } from 'lucide-react'
 import { NewsResponse, NewsStatus, NewsCategory } from '@/api/types/news.type'
 import { cn } from '@/lib/utils'
 import { formatDateTime } from '@/utils/format'
+import { sanitizeHtml } from '@/utils/sanitize-html'
 
 interface NewsPreviewModalProps {
   open: boolean
@@ -72,6 +73,11 @@ export const NewsPreviewModal: React.FC<NewsPreviewModalProps> = ({
   const safeThumbnailSrc = isValidImageSrc(news?.thumbnailUrl)
     ? news.thumbnailUrl
     : null
+
+  const sanitizedContent = useMemo(
+    () => sanitizeHtml(news?.content || ''),
+    [news?.content],
+  )
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -147,8 +153,8 @@ export const NewsPreviewModal: React.FC<NewsPreviewModalProps> = ({
               )}
 
               <div
-                className='news-editor-preview prose prose-sm max-w-none dark:prose-invert'
-                dangerouslySetInnerHTML={{ __html: news.content }}
+                className='news-article-content max-w-none'
+                dangerouslySetInnerHTML={{ __html: sanitizedContent }}
               />
 
               {news.tags && news.tags.length > 0 && (

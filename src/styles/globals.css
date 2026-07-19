@@ -42,8 +42,7 @@
 }
 
 /* Table styles for Tiptap + tiptap-table-plus */
-.ProseMirror table,
-.news-editor-preview table {
+.ProseMirror table {
   border-collapse: collapse;
   table-layout: fixed;
   width: 100%;
@@ -52,9 +51,7 @@
 }
 
 .ProseMirror th,
-.ProseMirror td,
-.news-editor-preview th,
-.news-editor-preview td {
+.ProseMirror td {
   border: 1px solid var(--border);
   min-width: 80px;
   padding: 0.55rem 0.75rem;
@@ -63,8 +60,7 @@
   word-break: break-word;
 }
 
-.ProseMirror th,
-.news-editor-preview th {
+.ProseMirror th {
   background: var(--muted);
   font-weight: 600;
 }
@@ -104,6 +100,7 @@
 
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import './news-article.css';
 
 @custom-variant dark (&:is(.dark *));
 
