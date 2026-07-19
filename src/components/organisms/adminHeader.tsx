@@ -13,7 +13,7 @@ import {
 import { useTranslations } from 'next-intl'
 import { useAuth } from '@/hooks/useAuth'
 import { toast } from 'sonner'
-import { User, LogOut, Settings, ChevronDown, Menu } from 'lucide-react'
+import { LogOut, ChevronDown, Menu } from 'lucide-react'
 import { NotificationBell } from './NotificationBell'
 import ThemeSwitch from '@/components/molecules/themeSwitch'
 
@@ -36,16 +36,6 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
     logout()
     toast.success(t('logoutSuccess'))
     router.push('/login')
-  }
-
-  const handleProfile = () => {
-    toast.info(t('featureInDevelopment'))
-    // router.push('/profile')
-  }
-
-  const handleSettings = () => {
-    toast.info(t('featureInDevelopment'))
-    // router.push('/settings')
   }
 
   return (
@@ -111,15 +101,6 @@ const AdminHeader: React.FC<AdminHeaderProps> = ({
                   </p>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleProfile}>
-                <User className='mr-2 h-4 w-4' />
-                <span>{t('profile')}</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleSettings}>
-                <Settings className='mr-2 h-4 w-4' />
-                <span>{t('settings')}</span>
-              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant='destructive' onClick={handleLogout}>
                 <LogOut className='mr-2 h-4 w-4' />
