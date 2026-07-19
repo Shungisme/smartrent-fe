@@ -2477,6 +2477,7 @@
     "title": "Notifications",
     "markAllRead": "Mark all as read",
     "empty": "No notifications yet",
+    "loadMore": "Load more",
     "types": {
       "NEW_REPORT": "New Report",
       "LISTING_RESUBMITTED": "Listing Resubmitted",

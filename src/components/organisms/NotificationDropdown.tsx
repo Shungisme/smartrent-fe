@@ -8,9 +8,12 @@ import { Loader2, CheckCheck, Bell } from 'lucide-react'
 interface NotificationDropdownProps {
   notifications: Notification[]
   loading: boolean
+  loadingMore: boolean
+  hasMore: boolean
   unreadCount: number
   onMarkAsRead: (id: number) => Promise<void>
   onMarkAllAsRead: () => Promise<void>
+  onLoadMore: () => Promise<void>
   onClose?: () => void
 }
 
@@ -21,9 +24,12 @@ interface NotificationDropdownProps {
 export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   notifications,
   loading,
+  loadingMore,
+  hasMore,
   unreadCount,
   onMarkAsRead,
   onMarkAllAsRead,
+  onLoadMore,
   onClose,
 }) => {
   const t = useTranslations('notifications')
@@ -76,6 +82,22 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
                 onClick={onClose}
               />
             ))}
+            {hasMore && (
+              <div className='flex justify-center py-3'>
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={onLoadMore}
+                  disabled={loadingMore}
+                  className='text-xs text-muted-foreground hover:text-foreground'
+                >
+                  {loadingMore && (
+                    <Loader2 className='h-3.5 w-3.5 mr-1.5 animate-spin' />
+                  )}
+                  {t('loadMore', { defaultValue: 'Load more' })}
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </div>

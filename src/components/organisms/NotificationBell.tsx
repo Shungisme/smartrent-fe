@@ -15,9 +15,12 @@ export const NotificationBell: React.FC = () => {
     notifications,
     unreadCount,
     loading,
+    loadingMore,
+    hasMore,
     isConnected,
     markAsRead,
     markAllAsRead,
+    loadMore,
   } = useNotificationContext()
 
   const [isOpen, setIsOpen] = useState(false)
@@ -89,9 +92,12 @@ export const NotificationBell: React.FC = () => {
           <NotificationDropdown
             notifications={notifications}
             loading={loading}
+            loadingMore={loadingMore}
+            hasMore={hasMore}
             unreadCount={unreadCount}
             onMarkAsRead={markAsRead}
             onMarkAllAsRead={markAllAsRead}
+            onLoadMore={loadMore}
             onClose={handleClose}
           />
         </div>
