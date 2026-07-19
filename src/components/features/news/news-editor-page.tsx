@@ -32,6 +32,7 @@ import type { Resolver } from 'react-hook-form'
 import { NewsEditorMenuBar } from '@/components/molecules/editor/NewsEditorMenuBar'
 import { NewsEditorHeader } from '@/components/organisms/news/NewsEditorHeader'
 import { NewsMetaForm } from '@/components/organisms/news/NewsMetaForm'
+import { sanitizeHtml } from '@/utils/sanitize-html'
 
 const SUCCESS_CODE = '999999'
 
@@ -444,9 +445,9 @@ const NewsEditor = () => {
                       {watch('title')}
                     </h2>
                     <div
-                      className='news-editor-preview prose prose-lg mt-6 max-w-none dark:prose-invert'
+                      className='news-article-content mt-6 max-w-none'
                       dangerouslySetInnerHTML={{
-                        __html: editor?.getHTML() || '',
+                        __html: sanitizeHtml(editor?.getHTML() || ''),
                       }}
                     />
                   </div>
