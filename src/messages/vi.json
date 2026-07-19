@@ -2441,6 +2441,7 @@
     "title": "Thông báo",
     "markAllRead": "Đánh dấu tất cả đã đọc",
     "empty": "Chưa có thông báo",
+    "loadMore": "Xem thêm",
     "types": {
       "NEW_REPORT": "Báo cáo mới",
       "LISTING_RESUBMITTED": "Tin đăng gửi lại",

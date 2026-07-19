@@ -19,12 +19,17 @@ interface UseNotificationsReturn {
   notifications: Notification[]
   unreadCount: number
   loading: boolean
+  loadingMore: boolean
+  hasMore: boolean
   error: string | null
   isConnected: boolean
   markAsRead: (id: number) => Promise<void>
   markAllAsRead: () => Promise<void>
   refetch: () => Promise<void>
+  loadMore: () => Promise<void>
 }
+
+const PAGE_SIZE = 20
 
 /**
  * Hook for managing admin notifications with WebSocket (realtime) + REST API
@@ -47,6 +52,9 @@ export function useNotifications(
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState<number>(0)
   const [loading, setLoading] = useState<boolean>(false)
+  const [loadingMore, setLoadingMore] = useState<boolean>(false)
+  const [page, setPage] = useState<number>(0)
+  const [hasMore, setHasMore] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const [isConnected, setIsConnected] = useState<boolean>(false)
 
@@ -70,12 +78,14 @@ export function useNotifications(
       setError(null)
 
       const [notificationsRes, unreadCountRes] = await Promise.all([
-        NotificationService.fetchNotifications({ page: 0, size: 20 }),
+        NotificationService.fetchNotifications({ page: 0, size: PAGE_SIZE }),
         NotificationService.getUnreadCount(),
       ])
 
       if (notificationsRes.success && notificationsRes.data) {
         setNotifications(notificationsRes.data.data || [])
+        setPage(0)
+        setHasMore(notificationsRes.data.totalPages > 1)
       }
 
       if (unreadCountRes.success && unreadCountRes.data) {
@@ -90,6 +100,38 @@ export function useNotifications(
       setLoading(false)
     }
   }, [enabled, token])
+
+  /**
+   * Load the next page of older notifications and append them to the list
+   */
+  const loadMore = useCallback(async () => {
+    if (!enabled || !token || loadingMore || !hasMore) return
+
+    const nextPage = page + 1
+
+    try {
+      setLoadingMore(true)
+      setError(null)
+
+      const res = await NotificationService.fetchNotifications({
+        page: nextPage,
+        size: PAGE_SIZE,
+      })
+
+      if (res.success && res.data) {
+        setNotifications((prev) => [...prev, ...(res.data!.data || [])])
+        setPage(nextPage)
+        setHasMore(nextPage + 1 < res.data.totalPages)
+      }
+    } catch (err) {
+      const errorMsg =
+        err instanceof Error ? err.message : 'Failed to load more notifications'
+      setError(errorMsg)
+      console.error('Error loading more notifications:', err)
+    } finally {
+      setLoadingMore(false)
+    }
+  }, [enabled, token, loadingMore, hasMore, page])
 
   /**
    * Mark a notification as read
@@ -243,10 +285,13 @@ export function useNotifications(
     notifications,
     unreadCount,
     loading,
+    loadingMore,
+    hasMore,
     error,
     isConnected,
     markAsRead,
     markAllAsRead,
     refetch: fetchNotifications,
+    loadMore,
   }
 }

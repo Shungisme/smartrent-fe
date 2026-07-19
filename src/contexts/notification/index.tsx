@@ -10,11 +10,14 @@ interface NotificationContextType {
   notifications: Notification[]
   unreadCount: number
   loading: boolean
+  loadingMore: boolean
+  hasMore: boolean
   error: string | null
   isConnected: boolean
   markAsRead: (id: number) => Promise<void>
   markAllAsRead: () => Promise<void>
   refetch: () => Promise<void>
+  loadMore: () => Promise<void>
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(
