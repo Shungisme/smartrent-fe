@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useMemo, useRef } from 'react'
+import NextImage from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
 import { useEditor, EditorContent } from '@tiptap/react'
@@ -24,7 +25,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
 import slugify from 'react-slugify'
-import { Loader2 } from 'lucide-react'
+import { ImageOff, Loader2 } from 'lucide-react'
 import { NewsService } from '@/api/services/news.service'
 import { NewsCreateRequest, NewsUpdateRequest } from '@/api/types/news.type'
 import { EditorFormData } from '@/types/news-editor.type'
@@ -32,7 +33,15 @@ import type { Resolver } from 'react-hook-form'
 import { NewsEditorMenuBar } from '@/components/molecules/editor/NewsEditorMenuBar'
 import { NewsEditorHeader } from '@/components/organisms/news/NewsEditorHeader'
 import { NewsMetaForm } from '@/components/organisms/news/NewsMetaForm'
+import { Badge } from '@/components/atoms/badge'
+import { cn } from '@/lib/utils'
 import { sanitizeHtml } from '@/utils/sanitize-html'
+import {
+  getCategoryBadgeClass,
+  ARTICLE_TITLE_CLASS,
+  ARTICLE_IMAGE_CONTAINER_CLASS,
+  isValidImageSrc,
+} from '@/utils/news-style'
 
 const SUCCESS_CODE = '999999'
 
@@ -40,6 +49,7 @@ const NewsEditor = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const t = useTranslations('news.editor')
+  const tNews = useTranslations('news')
   const idParam = searchParams?.get('id')
   const newsId = idParam ? Number(idParam) : null
   const isEditMode = newsId !== null && !Number.isNaN(newsId)
@@ -102,6 +112,12 @@ const NewsEditor = () => {
   })
 
   const title = watch('title')
+  const previewSummary = watch('summary')
+  const previewCategory = watch('category')
+  const previewThumbnailUrl = watch('thumbnailUrl')
+  const safePreviewThumbnailSrc = isValidImageSrc(previewThumbnailUrl)
+    ? previewThumbnailUrl
+    : null
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -440,12 +456,44 @@ const NewsEditor = () => {
                 </>
               ) : (
                 <div className='bg-muted/40 p-6 sm:p-10'>
-                  <div className='mx-auto max-w-4xl rounded-xl border border-border/60 bg-card p-8 shadow-sm sm:p-12'>
-                    <h2 className='mb-6 inline-block border-b-2 border-primary pb-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl'>
-                      {watch('title')}
-                    </h2>
+                  <div className='mx-auto max-w-4xl space-y-5 rounded-xl border border-border/60 bg-card p-8 shadow-sm sm:p-12'>
+                    <Badge
+                      variant='outline'
+                      className={cn(
+                        'border-transparent',
+                        getCategoryBadgeClass(previewCategory),
+                      )}
+                    >
+                      {tNews(`category.${previewCategory}`)}
+                    </Badge>
+
+                    <h2 className={ARTICLE_TITLE_CLASS}>{title}</h2>
+
+                    {previewSummary && (
+                      <p className='text-base leading-relaxed text-muted-foreground'>
+                        {previewSummary}
+                      </p>
+                    )}
+
                     <div
-                      className='news-article-content mt-6 max-w-none'
+                      className={cn(ARTICLE_IMAGE_CONTAINER_CLASS, 'bg-muted')}
+                    >
+                      {safePreviewThumbnailSrc ? (
+                        <NextImage
+                          src={safePreviewThumbnailSrc}
+                          alt={title}
+                          fill
+                          className='object-cover'
+                        />
+                      ) : (
+                        <div className='flex h-full w-full items-center justify-center text-muted-foreground/60'>
+                          <ImageOff className='h-10 w-10' />
+                        </div>
+                      )}
+                    </div>
+
+                    <div
+                      className='news-article-content max-w-none'
                       dangerouslySetInnerHTML={{
                         __html: sanitizeHtml(editor?.getHTML() || ''),
                       }}
