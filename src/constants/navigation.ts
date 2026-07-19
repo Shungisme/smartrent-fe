@@ -238,7 +238,7 @@ const LABELS = {
       premiumListingTypes: 'Loại tin đăng',
       analyticsUsers: 'Thống kê người dùng',
       analyticsPosts: 'Thống kê tin đăng',
-      analyticsRevenue: 'Doanh thu',
+      analyticsRevenue: 'Thống kê doanh thu',
       analyticsReports: 'Thống kê báo cáo',
       posts: 'Tin đăng',
       news: 'Tin tức',
