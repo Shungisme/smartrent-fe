@@ -2196,7 +2196,7 @@
         "metaDescription": "Meta Description",
         "metaDescriptionPlaceholder": "SEO description...",
         "metaKeywords": "Meta Keywords",
-        "metaKeywordsPlaceholder": "keyword1, keyword2, keyword3"
+        "metaKeywordsPlaceholder": "keyword 1, keyword 2, keyword 3"
       },
       "messages": {
         "fetchError": "Unable to load news",
