@@ -2070,12 +2070,12 @@
         "uploadingThumbnail": "Đang tải ảnh đại diện...",
         "author": "Tên tác giả",
         "authorPlaceholder": "Tên tác giả...",
-        "metaTitle": "Meta Title",
-        "metaTitlePlaceholder": "SEO title...",
-        "metaDescription": "Meta Description",
-        "metaDescriptionPlaceholder": "SEO description...",
-        "metaKeywords": "Meta Keywords",
-        "metaKeywordsPlaceholder": "keyword1, keyword2, keyword3"
+        "metaTitle": "Tiêu đề Meta",
+        "metaTitlePlaceholder": "Tiêu đề SEO...",
+        "metaDescription": "Mô tả Meta",
+        "metaDescriptionPlaceholder": "Mô tả SEO...",
+        "metaKeywords": "Từ khóa Meta",
+        "metaKeywordsPlaceholder": "từ khóa 1, từ khóa 2, từ khóa 3"
       },
       "messages": {
         "fetchError": "Không thể tải tin tức",
