@@ -7,7 +7,7 @@ import {
 } from '@/components/organisms/DataTable'
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
-import { Avatar } from '@/components/atoms/avatar'
+import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
 import { MediaThumbnail } from '@/components/molecules/mediaPreview'
 import { Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -135,13 +135,13 @@ export const PostTable: React.FC<PostTableProps> = ({
       sortable: true,
       render: (_, row) => (
         <div className='flex items-center justify-end gap-2 lg:justify-start'>
-          <Avatar className='h-10 w-10'>
-            <div className='h-full w-full bg-muted flex items-center justify-center text-foreground font-semibold'>
-              {row.poster.name.charAt(0).toUpperCase()}
-            </div>
-          </Avatar>
-          <div>
-            <div className='text-sm font-medium text-foreground'>
+          <InitialsAvatar
+            name={row.poster.name}
+            src={row.poster.avatar}
+            size='md'
+          />
+          <div className='min-w-0'>
+            <div className='truncate text-sm font-medium text-foreground'>
               {row.poster.name}
             </div>
             <div className='text-xs text-muted-foreground'>

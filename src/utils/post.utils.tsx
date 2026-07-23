@@ -397,8 +397,8 @@ export const mapSummaryToUI = (item: AdminListingSummary): UIPostData => {
     vipType: item.vipType || undefined,
     poster: {
       name: fullName || 'Unknown User',
-      avatar: undefined,
-      userId: '',
+      avatar: item.user?.avatarUrl || undefined,
+      userId: item.user?.userId || '',
       phone: item.user?.contactPhoneNumber || '',
     },
     propertyInfo: {
