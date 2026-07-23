@@ -6,7 +6,6 @@ import { toast } from 'sonner'
 import {
   getMembershipPackages,
   updateMembershipPackage,
-  deleteMembershipPackage,
 } from '@/api/services/membership.service'
 import { MembershipPackage as APIMembershipPackage } from '@/api/types/membership.type'
 import { VIPTierService } from '@/api/services/vip-tier.service'
@@ -15,7 +14,6 @@ import { MembershipPackage } from '@/types/premium.type'
 import { MembershipTable } from '../../organisms/premium/MembershipTable'
 import { ListingTypeTable } from '@/components/organisms/premium/ListingTypeTable'
 import { EditMembershipDialog } from '@/components/organisms/premium/EditMembershipDialog'
-import { DeleteMembershipDialog } from '@/components/organisms/premium/DeleteMembershipDialog'
 import { ViewMembershipDialog } from '@/components/organisms/premium/ViewMembershipDialog'
 import { useCanWrite } from '@/hooks/usePermissions'
 
@@ -48,10 +46,6 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
     null,
   )
   const [editSaving, setEditSaving] = useState(false)
-  const [deleteTarget, setDeleteTarget] = useState<APIMembershipPackage | null>(
-    null,
-  )
-  const [deleteSubmitting, setDeleteSubmitting] = useState(false)
 
   const needsMemberships = section === 'membership'
   const needsVIPTiers = section === 'listing-types'
@@ -141,11 +135,6 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
     if (pkg) setEditTarget(pkg)
   }
 
-  const handleDelete = (id: string) => {
-    const pkg = findApiPackage(id)
-    if (pkg) setDeleteTarget(pkg)
-  }
-
   const handleToggleStatus = async (id: string, currentStatus: string) => {
     const pkg = findApiPackage(id)
     if (!pkg) return
@@ -196,26 +185,6 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
     }
   }
 
-  const handleDeleteConfirm = async () => {
-    if (!deleteTarget) return
-    setDeleteSubmitting(true)
-    try {
-      const response = await deleteMembershipPackage(deleteTarget.membershipId)
-      if (response.success) {
-        toast.success(t('membership.toasts.deleteSuccess'))
-        setDeleteTarget(null)
-        await fetchMemberships()
-      } else {
-        toast.error(response.message || t('membership.toasts.deleteError'))
-      }
-    } catch (err) {
-      console.error('Delete membership error:', err)
-      toast.error(t('membership.toasts.deleteError'))
-    } finally {
-      setDeleteSubmitting(false)
-    }
-  }
-
   return (
     <div className='space-y-6'>
       {section === 'membership' && (
@@ -225,7 +194,6 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
             loading={membershipsLoading}
             onView={handleView}
             onEdit={handleEdit}
-            onDelete={handleDelete}
             onToggleStatus={handleToggleStatus}
             canWrite={canWrite}
           />
@@ -254,16 +222,6 @@ const PremiumSectionPage: React.FC<PremiumSectionPageProps> = ({ section }) => {
           if (!open) setEditTarget(null)
         }}
         onSubmit={handleEditSubmit}
-      />
-
-      <DeleteMembershipDialog
-        open={!!deleteTarget}
-        packageName={deleteTarget?.packageName}
-        loading={deleteSubmitting}
-        onOpenChange={(open) => {
-          if (!open) setDeleteTarget(null)
-        }}
-        onConfirm={handleDeleteConfirm}
       />
     </div>
   )

@@ -58,18 +58,22 @@ export const AuthorBlockDialog: React.FC<AuthorBlockDialogProps> = ({
         if (!loading) onOpenChange(next)
       }}
     >
-      <DialogContent className='max-w-md'>
+      <DialogContent
+        className='max-w-md'
+        // Block mode renders no description, so keep Radix from pointing at a missing node.
+        {...(isBlocking ? { 'aria-describedby': undefined } : {})}
+      >
         <DialogHeader>
           <DialogTitle>
             {isBlocking
               ? t('blockDialog.blockTitle')
               : t('blockDialog.unblockTitle')}
           </DialogTitle>
-          <DialogDescription>
-            {isBlocking
-              ? t('blockDialog.blockDescription', { name: fullName(author) })
-              : t('blockDialog.unblockDescription', { name: fullName(author) })}
-          </DialogDescription>
+          {!isBlocking && (
+            <DialogDescription>
+              {t('blockDialog.unblockDescription', { name: fullName(author) })}
+            </DialogDescription>
+          )}
         </DialogHeader>
 
         {isBlocking && (

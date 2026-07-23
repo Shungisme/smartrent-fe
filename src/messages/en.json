@@ -2529,7 +2529,6 @@
     "blockDialog": {
       "blockTitle": "Block author from posting",
       "unblockTitle": "Unblock author",
-      "blockDescription": "{name} will no longer be able to create new listings. They will see a notice and be blocked on the backend.",
       "unblockDescription": "{name} will be able to post listings again.",
       "reasonLabel": "Reason (optional)",
       "reasonPlaceholder": "e.g. Multiple listings with approved violation reports"

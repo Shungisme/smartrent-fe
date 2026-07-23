@@ -2493,7 +2493,6 @@
     "blockDialog": {
       "blockTitle": "Chặn đăng tin",
       "unblockTitle": "Mở lại quyền đăng tin",
-      "blockDescription": "{name} sẽ không thể đăng tin mới. Người dùng sẽ thấy thông báo và bị chặn ở backend.",
       "unblockDescription": "{name} sẽ có thể đăng tin trở lại.",
       "reasonLabel": "Lý do (không bắt buộc)",
       "reasonPlaceholder": "vd: Nhiều tin đăng có report vi phạm đã được duyệt"
