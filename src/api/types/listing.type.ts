@@ -185,9 +185,11 @@ export interface ListingResponseWithAdmin {
 // Admin Listing List Item — slim summary returned by /v1/listings/admin/list
 // (full record is fetched via /v1/listings/admin/{id})
 export interface OwnerSummary {
+  userId?: string | null
   firstName: string | null
   lastName: string | null
   contactPhoneNumber: string | null
+  avatarUrl?: string | null
 }
 
 export interface AdminVerificationSummary {
