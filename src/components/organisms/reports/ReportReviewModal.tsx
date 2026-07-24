@@ -9,7 +9,7 @@ import {
 } from '@/components/atoms/dialog'
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
-import { Avatar } from '@/components/atoms/avatar'
+import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
 import {
   AlertTriangle,
   Eye,
@@ -50,13 +50,6 @@ interface ReportReviewModalProps {
   onActionComplete: () => void
   onRequestRevision?: (reason: string) => void | Promise<void>
 }
-
-const getInitials = (name: string) =>
-  name
-    ?.split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase() || ''
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -499,11 +492,10 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                       {t('review.reporterInfo')}
                     </h3>
                     <div className='flex h-full items-center gap-3 rounded-lg border border-border/70 p-3 md:p-4'>
-                      <Avatar className='h-12 w-12 shrink-0'>
-                        <div className='flex h-full w-full items-center justify-center bg-primary/10 text-primary dark:bg-primary/20 font-semibold text-lg'>
-                          {getInitials(report.reporterName)}
-                        </div>
-                      </Avatar>
+                      <InitialsAvatar
+                        name={report.reporterName || '?'}
+                        size='lg'
+                      />
                       <div className='min-w-0 flex-1'>
                         <div className='font-medium text-foreground text-base'>
                           {report.reporterName}
@@ -532,11 +524,11 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                       </div>
                     ) : owner ? (
                       <div className='flex h-full items-center gap-3 rounded-lg border border-border/70 p-3 md:p-4'>
-                        <Avatar className='h-12 w-12 shrink-0'>
-                          <div className='flex h-full w-full items-center justify-center bg-primary/10 text-primary dark:bg-primary/20 font-semibold text-lg'>
-                            {getInitials(ownerName)}
-                          </div>
-                        </Avatar>
+                        <InitialsAvatar
+                          name={ownerName || '?'}
+                          src={owner.avatarUrl}
+                          size='lg'
+                        />
                         <div className='min-w-0 flex-1'>
                           <div className='font-medium text-foreground text-base'>
                             {ownerName}
