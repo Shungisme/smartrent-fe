@@ -103,10 +103,13 @@ const ValidationCard: React.FC<{
         <div className='text-xs font-medium text-foreground/80'>
           {issuesLabel}
         </div>
-        <ul className='mt-1 list-inside list-disc space-y-0.5 text-xs text-muted-foreground'>
+        <ul className='mt-1 space-y-1 text-xs text-muted-foreground'>
           {issues.map((issue, i) => (
-            <li key={i} className='break-words'>
-              {renderIssue ? renderIssue(issue, i) : issue}
+            <li key={i} className='flex items-start gap-1.5'>
+              <span className='mt-1.5 h-1 w-1 shrink-0 rounded-full bg-current' />
+              <span className='min-w-0 flex-1 break-words'>
+                {renderIssue ? renderIssue(issue, i) : issue}
+              </span>
             </li>
           ))}
         </ul>
@@ -468,14 +471,14 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                   if (!parsed)
                     return <span className='break-words'>{issue}</span>
                   return (
-                    <span className='flex items-start justify-between gap-2'>
+                    <span className='flex flex-wrap items-center justify-between gap-2'>
                       <span className='min-w-0 flex-1 break-words'>
                         {issue}
                       </span>
                       <button
                         type='button'
                         onClick={() => onViewInvalidImage?.(parsed.index)}
-                        className='inline-flex shrink-0 items-center gap-1 rounded-md border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[11px] font-medium text-destructive transition-colors hover:bg-destructive/20'
+                        className='inline-flex shrink-0 items-center gap-1 rounded-md border border-primary/40 bg-primary/10 px-2 py-1 text-[11px] font-semibold text-primary transition-colors hover:bg-primary/20'
                       >
                         <Eye className='h-3 w-3' />
                         {t('aiAnalysis.viewImageButton')}
