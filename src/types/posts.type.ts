@@ -12,6 +12,15 @@ export type PostStatus =
   | 'expired'
   | 'pending_payment'
 
+/** Present only when the AI background job already suggests approving this
+ * post and no admin has reviewed it yet — drives the table's quick-approve
+ * affordance. */
+export type AiQuickApprove = {
+  score: number | null
+  reason: string | null
+  analyzedAt: string | null
+}
+
 export type UIPostData = {
   id: string
   title: string
@@ -54,4 +63,5 @@ export type UIPostData = {
   electricityPrice?: string | null
   internetPrice?: string | null
   serviceFee?: string | null
+  aiQuickApprove?: AiQuickApprove | null
 }

@@ -209,6 +209,20 @@ export type SummaryListingStatus =
   | 'VERIFIED'
   | 'RESUBMITTED'
 
+/**
+ * Present only when the AI background moderation job already suggests this
+ * listing is safe to approve and no admin has acted on it yet — drives the
+ * admin table's quick-approve affordance. Absent for every other state (still
+ * pending, AI flagged it, or an admin already reviewed it).
+ */
+export interface AdminListingAiModerationSummary {
+  /** AI confidence score, 0-1. */
+  score: number | null
+  /** Short human-readable reason the AI gave for its suggestion. */
+  reason: string | null
+  analyzedAt: string | null
+}
+
 export interface AdminListingSummary {
   listingId: number
   title: string
@@ -232,6 +246,7 @@ export interface AdminListingSummary {
   revisionCount: number | null
   lastModerationReasonCode: string | null
   lastModerationReasonText: string | null
+  aiModeration?: AdminListingAiModerationSummary | null
 }
 
 // Statistics for Admin Dashboard

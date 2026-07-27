@@ -9,7 +9,7 @@ import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
 import { MediaThumbnail } from '@/components/molecules/mediaPreview'
-import { Eye } from 'lucide-react'
+import { Eye, Sparkles, CheckCircle2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PostStatus, UIPostData } from '@/types/posts.type'
 import { getPropertyIcon, getStatusColor } from '@/utils/post.utils'
@@ -45,6 +45,7 @@ interface PostTableProps {
   filterValues: Record<string, unknown>
   onFilterChange: (filters: Record<string, unknown>) => void
   onReview: (post: UIPostData) => void
+  onQuickApprove: (post: UIPostData) => void
 }
 
 export const PostTable: React.FC<PostTableProps> = ({
@@ -54,6 +55,7 @@ export const PostTable: React.FC<PostTableProps> = ({
   filterValues,
   onFilterChange,
   onReview,
+  onQuickApprove,
 }) => {
   const t = useTranslations('posts')
 
@@ -349,19 +351,46 @@ export const PostTable: React.FC<PostTableProps> = ({
       defaultSort={{ key: 'postedDate', direction: 'desc' }}
       emptyMessage={t('table.noPostsFound')}
       getRowKey={(row) => row.id}
-      actions={(row) => (
-        <div className='flex items-center justify-center gap-0.5'>
-          <Button
-            variant='ghost'
-            size='sm'
-            onClick={() => onReview(row)}
-            className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
-            title={t('table.reviewButton')}
-          >
-            <Eye className='h-4 w-4' />
-          </Button>
-        </div>
-      )}
+      actions={(row) => {
+        const aiQuickApprove = row.aiQuickApprove
+        return (
+          <div className='flex flex-col items-center gap-1'>
+            <div className='flex items-center justify-center gap-0.5'>
+              {aiQuickApprove && (
+                <Button
+                  variant='ghost'
+                  size='sm'
+                  onClick={() => onQuickApprove(row)}
+                  className='h-8 w-8 p-0 text-success hover:bg-success/10 hover:text-success dark:text-success-foreground'
+                  title={t('table.quickApproveButton')}
+                >
+                  <CheckCircle2 className='h-4 w-4' />
+                </Button>
+              )}
+              <Button
+                variant='ghost'
+                size='sm'
+                onClick={() => onReview(row)}
+                className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
+                title={t('table.reviewButton')}
+              >
+                <Eye className='h-4 w-4' />
+              </Button>
+            </div>
+            {aiQuickApprove && (
+              <div
+                className='flex max-w-25 items-center gap-1 rounded-full border border-success/30 bg-success/10 px-1.5 py-0.5 dark:bg-success/20'
+                title={aiQuickApprove.reason || t('table.aiApprovedBadge')}
+              >
+                <Sparkles className='h-3 w-3 shrink-0 text-success' />
+                <span className='truncate text-[10px] font-medium text-success-foreground'>
+                  {aiQuickApprove.reason || t('table.aiApprovedBadge')}
+                </span>
+              </div>
+            )}
+          </div>
+        )
+      }}
     />
   )
 }

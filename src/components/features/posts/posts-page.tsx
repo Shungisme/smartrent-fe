@@ -17,12 +17,15 @@ import { PostStats } from '@/components/molecules/posts/PostStats'
 import { PostTable } from '@/components/organisms/posts/PostTable'
 import { PostReviewModal } from '@/components/organisms/posts/PostReviewModal'
 import { AiAutoVerifyControl } from '@/components/molecules/aiServiceStatus/AiAutoVerifyControl'
+import { ConfirmDialog } from '@/components/molecules/confirmDialog'
+import { toPercent } from '@/utils/ai-verification.utils'
 
 // Backend success envelope code (see constants/env API_RESPONSE_CODES.SUCCESS).
 const SUCCESS_CODE = '999999'
 
 const PostVerification = () => {
   const t = useTranslations('posts')
+  const tCommon = useTranslations('common')
   const [posts, setPosts] = useState<UIPostData[]>([])
   const [initialLoading, setInitialLoading] = useState(true)
   const [tableLoading, setTableLoading] = useState(false)
@@ -31,6 +34,9 @@ const PostVerification = () => {
   const [detailLoading, setDetailLoading] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
   const [visibilityLoading, setVisibilityLoading] = useState(false)
+  const [quickApproveTarget, setQuickApproveTarget] =
+    useState<UIPostData | null>(null)
+  const [quickApproveLoading, setQuickApproveLoading] = useState(false)
   const [stats, setStats] = useState<ListingStatisticsSummary>({
     pendingVerification: 0,
     verified: 0,
@@ -163,6 +169,35 @@ const PostVerification = () => {
       toast.error(t('toasts.approveError'))
     } finally {
       setActionLoading(false)
+    }
+  }
+
+  // Quick-approve straight from the table row for posts the AI background job
+  // already suggested approving — reuses the same approve endpoint as the
+  // review dialog, just without needing to fetch the full listing detail first.
+  const handleQuickApprove = (post: UIPostData) => setQuickApproveTarget(post)
+
+  const confirmQuickApprove = async () => {
+    if (!quickApproveTarget) return
+
+    try {
+      setQuickApproveLoading(true)
+      const response = await ListingService.approveListing(
+        quickApproveTarget.id,
+      )
+
+      if (response.success && response.code === SUCCESS_CODE) {
+        toast.success(t('toasts.approveSuccess'))
+        setQuickApproveTarget(null)
+        await fetchListings()
+      } else {
+        toast.error(response.message || t('toasts.approveError'))
+      }
+    } catch (error) {
+      console.error('Error quick-approving listing:', error)
+      toast.error(t('toasts.approveError'))
+    } finally {
+      setQuickApproveLoading(false)
     }
   }
 
@@ -306,9 +341,41 @@ const PostVerification = () => {
             filterValues={filterValues}
             onFilterChange={handleFilterChange}
             onReview={handleReview}
+            onQuickApprove={handleQuickApprove}
           />
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!quickApproveTarget}
+        onOpenChange={(open) => !open && setQuickApproveTarget(null)}
+        title={t('table.quickApproveTitle')}
+        description={
+          quickApproveTarget && (
+            <div className='space-y-2'>
+              <p>
+                {t('table.quickApproveDescription', {
+                  title: quickApproveTarget.title,
+                })}
+              </p>
+              <div className='rounded-lg border border-success/30 bg-success/10 p-2.5 text-xs text-foreground/80 dark:bg-success/20'>
+                {quickApproveTarget.aiQuickApprove?.reason ||
+                  t('table.aiApprovedBadge')}
+                {typeof quickApproveTarget.aiQuickApprove?.score ===
+                  'number' && (
+                  <span className='ml-1 font-medium text-success-foreground'>
+                    ({toPercent(quickApproveTarget.aiQuickApprove.score)}%)
+                  </span>
+                )}
+              </div>
+            </div>
+          )
+        }
+        confirmLabel={t('table.quickApproveConfirm')}
+        cancelLabel={tCommon('cancel')}
+        onConfirm={confirmQuickApprove}
+        loading={quickApproveLoading}
+      />
 
       <PostReviewModal
         open={reviewModalOpen}

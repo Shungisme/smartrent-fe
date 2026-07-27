@@ -422,6 +422,13 @@ export const mapSummaryToUI = (item: AdminListingSummary): UIPostData => {
     isVerify: false,
     rejectionReason: item.lastModerationReasonText || undefined,
     verificationNotes: undefined,
+    aiQuickApprove: item.aiModeration
+      ? {
+          score: item.aiModeration.score,
+          reason: item.aiModeration.reason,
+          analyzedAt: item.aiModeration.analyzedAt,
+        }
+      : null,
   }
 }
 
