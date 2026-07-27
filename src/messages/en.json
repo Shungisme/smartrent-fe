@@ -1767,7 +1767,12 @@
       "viewDetails": "View Details",
       "posts": "posts",
       "month": "month",
-      "reviewButton": "Review"
+      "reviewButton": "Review",
+      "quickApproveButton": "Quick approve (AI already approved in the background)",
+      "aiApprovedBadge": "AI approved",
+      "quickApproveTitle": "Quick approve listing",
+      "quickApproveDescription": "The background AI job already reviewed and suggested approving \"{title}\". Approve it now?",
+      "quickApproveConfirm": "Approve now"
     },
     "review": {
       "title": "Review Post",
