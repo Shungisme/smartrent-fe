@@ -1879,6 +1879,8 @@
       "missingFields": "Missing",
       "violations": "Violations",
       "suggestions": "Suggestions",
+      "viewImageButton": "View image",
+      "invalidImageBadge": "AI flagged this image as invalid",
       "advisoryNote": "This AI assessment is advisory only — the moderation decision remains with you.",
       "suggested": {
         "APPROVED": "Approve",

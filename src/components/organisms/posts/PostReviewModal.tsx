@@ -35,6 +35,7 @@ import {
   Wifi,
   Receipt,
   Mail,
+  AlertTriangle,
   type LucideIcon,
 } from 'lucide-react'
 
@@ -42,6 +43,7 @@ const MAX_VISIBLE_THUMBS = 8
 import { cn } from '@/lib/utils'
 import { UIPostData } from '@/types/posts.type'
 import { getAmenityIcon, getStatusColor } from '@/utils/post.utils' // Need to ensure these helpers are exported correctly or pass translations
+import { InvalidImageIssue } from '@/utils/ai-verification.utils'
 import { PostAiAnalysis } from '@/components/organisms/posts/PostAiAnalysis'
 import { VipTypeBadge } from '@/components/organisms/posts/PostTable'
 import {
@@ -114,6 +116,10 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
   const [verificationNotes, setVerificationNotes] = useState('')
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  // Images the AI verification flagged as invalid, reported by PostAiAnalysis
+  // (parsed from image_validation.issues) — used to highlight the gallery/
+  // lightbox and to jump straight to the offending image from the reason list.
+  const [invalidImages, setInvalidImages] = useState<InvalidImageIssue[]>([])
 
   // Reset state when modal opens/closes or post changes
   React.useEffect(() => {
@@ -383,12 +389,27 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                   {visibleImages.map((img, idx) => {
                     const isLastVisible = idx === visibleImages.length - 1
                     const showMoreOverlay = isLastVisible && hiddenCount > 0
+                    const invalidIssue = invalidImages.find(
+                      (v) => v.index === idx,
+                    )
+                    // A hidden (beyond MAX_VISIBLE_THUMBS) image can still be
+                    // flagged — surface that on the "+N" overlay tile too, so
+                    // it isn't invisible just because it didn't make the grid.
+                    const hasHiddenInvalid =
+                      showMoreOverlay &&
+                      invalidImages.some((v) => v.index >= visibleImages.length)
                     return (
                       <button
                         type='button'
                         key={idx}
                         onClick={() => openLightbox(idx)}
-                        className='group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border border-border bg-muted outline-none transition-shadow focus-visible:ring-4 focus-visible:ring-ring'
+                        title={invalidIssue?.reason}
+                        className={cn(
+                          'group relative aspect-[4/3] cursor-pointer overflow-hidden rounded-lg border bg-muted outline-none transition-shadow focus-visible:ring-4 focus-visible:ring-ring',
+                          invalidIssue || hasHiddenInvalid
+                            ? 'border-destructive ring-2 ring-destructive/50'
+                            : 'border-border',
+                        )}
                       >
                         <MediaThumbnail
                           src={img}
@@ -402,6 +423,11 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
                         ) : (
                           <div className='absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/35'>
                             <ZoomIn className='h-5 w-5 text-white opacity-0 transition-opacity group-hover:opacity-100' />
+                          </div>
+                        )}
+                        {(invalidIssue || hasHiddenInvalid) && (
+                          <div className='absolute left-1 top-1 flex items-center justify-center rounded-full bg-destructive p-1 text-white shadow-sm'>
+                            <AlertTriangle className='h-3 w-3' />
                           </div>
                         )}
                       </button>
@@ -620,7 +646,12 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
             {showAiSidebar && (
               <div className='space-y-5 px-6 py-5 lg:w-[440px] lg:shrink-0 lg:overflow-y-auto'>
                 {/* AI-assisted analysis (advisory only) */}
-                <PostAiAnalysis post={selectedPost} open={open} />
+                <PostAiAnalysis
+                  post={selectedPost}
+                  open={open}
+                  onInvalidImagesChange={setInvalidImages}
+                  onViewInvalidImage={openLightbox}
+                />
 
                 {/* Rejection Reason / Verification Notes — only while a moderation decision is pending */}
                 {isPending && (
@@ -786,6 +817,29 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
               alt={`${selectedPost.title} ${currentImageIndex + 1}`}
               className='object-contain'
             />
+
+            {/* AI-flagged reason for the image currently shown */}
+            {(() => {
+              const activeIssue = invalidImages.find(
+                (v) => v.index === currentImageIndex,
+              )
+              if (!activeIssue) return null
+              return (
+                <div className='absolute left-1/2 top-4 z-10 w-[calc(100%-2rem)] max-w-xl -translate-x-1/2 rounded-lg border border-destructive/50 bg-destructive px-4 py-2.5 text-sm text-white shadow-lg'>
+                  <div className='flex items-start gap-2'>
+                    <AlertTriangle className='mt-0.5 h-4 w-4 shrink-0' />
+                    <div className='min-w-0'>
+                      <div className='font-semibold'>
+                        {t('aiAnalysis.invalidImageBadge')}
+                      </div>
+                      <div className='mt-0.5 break-words text-white/90'>
+                        {activeIssue.reason}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })()}
           </div>
 
           {selectedPost.images.length > 1 && (
@@ -810,24 +864,34 @@ export const PostReviewModal: React.FC<PostReviewModalProps> = ({
 
             {selectedPost.images.length > 1 && (
               <div className='flex max-w-full gap-2 overflow-x-auto pb-1'>
-                {selectedPost.images.map((img, idx) => (
-                  <button
-                    type='button'
-                    key={idx}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setCurrentImageIndex(idx)
-                    }}
-                    className={cn(
-                      'relative h-14 w-20 shrink-0 overflow-hidden rounded-md border-2 transition-opacity',
-                      idx === currentImageIndex
-                        ? 'border-white opacity-100'
-                        : 'border-transparent opacity-50 hover:opacity-90',
-                    )}
-                  >
-                    <MediaThumbnail src={img} alt={`thumbnail ${idx + 1}`} />
-                  </button>
-                ))}
+                {selectedPost.images.map((img, idx) => {
+                  const isInvalid = invalidImages.some((v) => v.index === idx)
+                  return (
+                    <button
+                      type='button'
+                      key={idx}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setCurrentImageIndex(idx)
+                      }}
+                      className={cn(
+                        'relative h-14 w-20 shrink-0 overflow-hidden rounded-md border-2 transition-opacity',
+                        idx === currentImageIndex
+                          ? 'border-white opacity-100'
+                          : isInvalid
+                            ? 'border-destructive opacity-75 hover:opacity-100'
+                            : 'border-transparent opacity-50 hover:opacity-90',
+                      )}
+                    >
+                      <MediaThumbnail src={img} alt={`thumbnail ${idx + 1}`} />
+                      {isInvalid && (
+                        <div className='absolute right-0.5 top-0.5 flex items-center justify-center rounded-full bg-destructive p-0.5 text-white'>
+                          <AlertTriangle className='h-2.5 w-2.5' />
+                        </div>
+                      )}
+                    </button>
+                  )
+                })}
               </div>
             )}
           </div>

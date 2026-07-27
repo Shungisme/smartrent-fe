@@ -12,6 +12,7 @@ import {
   Info,
   Files,
   History,
+  Eye,
 } from 'lucide-react'
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
@@ -31,6 +32,8 @@ import {
   getSuggestedStatusColor,
   getSeverityColor,
   toPercent,
+  parseInvalidImageIssues,
+  InvalidImageIssue,
 } from '@/utils/ai-verification.utils'
 import { AiServiceStatusBadge } from '@/components/molecules/aiServiceStatus/AiServiceStatusBadge'
 
@@ -38,6 +41,10 @@ interface PostAiAnalysisProps {
   post: UIPostData | null
   /** Reset internal state when the host modal closes/reopens. */
   open: boolean
+  /** Fires whenever the AI result (re)loads, with the images it flagged as invalid. */
+  onInvalidImagesChange?: (images: InvalidImageIssue[]) => void
+  /** Open the gallery lightbox on a specific (0-based) image index. */
+  onViewInvalidImage?: (index: number) => void
 }
 
 const ValidationCard: React.FC<{
@@ -50,6 +57,8 @@ const ValidationCard: React.FC<{
   stats?: { label: string; value: React.ReactNode }[]
   issues: string[]
   issuesLabel: string
+  /** Custom rendering for a single issue line (used to add the "view image" button). */
+  renderIssue?: (issue: string, index: number) => React.ReactNode
 }> = ({
   title,
   valid,
@@ -60,6 +69,7 @@ const ValidationCard: React.FC<{
   stats,
   issues,
   issuesLabel,
+  renderIssue,
 }) => (
   <div className='rounded-lg border border-border/70 p-3'>
     <div className='flex items-start justify-between gap-2'>
@@ -96,7 +106,7 @@ const ValidationCard: React.FC<{
         <ul className='mt-1 list-inside list-disc space-y-0.5 text-xs text-muted-foreground'>
           {issues.map((issue, i) => (
             <li key={i} className='break-words'>
-              {issue}
+              {renderIssue ? renderIssue(issue, i) : issue}
             </li>
           ))}
         </ul>
@@ -108,6 +118,8 @@ const ValidationCard: React.FC<{
 export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
   post,
   open,
+  onInvalidImagesChange,
+  onViewInvalidImage,
 }) => {
   const t = useTranslations('posts')
   const [loadingStore, setLoadingStore] = useState(false)
@@ -184,6 +196,15 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
       cancelled = true
     }
   }, [post, open])
+
+  // Let the host modal know which images the AI flagged as invalid (so it can
+  // highlight them in the gallery/lightbox) every time a fresh result loads.
+  useEffect(() => {
+    const invalidImages = result
+      ? parseInvalidImageIssues(result.image_validation.issues)
+      : []
+    onInvalidImagesChange?.(invalidImages)
+  }, [result, onInvalidImagesChange])
 
   const duplicateDecisionColor = (decision: AiDuplicateDecision) =>
     decision === 'DUPLICATE'
@@ -442,6 +463,26 @@ export const PostAiAnalysis: React.FC<PostAiAnalysisProps> = ({
                 ]}
                 issues={result.image_validation.issues}
                 issuesLabel={t('aiAnalysis.issues')}
+                renderIssue={(issue) => {
+                  const [parsed] = parseInvalidImageIssues([issue])
+                  if (!parsed)
+                    return <span className='break-words'>{issue}</span>
+                  return (
+                    <span className='flex items-start justify-between gap-2'>
+                      <span className='min-w-0 flex-1 break-words'>
+                        {issue}
+                      </span>
+                      <button
+                        type='button'
+                        onClick={() => onViewInvalidImage?.(parsed.index)}
+                        className='inline-flex shrink-0 items-center gap-1 rounded-md border border-destructive/40 bg-destructive/10 px-2 py-0.5 text-[11px] font-medium text-destructive transition-colors hover:bg-destructive/20'
+                      >
+                        <Eye className='h-3 w-3' />
+                        {t('aiAnalysis.viewImageButton')}
+                      </button>
+                    </span>
+                  )
+                }}
               />
               <ValidationCard
                 title={t('aiAnalysis.videoValidation')}

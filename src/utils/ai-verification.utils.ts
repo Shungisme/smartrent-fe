@@ -114,3 +114,30 @@ export const getSeverityColor = (level: AiSeverity | AiPriority): string => {
 /** Round a 0..1 score to a whole percentage for display. */
 export const toPercent = (value: number): number =>
   Math.round((Number.isFinite(value) ? value : 0) * 100)
+
+export interface InvalidImageIssue {
+  /** 0-based index into the listing's `images` array. */
+  index: number
+  reason: string
+}
+
+// The AI service (smartrent-ai/app/ai/llm/gemini_listing_helper.py) sends each
+// image to the model preceded by a literal "Ảnh N:" text label, where N is the
+// 1-based position in the same `images` array the FE submitted — and is
+// instructed to prefix any invalid-image issue with that exact label. That
+// convention is the only per-image link available in image_validation.issues
+// today, so we parse it back out to know which image to highlight/open.
+const IMAGE_ISSUE_PREFIX = /^Ảnh\s+(\d+)\s*:\s*(.*)$/
+
+/** Extract {index, reason} for issues that carry the "Ảnh N:" image label. */
+export const parseInvalidImageIssues = (
+  issues: string[],
+): InvalidImageIssue[] =>
+  issues.reduce<InvalidImageIssue[]>((acc, issue) => {
+    const match = issue.match(IMAGE_ISSUE_PREFIX)
+    if (!match) return acc
+    const oneBasedIndex = Number(match[1])
+    if (!Number.isFinite(oneBasedIndex) || oneBasedIndex < 1) return acc
+    acc.push({ index: oneBasedIndex - 1, reason: match[2].trim() || issue })
+    return acc
+  }, [])
