@@ -1769,9 +1769,11 @@
       "month": "month",
       "reviewButton": "Review",
       "quickApproveButton": "Quick approve (AI already approved in the background)",
+      "aiQuickApproveHint": "Eligible for AI quick approve",
       "aiApprovedBadge": "AI approved",
+      "aiSuggestionLabel": "AI suggestion",
       "quickApproveTitle": "Quick approve listing",
-      "quickApproveDescription": "The background AI job already reviewed and suggested approving \"{title}\". Approve it now?",
+      "quickApproveDescription": "The background AI job already reviewed and suggested approving <b>{title}</b>. Approve it now?",
       "quickApproveConfirm": "Approve now"
     },
     "review": {

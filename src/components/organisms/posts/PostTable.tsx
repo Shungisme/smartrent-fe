@@ -378,15 +378,10 @@ export const PostTable: React.FC<PostTableProps> = ({
               </Button>
             </div>
             {aiQuickApprove && (
-              <div
-                className='flex max-w-25 items-center gap-1 rounded-full border border-success/30 bg-success/10 px-1.5 py-0.5 dark:bg-success/20'
-                title={aiQuickApprove.reason || t('table.aiApprovedBadge')}
-              >
-                <Sparkles className='h-3 w-3 shrink-0 text-success' />
-                <span className='truncate text-[10px] font-medium text-success-foreground'>
-                  {aiQuickApprove.reason || t('table.aiApprovedBadge')}
-                </span>
-              </div>
+              <span className='flex items-center gap-1 text-[10px] font-medium text-success dark:text-success-foreground'>
+                <Sparkles className='h-3 w-3 shrink-0' />
+                {t('table.aiQuickApproveHint')}
+              </span>
             )}
           </div>
         )
