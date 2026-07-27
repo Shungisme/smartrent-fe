@@ -1843,6 +1843,8 @@
       "missingFields": "Thiếu",
       "violations": "Vi phạm",
       "suggestions": "Gợi ý",
+      "viewImageButton": "Xem ảnh",
+      "invalidImageBadge": "AI phát hiện ảnh này không hợp lệ",
       "advisoryNote": "Đánh giá AI chỉ mang tính tham khảo — quyết định kiểm duyệt vẫn thuộc về bạn.",
       "suggested": {
         "APPROVED": "Duyệt",
