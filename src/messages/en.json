@@ -1769,7 +1769,7 @@
       "month": "month",
       "reviewButton": "Review",
       "quickApproveButton": "Quick approve (AI already approved in the background)",
-      "aiQuickApproveHint": "Eligible for AI quick approve",
+      "aiQuickApproveHint": "Eligible for quick approve",
       "aiApprovedBadge": "AI approved",
       "aiSuggestionLabel": "AI suggestion",
       "quickApproveTitle": "Quick approve listing",

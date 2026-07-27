@@ -9,7 +9,7 @@ import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
 import { MediaThumbnail } from '@/components/molecules/mediaPreview'
-import { Eye, Sparkles, CheckCircle2 } from 'lucide-react'
+import { Eye, CheckCircle2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PostStatus, UIPostData } from '@/types/posts.type'
 import { getPropertyIcon, getStatusColor } from '@/utils/post.utils'
@@ -378,8 +378,7 @@ export const PostTable: React.FC<PostTableProps> = ({
               </Button>
             </div>
             {aiQuickApprove && (
-              <span className='flex items-center gap-1 text-[10px] font-medium text-success dark:text-success-foreground'>
-                <Sparkles className='h-3 w-3 shrink-0' />
+              <span className='text-[10px] font-medium text-success dark:text-success-foreground'>
                 {t('table.aiQuickApproveHint')}
               </span>
             )}
