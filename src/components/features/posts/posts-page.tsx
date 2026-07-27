@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 import { useTranslations } from 'next-intl'
 import { ListingService } from '@/api/services/listing.service'
 import { ListingStatisticsSummary } from '@/api/types/listing.type'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Sparkles } from 'lucide-react'
 import { UIPostData } from '@/types/posts.type'
 import {
   mapSummaryToUI,
@@ -18,7 +18,8 @@ import { PostTable } from '@/components/organisms/posts/PostTable'
 import { PostReviewModal } from '@/components/organisms/posts/PostReviewModal'
 import { AiAutoVerifyControl } from '@/components/molecules/aiServiceStatus/AiAutoVerifyControl'
 import { ConfirmDialog } from '@/components/molecules/confirmDialog'
-import { toPercent } from '@/utils/ai-verification.utils'
+import { toPercent, getScoreColorClasses } from '@/utils/ai-verification.utils'
+import { cn } from '@/lib/utils'
 
 // Backend success envelope code (see constants/env API_RESPONSE_CODES.SUCCESS).
 const SUCCESS_CODE = '999999'
@@ -352,21 +353,41 @@ const PostVerification = () => {
         title={t('table.quickApproveTitle')}
         description={
           quickApproveTarget && (
-            <div className='space-y-2'>
-              <p>
-                {t('table.quickApproveDescription', {
+            <div className='space-y-3 text-left'>
+              <p className='text-sm text-foreground/90'>
+                {t.rich('table.quickApproveDescription', {
                   title: quickApproveTarget.title,
+                  b: (chunks) => (
+                    <span className='font-semibold text-foreground'>
+                      {chunks}
+                    </span>
+                  ),
                 })}
               </p>
-              <div className='rounded-lg border border-success/30 bg-success/10 p-2.5 text-xs text-foreground/80 dark:bg-success/20'>
-                {quickApproveTarget.aiQuickApprove?.reason ||
-                  t('table.aiApprovedBadge')}
-                {typeof quickApproveTarget.aiQuickApprove?.score ===
-                  'number' && (
-                  <span className='ml-1 font-medium text-success-foreground'>
-                    ({toPercent(quickApproveTarget.aiQuickApprove.score)}%)
-                  </span>
+              <div
+                className={cn(
+                  'rounded-lg border p-3',
+                  getScoreColorClasses(
+                    quickApproveTarget.aiQuickApprove?.score ?? 1,
+                  ),
                 )}
+              >
+                <div className='flex items-center justify-between gap-2'>
+                  <span className='flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide opacity-80'>
+                    <Sparkles className='h-3.5 w-3.5' />
+                    {t('table.aiSuggestionLabel')}
+                  </span>
+                  {typeof quickApproveTarget.aiQuickApprove?.score ===
+                    'number' && (
+                    <span className='text-sm font-bold tabular-nums'>
+                      {toPercent(quickApproveTarget.aiQuickApprove.score)}%
+                    </span>
+                  )}
+                </div>
+                <p className='mt-2 text-sm leading-snug'>
+                  {quickApproveTarget.aiQuickApprove?.reason ||
+                    t('table.aiApprovedBadge')}
+                </p>
               </div>
             </div>
           )

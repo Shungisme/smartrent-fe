@@ -1733,9 +1733,11 @@
       "month": "tháng",
       "reviewButton": "Xem Xét",
       "quickApproveButton": "Duyệt nhanh (AI đã duyệt nền)",
+      "aiQuickApproveHint": "Có thể duyệt nhanh bằng AI",
       "aiApprovedBadge": "AI đã duyệt",
+      "aiSuggestionLabel": "Gợi ý từ AI",
       "quickApproveTitle": "Duyệt nhanh tin đăng",
-      "quickApproveDescription": "AI đã kiểm duyệt nền và đề xuất duyệt tin \"{title}\". Bạn có muốn duyệt ngay không?",
+      "quickApproveDescription": "AI đã kiểm duyệt nền và đề xuất duyệt tin <b>{title}</b>. Bạn có muốn duyệt ngay không?",
       "quickApproveConfirm": "Duyệt ngay"
     },
     "review": {
