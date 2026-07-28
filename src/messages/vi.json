@@ -98,7 +98,7 @@
       "more": "thêm",
       "noProperties": "Không tìm thấy bất động sản",
       "noPropertiesDescription": "Hãy thử điều chỉnh tiêu chí tìm kiếm của bạn hoặc kiểm tra lại sau để có danh sách mới.",
-      "listings": "Danh sách Bất động sản",
+      "listings": "Danh sách Thuê nhà trọ",
       "favorites": "Yêu thích",
       "additionalAmenities": "Tiện nghi Bổ sung",
       "views": "lượt xem",
@@ -228,7 +228,7 @@
         "badge": "Bảng điều khiển quản trị",
         "headline": "Vận hành Thuê Nhà Trọ với sự rõ ràng và kiểm soát.",
         "subheadline": "Quản lý người dùng, tin đăng, gói cao cấp và doanh thu trong một không gian làm việc duy nhất.",
-        "subtitle": "Quản lý Bất động sản",
+        "subtitle": "Quản lý Thuê nhà trọ",
         "secure": "Kết nối bảo mật",
         "rights": "Bảo lưu mọi quyền.",
         "features": {
@@ -367,12 +367,12 @@
       }
     },
     "filters": {
-      "title": "Lọc Bất động sản",
+      "title": "Lọc Thuê nhà trọ",
       "anyAmenities": "Bất kỳ Tiện nghi nào",
       "oneAmenity": "1 Tiện nghi",
       "amenitiesCount": "Tiện nghi",
       "propertyType": {
-        "title": "Loại Bất động sản",
+        "title": "Loại Thuê nhà trọ",
         "all": "Tất cả Loại",
         "apartment": "Căn hộ",
         "studio": "Studio",
@@ -440,7 +440,7 @@
     }
   },
   "createPost": {
-    "title": "Tạo Tin Đăng Bất động sản",
+    "title": "Tạo Tin Đăng Thuê nhà trọ",
     "description": "Làm theo các bước dưới đây để tạo tin đăng bất động sản",
     "back": "Quay lại",
     "next": "Tiếp theo",
@@ -451,7 +451,7 @@
         "mapPreview": "Xem trước Bản đồ",
         "district": "Quận",
         "hcmc": "TP.HCM",
-        "title": "Thông tin Bất động sản",
+        "title": "Thông tin Thuê nhà trọ",
         "description": "Nhập thông tin bất động sản"
       },
       "aiValuation": {
@@ -538,14 +538,14 @@
         "mapPreview": "Xem trước Bản đồ",
         "district": "Quận",
         "hcmc": "TP.HCM",
-        "title": "Thông tin Bất động sản",
+        "title": "Thông tin Thuê nhà trọ",
         "description": "Nhập chi tiết về tin đăng bất động sản",
         "listingType": "Loại tin đăng",
         "listingTypes": {
           "rent": "Cho thuê",
           "sale": "Bán"
         },
-        "propertyType": "Loại Bất động sản",
+        "propertyType": "Loại Thuê nhà trọ",
         "propertyTypes": {
           "apartment": "Căn hộ",
           "house": "Nhà",
@@ -554,7 +554,7 @@
           "shop": "Cửa hàng",
           "land": "Đất"
         },
-        "propertyAddress": "Địa chỉ Bất động sản",
+        "propertyAddress": "Địa chỉ Thuê nhà trọ",
         "addressPlaceholder": "Nhập địa chỉ bất động sản...",
         "addressHint": "Vui lòng nhập địa chỉ chính xác để khách hàng dễ tìm",
         "searchAddress": "Tìm địa chỉ",
@@ -611,14 +611,14 @@
           "semiFurnished": "Bán nội thất",
           "unfurnished": "Không nội thất"
         },
-        "propertyType": "Loại Bất động sản",
+        "propertyType": "Loại Thuê nhà trọ",
         "area": "Diện tích",
         "price": "Giá",
         "interiorCondition": "Tình trạng nội thất",
         "rooms": "Phòng",
         "moveInDate": "Ngày chuyển vào",
         "dateFormat": "Định dạng: dd/mm/yyyy",
-        "title": "Chi tiết Bất động sản",
+        "title": "Chi tiết Thuê nhà trọ",
         "description": "Thêm thông tin chi tiết về bất động sản",
         "bedrooms": "Phòng ngủ",
         "bathrooms": "Phòng tắm",
@@ -649,7 +649,7 @@
         "structureDirection": "Hướng cấu trúc",
         "houseDirection": "Hướng nhà",
         "balconyDirection": "Hướng ban công",
-        "propertyDimensions": "Kích thước Bất động sản",
+        "propertyDimensions": "Kích thước Thuê nhà trọ",
         "alleyWidth": "Độ rộng hẻm",
         "frontageWidth": "Mặt tiền",
         "directions": {
@@ -690,13 +690,13 @@
         "email": "Email",
         "phoneNumber": "Số điện thoại",
         "listingTitle": "Tiêu đề Tin đăng",
-        "propertyDescription": "Mô tả Bất động sản"
+        "propertyDescription": "Mô tả Thuê nhà trọ"
       },
       "aiContent": {
         "title": "Nội dung do AI tạo",
         "description": "Dùng AI để tạo nội dung hấp dẫn",
         "listingTitle": "Tiêu đề Tin đăng",
-        "propertyDescription": "Mô tả Bất động sản",
+        "propertyDescription": "Mô tả Thuê nhà trọ",
         "titleLength": "Độ dài tối ưu: 30-99 ký tự. Hiện tại: 60 ký tự",
         "descriptionHint": "Mô tả AI bao gồm lợi ích vị trí, tiện ích xung quanh và đối tượng mục tiêu"
       },
@@ -709,7 +709,7 @@
           "mapPreview": "Xem trước Bản đồ",
           "district": "Quận",
           "hcmc": "TP.HCM",
-          "title": "Thông tin Bất động sản",
+          "title": "Thông tin Thuê nhà trọ",
           "address": "Địa chỉ",
           "addressPlaceholder": "Nhập địa chỉ bất động sản...",
           "area": "Diện tích (m²)",
@@ -777,7 +777,7 @@
           "marketInfo": "Thông tin thị trường",
           "averagePrice": "Giá trung bình",
           "averagePriceValue": "3.1M/tháng",
-          "similarProperties": "Bất động sản tương tự",
+          "similarProperties": "Thuê nhà trọ tương tự",
           "similarPropertiesValue": "24 căn",
           "trend": "Xu hướng",
           "trendValue": "Tăng 3% so với tháng trước",
@@ -813,7 +813,7 @@
     "description": "Đối tác đáng tin cậy của bạn trong việc tìm kiếm ngôi nhà hoàn hảo. Chúng tôi kết nối bạn với bất động sản cao cấp và dịch vụ xuất sắc.",
     "quickLinks": "Liên kết Nhanh",
     "aboutUs": "Về Chúng tôi",
-    "properties": "Bất động sản",
+    "properties": "Thuê nhà trọ",
     "services": "Dịch vụ",
     "contact": "Liên hệ",
     "support": "Hỗ trợ",
@@ -836,7 +836,7 @@
   },
   "navigation": {
     "home": "Trang chủ",
-    "properties": "Bất động sản",
+    "properties": "Thuê nhà trọ",
     "about": "Giới thiệu",
     "contact": "Liên hệ",
     "login": "Đăng nhập",
@@ -858,7 +858,7 @@
     "analytics": "Phân tích",
     "financial": "Báo cáo Tài chính",
     "occupancy": "Tỷ lệ Lấp đầy",
-    "performance": "Hiệu suất Bất động sản"
+    "performance": "Hiệu suất Thuê nhà trọ"
   },
   "admin": {
     "header": {
