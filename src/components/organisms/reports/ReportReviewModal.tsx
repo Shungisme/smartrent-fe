@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import {
   Dialog,
@@ -10,6 +9,10 @@ import {
 import { Button } from '@/components/atoms/button'
 import { Badge } from '@/components/atoms/badge'
 import { InitialsAvatar } from '@/components/molecules/initialsAvatar'
+import {
+  MediaThumbnail,
+  MediaPlayer,
+} from '@/components/molecules/mediaPreview'
 import {
   AlertTriangle,
   Eye,
@@ -597,12 +600,10 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
                                   onClick={() => openLightbox(idx)}
                                   className='relative h-24 w-32 shrink-0 cursor-pointer overflow-hidden rounded-lg group md:h-32 md:w-48'
                                 >
-                                  <Image
+                                  <MediaThumbnail
                                     src={media.url}
                                     alt={`${listingDetails.title} ${idx + 1}`}
-                                    width={192}
-                                    height={128}
-                                    className='h-full w-full object-cover transition-transform group-hover:scale-110'
+                                    className='transition-transform group-hover:scale-110'
                                   />
                                   <div className='absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center'>
                                     <Eye className='h-6 w-6 text-white opacity-0 group-hover:opacity-100 transition-opacity' />
@@ -932,13 +933,10 @@ export const ReportReviewModal: React.FC<ReportReviewModalProps> = ({
             className='relative w-full h-full max-w-[90vw] max-h-[90vh] flex items-center justify-center'
             onClick={(e) => e.stopPropagation()}
           >
-            <Image
+            <MediaPlayer
               src={listingDetails.media[currentImageIndex].url}
               alt={`View ${currentImageIndex + 1}`}
-              width={1200}
-              height={800}
-              className='max-w-full max-h-[90vh] object-contain'
-              quality={100}
+              className='max-w-full max-h-[90vh]'
             />
 
             {/* Image Counter */}
