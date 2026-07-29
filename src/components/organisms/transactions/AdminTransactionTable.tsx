@@ -197,9 +197,7 @@ export const AdminTransactionTable = ({
       type: 'select',
       label: t('filters.gateway'),
       options: [
-        { value: 'VNPAY', label: 'VNPay' },
         { value: 'ZALOPAY', label: 'ZaloPay' },
-        { value: 'MOMO', label: 'MoMo' },
         { value: 'SEPAY', label: 'SePay' },
       ],
       isFilterField: true,
